@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartera Banca &amp; CCEE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root{
+    --ink:#12172B; --ink-2:#1B2140; --paper:#F4F5F2; --paper-2:#FFFFFF; --line:#E1E2DC;
+    --teal:#2E7D6B; --teal-soft:#DCEEE8; --amber:#B8752E; --amber-soft:#F3E4D2;
+    --ink-text:#12172B; --muted:#6B7080;
+    --mono:'SF Mono','IBM Plex Mono','Menlo','Consolas',monospace;
+    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink-text);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
+  .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
+  @media (max-width:860px){.shell{grid-template-columns:1fr;}}
+  .sidebar{background:var(--ink);color:#EDEEF5;padding:28px 22px;display:flex;flex-direction:column;gap:22px;}
+  .brand .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8B90AE;font-weight:600;}
+  .brand h1{font-size:19px;margin:4px 0 0;font-weight:700;letter-spacing:-0.01em;line-height:1.25;}
+  .stat-row{display:flex;gap:10px;}
+  .stat{flex:1;background:var(--ink-2);border-radius:10px;padding:12px 10px;}
+  .stat .n{font-family:var(--mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:10.5px;color:#9195B5;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;}
+  .field{display:flex;flex-direction:column;gap:7px;}
+  .field label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9195B5;font-weight:600;}
+  .field input,.field select{background:var(--ink-2);border:1px solid #2B3157;color:#EDEEF5;border-radius:8px;padding:9px 10px;font-size:13.5px;font-family:var(--sans);outline:none;width:100%;}
+  .field input::placeholder{color:#6E739A;}
+  .field input:focus,.field select:focus{border-color:var(--teal);}
+  .pill-group{display:flex;gap:6px;flex-wrap:wrap;}
+  .pill{border:1px solid #2B3157;background:var(--ink-2);color:#C7CAE0;padding:7px 11px;border-radius:999px;font-size:12.5px;cursor:pointer;font-weight:600;transition:.12s ease;}
+  .pill:hover{border-color:#4B5386;}
+  .pill.active[data-libro="todos"]{background:#EDEEF5;color:var(--ink);border-color:#EDEEF5;}
+  .pill.active[data-libro="Banca"]{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .pill.active[data-libro="CCEE"]{background:var(--amber);color:#fff;border-color:var(--amber);}
+  .reset{background:none;border:1px solid #2B3157;color:#9195B5;border-radius:8px;padding:9px;font-size:12.5px;cursor:pointer;font-weight:600;}
+  .reset:hover{color:#EDEEF5;border-color:#4B5386;}
+  details.settings{border-top:1px solid #262C50;padding-top:14px;}
+  details.settings summary{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9195B5;font-weight:700;cursor:pointer;}
+  details.settings .field{margin-top:12px;}
+  .apply-btn{margin-top:10px;background:var(--teal);border:none;color:#fff;border-radius:8px;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer;width:100%;}
+  .foot-note{font-size:11px;color:#6E739A;line-height:1.5;margin-top:auto;border-top:1px solid #262C50;padding-top:14px;}
+  .main{padding:30px 34px;}
+  .main-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:16px;flex-wrap:wrap;}
+  .main-head h2{margin:0 0 4px;font-size:15px;color:var(--muted);font-weight:600;}
+  .count{font-family:var(--mono);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .export-btn{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-text);}
+  .export-btn:hover{border-color:var(--ink);}
+  table{width:100%;border-collapse:collapse;background:var(--paper-2);border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line);font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;}
+  thead th:hover{color:var(--ink-text);}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr{cursor:pointer;transition:.1s;}
+  tbody tr:hover{background:#FAFAF8;}
+  .cuenta-name{font-weight:600;}
+  .cuit-sub{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:1px;}
+  .badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .badge.Banca{background:var(--teal-soft);color:var(--teal);}
+  .badge.CCEE{background:var(--amber-soft);color:var(--amber);}
+  .state-box{padding:60px 20px;text-align:center;color:var(--muted);}
+  .state-box.error{color:#B8422E;}
+  .overlay{position:fixed;inset:0;background:rgba(18,23,43,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:50;}
+  .overlay.open{display:flex;}
+  .drawer{background:var(--paper-2);border-radius:16px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(18,23,43,0.35);}
+  .drawer-head{padding:24px 26px 18px;border-bottom:1px solid var(--line);position:relative;}
+  .drawer-head h3{margin:10px 0 0;font-size:20px;letter-spacing:-0.01em;}
+  .drawer-head .sub{font-family:var(--mono);color:var(--muted);font-size:12.5px;margin-top:4px;}
+  .drawer-close{position:absolute;top:18px;right:20px;background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;}
+  .drawer-close:hover{color:var(--ink-text);}
+  .chain{padding:22px 26px;}
+  .chain-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:14px;}
+  .link{display:flex;gap:14px;padding-bottom:18px;position:relative;}
+  .link:not(:last-child)::before{content:"";position:absolute;left:13px;top:26px;bottom:-2px;width:1px;background:var(--line);}
+  .dot{width:27px;height:27px;border-radius:50%;background:var(--paper);border:1.5px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);z-index:1;}
+  .link.role-eje .dot{border-color:var(--teal);color:var(--teal);}
+  .link-body{flex:1;padding-top:2px;}
+  .link-role{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;}
+  .link-name{font-size:14.5px;font-weight:700;margin-top:2px;}
+  .link-contact{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap;}
+  .link-contact a{font-size:12px;color:var(--teal);text-decoration:none;font-family:var(--mono);}
+  .link-contact a:hover{text-decoration:underline;}
+  .link-empty{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:2px;}
+  .section-div{padding:0 26px 22px;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">Ruteo de cuentas · GGCC</div>
+      <h1>Banca &amp; CCEE Servicios e Industrias</h1>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="stat-cuentas">–</div><div class="l">Cuentas</div></div>
+      <div class="stat"><div class="n" id="stat-eje">–</div><div class="l">Ejecutivos</div></div>
+      <div class="stat"><div class="n" id="stat-ing">–</div><div class="l">Ingenieros</div></div>
+    </div>
+    <div class="field">
+      <label>Libro</label>
+      <div class="pill-group" id="libro-pills">
+        <button class="pill active" data-libro="todos">Todos</button>
+        <button class="pill" data-libro="Banca">Banca</button>
+        <button class="pill" data-libro="CCEE">CCEE Serv. e Ind.</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Buscar cuenta o CUIT</label>
+      <input type="text" id="search-cuenta" placeholder="Ej: Nova Argentia / 307094...">
+    </div>
+    <div class="field">
+      <label>Ejecutivo (EECC)</label>
+      <select id="filter-eje"><option value="todos">Todos</option></select>
+    </div>
+    <div class="field">
+      <label>Ingeniero preventa</label>
+      <select id="filter-ing"><option value="todos">Todos</option></select>
+    </div>
+    <button class="reset" id="reset-btn">Limpiar filtros</button>
+
+    <details class="settings">
+      <summary>⚙ Responsables de cada libro</summary>
+      <div class="field">
+        <label>Nombre a cargo de Banca</label>
+        <input type="text" id="cfg-banca">
+      </div>
+      <div class="field">
+        <label>Nombre a cargo de CCEE</label>
+        <input type="text" id="cfg-ccee">
+      </div>
+      <button class="apply-btn" id="cfg-apply">Aplicar y guardar en el link</button>
+    </details>
+
+    <div class="foot-note" id="foot-note">Cargando cuentas.csv…</div>
+  </aside>
+
+  <main class="main">
+    <div class="main-head">
+      <div>
+        <h2 id="result-label">Mostrando todas las cuentas</h2>
+        <div class="count" id="result-count">–</div>
+      </div>
+      <button class="export-btn" id="export-btn">Exportar vista a CSV</button>
+    </div>
+    <table id="data-table" style="display:none;">
+      <thead>
+        <tr>
+          <th data-sort="razon_social">Cuenta</th>
+          <th data-sort="ejecutivo">Ejecutivo</th>
+          <th data-sort="ingeniero">Ingeniero</th>
+          <th data-sort="vertical">Vertical</th>
+          <th data-sort="libro">Libro</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="state-box" id="state-box">Cargando cuentas.csv…</div>
+  </main>
+</div>
+
+<div class="overlay" id="overlay"><div class="drawer" id="drawer"></div></div>
+
+<script>
+const DEFAULTS = { g1: 'RAMIREZ GONZALO', banca: 'CASIL SILVANA PAULA', ccee: 'A DESIGNAR' };
+const COLS = {
+  cuit:'Cuit', razon_social:'Razón Social', segmento:'Segmento Comercial Confirmado',
+  ejecutivo:'Ejecutivo', mail_ejecutivo:'Mail Ejecutivo', tel_ejecutivo:'Telefono Celular  Ejecutivo',
+  jefe:'Jefe/Coordinador', mail_jefe:'Mail  Jefe/Coordinador',
+  gerente_g2:'Gerente G2 Comercial', mail_g2:'Mail Gerente G2 Comercial',
+  gerente_g1:'Gerente G1 Comercial',
+  ingeniero:'Ingeniero', mail_ingeniero:'Mail Ingeniero', tel_ingeniero:'Celular Ingeniero',
+  vertical:'VERTICAL'
+};
+
+let RAW = [];
+let filtered = [];
+let activeLibro = 'todos';
+let sortKey = 'razon_social', sortDir = 1;
+let cfg = { g1: DEFAULTS.g1, banca: DEFAULTS.banca, ccee: DEFAULTS.ccee };
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+function norm(s){ return (s==null?'':String(s)).trim().toLowerCase().replace(/\s+/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function toTitle(s){ if(!s) return s; return s.toLowerCase().split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1):w).join(' '); }
+
+function readUrlConfig(){
+  const p = new URLSearchParams(location.search);
+  cfg.g1 = p.get('g1') || DEFAULTS.g1;
+  cfg.banca = p.get('banca') || DEFAULTS.banca;
+  cfg.ccee = p.get('ccee') || DEFAULTS.ccee;
+  $('#cfg-banca').value = cfg.banca;
+  $('#cfg-ccee').value = cfg.ccee;
+}
+
+function findHeader(headers, target){
+  const nt = norm(target);
+  return headers.find(h => norm(h) === nt);
+}
+
+function buildRecords(rows, headers){
+  const map = {};
+  for(const key in COLS){
+    map[key] = findHeader(headers, COLS[key]);
+  }
+  const g1n = norm(cfg.g1), bancaN = norm(cfg.banca), cceeN = norm(cfg.ccee);
+  const out = [];
+  rows.forEach(row => {
+    const g1 = row[map.gerente_g1];
+    if(norm(g1) !== g1n) return;
+    const g2 = row[map.gerente_g2];
+    const g2n = norm(g2);
+    let libro = null;
+    if(g2n === bancaN) libro = 'Banca';
+    else if(g2n === cceeN) libro = 'CCEE';
+    if(!libro) return;
+    const rec = { libro };
+    for(const key in COLS){ rec[key] = map[key] ? row[map[key]] : null; }
+    out.push(rec);
+  });
+  return out;
+}
+
+function loadData(){
+  const src = new URLSearchParams(location.search).get('src') || './cuentas.csv';
+  Papa.parse(src, {
+    download: true, header: true, skipEmptyLines: true,
+    complete: (res) => {
+      if(!res.data.length){ showState('No se encontraron filas en cuentas.csv.', true); return; }
+      RAW = buildRecords(res.data, res.meta.fields);
+      if(!RAW.length){
+        showState('El CSV cargó, pero ninguna fila coincidió con los nombres configurados (Gerente G1/G2). Revisá el panel de "Responsables de cada libro".', true);
+        return;
+      }
+      $('#data-table').style.display = 'table';
+      populateSelect('#filter-eje','ejecutivo');
+      populateSelect('#filter-ing','ingeniero');
+      $('#foot-note').textContent = 'cuentas.csv cargado: ' + RAW.length + ' cuentas en el libro de ' + cfg.g1 + '. Para actualizar, reemplazá ese archivo en el repo — esta página no necesita tocarse.';
+      applyFilters();
+    },
+    error: () => showState('No se pudo leer cuentas.csv desde esta ubicación. Si estás viendo esto dentro de Claude, es esperable: subí ambos archivos (dashboard.html + cuentas.csv) a tu repo y abrí la URL publicada.', true)
+  });
+}
+
+function showState(msg, isError){
+  $('#data-table').style.display = 'none';
+  const box = $('#state-box');
+  box.style.display = 'block';
+  box.className = 'state-box' + (isError ? ' error' : '');
+  box.textContent = msg;
+}
+
+function uniqueSorted(field){ return Array.from(new Set(RAW.map(d=>d[field]).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'es')); }
+
+function populateSelect(id, field){
+  const sel = $(id);
+  sel.innerHTML = '<option value="todos">Todos</option>';
+  uniqueSorted(field).forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = toTitle(v);
+    sel.appendChild(opt);
+  });
+}
+
+function applyFilters(){
+  const q = $('#search-cuenta').value.trim().toLowerCase();
+  const eje = $('#filter-eje').value, ing = $('#filter-ing').value;
+  filtered = RAW.filter(d => {
+    if(activeLibro !== 'todos' && d.libro !== activeLibro) return false;
+    if(eje !== 'todos' && d.ejecutivo !== eje) return false;
+    if(ing !== 'todos' && d.ingeniero !== ing) return false;
+    if(q){
+      const hay = (d.razon_social||'').toLowerCase().includes(q) || String(d.cuit||'').includes(q);
+      if(!hay) return false;
+    }
+    return true;
+  });
+  sortRows(); render();
+}
+
+function sortRows(){
+  filtered.sort((a,b) => {
+    const av=(a[sortKey]||''), bv=(b[sortKey]||'');
+    if(av<bv) return -1*sortDir; if(av>bv) return 1*sortDir; return 0;
+  });
+}
+
+function render(){
+  const tbody = $('#table-body'); tbody.innerHTML = '';
+  $('#result-count').textContent = filtered.length;
+  if(RAW.length){ $('#state-box').style.display='none'; $('#data-table').style.display='table'; }
+  const ejeSet = new Set(filtered.map(d=>d.ejecutivo)), ingSet = new Set(filtered.map(d=>d.ingeniero));
+  $('#stat-cuentas').textContent = filtered.length;
+  $('#stat-eje').textContent = ejeSet.size;
+  $('#stat-ing').textContent = ingSet.size;
+  filtered.forEach(d => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><div class="cuenta-name">${toTitle(d.razon_social)}</div><div class="cuit-sub">${d.cuit||''}</div></td>
+      <td>${toTitle(d.ejecutivo||'—')}</td><td>${toTitle(d.ingeniero||'—')}</td><td>${toTitle(d.vertical||'—')}</td>
+      <td><span class="badge ${d.libro}">${d.libro==='Banca'?'Banca':'CCEE Serv. e Ind.'}</span></td>`;
+    tr.addEventListener('click', () => openDrawer(d));
+    tbody.appendChild(tr);
+  });
+}
+
+function contactLine(name, mail, tel){
+  if(!name) return `<div class="link-empty">Sin asignar</div>`;
+  let html = `<div class="link-name">${toTitle(name)}</div><div class="link-contact">`;
+  if(mail) html += `<a href="mailto:${mail}">${String(mail).toLowerCase()}</a>`;
+  if(tel) html += `<a href="tel:${tel}">${tel}</a>`;
+  return html + `</div>`;
+}
+
+function openDrawer(d){
+  $('#drawer').innerHTML = `
+    <div class="drawer-head">
+      <span class="badge ${d.libro}">${d.libro==='Banca'?'Banca':'CCEE Serv. e Ind.'}</span>
+      <button class="drawer-close" id="drawer-close">&times;</button>
+      <h3>${toTitle(d.razon_social)}</h3>
+      <div class="sub">CUIT ${d.cuit||'—'} · ${toTitle(d.segmento||'')} · ${toTitle(d.vertical||'')}</div>
+    </div>
+    <div class="chain">
+      <div class="chain-title">Cadena comercial</div>
+      <div class="link role-eje"><div class="dot">1</div><div class="link-body"><div class="link-role">Ejecutivo (EECC)</div>${contactLine(d.ejecutivo,d.mail_ejecutivo,d.tel_ejecutivo)}</div></div>
+      <div class="link"><div class="dot">2</div><div class="link-body"><div class="link-role">Jefe / Coordinador</div>${contactLine(d.jefe,d.mail_jefe,null)}</div></div>
+      <div class="link"><div class="dot">3</div><div class="link-body"><div class="link-role">Gerente G2 Comercial</div>${contactLine(d.gerente_g2,d.mail_g2,null)}</div></div>
+      <div class="link"><div class="dot">4</div><div class="link-body"><div class="link-role">Gerente G1 Comercial</div>${contactLine(d.gerente_g1,null,null)}</div></div>
+    </div>
+    <div class="section-div"><div class="chain-title">Preventa técnica</div></div>
+    <div class="chain" style="padding-top:0;">
+      <div class="link role-eje"><div class="dot">I</div><div class="link-body"><div class="link-role">Ingeniero preventa</div>${contactLine(d.ingeniero,d.mail_ingeniero,d.tel_ingeniero)}</div></div>
+    </div>`;
+  $('#drawer-close').addEventListener('click', closeDrawer);
+  $('#overlay').classList.add('open');
+}
+function closeDrawer(){ $('#overlay').classList.remove('open'); }
+$('#overlay').addEventListener('click', e => { if(e.target.id==='overlay') closeDrawer(); });
+
+$$('#libro-pills .pill').forEach(p => p.addEventListener('click', () => {
+  activeLibro = p.dataset.libro;
+  $$('#libro-pills .pill').forEach(x=>x.classList.remove('active'));
+  p.classList.add('active');
+  $('#result-label').textContent = activeLibro==='todos' ? 'Mostrando todas las cuentas' : 'Mostrando: '+(activeLibro==='Banca'?'Banca':'CCEE Servicios e Industrias');
+  applyFilters();
+}));
+$('#search-cuenta').addEventListener('input', applyFilters);
+$('#filter-eje').addEventListener('change', applyFilters);
+$('#filter-ing').addEventListener('change', applyFilters);
+$('#reset-btn').addEventListener('click', () => {
+  $('#search-cuenta').value=''; $('#filter-eje').value='todos'; $('#filter-ing').value='todos';
+  activeLibro='todos';
+  $$('#libro-pills .pill').forEach(x=>x.classList.remove('active'));
+  $('#libro-pills .pill[data-libro="todos"]').classList.add('active');
+  $('#result-label').textContent='Mostrando todas las cuentas';
+  applyFilters();
+});
+$$('#data-table thead th').forEach(th => th.addEventListener('click', () => {
+  const key = th.dataset.sort;
+  if(sortKey===key) sortDir*=-1; else { sortKey=key; sortDir=1; }
+  sortRows(); render();
+}));
+$('#export-btn').addEventListener('click', () => {
+  const headers=['Cuenta','CUIT','Ejecutivo','Mail Ejecutivo','Ingeniero','Mail Ingeniero','Jefe/Coordinador','Gerente G2','Gerente G1','Vertical','Libro'];
+  const rows = filtered.map(d=>[d.razon_social,d.cuit,d.ejecutivo,d.mail_ejecutivo,d.ingeniero,d.mail_ingeniero,d.jefe,d.gerente_g2,d.gerente_g1,d.vertical,d.libro]);
+  const csv=[headers,...rows].map(r=>r.map(v=>`"${(v??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='cartera_filtrado.csv'; a.click();
+  URL.revokeObjectURL(url);
+});
+$('#cfg-apply').addEventListener('click', () => {
+  cfg.banca = $('#cfg-banca').value.trim() || DEFAULTS.banca;
+  cfg.ccee = $('#cfg-ccee').value.trim() || DEFAULTS.ccee;
+  const p = new URLSearchParams(location.search);
+  p.set('banca', cfg.banca); p.set('ccee', cfg.ccee);
+  history.replaceState(null,'', location.pathname+'?'+p.toString());
+  loadData();
+});
+
+readUrlConfig();
+loadData();
+</script>
+</body>
+</html>
