@@ -96,11 +96,12 @@
     width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;
     padding:0 32px;box-sizing:border-box;
   }
-  .table-wrap table{margin:0 auto;}
+  .table-wrap table{margin:0;}
+  html,body{overflow-x:hidden;}
   @media (max-width:720px){
     .table-wrap{padding:0 14px;}
   }
-  table{width:100%;border-collapse:collapse;font-size:13px;}
+  table{width:auto;border-collapse:collapse;font-size:13px;}
   thead th{
     text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
     color:var(--ink-soft);font-weight:500;padding:10px 12px;
@@ -112,6 +113,7 @@
   tbody tr:hover{background:var(--stamp-bg);}
   .idcell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
   .cliente-cell{font-weight:500;}
+  .cliente-cell .opp-name{display:block;font-size:11.5px;color:var(--ink-soft);font-weight:400;margin-top:1px;}
   .cliente-cell .cuit{display:block;font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
   .seg-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
   .etapa-track{display:flex;gap:3px;align-items:center;}
@@ -290,7 +292,7 @@
       <div><label>Estado</label><select id="fEstadoFinal"><option value="">Todos</option></select></div>
       <div><label>Vertical</label><select id="fVertical"><option value="">Todas</option></select></div>
       <div><label>EECC</label><select id="fEecc"><option value="">Todos</option></select></div>
-      <div><label>Buscar</label><input type="search" id="fBuscar" placeholder="Cliente o CUIT"></div>
+      <div><label>Buscar</label><input type="search" id="fBuscar" placeholder="Cliente, oportunidad o CUIT"></div>
       <div class="spacer"></div>
       <button class="ghost" id="btnClearFilters">Limpiar filtros</button>
     </div>
@@ -527,7 +529,7 @@ function getFiltered(){
     if(es && o.estadoFinal!==es) return false;
     if(vert && o.vertical!==vert) return false;
     if(eecc && o.eecc!==eecc) return false;
-    if(q && !((o.cliente||'').toLowerCase().includes(q) || (o.cuit||'').toLowerCase().includes(q))) return false;
+    if(q && !((o.cliente||'').toLowerCase().includes(q) || (o.nombreOpp||'').toLowerCase().includes(q) || (o.cuit||'').toLowerCase().includes(q))) return false;
     return true;
   });
 }
@@ -700,7 +702,7 @@ function renderTable(){
     const diasTxt = o.diasRestantes===null ? '—' : (o.diasRestantes<0 ? `${Math.abs(o.diasRestantes)}d vencida` : `${o.diasRestantes}d`);
     return `<tr data-id="${o.id}">
       <td class="idcell">${o.id}</td>
-      <td class="cliente-cell">${escapeHtml(o.cliente||'—')}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
+      <td class="cliente-cell">${escapeHtml(o.cliente||'—')}${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
       <td><span class="seg-pill">${o.segmento||'—'}</span></td>
       <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
       <td>${o.probCierre?o.probCierre+'%':'—'}</td>
@@ -738,7 +740,7 @@ function optionsHtml(list, selected){
 
 function blankOpp(){
   return {
-    id: nextId(), cliente:'', cuit:'', industria:'', segmento:'', eecc:'',
+    id: nextId(), cliente:'', nombreOpp:'', cuit:'', industria:'', segmento:'', eecc:'',
     bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'', bantObs:'',
     etapa: ETAPAS[0], probCierre:'',
     competidores:'', vertical:'', proveedor:'', tipoProyecto:'',
@@ -777,6 +779,7 @@ function drawerTemplate(o){
     <div class="section">
       <h3>Identificación</h3>
       <div class="field"><label>Cliente *</label><input type="text" id="f_cliente" value="${escapeHtml(o.cliente)}"></div>
+      <div class="field"><label>Nombre de la oportunidad *</label><input type="text" id="f_nombreOpp" value="${escapeHtml(o.nombreOpp)}" placeholder="Ej. Renovación GCP - Horas SSPP"></div>
       <div class="grid2">
         <div class="field"><label>CUIT</label><input type="text" id="f_cuit" value="${escapeHtml(o.cuit)}"></div>
         <div class="field"><label>Industria</label><select id="f_industria">${optionsHtml(INDUSTRIAS,o.industria)}</select></div>
@@ -897,6 +900,7 @@ function refreshComputedDisplays(o){
 
 function readFormInto(o){
   o.cliente = document.getElementById('f_cliente').value.trim();
+  o.nombreOpp = document.getElementById('f_nombreOpp').value.trim();
   o.cuit = document.getElementById('f_cuit').value.trim();
   o.industria = document.getElementById('f_industria').value;
   o.segmento = document.getElementById('f_segmento').value;
@@ -990,7 +994,7 @@ function renderAll(){
 }
 
 function toCsv(){
-  const cols = ['id','cliente','cuit','industria','segmento','eecc','ingenieroPreventa','responsableSegmento',
+  const cols = ['id','cliente','nombreOpp','cuit','industria','segmento','eecc','ingenieroPreventa','responsableSegmento',
     'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','etapa','probCierre','vertical','proveedor',
     'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
     'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
