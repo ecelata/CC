@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huawei Cloud — Guía Técnica y Estratégica | Personal Tech</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f9fafb; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        h1 { color: #1D1D1D; margin: 40px 0 20px; font-size: 2.2em; }
+        h2 { color: #0C447C; margin: 30px 0 15px; font-size: 1.6em; border-bottom: 3px solid #FF6B35; padding-bottom: 10px; }
+        h3 { color: #378ADD; margin: 20px 0 10px; font-size: 1.3em; }
+        p { margin: 12px 0; }
+        .section { background: white; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #FF6B35; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+        .card { background: #f0f7ff; border-radius: 6px; padding: 15px; border: 1px solid #d0e8ff; }
+        .card h4 { color: #0C447C; margin: 0 0 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #0C447C; color: white; }
+        tr:hover { background: #f5f5f5; }
+        .service-list { list-style: none; }
+        .service-list li { padding: 8px 0; border-bottom: 1px solid #eee; }
+        .service-list li:before { content: "▸ "; color: #FF6B35; margin-right: 8px; }
+        .highlight { background: #fff3cd; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #ffc107; }
+        .pros { background: #d4edda; padding: 15px; border-radius: 6px; margin: 10px 0; }
+        .cons { background: #f8d7da; padding: 15px; border-radius: 6px; margin: 10px 0; }
+        .header { background: linear-gradient(135deg, #FF6B35 0%, #f87d2f 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+        .header h1 { color: white; margin: 0; }
+        .meta { color: rgba(255,255,255,0.9); margin-top: 10px; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔴 Huawei Cloud — Deep Dive Estratégico</h1>
+            <p class="meta">HEC • Servicios • Casos de Uso • Alternativas vs AWS/Azure/GCP</p>
+        </div>
+
+        <h2>01. ¿Qué es Huawei Cloud?</h2>
+        <div class="section">
+            <h3>Huawei Enterprise Cloud (HEC)</h3>
+            <p>
+                <strong>Huawei Cloud</strong> es la rama de infraestructura cloud de Huawei Technologies, enfocada en:
+                <ul class="service-list">
+                    <li><strong>Mercados en desarrollo:</strong> Especialmente Asia, Latinoamérica, Africa</li>
+                    <li><strong>Cumplimiento regulatorio local:</strong> Alternativa a hyperscalers estadounidenses</li>
+                    <li><strong>Infraestructura propia:</strong> Data centers propios, soberanía de datos</li>
+                    <li><strong>Integración con ecosistema Huawei:</strong> Telecom, dispositivos, redes 5G</li>
+                </ul>
+            </p>
+
+            <div class="highlight">
+                <strong>⚠️ Contexto Político/Comercial:</strong> Huawei opera bajo restricciones comerciales en EE.UU. y aliados. En Latam, Huawei es una alternativa viable para soberanía de datos y cumplimiento BCRA.
+            </div>
+        </div>
+
+        <h2>02. Servicios Principales de Huawei Cloud</h2>
+        <div class="section">
+            <h3>Compute</h3>
+            <ul class="service-list">
+                <li><strong>ECS (Elastic Cloud Server)</strong> — VM bajo demanda | Equivalente: AWS EC2, Azure VM, GCP Compute Engine</li>
+                <li><strong>Bare Metal Server</strong> — Hardware físico | Para workloads de alta performance</li>
+                <li><strong>Container</strong> — CCE (Cloud Container Engine) | Kubernetes managed | vs EKS, AKS, GKE</li>
+                <li><strong>Serverless</strong> — FunctionGraph | Funciones serverless | vs Lambda, Azure Functions, Cloud Functions</li>
+            </ul>
+
+            <h3>Storage</h3>
+            <ul class="service-list">
+                <li><strong>OBS (Object Storage Service)</strong> — S3-compatible | Escalable, duradero | vs S3, Blob Storage, Cloud Storage</li>
+                <li><strong>EVS (Elastic Volume Service)</strong> — Block storage | Para ECS | vs EBS, Managed Disks, Persistent Disks</li>
+                <li><strong>SFS (Scalable File Service)</strong> — NFS managed | vs EFS, Azure Files, Filestore</li>
+            </ul>
+
+            <h3>Database</h3>
+            <ul class="service-list">
+                <li><strong>RDS (Relational Database Service)</strong> — MySQL, PostgreSQL, SQL Server | vs RDS, Azure SQL, Cloud SQL</li>
+                <li><strong>GeminiDB</strong> — NoSQL (MongoDB-compatible) | vs DynamoDB, CosmosDB, Firestore</li>
+                <li><strong>DDS (Data Store Service)</strong> — Cassandra, Redis | vs ElastiCache, Azure Cache, Memorystore</li>
+            </ul>
+
+            <h3>Networking</h3>
+            <ul class="service-list">
+                <li><strong>VPC</strong> — Virtual Private Cloud | Aislamiento de red</li>
+                <li><strong>ELB (Elastic Load Balancing)</strong> — Load balancer | vs ALB, Azure LB, Cloud LB</li>
+                <li><strong>NAT Gateway</strong> — Salida a internet | vs NAT Gateway, NAT, Cloud NAT</li>
+                <li><strong>Direct Connect</strong> — Conexión dedicada on-prem ↔ cloud | vs AWS Direct Connect, ExpressRoute, Interconnect</li>
+            </ul>
+
+            <h3>IA & Analytics</h3>
+            <ul class="service-list">
+                <li><strong>MapReduce Service (MRS)</strong> — Hadoop/Spark managed | vs EMR, HDInsight, Dataproc</li>
+                <li><strong>Data Lake Analytics (DLA)</strong> — SQL on Data Lake | vs Athena, Synapse, BigQuery</li>
+                <li><strong>ModelArts</strong> — ML platform | vs SageMaker, Azure ML, Vertex AI</li>
+            </ul>
+        </div>
+
+        <h2>03. Comparativa Rápida: Huawei vs AWS/Azure/GCP</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Aspecto</th>
+                    <th>Huawei Cloud</th>
+                    <th>AWS</th>
+                    <th>Azure</th>
+                    <th>GCP</th>
+                </tr>
+                <tr>
+                    <td><strong>Presencia Global</strong></td>
+                    <td>20+ regiones (Asia, Latam, Africa)</td>
+                    <td>33 regiones</td>
+                    <td>60+ regiones</td>
+                    <td>41 regiones</td>
+                </tr>
+                <tr>
+                    <td><strong>Soberanía de Datos</strong></td>
+                    <td>✅ Énfasis en cumplimiento local | BCRA-friendly</td>
+                    <td>⚠️ Sujeto a restricciones EE.UU.</td>
+                    <td>🟡 Cumple RGPD, GDPR</td>
+                    <td>🟡 Cumple regulación global</td>
+                </tr>
+                <tr>
+                    <td><strong>Pricing</strong></td>
+                    <td>Competitivo en Asia/Latam | Menor en compute</td>
+                    <td>Premium | Líder en feature set</td>
+                    <td>Intermedio | Integración Microsoft</td>
+                    <td>Competitivo | Liderazgo en Data</td>
+                </tr>
+                <tr>
+                    <td><strong>Ecosystem</strong></td>
+                    <td>Huawei (telecom, 5G, dispositivos)</td>
+                    <td>AWS Partner Network (200K+)</td>
+                    <td>Microsoft stack (Office, SQL Server)</td>
+                    <td>Google (Analytics, Search, Maps)</td>
+                </tr>
+                <tr>
+                    <td><strong>Madurez</strong></td>
+                    <td>🟡 Creciendo | Menos certezas</td>
+                    <td>✅ Líder | 20+ años</td>
+                    <td>✅ Sólido | Integración Office</td>
+                    <td>✅ Excelente en datos</td>
+                </tr>
+                <tr>
+                    <td><strong>Talent Pool</strong></td>
+                    <td>❌ Limitado en Occidente | Creciente en Asia</td>
+                    <td>✅ Masivo | Commodity</td>
+                    <td>✅ Amplio | Integración Office</td>
+                    <td>✅ Fuerte | Data engineers</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>04. Casos de Uso: Cuándo Elegir Huawei Cloud</h2>
+        <div class="section">
+            <h3>✅ USAR Huawei Cloud cuando:</h3>
+            <div class="pros">
+                <ul class="service-list">
+                    <li><strong>Regulación BCRA/Soberanía:</strong> Cliente requiere datos en Argentina | Huawei tiene DC local en Latam</li>
+                    <li><strong>No USA Compliance:</strong> Empresa con restricciones políticas a cloud estadounidenses</li>
+                    <li><strong>Integración Huawei:</strong> Cliente con ecosistema Huawei (telecom 5G, dispositivos)</li>
+                    <li><strong>Presupuesto limitado en compute:</strong> Huawei suele ser 15-25% más barato que AWS en IaaS</li>
+                    <li><strong>Partner Huawei:</strong> Si eres reseller/partner, Huawei ofrece márgenes</li>
+                </ul>
+            </div>
+
+            <h3>❌ EVITAR Huawei Cloud cuando:</h3>
+            <div class="cons">
+                <ul class="service-list">
+                    <li><strong>Necesitas máxima compatibilidad:</strong> AWS es el estándar; muchas herramientas no soportan Huawei</li>
+                    <li><strong>Talento local escaso:</strong> Latinoamérica tiene poco expertise en Huawei Cloud</li>
+                    <li><strong>Workload complejo:</strong> AWS/Azure tienen servicios maduros que Huawei aún no cubre</li>
+                    <li><strong>Multi-cloud hybrid:</strong> Si necesitas flexibilidad, AWS/Azure son más seguros</li>
+                    <li><strong>Incertidumbre política/comercial:</strong> Huawei opera bajo presión geopolítica</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>05. Alternativas a Servicios Huawei: Matriz de Compatibilidad</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Servicio Huawei</th>
+                    <th>AWS Equivalente</th>
+                    <th>Azure Equivalente</th>
+                    <th>GCP Equivalente</th>
+                </tr>
+                <tr>
+                    <td>ECS (VM)</td>
+                    <td>EC2</td>
+                    <td>Virtual Machines</td>
+                    <td>Compute Engine</td>
+                </tr>
+                <tr>
+                    <td>OBS (Object Storage)</td>
+                    <td>S3</td>
+                    <td>Blob Storage</td>
+                    <td>Cloud Storage</td>
+                </tr>
+                <tr>
+                    <td>RDS</td>
+                    <td>RDS</td>
+                    <td>Azure SQL / Database for MySQL</td>
+                    <td>Cloud SQL</td>
+                </tr>
+                <tr>
+                    <td>GeminiDB (NoSQL)</td>
+                    <td>DynamoDB / DocumentDB</td>
+                    <td>CosmosDB</td>
+                    <td>Firestore</td>
+                </tr>
+                <tr>
+                    <td>CCE (Kubernetes)</td>
+                    <td>EKS</td>
+                    <td>AKS</td>
+                    <td>GKE</td>
+                </tr>
+                <tr>
+                    <td>FunctionGraph</td>
+                    <td>Lambda</td>
+                    <td>Azure Functions</td>
+                    <td>Cloud Functions</td>
+                </tr>
+                <tr>
+                    <td>ModelArts (ML)</td>
+                    <td>SageMaker</td>
+                    <td>Azure ML</td>
+                    <td>Vertex AI</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>06. Estrategia Multi-Cloud: Huawei + AWS/Azure/GCP</h2>
+        <div class="section">
+            <h3>Arquitectura Híbrida Recomendada</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>Workload Crítico (Latam)</h4>
+                    <p><strong>Cloud:</strong> Huawei</p>
+                    <p><strong>Razón:</strong> Soberanía de datos, cumplimiento BCRA</p>
+                </div>
+                <div class="card">
+                    <h4>Workload Global</h4>
+                    <p><strong>Cloud:</strong> AWS</p>
+                    <p><strong>Razón:</strong> Alcance global, madurez, talent</p>
+                </div>
+                <div class="card">
+                    <h4>Workload AI/Analytics</h4>
+                    <p><strong>Cloud:</strong> GCP</p>
+                    <p><strong>Razón:</strong> BigQuery, Vertex AI, liderazgo en data</p>
+                </div>
+                <div class="card">
+                    <h4>Workload Microsoft</h4>
+                    <p><strong>Cloud:</strong> Azure</p>
+                    <p><strong>Razón:</strong> SQL Server, Office 365, integración</p>
+                </div>
+            </div>
+
+            <h3>Conexión Inter-Cloud</h3>
+            <ul class="service-list">
+                <li><strong>VPN Site-to-Site:</strong> Huawei ↔ AWS VPN, Azure VPN, GCP Interconnect</li>
+                <li><strong>ExpressRoute:</strong> Dedicada on-prem ↔ Huawei | vs AWS Direct Connect</li>
+                <li><strong>Replicación de datos:</strong> OBS ↔ S3, Blob Storage, Cloud Storage (con costos de egress)</li>
+            </ul>
+        </div>
+
+        <h2>07. Preguntas Frecuentes</h2>
+        <div class="section">
+            <h3>¿Huawei Cloud es seguro?</h3>
+            <p><strong>SÍ, pero:</strong> Huawei implementa estándares de seguridad similares a AWS/Azure. La incertidumbre es geopolítica, no técnica.</p>
+
+            <h3>¿Qué tan barato es Huawei vs AWS?</h3>
+            <p><strong>15-25% más barato en compute.</strong> Storage y services varían. Pero no es solo precio: es soberanía de datos.</p>
+
+            <h3>¿Tengo talento en Huawei Cloud en Argentina?</h3>
+            <p><strong>Poco.</strong> La mayoría de devs sabe AWS. Huawei requiere training. Esto puede ser VENTAJA (diferenciador) o DESVENTAJA (riskier).</p>
+
+            <h3>¿Puedo migrar desde AWS a Huawei?</h3>
+            <p><strong>SÍ, pero requiere esfuerzo:</strong> OBS ≈ S3, pero no es API-compatible. Necesitarás refactoring.</p>
+
+            <h3>¿Es Huawei "Made in China"?</h3>
+            <p><strong>SÍ. Considera:</strong> Implicaciones de soberanía, compliance, geopolítica.</p>
+        </div>
+
+        <h2>08. Conclusión & Recomendación</h2>
+        <div class="section">
+            <div class="highlight">
+                <strong>Huawei Cloud es:</strong>
+                <ul class="service-list">
+                    <li>✅ <strong>Excelente para Latam + soberanía de datos</strong> (BCRA, privacidad)</li>
+                    <li>✅ <strong>Competitivo en precio</strong> (~20% ahorro vs AWS)</li>
+                    <li>🟡 <strong>Opción secundaria en multi-cloud</strong> (no reemplaza AWS/Azure como primario)</li>
+                    <li>❌ <strong>No es estándar de industria</strong> (menos talento, menos compatibilidad)</li>
+                </ul>
+            </div>
+
+            <h3>Próximos Pasos</h3>
+            <ol>
+                <li><strong>Si requieres soberanía BCRA:</strong> Propón Huawei como data center principal + AWS/Azure como DR</li>
+                <li><strong>Si no es requisito:</strong> Usa AWS/Azure, considera Huawei solo para casos específicos</li>
+                <li><strong>Si es multi-cloud:</strong> Haz hybrid: Huawei (crítico Latam) + AWS (global) + GCP (IA)</li>
+            </ol>
+        </div>
+
+        <div class="footer">
+            <p><strong>Documento:</strong> Huawei Cloud Deep Dive | <strong>Fecha:</strong> 7 julio 2026</p>
+            <p><strong>Cobertura Multi-Cloud:</strong> AWS · Azure · GCP · Huawei · Cloudflare · IBM Cloud · Oracle Cloud</p>
+            <p><strong>Tags:</strong> huawei, cloud, comparativa, soberanía, bcra, estrategia, multi-cloud</p>
+        </div>
+    </div>
+</body>
+</html>

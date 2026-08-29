@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemas Legacy y Migración Cloud | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --legacy:#2C1A00;--legacy-m:#8B4513;--legacy-l:#FFF8F0;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 80px;}
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);margin:14px 0 7px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:9px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* MIGRATION PATH */
+.mig-path{display:flex;align-items:center;gap:0;margin:14px 0;overflow-x:auto;padding:4px 0;}
+.mig-box{border-radius:var(--radius-sm);padding:12px 16px;text-align:center;flex-shrink:0;min-width:110px;border:.5px solid var(--border);}
+.mig-box-icon{font-size:20px;margin-bottom:4px;}
+.mig-box-label{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;}
+.mig-box-sub{font-size:10px;color:var(--text-ter);margin-top:2px;}
+.mig-arrow{font-size:20px;color:var(--text-ter);padding:0 10px;flex-shrink:0;}
+
+/* 7RS TABLE */
+.rs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:12px 0;}
+.rs-card{border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);border-left:3px solid;}
+.rs-num{font-size:22px;font-weight:700;margin-bottom:2px;}
+.rs-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.rs-alt{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block;margin-bottom:6px;}
+.rs-desc{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.rs-example{font-size:11px;color:var(--text-ter);font-style:italic;margin-top:5px;padding:4px 8px;background:var(--bg2);border-radius:var(--radius-sm);}
+
+/* TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.check{color:var(--green);font-weight:700;}
+.cross{color:var(--red-m);font-weight:700;}
+
+/* NOTES */
+.note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid;line-height:1.6;}
+.note strong{font-weight:700;}
+.note-green{background:var(--green-l);border-color:var(--green-m);color:var(--text-sec);}
+.note-green strong{color:var(--green);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);color:var(--text-sec);}
+.note-amber strong{color:var(--amber);}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);color:var(--text-sec);}
+.note-blue strong{color:var(--blue);}
+.note-red{background:var(--red-l);border-color:var(--red-m);color:var(--text-sec);}
+.note-red strong{color:var(--red);}
+
+/* PITCH */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:14px 17px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:6px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.82);line-height:1.7;font-style:italic;}
+
+/* ANALOGY */
+.analogy{background:var(--legacy-l);border-left:3px solid var(--legacy-m);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin:10px 0;font-size:13px;color:var(--text-sec);line-height:1.65;}
+.analogy strong{color:var(--legacy);}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin:12px 0;}
+.tl-item{display:flex;gap:16px;position:relative;}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border);}
+.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+.tl-content{flex:1;padding-bottom:18px;}
+.tl-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.tl-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;}
+.tl-desc strong{color:var(--text);}
+
+/* DICT */
+.dict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin:12px 0;}
+.dict-card{border:.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.dict-head{padding:10px 13px;display:flex;align-items:center;gap:8px;}
+.dict-letter{font-size:16px;font-weight:700;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dict-term{font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.dict-en{font-size:10.5px;color:var(--text-ter);font-style:italic;}
+.dict-body{padding:7px 13px 12px;border-top:.5px solid var(--border);}
+.dict-def{font-size:12px;color:var(--text-sec);line-height:1.6;}
+.dict-def strong{color:var(--text);}
+.dict-example{font-size:11px;color:var(--text-ter);font-style:italic;margin-top:5px;padding:4px 7px;background:var(--bg2);border-radius:var(--radius-sm);}
+
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+@media(max-width:640px){.doc-header{flex-direction:column;gap:10px;}.doc-meta{text-align:left;}.grid2,.grid3{grid-template-columns:1fr;}.mig-path{flex-wrap:wrap;}.mig-arrow{display:none;}.rs-grid{grid-template-columns:1fr;}.dict-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🏚 Legacy & Migración</div>
+  <a class="tnav" href="#v1">01 Qué es un sistema legacy</a>
+  <a class="tnav" href="#v2">02 El lastre: sistemas que frenan</a>
+  <a class="tnav" href="#v3">03 Sistemas que funcionan pero no escalan</a>
+  <a class="tnav" href="#v4">04 Las 7 Rs de migración</a>
+  <a class="tnav" href="#v5">05 Nube privada vs. pública</a>
+  <a class="tnav" href="#v6">06 Virtudes estratégicas</a>
+  <a class="tnav" href="#v7">07 Cómo proponer la migración</a>
+  <a class="tnav" href="#v8">08 Glosario técnico A–Z</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Sistemas Legacy y Migración Cloud</div>
+    <div class="doc-sub">Del mainframe al cloud híbrido · Cuándo migrar por obligación, cuándo por oportunidad · Virtudes estratégicas de modernizar · Glosario técnico completo</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud · Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO -->
+<div class="hero-strip">
+  <div class="hs" style="background:var(--legacy-l);border-color:var(--legacy-m);">
+    <div class="hs-icon">🏚</div>
+    <div class="hs-val">Legacy = deuda técnica acumulada</div>
+    <div class="hs-sub">El 60–80% del presupuesto IT en empresas medianas va a mantener lo viejo, no a construir lo nuevo.</div>
+  </div>
+  <div class="hs" style="background:var(--red-l);border-color:var(--red-m);">
+    <div class="hs-icon">⚠️</div>
+    <div class="hs-val">El riesgo crece cada año</div>
+    <div class="hs-sub">Sin soporte del fabricante, sin parches de seguridad, sin desarrolladores que conozcan el sistema.</div>
+  </div>
+  <div class="hs" style="background:var(--amber-l);border-color:var(--amber-m);">
+    <div class="hs-icon">🐢</div>
+    <div class="hs-val">Los buenos también necesitan migrar</div>
+    <div class="hs-sub">Un sistema que funciona pero no tiene IA, analítica ni escalado automático está perdiendo ventaja competitiva.</div>
+  </div>
+  <div class="hs" style="background:var(--green-l);border-color:var(--green-m);">
+    <div class="hs-icon">🚀</div>
+    <div class="hs-val">7 estrategias de migración</div>
+    <div class="hs-sub">De "mover tal cual" a "reescribir desde cero". Hay una estrategia correcta para cada sistema.</div>
+  </div>
+  <div class="hs" style="background:var(--blue-l);border-color:var(--blue-m);">
+    <div class="hs-icon">🏆</div>
+    <div class="hs-val">Virtudes estratégicas</div>
+    <div class="hs-sub">Velocidad al mercado, IA nativa, escalado sin límite, seguridad moderna, agilidad competitiva.</div>
+  </div>
+</div>
+
+
+<!-- ══════ V1: QUÉ ES LEGACY ══════ -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--legacy-l);">🏚</div>
+    <div>
+      <div class="vert-title">01 — ¿Qué es un sistema legacy? La definición honesta</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Más allá de "viejo" — los criterios reales que definen un sistema como legacy</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro"><strong>Un sistema legacy</strong> no es simplemente un sistema viejo — es cualquier sistema que ya no puede evolucionar al ritmo que el negocio lo necesita, independientemente de su edad. Un sistema de 30 años puede no ser legacy si se mantiene activo. Un sistema de 5 años puede serlo si fue construido con tecnología ya obsoleta. <strong>La antigüedad es un síntoma, no la causa.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('l1')">
+        <span class="acc-badge" style="background:var(--legacy-l);color:var(--legacy);">Definición técnica</span>
+        <div class="acc-info"><div class="acc-name">Los 6 criterios que definen un sistema como legacy</div><div class="acc-tag">Si cumple 3 o más → es legacy</div></div>
+        <span class="acc-chv" id="achv-l1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-l1"><div class="ab-inner">
+        <div class="grid2">
+          <div>
+            <ul class="feat">
+              <li><span class="fdot" style="background:var(--red-m);"></span><strong>Tecnología sin soporte activo:</strong> el fabricante dejó de publicar parches de seguridad. Windows Server 2012, Java 8, COBOL sin comunidad activa.</li>
+              <li><span class="fdot" style="background:var(--red-m);"></span><strong>Desarrolladores escasos o únicos:</strong> hay 1–2 personas en el mundo que entienden el código. Si renuncian, el sistema es intocable.</li>
+              <li><span class="fdot" style="background:var(--red-m);"></span><strong>No tiene API ni integración moderna:</strong> no puede conectarse a otros sistemas sin desarrollos a medida costosos y frágiles.</li>
+            </ul>
+          </div>
+          <div>
+            <ul class="feat">
+              <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Escalado manual e inflexible:</strong> para agregar capacidad hay que comprar hardware, esperar entrega, instalar físicamente.</li>
+              <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Documentación inexistente o desactualizada:</strong> nadie sabe exactamente qué hace cada parte del sistema.</li>
+              <li><span class="fdot" style="background:var(--amber-m);"></span><strong>No soporta las expectativas modernas del usuario:</strong> sin mobile, sin tiempo real, sin self-service, sin analítica incorporada.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="analogy"><strong>La analogía del auto sin GPS:</strong> Un auto de 2005 funciona perfectamente para moverse de A a B. Pero no tiene GPS integrado, no se conecta al celular, no tiene asistente de mantenimiento y si necesita repuestos específicos hay que buscarlos en desarmaderos. Técnicamente anda. Estratégicamente, está tres generaciones atrás. Eso es un sistema legacy.</div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('l2')">
+        <span class="acc-badge" style="background:var(--legacy-l);color:var(--legacy);">Ejemplos reales en Argentina</span>
+        <div class="acc-info"><div class="acc-name">Los sistemas legacy más frecuentes en empresas argentinas medianas y grandes</div></div>
+        <span class="acc-chv" id="achv-l2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-l2"><div class="ab-inner">
+        <div class="dtable-wrap">
+        <table class="dtable">
+          <thead><tr><th>Sistema</th><th>Tecnología</th><th>Por qué es legacy</th><th>Sector típico</th></tr></thead>
+          <tbody>
+            <tr><td class="tn">ERP AS/400 / iSeries</td><td>IBM AS/400, RPG, COBOL</td><td>Desarrolladores con edad avanzada o retirados. Sin API REST nativa. Pantallas verdes.</td><td>Manufactura, distribución, retail</td></tr>
+            <tr><td class="tn">Core bancario Cobol mainframe</td><td>COBOL / z/OS</td><td>El más resistente: corre millones de transacciones pero no puede integrar APIs modernas sin middleware costoso.</td><td>Banca</td></tr>
+            <tr><td class="tn">ERP SAP R/3 on-premise</td><td>SAP R/3, ABAP, SQL Server</td><td>Versión de 2003–2010 sin soporte extendido. SAP S/4HANA es el sucesor — migrar es obligatorio para 2027.</td><td>Manufactura, energía, retail grande</td></tr>
+            <tr><td class="tn">Aplicaciones VB6 / Delphi</td><td>Visual Basic 6, Delphi</td><td>Sin soporte oficial desde 2008. Sin desarrolladores nuevos. No corre en Windows 11.</td><td>Pymes de todos los sectores</td></tr>
+            <tr><td class="tn">Sistemas a medida en PHP 5 / .NET 2.0</td><td>PHP 5.x, .NET Framework 2.0</td><td>Sin actualizaciones de seguridad. Sin soporte del framework. Vulnerabilidades conocidas sin parche.</td><td>Servicios, comercio, salud</td></tr>
+            <tr><td class="tn">Servidores Windows Server 2012</td><td>Windows Server 2012/R2</td><td>End of Extended Support: octubre 2023. Sin parches de seguridad desde entonces.</td><td>Todo tipo de empresa</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════ V2: EL LASTRE ══════ -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--red-l);">⚠️</div>
+    <div>
+      <div class="vert-title">02 — El lastre: sistemas que frenan y deben migrar por necesidad</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Cuando mantener es más riesgoso que migrar — el punto de no retorno</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">Hay sistemas legacy que ya no son una opción de mantener — son una obligación de migrar. No por oportunidad estratégica sino por riesgo operativo, regulatorio o de seguridad. <strong>La pregunta no es "¿deberíamos migrar?" sino "¿cuánto tiempo más podemos soportar el costo del riesgo?"</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('las1')">
+        <span class="acc-badge" style="background:var(--red-l);color:var(--red-d);">Los 5 síntomas del sistema que ya no da para más</span>
+        <div class="acc-info"><div class="acc-name">Señales de alerta que indican que la migración es urgente, no opcional</div></div>
+        <span class="acc-chv" id="achv-las1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-las1"><div class="ab-inner">
+        <div class="grid2">
+          <div class="mini-card" style="background:var(--red-l);border-color:var(--red-m);">
+            <div class="mc-icon">🔓</div>
+            <div class="mc-title">Vulnerabilidades sin parche</div>
+            <div class="mc-text">El fabricante ya no publica actualizaciones de seguridad. Las CVEs (vulnerabilidades conocidas) se acumulan sin solución. <strong>Es cuestión de tiempo hasta el incidente.</strong> Windows Server 2012 tiene decenas de vulnerabilidades críticas sin parche desde octubre 2023.</div>
+          </div>
+          <div class="mini-card" style="background:var(--red-l);border-color:var(--red-m);">
+            <div class="mc-icon">👴</div>
+            <div class="mc-title">El "guardián del código" se está yendo</div>
+            <div class="mc-text">Hay una sola persona que entiende el sistema. Está cerca de jubilarse o renunciar. <strong>Cuando se va, el sistema se vuelve intocable.</strong> Cualquier bug o cambio requerido puede ser un desastre operativo.</div>
+          </div>
+          <div class="mini-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+            <div class="mc-icon">📋</div>
+            <div class="mc-title">Incumplimiento regulatorio inminente</div>
+            <div class="mc-text">SAP R/3 pierde soporte oficial en 2027. El deadline del fabricante hace que la migración sea obligatoria — la empresa no puede elegir cuándo, solo cómo.</div>
+          </div>
+          <div class="mini-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+            <div class="mc-icon">💸</div>
+            <div class="mc-title">Costo de mantenimiento desproporcionado</div>
+            <div class="mc-text">El sistema requiere consultores especializados carísimos para cualquier cambio. Cada modificación es una operación de cirugía mayor que cuesta 10× lo que debería.</div>
+          </div>
+          <div class="mini-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+            <div class="mc-icon">🔌</div>
+            <div class="mc-title">Hardware sin repuestos</div>
+            <div class="mc-text">El servidor que lo corre tiene 15 años y ya no tiene soporte. Si falla un componente, el sistema se cae y no hay forma de reemplazarlo rápidamente.</div>
+          </div>
+          <div class="mini-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+            <div class="mc-icon">🐌</div>
+            <div class="mc-title">Incapacidad de adaptarse al negocio</div>
+            <div class="mc-text">El negocio quiere agregar una función nueva y el sistema tarda 12 meses y $200K en implementarla. La competencia lo hace en 2 semanas con SaaS moderno.</div>
+          </div>
+        </div>
+        <div class="note-red"><strong>🚨 El costo real de no migrar:</strong> Gartner estima que por cada año que se posterga la migración de un sistema legacy crítico, el costo de la eventual migración aumenta entre 15 y 25%. El "ahorro" de no migrar hoy es una deuda que se paga con intereses.</div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('las2')">
+        <span class="acc-badge" style="background:var(--red-l);color:var(--red-d);">La "deuda técnica" — el concepto que explica todo</span>
+        <div class="acc-info"><div class="acc-name">Por qué los sistemas legacy son literalmente una deuda financiera con intereses</div></div>
+        <span class="acc-chv" id="achv-las2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-las2"><div class="ab-inner">
+        <div class="analogy"><strong>La analogía de la deuda financiera:</strong> La deuda técnica es exactamente igual a una deuda financiera. Cuando se toma un atajo en el desarrollo ("lo hacemos rápido y después lo mejoramos"), se toma prestado tiempo futuro. Como toda deuda, tiene interés: cada mes que no se paga, el mantenimiento es más difícil, más caro y más riesgoso. Ignorarla no la elimina — la multiplica.</div>
+        <div class="block-label">Los 3 tipos de deuda técnica en sistemas legacy</div>
+        <div class="grid3">
+          <div class="mini-card">
+            <div class="mc-icon">⚡</div>
+            <div class="mc-title">Deuda deliberada</div>
+            <div class="mc-text">"Lo hacemos rápido para el lanzamiento y lo mejoramos después." El "después" nunca llega y el código se acumula sin revisión.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-icon">⏳</div>
+            <div class="mc-title">Deuda por obsolescencia</div>
+            <div class="mc-text">El sistema era bueno cuando se construyó. Pero el mundo cambió y el sistema no. No es culpa de nadie — es la ley del tiempo.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-icon">🎲</div>
+            <div class="mc-title">Deuda accidental</div>
+            <div class="mc-text">Malas prácticas que nadie detectó en el momento. Código duplicado, sin tests, sin documentación. Visible solo cuando algo falla.</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════ V3: LOS BUENOS QUE TAMBIÉN NECESITAN MIGRAR ══════ -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--amber-l);">🐢</div>
+    <div>
+      <div class="vert-title">03 — Sistemas que funcionan bien pero no aprovechan lo nuevo</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">La segunda razón para migrar: no la obligación sino la oportunidad competitiva perdida</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">Este es el caso más difícil de vender internamente: el sistema <em>funciona</em>. No tiene problemas críticos. Los usuarios están acostumbrados. Pero comparado con lo que la tecnología moderna puede hacer, <strong>está dejando dinero sobre la mesa todos los días</strong>. La pregunta no es "¿está roto?" sino "¿está compitiendo?"</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('buen1')">
+        <span class="acc-badge" style="background:var(--amber-l);color:var(--amber);">Lo que un sistema funcional NO puede hacer (y debería)</span>
+        <div class="acc-info"><div class="acc-name">Las 6 capacidades que un sistema on-premise legacy no puede ofrecer en 2025</div></div>
+        <span class="acc-chv" id="achv-buen1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-buen1"><div class="ab-inner">
+        <div class="dtable-wrap">
+        <table class="dtable">
+          <thead><tr><th>Capacidad moderna</th><th>Sistema legacy funcional</th><th>Sistema cloud moderno</th><th>Impacto en el negocio</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="tn">IA y analítica predictiva</td>
+              <td><span class="cross">✗</span> Requiere desarrollos costosos y separados</td>
+              <td><span class="check">✓</span> APIs de IA integradas nativas (Bedrock, Azure AI)</td>
+              <td>Sin IA predictiva, las decisiones se toman sobre datos de ayer en lugar de tendencias del mañana.</td>
+            </tr>
+            <tr>
+              <td class="tn">Escalado automático</td>
+              <td><span class="cross">✗</span> Hardware fijo — sobredimensionado o insuficiente</td>
+              <td><span class="check">✓</span> Auto-scaling en segundos según demanda real</td>
+              <td>En picos de demanda (Black Friday, fin de mes) el sistema se cae o la empresa paga hardware que usa 10 días al año.</td>
+            </tr>
+            <tr>
+              <td class="tn">Mobile y acceso remoto nativo</td>
+              <td><span class="cross">✗</span> Pantallas de escritorio o VPN costosa</td>
+              <td><span class="check">✓</span> Acceso desde cualquier dispositivo sin VPN</td>
+              <td>Los usuarios remotos trabajan con herramientas de 2005. Productividad y satisfacción reducidas.</td>
+            </tr>
+            <tr>
+              <td class="tn">Integración con ecosistema SaaS</td>
+              <td><span class="cross">✗</span> Integraciones a medida, frágiles y costosas</td>
+              <td><span class="check">✓</span> APIs REST/GraphQL, webhooks, marketplace de conectores</td>
+              <td>Cada integración nueva (CRM, e-commerce, logística) es un proyecto de meses. En cloud: días o semanas.</td>
+            </tr>
+            <tr>
+              <td class="tn">Disaster Recovery automático</td>
+              <td><span class="cross">✗</span> Backup manual, RTO de horas o días</td>
+              <td><span class="check">✓</span> Replicación continua, failover en minutos</td>
+              <td>Una falla de hardware puede dejar la empresa parada días. Con cloud, el failover es automático.</td>
+            </tr>
+            <tr>
+              <td class="tn">DevOps y despliegue continuo</td>
+              <td><span class="cross">✗</span> Releases cada 6–12 meses con alto riesgo</td>
+              <td><span class="check">✓</span> Deploys diarios o semanales con rollback automático</td>
+              <td>La competencia lanza funciones nuevas cada semana. El sistema legacy tarda 6 meses en responder al mercado.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">El argumento para el CEO de un sistema que "funciona bien"</div>
+          <div class="pitch-text">"Su sistema funciona. Pero su competidor que migró hace 2 años está tomando mejores decisiones con IA, lanzando funciones 6 meses antes que ustedes y cobrando en mobile mientras sus vendedores necesitan ir a la oficina. El sistema no está roto — está perdiendo la carrera. No se migra porque está roto. Se migra para no quedar fuera de la cancha."</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('buen2')">
+        <span class="acc-badge" style="background:var(--amber-l);color:var(--amber);">El costo de oportunidad — lo que se pierde cada mes sin migrar</span>
+        <div class="acc-info"><div class="acc-name">Cómo cuantificar lo que cuesta no modernizarse</div></div>
+        <span class="acc-chv" id="achv-buen2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-buen2"><div class="ab-inner">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Time to Market lento:</strong> Cada feature que tarda 6 meses en un sistema legacy podría tardar 2 semanas en cloud con microservicios. Si el negocio lanza 4 features por año vs. la competencia que lanza 20, la brecha se amplía exponencialmente.</li>
+          <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Talento que no viene:</strong> Los desarrolladores modernos no quieren trabajar en COBOL o VB6. El sistema legacy limita la capacidad de atraer y retener talento tecnológico.</li>
+          <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Datos que no se usan:</strong> El sistema genera datos valiosos pero en formatos propietarios que no pueden alimentar analítica moderna. La empresa tiene oro en datos pero no puede refinarlo.</li>
+          <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Experiencia de cliente degradada:</strong> Los usuarios comparan con Netflix, Mercado Libre y sus apps bancarias. Un sistema sin mobile, sin self-service y sin tiempo real se percibe como señal de empresa anticuada.</li>
+        </ul>
+        <div class="note-green"><strong>✅ La pregunta correcta para el CEO:</strong> "Si su competidor directo pudiera lanzar un producto nuevo en 2 semanas y ustedes tardan 6 meses, ¿cuánto tiempo más pueden mantener la misma cuota de mercado?"</div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════ V4: LAS 7 RS ══════ -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--blue-l);">🗺</div>
+    <div>
+      <div class="vert-title">04 — Las 7 Rs de migración — estrategias para cada sistema</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">De "mover tal cual" a "reescribir desde cero" — la estrategia correcta según el contexto</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">No todos los sistemas se migran igual. AWS definió el framework de las 7 Rs para clasificar la estrategia de migración correcta según el estado del sistema, el presupuesto disponible y los objetivos del negocio. <strong>Una migración bien diseñada combina diferentes estrategias para diferentes sistemas.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('7r1')">
+        <span class="acc-badge" style="background:var(--blue-l);color:var(--blue);">Las 7 estrategias en detalle</span>
+        <div class="acc-info"><div class="acc-name">Retire · Retain · Rehost · Replatform · Repurchase · Refactor · Rebuild — con ejemplos y cuándo aplicar cada una</div></div>
+        <span class="acc-chv" id="achv-7r1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-7r1"><div class="ab-inner">
+        <div class="rs-grid">
+          <div class="rs-card" style="border-color:var(--red-m);">
+            <div class="rs-num" style="color:var(--red-m);">1R</div>
+            <div class="rs-name">Retire (Retirar)</div>
+            <span class="rs-alt" style="background:var(--red-l);color:var(--red-d);">Apagar</span>
+            <div class="rs-desc">El sistema ya no tiene usuarios activos o su función fue absorbida por otro sistema. La mejor migración es no migrar — apagarlo directamente.</div>
+            <div class="rs-example">Ej: Un sistema de gestión de turnos reemplazado por un módulo del nuevo ERP. El legacy tiene 3 usuarios ocasionales. → Apagar.</div>
+          </div>
+          <div class="rs-card" style="border-color:var(--gray-m);">
+            <div class="rs-num" style="color:var(--gray-m);">2R</div>
+            <div class="rs-name">Retain (Retener)</div>
+            <span class="rs-alt" style="background:var(--gray-l);color:var(--gray-d);">Mantener por ahora</span>
+            <div class="rs-desc">El sistema tiene demasiada complejidad para migrar ahora o hay una razón de negocio para mantenerlo on-premise temporalmente. Se deja donde está y se define una fecha futura de migración.</div>
+            <div class="rs-example">Ej: Mainframe bancario con auditoría regulatoria en 6 meses. → Mantener hasta después de la auditoría.</div>
+          </div>
+          <div class="rs-card" style="border-color:var(--blue-m);">
+            <div class="rs-num" style="color:var(--blue-m);">3R</div>
+            <div class="rs-name">Rehost (Lift & Shift)</div>
+            <span class="rs-alt" style="background:var(--blue-l);color:var(--blue-d);">Mover tal cual</span>
+            <div class="rs-desc">Mover el sistema a la nube sin ningún cambio de código. La VM on-premise se convierte en una VM cloud. Más rápido y barato. Menor valor inicial pero elimina el riesgo de hardware.</div>
+            <div class="rs-example">Ej: 20 VMs con Windows Server en DC propio → migrarlas a Personal Tech Cloud con misma configuración. Sin tocar el código.</div>
+          </div>
+          <div class="rs-card" style="border-color:var(--teal-m);">
+            <div class="rs-num" style="color:var(--teal-m);">4R</div>
+            <div class="rs-name">Replatform (Lift, Tinker & Shift)</div>
+            <span class="rs-alt" style="background:var(--teal-l);color:var(--teal-d);">Mover + mejoras menores</span>
+            <div class="rs-desc">Mover con optimizaciones menores que aprovechan el cloud sin reescribir la lógica del negocio. Cambiar MySQL en VM por RDS, o el servidor de archivos por S3.</div>
+            <div class="rs-example">Ej: App PHP en servidor dedicado → App en EC2 con RDS en lugar del MySQL local. Sin cambiar el código PHP.</div>
+          </div>
+          <div class="rs-card" style="border-color:var(--amber-m);">
+            <div class="rs-num" style="color:var(--amber-m);">5R</div>
+            <div class="rs-name">Repurchase (Drop & Shop)</div>
+            <span class="rs-alt" style="background:var(--amber-l);color:var(--amber-d);">Reemplazar por SaaS</span>
+            <div class="rs-desc">Abandonar el sistema legacy y reemplazarlo con un producto SaaS moderno. El CRM hecho a medida en 2008 se reemplaza por Salesforce o HubSpot.</div>
+            <div class="rs-example">Ej: Sistema de gestión de clientes hecho a medida en Delphi → Salesforce CRM. Se migran los datos, no el código.</div>
+          </div>
+          <div class="rs-card" style="border-color:var(--purple-m);">
+            <div class="rs-num" style="color:var(--purple-m);">6R</div>
+            <div class="rs-name">Refactor / Re-architect</div>
+            <span class="rs-alt" style="background:var(--purple-l);color:var(--purple-d);">Rediseñar para cloud</span>
+            <div class="rs-desc">Reestructurar el código para aprovechar capacidades cloud nativas: microservicios, serverless, contenedores. Mayor inversión inicial, mayor valor a largo plazo.</div>
+            <div class="rs-example">Ej: Monolito Java en servidor único → microservicios en Kubernetes con auto-scaling y CI/CD. El negocio sigue, la arquitectura cambia.</div>
+          </div>
+          <div class="rs-card" style="border-color:var(--green-m);">
+            <div class="rs-num" style="color:var(--green-m);">7R</div>
+            <div class="rs-name">Rebuild / Rewrite</div>
+            <span class="rs-alt" style="background:var(--green-l);color:var(--green-d);">Construir desde cero</span>
+            <div class="rs-desc">El sistema es tan legacy que es más barato y eficiente construirlo nuevo que migrarlo. Se reimplementa la lógica del negocio con tecnología moderna cloud-native.</div>
+            <div class="rs-example">Ej: Sistema COBOL de 40 años donde el código no tiene documentación ni tests. Se rediseña desde cero en microservicios con APIs modernas.</div>
+          </div>
+        </div>
+        <div class="note-green"><strong>✅ Regla práctica:</strong> en un proyecto típico de migración de 20+ sistemas, la distribución suele ser: 10–20% Retire, 5–10% Retain, 50–60% Rehost/Replatform, 15–20% Repurchase, 5–10% Refactor/Rebuild. Empezar por los Rehost — dan resultados rápidos y construyen confianza para las estrategias más complejas.</div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('7r2')">
+        <span class="acc-badge" style="background:var(--blue-l);color:var(--blue);">El camino de migración paso a paso</span>
+        <div class="acc-info"><div class="acc-name">Del relevamiento inicial al go-live — las fases de un proyecto de migración bien ejecutado</div></div>
+        <span class="acc-chv" id="achv-7r2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-7r2"><div class="ab-inner">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--blue-l);color:var(--blue);border:2px solid var(--blue-m);">1</div>
+            <div class="tl-content">
+              <div class="tl-title">Discovery y Assessment (semanas 1–3)</div>
+              <div class="tl-desc">Relevamiento completo del portfolio de aplicaciones. Para cada sistema: tecnología, versión, usuarios activos, dependencias, criticidad del negocio, costo de mantenimiento. <strong>Output: mapa de aplicaciones con estrategia 7R asignada a cada una.</strong></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--amber-l);color:var(--amber);border:2px solid var(--amber-m);">2</div>
+            <div class="tl-content">
+              <div class="tl-title">Diseño de la arquitectura cloud destino (semanas 3–5)</div>
+              <div class="tl-desc">Diseñar la arquitectura objetivo: qué cloud (Personal Tech / público / híbrido), tamaños de instancias equivalentes, seguridad, red, DR. <strong>Output: arquitectura cloud documentada y aprobada.</strong></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--teal-l);color:var(--teal);border:2px solid var(--teal-m);">3</div>
+            <div class="tl-content">
+              <div class="tl-title">Migración por olas — no críticos primero (semanas 5–10)</div>
+              <div class="tl-desc">Ola 1: entornos de desarrollo, backup, web. Sin impacto si algo falla. Ola 2: sistemas de soporte (RRHH, facturación secundaria). Ola 3: sistemas críticos del negocio (ERP, core). <strong>Cada ola valida el proceso antes de la siguiente.</strong></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--purple-l);color:var(--purple);border:2px solid var(--purple-m);">4</div>
+            <div class="tl-content">
+              <div class="tl-title">Testing y validación (paralelo con cada ola)</div>
+              <div class="tl-desc">El sistema cloud corre en paralelo con el on-premise durante 2–4 semanas. Se comparan resultados, rendimiento y disponibilidad antes de hacer el cutover definitivo.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--green-l);color:var(--green);border:2px solid var(--green-m);">5</div>
+            <div class="tl-content">
+              <div class="tl-title">Cutover y go-live (semana 10–16)</div>
+              <div class="tl-desc">Cutover del sistema crítico en horario de bajo tráfico. Plan de rollback documentado y probado. Hipercare por 2–4 semanas con soporte prioritario. <strong>El on-premise se apaga gradualmente, no de golpe.</strong></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--legacy-l);color:var(--legacy-m);border:2px solid var(--legacy-m);">6</div>
+            <div class="tl-content">
+              <div class="tl-title">Optimización post-migración (meses 4–6)</div>
+              <div class="tl-desc">FinOps: rightsizing, reservas, eliminación de zombies. Monitoreo y ajuste de rendimiento. Documentación de la arquitectura final. <strong>El 30% del ahorro total del cloud se captura en esta etapa.</strong></div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════ V5: NUBE PRIVADA VS PÚBLICA ══════ -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--purple-l);">☁️</div>
+    <div>
+      <div class="vert-title">05 — Nube privada vs. nube pública vs. híbrida</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">La decisión de arquitectura más importante de cualquier proyecto de migración</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">La elección entre nube privada, pública o híbrida no es una decisión técnica — es una decisión de negocio que combina consideraciones de costo, seguridad, compliance, control y estrategia. <strong>Personal Tech puede dar los tres modelos, lo que es una ventaja única frente a cualquier hyperscaler.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('nube1')">
+        <span class="acc-badge" style="background:var(--purple-l);color:var(--purple);">Comparativa completa</span>
+        <div class="acc-info"><div class="acc-name">Nube privada · Pública · Híbrida · Multi-cloud — definiciones, ventajas y cuándo elegir cada una</div></div>
+        <span class="acc-chv" id="achv-nube1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-nube1"><div class="ab-inner">
+        <div class="dtable-wrap">
+        <table class="dtable">
+          <thead><tr><th>Modelo</th><th>Definición</th><th>Ventajas</th><th>Desventajas</th><th>Ideal para</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="tn" style="color:var(--blue);">Nube privada</td>
+              <td>Infraestructura cloud dedicada exclusivamente a una organización. Puede ser on-premise (en el DC de la empresa) o hosted en el DC de un proveedor como Personal Tech.</td>
+              <td>Máximo control y personalización. Dato soberano. Cumplimiento regulatorio simplificado. Rendimiento predecible sin "noisy neighbors".</td>
+              <td>Mayor costo por recursos no compartidos. Escalado tiene límite de la infraestructura dedicada. Requiere más gestión.</td>
+              <td>Banca, salud, gobierno, empresas con datos muy sensibles o regulados. Clientes de Personal Tech en Pacheco.</td>
+            </tr>
+            <tr>
+              <td class="tn" style="color:var(--green);">Nube pública</td>
+              <td>Infraestructura compartida entre múltiples clientes del mismo proveedor (AWS, Azure, GCP). El cliente alquila recursos virtuales del pool compartido.</td>
+              <td>Escalado prácticamente ilimitado. Pay-as-you-go. Acceso a 200+ servicios avanzados (IA, analytics, serverless). Sin CAPEX.</td>
+              <td>Datos fuera del país. Menor control. Costos pueden crecer sin FinOps. Egress fees. Compliance más complejo.</td>
+              <td>Startups y scale-ups. Workloads con picos de tráfico muy variables. Empresas que necesitan servicios de IA/ML avanzados.</td>
+            </tr>
+            <tr>
+              <td class="tn" style="color:var(--amber);">Nube híbrida</td>
+              <td>Combinación de nube privada y pública conectadas por red privada (MPLS o Direct Connect). Cada workload va al modelo más adecuado.</td>
+              <td>Lo mejor de ambos mundos. Datos críticos en privada, workloads variables en pública. Sin lock-in completo. Flexibilidad total.</td>
+              <td>Mayor complejidad de gestión. Requiere conectividad de alta calidad entre los dos mundos. Costos de integración.</td>
+              <td>Empresas con mezcla de workloads: algunos regulados (privada) y otros variables o de IA (pública). El modelo más común en enterprise.</td>
+            </tr>
+            <tr>
+              <td class="tn" style="color:var(--purple);">Multi-cloud</td>
+              <td>Uso de múltiples proveedores de nube pública simultáneamente (AWS + Azure + GCP + Personal Tech). Cada servicio en el proveedor donde mejor funciona.</td>
+              <td>Sin vendor lock-in. Mejor servicio para cada caso de uso. Resiliencia ante caídas de un proveedor. Negociación de precios.</td>
+              <td>Mayor complejidad operativa. Múltiples contratos y consolas. Requiere equipo IT muy maduro o herramienta de gestión multi-cloud.</td>
+              <td>Grandes corporaciones con equipos DevOps maduros. Empresas con necesidades muy específicas por vertical (IA en GCP, datos en Personal Tech, aplicaciones en Azure).</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="note-green"><strong>✅ La propuesta de Personal Tech:</strong> Personal Tech puede ser el proveedor de nube privada soberana (datos en Argentina, compliance BCRA) y simultáneamente ofrecer conectividad privada a AWS y Azure (como partner de Direct Connect y ExpressRoute). El cliente tiene cloud híbrida con un solo proveedor responsable de la conectividad entre todos los mundos.</div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════ V6: VIRTUDES ESTRATÉGICAS ══════ -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--green-l);">🚀</div>
+    <div>
+      <div class="vert-title">06 — Virtudes estratégicas de la modernización</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Por qué las empresas que migran y se mantienen actualizadas ganan la carrera competitiva</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro">La modernización tecnológica no es un proyecto IT — es una decisión estratégica de negocio. <strong>Las empresas que mantienen sus sistemas actualizados no solo ahorran en costos de IT — compiten en una categoría diferente.</strong> La velocidad, la inteligencia y la resiliencia que da la infraestructura moderna se traducen directamente en ventaja competitiva.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('virt1')">
+        <span class="acc-badge" style="background:var(--green-l);color:var(--green);">Las 8 virtudes estratégicas de migrar y mantenerse actualizado</span>
+        <div class="acc-info"><div class="acc-name">De la velocidad al mercado a la atracción de talento — el impacto real en el negocio</div></div>
+        <span class="acc-chv" id="achv-virt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-virt1"><div class="ab-inner">
+        <div class="grid2">
+          <div class="mini-card" style="background:var(--blue-l);border-color:var(--blue-m);">
+            <div class="mc-icon">⚡</div>
+            <div class="mc-title">Velocidad al mercado (Time to Market)</div>
+            <div class="mc-text">Con CI/CD, microservicios y cloud nativo, el ciclo de lanzamiento pasa de meses a semanas. En industrias donde el primero que llega gana, esta diferencia define quién lidera el mercado. <strong>Amazon despliega software cada 11 segundos.</strong> No es magia — es arquitectura moderna.</div>
+          </div>
+          <div class="mini-card" style="background:var(--purple-l);border-color:var(--purple-m);">
+            <div class="mc-icon">🧠</div>
+            <div class="mc-title">IA y analítica como ventaja competitiva</div>
+            <div class="mc-text">Un sistema cloud moderno puede integrar IA predictiva en semanas usando APIs de Bedrock, Azure OpenAI o Vertex AI. El sistema legacy requiere años y millones. La empresa que predice la demanda, personaliza la oferta y automatiza decisiones gana sobre la que opera por intuición.</div>
+          </div>
+          <div class="mini-card" style="background:var(--green-l);border-color:var(--green-m);">
+            <div class="mc-icon">🌱</div>
+            <div class="mc-title">Escalabilidad sin límite</div>
+            <div class="mc-text">El negocio puede crecer sin decirle a IT que compre más hardware. Un pico de demanda se absorbe automáticamente. Una expansión a nuevas regiones no requiere construir un DC — se activa en minutos. <strong>La infraestructura deja de ser un freno para el crecimiento.</strong></div>
+          </div>
+          <div class="mini-card" style="background:var(--red-l);border-color:var(--red-m);">
+            <div class="mc-icon">🛡</div>
+            <div class="mc-title">Seguridad moderna y proactiva</div>
+            <div class="mc-text">Los sistemas cloud modernos tienen Zero Trust, encriptación nativa, detección de amenazas con IA y parches automáticos. El sistema legacy tiene firewalls de perímetro y parches que nunca llegan. En el contexto de ransomware actual, esto es la diferencia entre sobrevivir y quedar fuera del negocio.</div>
+          </div>
+          <div class="mini-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+            <div class="mc-icon">💰</div>
+            <div class="mc-title">Modelo financiero CAPEX → OPEX</div>
+            <div class="mc-text">Pasar de inversión de capital (servidores, licencias) a gasto operativo predecible (suscripción mensual) mejora el flujo de caja y la flexibilidad presupuestaria. En Argentina, donde el CAPEX en dólares es especialmente doloroso, este cambio tiene valor financiero adicional.</div>
+          </div>
+          <div class="mini-card" style="background:var(--teal-l);border-color:var(--teal-m);">
+            <div class="mc-icon">🔄</div>
+            <div class="mc-title">Resiliencia y continuidad garantizadas</div>
+            <div class="mc-text">Multi-región, failover automático, RTO en minutos vs. horas. Un desastre (incendio, inundación, ransomware) que destruiría un DC on-premise es un incidente menor en una arquitectura cloud bien diseñada. <strong>La continuidad del negocio deja de depender de un rack físico.</strong></div>
+          </div>
+          <div class="mini-card" style="background:var(--blue-l);border-color:var(--blue-m);">
+            <div class="mc-icon">👥</div>
+            <div class="mc-title">Atracción y retención de talento</div>
+            <div class="mc-text">Los mejores desarrolladores y arquitectos quieren trabajar con Kubernetes, microservicios, serverless y cloud nativo — no con COBOL y VB6. Una empresa con stack moderno atrae mejores perfiles y los retiene más tiempo. El talento tecnológico es el recurso más escaso del mercado.</div>
+          </div>
+          <div class="mini-card" style="background:var(--green-l);border-color:var(--green-m);">
+            <div class="mc-icon">🌍</div>
+            <div class="mc-title">Expansión geográfica sin fricción</div>
+            <div class="mc-text">Abrir operaciones en una nueva ciudad, provincia o país no requiere instalar servidores locales. Con cloud, la expansión es una configuración. Una empresa argentina puede servir a clientes en toda Latinoamérica desde el mismo stack cloud en horas.</div>
+          </div>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">El argumento estratégico definitivo para el CEO</div>
+          <div class="pitch-text">"En 5 años, las empresas de su industria van a dividirse en dos grupos: las que aprovecharon la ventana de modernización tecnológica de 2024–2026 y las que no. Las primeras van a competir con IA, escalar sin límite y lanzar productos en semanas. Las segundas van a estar pagando consultores COBOL y rogando que el servidor de 2008 no se rompa. Personal Tech es el puente a ese primer grupo."</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('virt2')">
+        <span class="acc-badge" style="background:var(--green-l);color:var(--green);">El impacto en métricas de negocio concretas</span>
+        <div class="acc-info"><div class="acc-name">Los números reales que demuestran el ROI de la modernización</div></div>
+        <span class="acc-chv" id="achv-virt2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-virt2"><div class="ab-inner">
+        <div class="dtable-wrap">
+        <table class="dtable">
+          <thead><tr><th>Métrica de negocio</th><th>Con sistema legacy</th><th>Con sistema cloud moderno</th><th>Fuente</th></tr></thead>
+          <tbody>
+            <tr><td class="tn">Tiempo de lanzamiento de nuevas funcionalidades</td><td>6–12 meses</td><td class="check">2–6 semanas</td><td>McKinsey Tech Trends 2024</td></tr>
+            <tr><td class="tn">Costo de IT como % de ingresos</td><td>8–15%</td><td class="check">4–7%</td><td>Gartner IT Budget Report</td></tr>
+            <tr><td class="tn">Disponibilidad del sistema</td><td>99.0–99.5%</td><td class="check">99.97–99.999%</td><td>SLA comparativos</td></tr>
+            <tr><td class="tn">Tiempo de incorporación de un nuevo desarrollador</td><td>3–6 meses</td><td class="check">2–4 semanas</td><td>DevOps Research & Assessment</td></tr>
+            <tr><td class="tn">Costo de un incidente de seguridad mayor</td><td>$4.4M promedio</td><td class="check">-67% con Zero Trust moderno</td><td>IBM Cost of a Data Breach 2024</td></tr>
+            <tr><td class="tn">Capacidad de integrarse con nuevos partners/APIs</td><td>Meses por integración</td><td class="check">Días con APIs estándar</td><td>Experiencia de campo</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════ V7: CÓMO PROPONER LA MIGRACIÓN ══════ -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--coral-l);">💼</div>
+    <div>
+      <div class="vert-title">07 — Cómo proponer la migración al cliente</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">El discurso correcto según el interlocutor — CEO, CTO, CFO, Gerente de Planta</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('prop1')">
+        <span class="acc-badge" style="background:var(--coral-l);color:var(--coral);">Argumentos por tipo de interlocutor</span>
+        <div class="acc-info"><div class="acc-name">Cada persona en la organización tiene un dolor diferente — el mismo proyecto, distintos argumentos</div></div>
+        <span class="acc-chv" id="achv-prop1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-prop1"><div class="ab-inner">
+        <div class="grid2">
+          <div class="mini-card" style="background:var(--blue-l);">
+            <div class="mc-icon">👔</div>
+            <div class="mc-title">Para el CEO</div>
+            <div class="mc-text"><strong>Su lenguaje:</strong> mercado, competencia, crecimiento.<br><strong>Argumento:</strong> "Su competidor que migró hace 2 años lanza funciones 6 meses antes. La modernización no es un gasto — es la apuesta por seguir siendo relevante en su industria en 5 años."</div>
+          </div>
+          <div class="mini-card" style="background:var(--green-l);">
+            <div class="mc-icon">💰</div>
+            <div class="mc-title">Para el CFO</div>
+            <div class="mc-text"><strong>Su lenguaje:</strong> costos, presupuesto, riesgo financiero.<br><strong>Argumento:</strong> "CAPEX en hardware dolarizado en año 3 vs. OPEX predecible en pesos. El cloud no es más caro — es predecible. Y predecible en Argentina vale mucho."</div>
+          </div>
+          <div class="mini-card" style="background:var(--purple-l);">
+            <div class="mc-icon">🖥</div>
+            <div class="mc-title">Para el CTO / Director IT</div>
+            <div class="mc-text"><strong>Su lenguaje:</strong> arquitectura, deuda técnica, disponibilidad.<br><strong>Argumento:</strong> "Cada año que no migramos, la deuda técnica crece. Su equipo pasa el 70% del tiempo apagando incendios del sistema viejo. Con cloud, ese tiempo se invierte en proyectos que hacen crecer el negocio."</div>
+          </div>
+          <div class="mini-card" style="background:var(--amber-l);">
+            <div class="mc-icon">⚙️</div>
+            <div class="mc-title">Para el Gerente de Operaciones</div>
+            <div class="mc-text"><strong>Su lenguaje:</strong> continuidad, disponibilidad, no complicar lo que funciona.<br><strong>Argumento:</strong> "La migración se hace en paralelo — el sistema viejo sigue funcionando hasta que el nuevo esté validado. No hay riesgo de corte. Y después, las caídas de 2am son problema de Personal Tech, no de usted."</div>
+          </div>
+        </div>
+        <div class="note-amber"><strong>⚠️ La regla más importante:</strong> Nunca presentar la migración como "cambiar lo que funciona" — siempre como "agregar capacidades que hoy no tienen". El cerebro humano resiste el cambio pero acepta las mejoras.</div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('prop2')">
+        <span class="acc-badge" style="background:var(--coral-l);color:var(--coral);">Las preguntas de discovery para sistemas legacy</span>
+        <div class="acc-info"><div class="acc-name">Las 6 preguntas que revelan el dolor y abren la conversación de migración</div></div>
+        <span class="acc-chv" id="achv-prop2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-prop2"><div class="ab-inner">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"¿Cuándo fue la última vez que actualizaron el sistema core y cuánto tardó la actualización?"</strong> → Revela el ciclo de release lento y el riesgo de cada cambio.</li>
+          <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"Si el único desarrollador que conoce el sistema renunciara mañana, ¿qué pasaría?"</strong> → La respuesta siempre genera incomodidad. Eso es el dolor real.</li>
+          <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"¿Cuánto tarda en agregar una nueva funcionalidad que el área comercial pide?"</strong> → Cuantifica el Time to Market y la fricción entre IT y negocio.</li>
+          <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"¿Tienen visibilidad de qué tan cerca están del límite de capacidad de sus servidores?"</strong> → Muchos no lo saben. La respuesta es "no, esperamos que no se cuelgue".</li>
+          <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"¿Pudieron hacer una prueba de DR en los últimos 12 meses? ¿Cuánto tardaron en recuperar el sistema?"</strong> → La mayoría no tiene prueba documentada. Revela el riesgo de continuidad.</li>
+          <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"¿Cuánto invierten hoy en mantener el sistema viejo vs. en proyectos nuevos?"</strong> → La respuesta usual: 70–80% en mantenimiento, 20–30% en innovación. El cloud invierte esa ecuación.</li>
+        </ul>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════ V8: GLOSARIO ══════ -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--gray-l);">📖</div>
+    <div>
+      <div class="vert-title">08 — Glosario técnico A–Z — Legacy, Migración y Modernización</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Todos los términos clave definidos en lenguaje claro para reuniones técnicas y ejecutivas</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g1')">
+        <span class="acc-badge" style="background:var(--gray-l);color:var(--gray-d);">A – D</span>
+        <div class="acc-info"><div class="acc-name">API · Application Portfolio · CAPEX vs OPEX · CI/CD · Cloud Native · Contenedores · Deuda técnica</div></div>
+        <span class="acc-chv" id="achv-g1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g1"><div class="ab-inner">
+        <div class="dict-grid">
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--blue-l);">
+              <div class="dict-letter" style="background:var(--blue-m);color:#fff;">A</div>
+              <div><div class="dict-term">API</div><div class="dict-en">Application Programming Interface</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Interfaz que permite que dos sistemas de software se comuniquen entre sí de forma estandarizada. Es el "enchufe universal" del software moderno. <strong>Un sistema sin API es un sistema que no puede integrarse con el mundo.</strong></div>
+              <div class="dict-example">El sistema legacy de facturación no tiene API → cada integración nueva requiere un proyecto de meses. Un sistema moderno con API REST integra en días.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--amber-l);">
+              <div class="dict-letter" style="background:var(--amber-m);color:#fff;">C</div>
+              <div><div class="dict-term">CAPEX / OPEX</div><div class="dict-en">Capital Expenditure / Operational Expenditure</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def"><strong>CAPEX:</strong> gasto de capital. Compra de servidores, hardware, licencias perpetuas. Se activa como activo fijo y se deprecia. Gran desembolso inicial. <strong>OPEX:</strong> gasto operativo. Suscripción mensual al cloud. Se registra como gasto corriente. Sin shock de capital.</div>
+              <div class="dict-example">Comprar $200K de servidores = CAPEX. Pagar $8.000/mes al cloud = OPEX. En Argentina, el OPEX en pesos predecible tiene valor adicional frente al CAPEX dolarizado.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--green-l);">
+              <div class="dict-letter" style="background:var(--green-m);color:#fff;">C</div>
+              <div><div class="dict-term">CI/CD</div><div class="dict-en">Continuous Integration / Continuous Deployment</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Pipeline automatizado que toma el código del desarrollador, lo prueba automáticamente y lo despliega en producción. <strong>Permite lanzar software de forma segura múltiples veces por semana.</strong> Imposible con sistemas legacy que requieren releases manuales.</div>
+              <div class="dict-example">Con CI/CD: cada cambio de código se prueba en 10 minutos y se despliega solo si pasan todos los tests. Sin CI/CD: un release requiere 2 semanas de coordinación y testing manual.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--teal-l);">
+              <div class="dict-letter" style="background:var(--teal-m);color:#fff;">C</div>
+              <div><div class="dict-term">Cloud Native</div><div class="dict-en">Cloud Native</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Aplicaciones diseñadas desde el principio para correr en cloud, aprovechando sus capacidades: microservicios, contenedores, serverless, escalado automático. <strong>A diferencia de aplicaciones "cloud hosted" (on-premise movida a cloud), las cloud native se diseñan pensando en el cloud.</strong></div>
+              <div class="dict-example">Netflix es cloud native: escala automáticamente para millones de usuarios simultáneos. Un ERP legacy movido a cloud en VM es cloud hosted — no aprovecha casi nada.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--purple-l);">
+              <div class="dict-letter" style="background:var(--purple-m);color:#fff;">C</div>
+              <div><div class="dict-term">Contenedores (Docker)</div><div class="dict-en">Containers</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Unidad estandarizada de software que empaqueta el código y todas sus dependencias para que la aplicación corra de forma rápida y confiable en cualquier entorno. <strong>Más ligeros que VMs, más portables que código instalado directamente.</strong></div>
+              <div class="dict-example">El mismo contenedor Docker corre idéntico en la laptop del dev, en CI/CD y en producción cloud. Elimina el "en mi máquina funciona".</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--red-l);">
+              <div class="dict-letter" style="background:var(--red-m);color:#fff;">D</div>
+              <div><div class="dict-term">Deuda Técnica</div><div class="dict-en">Technical Debt</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">El costo implícito de elegir una solución de desarrollo rápida en lugar de una mejor solución que tomaría más tiempo. Como la deuda financiera, <strong>si no se paga crece con intereses</strong> — cada modificación futura es más lenta y costosa.</div>
+              <div class="dict-example">Código sin tests, sin documentación, con lógica duplicada. El sistema "funciona" pero cada cambio tarda 3 veces más de lo normal porque el desarrollador tiene miedo de romper algo.</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g2')">
+        <span class="acc-badge" style="background:var(--gray-l);color:var(--gray-d);">E – M</span>
+        <div class="acc-info"><div class="acc-name">EOL · Failover · IaC · Kubernetes · Legacy · Lift & Shift · Microservicios · Monolito</div></div>
+        <span class="acc-chv" id="achv-g2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g2"><div class="ab-inner">
+        <div class="dict-grid">
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--red-l);">
+              <div class="dict-letter" style="background:var(--red-m);color:#fff;">E</div>
+              <div><div class="dict-term">EOL / EoS</div><div class="dict-en">End of Life / End of Support</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Fecha a partir de la cual el fabricante deja de publicar actualizaciones de seguridad para un producto. <strong>Usar software en EOL es aceptar vulnerabilidades conocidas sin solución.</strong></div>
+              <div class="dict-example">Windows Server 2012: EOL en octubre 2023. PHP 7.4: EOL en noviembre 2022. Correr estos sistemas en producción es un riesgo de seguridad documentado.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--green-l);">
+              <div class="dict-letter" style="background:var(--green-m);color:#fff;">F</div>
+              <div><div class="dict-term">Failover</div><div class="dict-en">Failover</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Proceso automático por el cual un sistema cambia a una instancia de respaldo cuando la principal falla. <strong>Un buen failover es transparente: el usuario no nota la caída.</strong></div>
+              <div class="dict-example">El servidor principal falla a las 3am. El failover automático activa el servidor de DR en 90 segundos. Los usuarios de guardia no notan interrupción.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--purple-l);">
+              <div class="dict-letter" style="background:var(--purple-m);color:#fff;">I</div>
+              <div><div class="dict-term">IaC</div><div class="dict-en">Infrastructure as Code</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Práctica de gestionar y aprovisionar infraestructura mediante archivos de código en lugar de procesos manuales. <strong>Toda la infraestructura está versionada, revisable y reproducible.</strong> Terraform, CloudFormation, Pulumi.</div>
+              <div class="dict-example">El datacenter completo (redes, servidores, bases de datos, seguridad) está descrito en archivos YAML. Se destruye y recrea idéntico en 20 minutos con un comando.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--teal-l);">
+              <div class="dict-letter" style="background:var(--teal-m);color:#fff;">K</div>
+              <div><div class="dict-term">Kubernetes (K8s)</div><div class="dict-en">Kubernetes</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Sistema de orquestación de contenedores que automatiza el despliegue, escalado y gestión de aplicaciones. <strong>Permite que miles de contenedores funcionen como un sistema coherente y autoreparable.</strong></div>
+              <div class="dict-example">Si un contenedor falla, Kubernetes lo detecta y lanza uno nuevo automáticamente. Si el tráfico sube, agrega contenedores. Si baja, los elimina. Sin intervención humana.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--legacy-l);">
+              <div class="dict-letter" style="background:var(--legacy-m);color:#fff;">L</div>
+              <div><div class="dict-term">Legacy System</div><div class="dict-en">Sistema heredado / obsoleto</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Sistema de software o hardware que está en uso pero se considera obsoleto debido a su tecnología, falta de soporte o dificultad de mantenimiento. <strong>No necesariamente viejo en años — puede ser joven pero construido con mala arquitectura.</strong></div>
+              <div class="dict-example">Un ERP construido en 2015 con arquitectura monolítica, sin tests, sin API y con un único desarrollador que lo conoce — ya es legacy a pesar de su edad.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--blue-l);">
+              <div class="dict-letter" style="background:var(--blue-m);color:#fff;">M</div>
+              <div><div class="dict-term">Microservicios</div><div class="dict-en">Microservices</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Arquitectura donde una aplicación se divide en servicios pequeños e independientes, cada uno con una responsabilidad específica y comunicado con los demás via APIs. <strong>Opuesto al monolito.</strong> Permite escalar, actualizar y desplegar partes independientemente.</div>
+              <div class="dict-example">El servicio de autenticación escala independientemente del servicio de facturación. Si el de facturación falla, el de autenticación sigue funcionando.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--legacy-l);">
+              <div class="dict-letter" style="background:var(--legacy-m);color:#fff;">M</div>
+              <div><div class="dict-term">Monolito</div><div class="dict-en">Monolithic Architecture</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Arquitectura donde toda la aplicación es un único bloque de código que se despliega completo. Funciona bien al principio pero escala mal. <strong>Un bug en cualquier módulo puede tumbar toda la aplicación.</strong></div>
+              <div class="dict-example">El ERP de 2005 donde el módulo de inventario, el de facturación, el de RRHH y el de ventas son el mismo ejecutable. Para actualizar los sueldos hay que correr el riesgo de afectar las facturas.</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g3')">
+        <span class="acc-badge" style="background:var(--gray-l);color:var(--gray-d);">O – Z</span>
+        <div class="acc-info"><div class="acc-name">On-premise · Orquestación · Refactoring · Rollback · RPO/RTO · Serverless · Shadow IT · VM · Zero Trust</div></div>
+        <span class="acc-chv" id="achv-g3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g3"><div class="ab-inner">
+        <div class="dict-grid">
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--legacy-l);">
+              <div class="dict-letter" style="background:var(--legacy-m);color:#fff;">O</div>
+              <div><div class="dict-term">On-Premise</div><div class="dict-en">On-Premise / In-House</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Infraestructura tecnológica instalada físicamente en las instalaciones de la propia empresa. El hardware está en la sala de servidores del cliente. <strong>Mayor control pero también mayor responsabilidad operativa y costo de mantenimiento.</strong></div>
+              <div class="dict-example">Los 20 servidores en el rack del cuarto de comunicaciones del edificio corporativo. El equipo IT los gestiona, parchea y reemplaza cuando fallan.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--amber-l);">
+              <div class="dict-letter" style="background:var(--amber-m);color:#fff;">R</div>
+              <div><div class="dict-term">Refactoring</div><div class="dict-en">Refactoring / Reestructuración</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Proceso de reestructurar el código existente sin cambiar su comportamiento externo. El objetivo es mejorarlo: hacerlo más legible, mantenible, eficiente. <strong>No agrega funcionalidades — mejora la base para agregarlas en el futuro.</strong></div>
+              <div class="dict-example">Dividir una función de 2.000 líneas en 20 funciones de 100 líneas cada una. El sistema hace lo mismo, pero ahora cualquier desarrollador puede entenderlo.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--red-l);">
+              <div class="dict-letter" style="background:var(--red-m);color:#fff;">R</div>
+              <div><div class="dict-term">Rollback</div><div class="dict-en">Rollback</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Capacidad de volver a una versión anterior del sistema cuando un despliegue introduce un problema. <strong>En sistemas legacy, el rollback puede tardar horas o ser imposible. En cloud moderno con CI/CD, es un comando.</strong></div>
+              <div class="dict-example">Se despliega una versión nueva del ERP. Hay un bug crítico. Rollback en 2 minutos a la versión anterior sin pérdida de datos.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--green-l);">
+              <div class="dict-letter" style="background:var(--green-m);color:#fff;">R</div>
+              <div><div class="dict-term">RPO / RTO</div><div class="dict-en">Recovery Point/Time Objective</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def"><strong>RPO (Recovery Point Objective):</strong> cuántos datos puede permitirse perder en un desastre (ej: máximo 1 hora de datos). <strong>RTO (Recovery Time Objective):</strong> cuánto tiempo puede estar el sistema caído antes de recuperarse (ej: máximo 4 horas).</div>
+              <div class="dict-example">RPO 1 hora + RTO 4 horas significa: el sistema debe estar recuperado en 4 horas y no perder más de 1 hora de transacciones. Un legacy sin DR puede tener RTO de días.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--teal-l);">
+              <div class="dict-letter" style="background:var(--teal-m);color:#fff;">S</div>
+              <div><div class="dict-term">Serverless</div><div class="dict-en">Serverless Computing</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Modelo de ejecución donde el desarrollador escribe funciones de código y el proveedor cloud gestiona toda la infraestructura: servidores, escalado, parches. <strong>Se paga solo cuando el código se ejecuta — nada cuando no hay tráfico.</strong></div>
+              <div class="dict-example">AWS Lambda: una función que procesa facturas corre solo cuando llega una factura. Si llegan 10 o 10.000 simultáneas, escala sola. Si no llegan, cuesta $0.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--amber-l);">
+              <div class="dict-letter" style="background:var(--amber-m);color:#fff;">S</div>
+              <div><div class="dict-term">Shadow IT</div><div class="dict-en">Shadow IT</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Sistemas o aplicaciones usados dentro de una organización sin aprobación o conocimiento del área de IT. <strong>Síntoma típico de sistemas legacy que no satisfacen las necesidades del negocio.</strong> Los usuarios buscan alternativas por su cuenta.</div>
+              <div class="dict-example">El equipo comercial usa Google Sheets compartido para gestionar oportunidades porque el CRM legacy es demasiado lento. IT no lo sabe. Los datos están dispersos y sin backup.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--blue-l);">
+              <div class="dict-letter" style="background:var(--blue-m);color:#fff;">V</div>
+              <div><div class="dict-term">VM / Máquina Virtual</div><div class="dict-en">Virtual Machine</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Emulación de un sistema informático completo que corre sobre hardware físico compartido. Permite correr múltiples sistemas operativos en un mismo servidor. <strong>Base de la virtualización cloud.</strong></div>
+              <div class="dict-example">Un servidor físico con 64 cores puede correr 20 VMs independientes de 3 cores cada una. Cada VM cree que tiene su propio servidor.</div>
+            </div>
+          </div>
+          <div class="dict-card">
+            <div class="dict-head" style="background:var(--purple-l);">
+              <div class="dict-letter" style="background:var(--purple-m);color:#fff;">Z</div>
+              <div><div class="dict-term">Zero Downtime Migration</div><div class="dict-en">Migración sin interrupción</div></div>
+            </div>
+            <div class="dict-body">
+              <div class="dict-def">Técnica de migración donde el sistema viejo y el nuevo corren en paralelo, con tráfico enrutado gradualmente al nuevo. <strong>El usuario final no experimenta ninguna interrupción durante la migración.</strong></div>
+              <div class="dict-example">El 10% del tráfico va al sistema cloud nuevo mientras el 90% sigue en el legacy. Gradualmente se aumenta al 20%, 50%, 100% a medida que se valida la estabilidad.</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Sistemas Legacy y Migración Cloud · <span id="fecha2"></span></span>
+</div>
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

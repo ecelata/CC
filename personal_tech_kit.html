@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit de Arranque — Personal Tech | Edgardo Celata</title>
+<style>
+  :root {
+    --blue-light: #E6F1FB; --blue-mid: #378ADD; --blue-dark: #0C447C;
+    --green-light: #E1F5EE; --green-mid: #1D9E75; --green-dark: #085041;
+    --amber-light: #FAEEDA; --amber-mid: #BA7517; --amber-dark: #633806;
+    --coral-light: #FAECE7; --coral-mid: #D85A30; --coral-dark: #4A1B0C;
+    --gray-light: #F1EFE8; --gray-mid: #888780; --gray-dark: #2C2C2A;
+    --text: #1a1a18; --text-sec: #5f5e5a; --text-ter: #888780;
+    --border: #e0ded6; --bg: #ffffff; --bg2: #f7f5f0;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 14px; color: var(--text); background: var(--bg); line-height: 1.6; }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+
+  /* Header */
+  .doc-header { border-bottom: 2px solid var(--text); padding-bottom: 20px; margin-bottom: 36px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .doc-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+  .doc-sub { font-size: 13px; color: var(--text-sec); margin-top: 4px; font-style: italic; }
+  .doc-meta { text-align: right; font-size: 12px; color: var(--text-ter); }
+
+  /* Section titles */
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-ter); border-bottom: 0.5px solid var(--border); padding-bottom: 6px; margin-bottom: 20px; }
+  .section { margin-bottom: 48px; }
+
+  /* Phases */
+  .phase { border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; }
+  .phase-header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--bg2); cursor: pointer; }
+  .phase-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; margin-top: 2px; }
+  .phase-info { flex: 1; }
+  .phase-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .phase-tagline { font-size: 13px; color: var(--text-sec); margin-top: 2px; font-style: italic; }
+  .toggle-btn { font-size: 12px; color: var(--text-ter); transition: transform .25s; margin-top: 3px; }
+  .toggle-btn.open { transform: rotate(180deg); }
+  .phase-body { display: none; padding: 0 18px 18px; }
+  .phase-body.open { display: block; }
+
+  .week-block { margin-top: 16px; }
+  .week-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-ter); margin-bottom: 8px; }
+  .task-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .task-list li { font-size: 13px; color: var(--text-sec); display: flex; gap: 8px; align-items: flex-start; line-height: 1.55; }
+  .task-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .sep { border: none; border-top: 0.5px solid var(--border); margin: 14px 0; }
+
+  .kpi-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; padding: 12px 14px; background: var(--bg2); border-radius: var(--radius-sm); }
+  .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-ter); text-transform: uppercase; letter-spacing: .05em; width: 100%; margin-bottom: 2px; }
+  .kpi-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .mindset { font-size: 13px; font-style: italic; color: var(--text-ter); padding: 10px 14px; border-left: 2px solid var(--border); margin-top: 14px; line-height: 1.65; }
+
+  /* Table */
+  .ref-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-ter); padding: 8px 10px; border-bottom: 1.5px solid var(--border); text-align: left; background: var(--bg2); }
+  tbody td { padding: 10px 10px; vertical-align: top; border-bottom: 0.5px solid var(--border); color: var(--text-sec); line-height: 1.55; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--bg2); }
+  .tech-name { font-weight: 700; color: var(--text); font-size: 13px; white-space: nowrap; }
+  .tech-sub { font-size: 10.5px; color: var(--text-ter); display: block; }
+  .badge { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 20px; margin: 2px 2px 0 0; }
+  .tbl-section { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-ter); padding: 12px 10px 4px; border-bottom: 0.5px solid var(--border); background: var(--bg); }
+
+  /* Summary cards */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+  .card { background: var(--bg2); border-radius: var(--radius-sm); padding: 12px 14px; }
+  .card-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-ter); margin-bottom: 5px; }
+  .card-text { font-size: 12.5px; color: var(--text-sec); line-height: 1.55; }
+
+  /* Footer */
+  .doc-footer { border-top: 0.5px solid var(--border); margin-top: 48px; padding-top: 16px; font-size: 11px; color: var(--text-ter); display: flex; justify-content: space-between; }
+
+  @media print {
+    body { font-size: 12px; }
+    .page { padding: 20px; max-width: 100%; }
+    .phase-body { display: block !important; }
+    .toggle-btn { display: none; }
+    .phase-header { cursor: default; }
+    @page { margin: 15mm; size: A4; }
+  }
+
+  @media (max-width: 600px) {
+    .doc-header { flex-direction: column; gap: 10px; }
+    .doc-meta { text-align: left; }
+    .card-grid { grid-template-columns: 1fr; }
+    table { font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div>
+      <div class="doc-title">Kit de Arranque — Personal Tech</div>
+      <div class="doc-sub">Roadmap 90 días · Referencia técnica conectividad + cloud</div>
+    </div>
+    <div class="doc-meta">
+      Edgardo Mauricio Celata<br>
+      Solutions Manager | Pre-Sales<br>
+      <span id="fecha"></span>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 1: ROADMAP -->
+  <div class="section">
+    <div class="section-title">01 — Roadmap de los primeros 90 días</div>
+
+    <!-- FASE 1 -->
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase('f1')">
+        <span class="phase-badge" style="background:var(--blue-light);color:var(--blue-dark);">Días 1–30</span>
+        <div class="phase-info">
+          <div class="phase-name">Escuchar, mapear y no disparar</div>
+          <div class="phase-tagline">Entendés el terreno antes de proponer</div>
+        </div>
+        <span class="toggle-btn open" id="btn-f1">▼</span>
+      </div>
+      <div class="phase-body open" id="f1">
+        <div class="week-block">
+          <div class="week-label">Semana 1</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Reuniones 1:1 con cada miembro del equipo comercial y preventa. Preguntá más de lo que hablás.</li>
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Pedí el portfolio completo de cloud: IaaS, colocation, managed services, conectividad. Leélo todo antes de opinar.</li>
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Revisá las últimas 5–10 propuestas ganadas y perdidas. Buscá patrones de por qué ganaron o perdieron.</li>
+          </ul>
+        </div>
+        <hr class="sep">
+        <div class="week-block">
+          <div class="week-label">Semana 2</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Mapeá el diferenciador real de Personal Tech vs AWS/Azure: soberanía del dato, latencia, SLA con soporte local, conectividad integrada.</li>
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Revisá la documentación técnica de los bundles de conectividad (SD-WAN, MPLS, DIA). Armá tus propias notas de posicionamiento.</li>
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Identificá qué CRM usan y cómo está el pipeline. Sin datos del pipeline, estás ciego.</li>
+          </ul>
+        </div>
+        <hr class="sep">
+        <div class="week-block">
+          <div class="week-label">Semanas 3–4</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Acompañá reuniones con clientes en modo escucha activa. No propongas arquitecturas todavía.</li>
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Armá tu mapa mental de las top 10 cuentas del pipeline: sector, pain point principal, madurez cloud.</li>
+            <li><span class="task-dot" style="background:var(--blue-mid)"></span>Mapeá gaps internos en la preventa. No los comuniques todavía — solo registralos.</li>
+          </ul>
+        </div>
+        <div class="kpi-bar">
+          <span class="kpi-label">Hito al día 30</span>
+          <span class="kpi-tag" style="background:var(--blue-light);color:var(--blue-dark);">Portfolio dominado</span>
+          <span class="kpi-tag" style="background:var(--blue-light);color:var(--blue-dark);">Pipeline mapeado</span>
+          <span class="kpi-tag" style="background:var(--blue-light);color:var(--blue-dark);">Conectividad internalizada</span>
+          <span class="kpi-tag" style="background:var(--blue-light);color:var(--blue-dark);">Confianza interna ganada</span>
+        </div>
+        <p class="mindset">"El que entra con respuestas pierde. El que entra con las preguntas correctas, gana la cancha en 30 días."</p>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase('f2')">
+        <span class="phase-badge" style="background:var(--green-light);color:var(--green-dark);">Días 31–60</span>
+        <div class="phase-info">
+          <div class="phase-name">Articular tu valor diferencial</div>
+          <div class="phase-tagline">Empezás a diseñar y a posicionarte</div>
+        </div>
+        <span class="toggle-btn open" id="btn-f2">▼</span>
+      </div>
+      <div class="phase-body open" id="f2">
+        <div class="week-block">
+          <div class="week-label">Semanas 5–6</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--green-mid)"></span>Tomá 2–3 oportunidades del pipeline y armá tu primera arquitectura técnica. Mostrásela al equipo antes del cliente — construye confianza.</li>
+            <li><span class="task-dot" style="background:var(--green-mid)"></span>Introducí el análisis TCO/ROI donde no exista. Este es tu diferenciador inmediato: la mayoría de las preventas no lo hacen con el rigor necesario.</li>
+            <li><span class="task-dot" style="background:var(--green-mid)"></span>En cada propuesta incluí comparativa cloud propio (Personal Tech) vs hyperscaler: precio, latencia, soberanía, SLA.</li>
+          </ul>
+        </div>
+        <hr class="sep">
+        <div class="week-block">
+          <div class="week-label">Semanas 7–8</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--green-mid)"></span>Liderá tu primera presentación frente a un cliente. Usá tu experiencia C-level: sabés traducir técnico a negocio.</li>
+            <li><span class="task-dot" style="background:var(--green-mid)"></span>Armá un template de BOM reutilizable para las soluciones más frecuentes: migración, DR, hybrid cloud.</li>
+            <li><span class="task-dot" style="background:var(--green-mid)"></span>Identificá clientes de sectores que ya conocés (Banca, Gobierno, Retail) en el pipeline — tu background previo vale doble ahí.</li>
+          </ul>
+        </div>
+        <div class="kpi-bar">
+          <span class="kpi-label">Hito al día 60</span>
+          <span class="kpi-tag" style="background:var(--green-light);color:var(--green-dark);">Primera propuesta liderada</span>
+          <span class="kpi-tag" style="background:var(--green-light);color:var(--green-dark);">TCO como hábito</span>
+          <span class="kpi-tag" style="background:var(--green-light);color:var(--green-dark);">Template BOM armado</span>
+          <span class="kpi-tag" style="background:var(--green-light);color:var(--green-dark);">Reconocido internamente</span>
+        </div>
+        <p class="mindset">"Tu valor no está en aprender más tecnología. Está en combinar arquitectura técnica con análisis financiero — algo que el 90% de la preventa no hace."</p>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase('f3')">
+        <span class="phase-badge" style="background:var(--amber-light);color:var(--amber-dark);">Días 61–90</span>
+        <div class="phase-info">
+          <div class="phase-name">Liderar y dejar huella</div>
+          <div class="phase-tagline">Ya no sos nuevo — sos el referente</div>
+        </div>
+        <span class="toggle-btn open" id="btn-f3">▼</span>
+      </div>
+      <div class="phase-body open" id="f3">
+        <div class="week-block">
+          <div class="week-label">Semanas 9–10</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--amber-mid)"></span>Proponé formalmente una mejora al proceso de preventa: checklist de calificación, template SOW, o criterio Go/NoGo.</li>
+            <li><span class="task-dot" style="background:var(--amber-mid)"></span>Posicionarte como referente interno en FinOps. Eso abre puertas con CFOs y CIOs que los vendors puros no pueden abrir.</li>
+            <li><span class="task-dot" style="background:var(--amber-mid)"></span>Aplicá MEDDPICC en 2–3 cuentas clave. Mostrá que el pipeline no es solo volumen, es calidad.</li>
+          </ul>
+        </div>
+        <hr class="sep">
+        <div class="week-block">
+          <div class="week-label">Semanas 11–13</div>
+          <ul class="task-list">
+            <li><span class="task-dot" style="background:var(--amber-mid)"></span>Presentá internamente un caso de éxito propio: propuesta ganada con análisis de por qué ganó. Que quede documentado.</li>
+            <li><span class="task-dot" style="background:var(--amber-mid)"></span>Construí relaciones con los equipos de ingeniería y operaciones. La preventa que tiene el respeto de Ops cierra más rápido y sin fricciones.</li>
+            <li><span class="task-dot" style="background:var(--amber-mid)"></span>Definí tus KPIs personales para el trimestre siguiente: pipeline generado, conversión de propuestas, Time-to-Quote. Que tu jefe los vea antes de que te los pida.</li>
+          </ul>
+        </div>
+        <div class="kpi-bar">
+          <span class="kpi-label">Hito al día 90</span>
+          <span class="kpi-tag" style="background:var(--amber-light);color:var(--amber-dark);">Proceso mejorado</span>
+          <span class="kpi-tag" style="background:var(--amber-light);color:var(--amber-dark);">Referente FinOps interno</span>
+          <span class="kpi-tag" style="background:var(--amber-light);color:var(--amber-dark);">KPIs propios definidos</span>
+          <span class="kpi-tag" style="background:var(--amber-light);color:var(--amber-dark);">Confianza total ganada</span>
+        </div>
+        <p class="mindset">"A los 90 días, la pregunta ya no es si estás a la altura. La pregunta es para qué proyecto querés que te llamen primero."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: CONECTIVIDAD -->
+  <div class="section">
+    <div class="section-title">02 — Referencia técnica: conectividad + cloud</div>
+
+    <div class="ref-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:110px;">Tecnología</th>
+          <th style="width:95px;">Tipo</th>
+          <th>Qué es</th>
+          <th style="width:130px;">Caso de uso típico</th>
+          <th style="width:120px;">Bundle con cloud</th>
+          <th style="width:110px;">Argumento de venta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="6" class="tbl-section">WAN y conectividad empresarial</td></tr>
+
+        <tr>
+          <td><span class="tech-name">MPLS</span></td>
+          <td><span class="badge" style="background:var(--blue-light);color:var(--blue-dark);">WAN privada</span></td>
+          <td>Red privada conmutada por etiquetas. Tráfico viaja por rutas predefinidas sobre infraestructura del carrier. Sin internet público.</td>
+          <td>Sedes corporativas, banca, industria con baja tolerancia a latencia y máxima seguridad.</td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Cloud OnRamp</span> MPLS termina en el DC del carrier que hostea el cloud — sin salir a internet.</td>
+          <td>SLA garantizado, latencia fija, tráfico nunca toca internet público.</td>
+        </tr>
+
+        <tr>
+          <td><span class="tech-name">SD-WAN</span></td>
+          <td><span class="badge" style="background:var(--green-light);color:var(--green-dark);">WAN por software</span></td>
+          <td>Abstrae el transporte subyacente (MPLS, broadband, LTE, fibra) y gestiona dinámicamente el tráfico vía políticas de software. Orquestación centralizada.</td>
+          <td>Empresas con muchas sedes que quieren reducir costos de MPLS sin perder control ni visibilidad.</td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Cloud Gateway</span> El controlador puede enviar tráfico directo a Azure/AWS o al DC de Personal Tech según política.</td>
+          <td>Reducción de costos WAN 30–60%, visibilidad unificada, failover automático.</td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="tech-name">DIA</span>
+            <span class="tech-sub">Dedicated Internet Access</span>
+          </td>
+          <td><span class="badge" style="background:var(--amber-light);color:var(--amber-dark);">Internet dedicado</span></td>
+          <td>Ancho de banda de internet exclusivo para el cliente. No compartido. Simétrico. SLA de disponibilidad y velocidad garantizados por contrato.</td>
+          <td>Empresas con alto consumo de nube pública (Azure, AWS), trabajo remoto masivo, videoconferencia.</td>
+          <td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Direct Peering</span> Personal Tech tiene peering directo con hyperscalers — menos saltos, mejor latencia al cloud.</td>
+          <td>Ancho de banda predecible, SLA con penalidades, precio por Mbps comprometido.</td>
+        </tr>
+
+        <tr>
+          <td><span class="tech-name">Acceso dedicado</span></td>
+          <td><span class="badge" style="background:var(--coral-light);color:var(--coral-dark);">Circuito privado</span></td>
+          <td>Circuito físico punto a punto entre la sede del cliente y el DC de Personal Tech. Sin compartir infraestructura con otros clientes.</td>
+          <td>Colocation, clientes que hostean cargas críticas en el DC y necesitan conexión directa sin internet.</td>
+          <td><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Cross-Connect</span> Cable físico en el DC entre el rack del cliente y el switch de Personal Tech. Latencia sub-ms.</td>
+          <td>Máximo rendimiento, sin variabilidad, ideal para DR y backup masivo.</td>
+        </tr>
+
+        <tr><td colspan="6" class="tbl-section">Modelos de bundle conectividad + cloud</td></tr>
+
+        <tr>
+          <td><span class="tech-name">Bundle básico</span></td>
+          <td><span class="badge" style="background:var(--gray-light);color:var(--gray-dark);">IaaS + DIA</span></td>
+          <td>VM/storage en el DC de Personal Tech + acceso a internet dedicado para llegar al cloud y sedes remotas.</td>
+          <td>Empresa mediana que migra su primer workload a cloud.</td>
+          <td>Todo en una factura. El carrier es también el cloud provider.</td>
+          <td>Simplicidad operativa, un solo SLA, un solo punto de contacto para soporte.</td>
+        </tr>
+
+        <tr>
+          <td><span class="tech-name">Bundle premium</span></td>
+          <td><span class="badge" style="background:var(--blue-light);color:var(--blue-dark);">MPLS + IaaS + DR</span></td>
+          <td>Red privada MPLS conectando sedes + IaaS en DC de Personal Tech + replicación para Disaster Recovery.</td>
+          <td>Banco, aseguradora, gobierno — regulados con requisitos de continuidad y soberanía del dato.</td>
+          <td>Tráfico entre sedes y cloud nunca toca internet. RTO/RPO contractual.</td>
+          <td>Compliance regulatorio (BCRA, CNV), soberanía del dato, SLA end-to-end.</td>
+        </tr>
+
+        <tr>
+          <td><span class="tech-name">Bundle híbrido</span></td>
+          <td><span class="badge" style="background:var(--green-light);color:var(--green-dark);">SD-WAN + IaaS + Multicloud</span></td>
+          <td>SD-WAN que conecta sedes y envía tráfico dinámicamente a cloud de Personal Tech y/o Azure/AWS según latencia y costo.</td>
+          <td>Empresa con workloads mixtos: algunos críticos en cloud soberano, otros en hyperscaler.</td>
+          <td>Personal Tech como broker de conectividad. Tiene peering con Azure/AWS — el cliente no sale crudo a internet.</td>
+          <td>Flexibilidad multicloud, visibilidad unificada, optimización de costos de tráfico.</td>
+        </tr>
+
+        <tr><td colspan="6" class="tbl-section">Diferenciadores vs hyperscalers — para responder objeciones</td></tr>
+
+        <tr>
+          <td><span class="tech-name">vs AWS Direct Connect</span></td>
+          <td><span class="badge" style="background:var(--amber-light);color:var(--amber-dark);">Diferenciador</span></td>
+          <td>AWS Direct Connect da conectividad privada a AWS. Personal Tech da lo mismo pero además hostea el compute, tiene peering local y el dato no sale del país.</td>
+          <td>Cliente que ya usa AWS y quiere bajar latencia y cumplir soberanía de datos.</td>
+          <td>Cloud local + acceso privado a AWS en el mismo contrato.</td>
+          <td>Soberanía + latencia + un solo proveedor local responsable.</td>
+        </tr>
+
+        <tr>
+          <td><span class="tech-name">vs Azure ExpressRoute</span></td>
+          <td><span class="badge" style="background:var(--amber-light);color:var(--amber-dark);">Diferenciador</span></td>
+          <td>ExpressRoute requiere un partner de conectividad. Personal Tech puede ser ese partner Y tener tu cloud propio — elimina un actor de la cadena.</td>
+          <td>Empresa regulada que necesita ExpressRoute y workloads en cloud local.</td>
+          <td>Personal Tech como ExpressRoute partner + cloud soberano en un mismo proveedor.</td>
+          <td>Menos vendors, menos contratos, más accountability.</td>
+        </tr>
+
+      </tbody>
+    </table>
+    </div>
+
+    <!-- Cards resumen -->
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Argumento maestro</div>
+        <div class="card-text">Personal Tech es el único que vende el circuito, el cloud y el SLA en un solo contrato. Los hyperscalers no pueden hacer eso.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Objeción más común</div>
+        <div class="card-text">"AWS es más barato." → Mostrá el TCO completo: egress fees, soporte, conectividad y riesgo de tipo de cambio.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Tu ventaja FinOps</div>
+        <div class="card-text">Calculá el costo real de AWS incluyendo egress, soporte Enterprise y latencia. Pocos en la competencia lo hacen con ese rigor.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <span>Edgardo Mauricio Celata · Personal Tech · 2025</span>
+    <span>Documento de uso personal — confidencial</span>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', { year:'numeric', month:'long', day:'numeric' });
+  function togglePhase(id) {
+    const body = document.getElementById(id);
+    const btn = document.getElementById('btn-' + id);
+    const open = body.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  }
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

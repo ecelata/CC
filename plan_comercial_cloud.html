@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Comercialización Cloud | Personal Tech — Banca y Grandes Corporaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pt-navy:#0C2D6B; --pt-blue:#0C447C; --pt-blue-m:#378ADD; --pt-blue-l:#E6F1FB;
+  --pt-green:#085041; --pt-green-m:#1D9E75; --pt-green-l:#E1F5EE;
+  --pt-amber:#633806; --pt-amber-m:#BA7517; --pt-amber-l:#FAEEDA;
+  --pt-coral:#4A1B0C; --pt-coral-m:#D85A30; --pt-coral-l:#FAECE7;
+  --pt-red:#7B1A1A; --pt-red-m:#C0392B; --pt-red-l:#FDECEC;
+  --pt-purple:#26215C; --pt-purple-m:#7F77DD; --pt-purple-l:#EEEDFE;
+  --pt-teal:#0A4040; --pt-teal-m:#1A9696; --pt-teal-l:#E0F5F5;
+  --gray-l:#F1EFE8; --gray-m:#888780; --gray-d:#2C2C2A;
+  --text:#1a1a18; --text-sec:#5f5e5a; --text-ter:#888780;
+  --border:#e0ded6; --bg:#fff; --bg2:#f7f5f0;
+  --radius:10px; --radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--pt-navy);border-bottom:2px solid var(--pt-blue-m);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:11.5px;font-weight:700;white-space:nowrap;padding:12px 14px 12px 0;border-right:.5px solid rgba(255,255,255,.12);margin-right:8px;color:rgba(255,255,255,.45);letter-spacing:.05em;}
+.tnav{font-size:10.5px;font-weight:700;padding:13px 11px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,.3);transition:all .18s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--pt-blue-m);}
+
+/* PAGE */
+.page{max-width:1040px;margin:0 auto;padding:36px 24px 80px;}
+
+/* HEADER */
+.doc-header{padding:36px 40px 28px;background:linear-gradient(135deg,var(--pt-navy) 0%,var(--pt-blue) 60%,#1A5EBD 100%);border-radius:var(--radius);margin-bottom:32px;position:relative;overflow:hidden;}
+.doc-header::after{content:'';position:absolute;right:-60px;top:-60px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);}
+.doc-header::before{content:'';position:absolute;right:60px;bottom:-100px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03);}
+.dh-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin-bottom:10px;}
+.dh-title{font-size:28px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;position:relative;z-index:1;}
+.dh-sub{font-size:13.5px;color:rgba(255,255,255,.6);font-style:italic;margin-bottom:20px;position:relative;z-index:1;}
+.dh-meta{display:flex;gap:24px;flex-wrap:wrap;position:relative;z-index:1;}
+.dh-meta-item{font-size:11px;color:rgba(255,255,255,.4);}
+.dh-meta-item strong{color:rgba(255,255,255,.8);display:block;font-size:12px;}
+
+/* EXECUTIVE SUMMARY */
+.exec-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px;}
+.es-card{border-radius:var(--radius-sm);padding:16px 18px;border:.5px solid var(--border);}
+.es-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:5px;}
+.es-label{font-size:11px;font-weight:700;color:var(--text-sec);}
+.es-sub{font-size:11px;color:var(--text-ter);margin-top:3px;line-height:1.4;}
+
+/* SECTION */
+.section{margin-bottom:44px;scroll-margin-top:52px;}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:1.5px solid var(--text);}
+.section-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);min-width:28px;}
+.section-title{font-size:18px;font-weight:700;flex:1;}
+.section-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-sub{font-size:12px;color:var(--text-ter);margin-top:2px;font-style:italic;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);margin:14px 0 7px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:9px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.mc-icon{font-size:18px;margin-bottom:5px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* STRATEGY CARDS */
+.strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:12px 0;}
+.strat-card{border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.strat-head{padding:14px 16px;}
+.strat-icon{font-size:22px;margin-bottom:6px;}
+.strat-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.strat-label{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:5px;}
+.strat-desc{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.strat-body{padding:10px 16px 14px;border-top:.5px solid var(--border);background:var(--bg);}
+.strat-item{font-size:12px;color:var(--text-sec);padding:4px 0;border-bottom:.5px solid var(--border);display:flex;gap:8px;}
+.strat-item:last-child{border-bottom:none;}
+.strat-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:8px;}
+
+/* TABLA */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 11px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 11px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:4px;margin:12px 0;}
+.funnel-step{border-radius:var(--radius-sm);padding:11px 16px;display:flex;align-items:center;gap:14px;position:relative;}
+.funnel-num{font-size:11px;font-weight:700;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(0,0,0,.12);color:#fff;}
+.funnel-info{flex:1;}
+.funnel-title{font-size:13px;font-weight:700;margin-bottom:2px;}
+.funnel-desc{font-size:11.5px;opacity:.8;line-height:1.5;}
+.funnel-kpi{font-size:11px;font-weight:700;text-align:right;flex-shrink:0;opacity:.9;}
+
+/* PITCH BOXES */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:15px 18px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.3);margin-bottom:7px;}
+.pitch-text{font-size:13.5px;color:rgba(255,255,255,.85);line-height:1.75;font-style:italic;}
+
+/* NOTES */
+.note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid;line-height:1.6;color:var(--text-sec);}
+.note strong{font-weight:700;}
+.note-green{background:var(--pt-green-l);border-color:var(--pt-green-m);} .note-green strong{color:var(--pt-green);}
+.note-blue{background:var(--pt-blue-l);border-color:var(--pt-blue-m);} .note-blue strong{color:var(--pt-blue);}
+.note-amber{background:var(--pt-amber-l);border-color:var(--pt-amber-m);} .note-amber strong{color:var(--pt-amber);}
+.note-red{background:var(--pt-red-l);border-color:var(--pt-red-m);} .note-red strong{color:var(--pt-red);}
+
+/* MEDDPICC ROW */
+.medd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:10px 0;}
+.medd-card{border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.medd-letter{font-size:22px;font-weight:700;line-height:1;margin-bottom:4px;}
+.medd-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.medd-q{font-size:11.5px;color:var(--text-sec);font-style:italic;line-height:1.5;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin:12px 0;}
+.tl-item{display:flex;gap:16px;position:relative;}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border);}
+.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+.tl-content{flex:1;padding-bottom:18px;}
+.tl-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.tl-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;}
+.tl-desc strong{color:var(--text);}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+  .dh-meta{gap:14px;}
+  .strat-grid{grid-template-columns:1fr;}
+  .medd-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">📐 Plan Comercial Cloud</div>
+  <a class="tnav" href="#s1">01 Contexto</a>
+  <a class="tnav" href="#s2">02 Segmentos</a>
+  <a class="tnav" href="#s3">03 Propuesta de valor</a>
+  <a class="tnav" href="#s4">04 Estrategia GTM</a>
+  <a class="tnav" href="#s5">05 Proceso de venta</a>
+  <a class="tnav" href="#s6">06 Pipeline y KPIs</a>
+  <a class="tnav" href="#s7">07 Plan 90 días</a>
+  <a class="tnav" href="#s8">08 Playbook anti-objeciones</a>
+</nav>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="dh-eyebrow">Personal Tech · Telecom Argentina · Plan estratégico de ventas</div>
+  <div class="dh-title">Plan de Comercialización Cloud<br>Banca &amp; Grandes Corporaciones</div>
+  <div class="dh-sub">Estrategia go-to-market para cloud híbrida, privada soberana y multicloud en segmentos enterprise regulados</div>
+  <div class="dh-meta">
+    <div class="dh-meta-item"><strong>Consultor</strong>Edgardo Mauricio Celata</div>
+    <div class="dh-meta-item"><strong>Rol</strong>Analista Sr. Infraestructura y Cloud</div>
+    <div class="dh-meta-item"><strong>Segmento</strong>Banca · Grandes Industrias · Gobierno</div>
+    <div class="dh-meta-item"><strong>Actualizado</strong><span id="fecha"></span></div>
+  </div>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="exec-summary">
+  <div class="es-card" style="background:var(--pt-blue-l);border-color:var(--pt-blue-m);">
+    <div class="es-val" style="color:var(--pt-blue);">70%</div>
+    <div class="es-label">Clientes B2B sin cloud</div>
+    <div class="es-sub">Del universo de 6.000 clientes de Personal Tech, el 70% no tiene cloud. Mercado virgen capturado.</div>
+  </div>
+  <div class="es-card" style="background:var(--pt-green-l);border-color:var(--pt-green-m);">
+    <div class="es-val" style="color:var(--pt-green);">$0</div>
+    <div class="es-label">Costo de apertura de puerta</div>
+    <div class="es-sub">Todos los clientes ya pagan una factura de Telecom. La relación existe — solo falta la conversación.</div>
+  </div>
+  <div class="es-card" style="background:var(--pt-amber-l);border-color:var(--pt-amber-m);">
+    <div class="es-val" style="color:var(--pt-amber);">45</div>
+    <div class="es-label">Bancos privados en Argentina</div>
+    <div class="es-sub">Todos regulados por BCRA. Ninguno puede usar AWS/Azure directo para datos financieros. Personal Tech cumple nativo.</div>
+  </div>
+  <div class="es-card" style="background:var(--pt-coral-l);border-color:var(--pt-coral-m);">
+    <div class="es-val" style="color:var(--pt-coral-m);">2027</div>
+    <div class="es-label">Deadline SAP para migrar</div>
+    <div class="es-sub">SAP R/3 pierde soporte en 2027. Todos los clientes con SAP legacy deben migrar. Urgencia real.</div>
+  </div>
+  <div class="es-card" style="background:var(--pt-purple-l);border-color:var(--pt-purple-m);">
+    <div class="es-val" style="color:var(--pt-purple-m);">1</div>
+    <div class="es-label">Solo proveedor que puede todo</div>
+    <div class="es-sub">Conectividad + Cloud soberana + Direct Connect AWS/Azure + IoT + Seguridad. Nadie más da todo esto junto.</div>
+  </div>
+</div>
+
+
+<!-- ══════ S1: CONTEXTO ══════ -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title">Contexto del mercado y posicionamiento de Personal Tech</div>
+    <span class="section-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">El campo de juego</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('c1')">
+      <span class="acc-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">El momento del mercado</span>
+      <div class="acc-info">
+        <div class="acc-name">Por qué 2025–2027 es la ventana de oportunidad más grande de la década</div>
+        <div class="acc-sub">Confluencia de 5 factores que crean urgencia real en las empresas</div>
+      </div>
+      <span class="acc-chv" id="achv-c1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-c1"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div class="block-label">Drivers de urgencia en el mercado</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span><strong>SAP R/3 pierde soporte en 2027:</strong> miles de empresas argentinas corren SAP R/3 sin soporte extendido. Migrar a S/4HANA es obligatorio y la nube es el destino natural. La ventana para posicionarse como el cloud de esa migración es ahora.</li>
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span><strong>Windows Server 2012/2016 en EOL:</strong> miles de servidores legacy sin soporte de seguridad. El CISO del cliente lo sabe y tiene urgencia de resolver — es un punto de entrada para la conversación.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>BCRA Com. A 7724 (IT Risk):</strong> la nueva normativa amplió las exigencias de DR, BCP y seguridad. Muchos bancos están en observación o necesitan documentar su cumplimiento. Personal Tech puede ser la solución Y la documentación.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>VMware post-Broadcom:</strong> las licencias de VMware subieron entre 300–800% en 2024. Los clientes están buscando alternativas urgentemente. La nube privada de Personal Tech (OpenStack) es una salida directa.</li>
+            <li><span class="fdot" style="background:var(--pt-blue-m);"></span><strong>IA como imperativo estratégico:</strong> el directorio de cualquier empresa grande está presionando al CTO para "hacer algo con IA". Eso requiere infraestructura cloud. Es la conversación más fácil de abrir en 2025.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-label">Por qué Personal Tech gana donde los hyperscalers no pueden</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>Soberanía del dato garantizada:</strong> AWS São Paulo, Azure Brazil South y GCP Montevideo están fuera de Argentina. Para banca, salud y gobierno, el dato no puede cruzar la frontera. Personal Tech es el único cloud enterprise con DC en Argentina.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>Facturación en pesos:</strong> el CFO argentino no quiere más exposición al dólar. Un contrato en pesos con ajuste IPC es estructuralmente más conveniente que un contrato en USD.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>Un solo proveedor para todo:</strong> AWS da cloud pero no da MPLS. Telecom da MPLS pero no da cloud soberana. Personal Tech da los dos. Menos contratos, menos vendors, un solo SLA end-to-end.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>Relación preexistente:</strong> el 100% de los clientes target ya paga una factura de Telecom/Personal. No hay cold call — hay una cuenta con historial y un ejecutivo conocido.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>Empresa nacional bajo ley argentina:</strong> en licitaciones públicas y en contratos donde el marco legal importa, ser una empresa cotizante en Argentina bajo ley local es una ventaja estructural frente a proveedores extranjeros.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pitch">
+        <div class="pitch-label">El argumento posicionador maestro</div>
+        <div class="pitch-text">"AWS, Azure y GCP son excelentes — para empresas que pueden poner sus datos en el exterior y pagar en dólares. Pero en Argentina, el 70% de las empresas enterprise no puede o no quiere hacer ninguna de las dos cosas. Personal Tech es la única alternativa cloud que da la misma capacidad técnica con dato soberano, contrato en pesos y soporte bajo ley argentina. No competimos con los hyperscalers — ocupamos el espacio que ellos no pueden ocupar."</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('c2')">
+      <span class="acc-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">Análisis competitivo</span>
+      <div class="acc-info">
+        <div class="acc-name">Personal Tech vs. competidores directos e indirectos</div>
+        <div class="acc-sub">AWS · Azure · Arsat · Datco · Nap · On-premise propio</div>
+      </div>
+      <span class="acc-chv" id="achv-c2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-c2"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Competidor</th><th>Fortaleza</th><th>Debilidad clave</th><th>Cómo ganarle</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">🟠 AWS / Azure / GCP</td><td>200+ servicios, escala global, marca reconocida, ecosistema de partners</td><td>Dato fuera de Argentina. Factura en USD. Sin SLA local. Sin soporte bajo ley argentina.</td><td>Compliance BCRA/salud. Facturación en pesos. SLA end-to-end con conectividad incluida. "Nosotros somos su Direct Connect a ellos Y su cloud soberana."</td></tr>
+          <tr><td class="tn">🏛 Arsat</td><td>Empresa del Estado. Dato en Argentina. Percepción de "seguro para gobierno".</td><td>Portafolio limitado. Capacidad de escala baja. Sin conectividad propia. Procesos lentos. Soporte limitado.</td><td>Portfolio completo (cloud + conectividad + IoT + seguridad). Velocidad de provisioning. SLA privado vs. tiempos del Estado.</td></tr>
+          <tr><td class="tn">🏢 Datco / Nap / DCs locales</td><td>Colocation en Argentina. Conocen el mercado local.</td><td>Solo colocation — no dan cloud. El cliente sigue gestionando sus servidores.</td><td>"Nosotros damos lo mismo que ellos (rack en Argentina) PERO con la capa de cloud encima: VM, storage, DR, backup automático. Sin gestión de hardware."</td></tr>
+          <tr><td class="tn">🖥 On-premise propio</td><td>"Yo controlo todo". El cliente ya pagó el hardware. Sin dependencia de un proveedor.</td><td>Hardware que envejece. Deuda técnica creciente. Sin DR real. VMware post-Broadcom carísimo. Renovación en dólares.</td><td>TCO real: mostrar el costo de renovación + VMware + personal IT + DR + energía. Siempre supera el cloud. Más el riesgo de downtime.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s1 -->
+
+
+<!-- ══════ S2: SEGMENTOS ══════ -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title">Segmentación del mercado objetivo</div>
+    <span class="section-badge" style="background:var(--pt-green-l);color:var(--pt-green);">A quién apuntar primero</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('seg1')">
+      <span class="acc-badge" style="background:var(--pt-red-l);color:var(--pt-red-m);">Tier 1 — Prioridad máxima</span>
+      <div class="acc-info">
+        <div class="acc-name">Banca privada y entidades financieras reguladas por BCRA</div>
+        <div class="acc-sub">45 bancos privados · Compliance obligatorio · Ticket promedio alto · Urgencia regulatoria</div>
+      </div>
+      <span class="acc-chv" id="achv-seg1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-seg1"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div class="block-label">Perfil del cliente ideal</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span>Banco privado con activos entre $5.000M y $200.000M.</li>
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span>Con auditoría BCRA reciente o inminente que dejó observaciones técnicas.</li>
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span>Con sistemas Windows Server 2012/2016 en EOL activos en producción.</li>
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span>Sin DR documentado y probado formalmente.</li>
+            <li><span class="fdot" style="background:var(--pt-red-m);"></span>Con factura mensual de Telecom/Personal existente (ya son clientes).</li>
+          </ul>
+          <div class="block-label">Interlocutores clave</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-navy);"></span><strong>CISO / Gerente de Seguridad:</strong> el más urgido por la Com. A 7724. Primera puerta a abrir.</li>
+            <li><span class="fdot" style="background:var(--pt-navy);"></span><strong>CTO / Director de Infraestructura:</strong> el que evalúa la solución técnica.</li>
+            <li><span class="fdot" style="background:var(--pt-navy);"></span><strong>CFO:</strong> aprueba el presupuesto. Hablarle de CAPEX vs. OPEX y riesgo financiero del downtime.</li>
+            <li><span class="fdot" style="background:var(--pt-navy);"></span><strong>Gerente de Compliance/Legal:</strong> valida que cumple la regulación BCRA.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-label">Soluciones a proponer (por orden de facilidad de cierre)</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>1. DR como servicio (entry point más fácil):</strong> bajo costo inicial, urgencia regulatoria alta, ticket recurrente. Abre la puerta al cloud completo.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>2. ZTNA / reemplazo de VPN:</strong> rápida aprobación del CISO. Reemplaza la VPN existente. Incluye en el contrato de DR.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>3. Cloud privada soberana (core banking workloads):</strong> ticket grande. Requiere más tiempo de venta (6–12 meses). Involucra al directorio.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>4. Cloud híbrida (core on-prem + nuevas apps en cloud):</strong> el modelo más común. Permite modernizar sin mover el core bancario.</li>
+          </ul>
+          <div class="block-label">Ticket esperado</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>DR básico:</strong> USD 2.000–5.000/mes recurrentes.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Cloud + conectividad completo:</strong> USD 15.000–80.000/mes según tamaño del banco.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Servicios profesionales (migración):</strong> USD 50.000–300.000 único.</li>
+          </ul>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('seg2')">
+      <span class="acc-badge" style="background:var(--pt-amber-l);color:var(--pt-amber);">Tier 2 — Alta prioridad</span>
+      <div class="acc-info">
+        <div class="acc-name">Grandes corporaciones industriales y de servicios</div>
+        <div class="acc-sub">Manufactura · Energía · Retail grande · Logística · Telecomunicaciones · Salud privada</div>
+      </div>
+      <span class="acc-chv" id="achv-seg2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-seg2"><div class="ab-inner">
+      <div class="grid3">
+        <div class="mini-card">
+          <div class="mc-icon">🏭</div>
+          <div class="mc-title">Manufactura / Energía / Minería</div>
+          <div class="mc-text"><strong>Driver:</strong> IoT + mantenimiento predictivo + conectividad 5G en plantas remotas. <strong>Entry point:</strong> piloto IoT de bajo costo (sensores en 2 líneas de producción) que demuestra ROI en 1 temporada. <strong>Escalabilidad:</strong> IIoT → analytics → cloud híbrida.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">🛒</div>
+          <div class="mc-title">Retail / E-commerce grande</div>
+          <div class="mc-text"><strong>Driver:</strong> Black Friday / Hot Sale + picos de tráfico + POS redundante + analítica de tienda. <strong>Entry point:</strong> DDoS mitigation + CDN antes del próximo evento de ventas. <strong>Escalabilidad:</strong> cloud híbrida + analytics de comportamiento.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">🏥</div>
+          <div class="mc-title">Salud privada / Obras sociales</div>
+          <div class="mc-text"><strong>Driver:</strong> Ley 25.326 + digitalización de expedientes clínicos + integración con prestadores. <strong>Entry point:</strong> cloud soberana para HCE (Historia Clínica Electrónica) — dato que no puede salir del país. <strong>Escalabilidad:</strong> telemedicina + IA diagnóstica.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">🚚</div>
+          <div class="mc-title">Logística y transporte</div>
+          <div class="mc-text"><strong>Driver:</strong> tracking en tiempo real de flota + optimización de rutas con IA + automatización de depósitos. <strong>Entry point:</strong> APN privado + GPS fleet management. <strong>Escalabilidad:</strong> IoT de carga + analítica de eficiencia operativa.</md></div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">🌾</div>
+          <div class="mc-title">Agro / Agroindustria</div>
+          <div class="mc-text"><strong>Driver:</strong> telemetría de maquinaria + IoT de campo + analítica de producción. <strong>Entry point:</strong> LoRaWAN + 4G/satelital para campo sin cobertura. <strong>Escalabilidad:</strong> plataforma de precisión agrícola completa.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">🏛</div>
+          <div class="mc-title">Gobierno / Municipios</div>
+          <div class="mc-text"><strong>Driver:</strong> modernización digital + dato soberano + licitación en pesos. <strong>Entry point:</strong> WiFi público o Smart City como primer proyecto. <strong>Escalabilidad:</strong> tramitación digital + CCTV inteligente + cloud de gobierno.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s2 -->
+
+
+<!-- ══════ S3: PROPUESTA DE VALOR ══════ -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title">Propuesta de valor diferenciada por tipo de cloud</div>
+    <span class="section-badge" style="background:var(--pt-purple-l);color:var(--pt-purple-m);">Qué vendemos</span>
+  </div>
+
+  <div class="strat-grid">
+    <div class="strat-card">
+      <div class="strat-head" style="background:var(--pt-blue-l);">
+        <div class="strat-icon">🔒</div>
+        <div class="strat-title">Nube Privada Soberana</div>
+        <span class="strat-label" style="background:var(--pt-blue-l);color:var(--pt-blue);border:.5px solid var(--pt-blue-m);">Dato en Argentina · BCRA compliant</span>
+        <div class="strat-desc">VMs dedicadas en Pacheco (5.400m²) y Hornos. Infraestructura exclusiva del cliente. El dato nunca sale del país.</div>
+      </div>
+      <div class="strat-body">
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Cumplimiento BCRA Com. A 7266 nativo</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Facturación en pesos — sin riesgo cambiario</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Latencia 3–5ms desde AMBA vs. 35ms AWS SP</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>SLA end-to-end: cloud + conectividad en 1 contrato</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-amber-m);"></div>Menos servicios que hyperscalers — compensar con SLA y soporte local</div>
+      </div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-head" style="background:var(--pt-teal-l);">
+        <div class="strat-icon">🔀</div>
+        <div class="strat-title">Nube Híbrida</div>
+        <span class="strat-label" style="background:var(--pt-teal-l);color:var(--pt-teal);border:.5px solid var(--pt-teal-m);">On-premise + Cloud Personal Tech + Hyperscaler</span>
+        <div class="strat-desc">Cada workload en el ambiente que más le conviene. Core regulado en Pacheco, workloads de IA en AWS/Azure, conectados por MPLS privado.</div>
+      </div>
+      <div class="strat-body">
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Modernización sin big bang — migración gradual</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Direct Connect a AWS + ExpressRoute a Azure desde Argentina</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Personal Tech como broker de conectividad multicloud</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Dato sensible en Argentina, dato no sensible en hyperscaler</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-amber-m);"></div>Mayor complejidad operativa — mitigar con servicios gestionados</div>
+      </div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-head" style="background:var(--pt-green-l);">
+        <div class="strat-icon">🌐</div>
+        <div class="strat-title">Conectividad + Cloud Integrada</div>
+        <span class="strat-label" style="background:var(--pt-green-l);color:var(--pt-green);border:.5px solid var(--pt-green-m);">El diferenciador que nadie más tiene</span>
+        <div class="strat-desc">MPLS + DIA + 4G + SD-WAN conectado directamente al cloud de Pacheco sin salir a internet. Un solo proveedor, un solo SLA, una sola factura.</div>
+      </div>
+      <div class="strat-body">
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Sin egress fees internos — la red es nuestra</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Latencia sub-5ms entre sede y cloud — imposible con internet</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>Bundle: MPLS + IaaS + DR + Seguridad en 1 contrato</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-green-m);"></div>4G como failover automático si cae el enlace principal</div>
+        <div class="strat-item"><div class="strat-dot" style="background:var(--pt-amber-m);"></div>Precio más alto que internet — justificar con SLA y latencia</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /s3 -->
+
+
+<!-- ══════ S4: ESTRATEGIA GTM ══════ -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-title">Estrategia Go-To-Market (GTM)</div>
+    <span class="section-badge" style="background:var(--pt-amber-l);color:var(--pt-amber);">Cómo llegar al cliente</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('gtm1')">
+      <span class="acc-badge" style="background:var(--pt-amber-l);color:var(--pt-amber);">Movimiento 1</span>
+      <div class="acc-info">
+        <div class="acc-name">Activar el parque instalado — los 6.000 clientes que ya pagan la factura</div>
+        <div class="acc-sub">La oportunidad más grande está dentro de la base de clientes existente — no en prospectos nuevos</div>
+      </div>
+      <span class="acc-chv" id="achv-gtm1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-gtm1"><div class="ab-inner">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-blue-l);color:var(--pt-blue);border:2px solid var(--pt-blue-m);">1</div>
+          <div class="tl-content">
+            <div class="tl-title">Segmentar el parque instalado por señales de oportunidad</div>
+            <div class="tl-desc">Con Salesforce, filtrar los 6.000 clientes por: (a) factura mensual de conectividad &gt; $X — tienen budget, (b) contratos de MPLS de más de 3 años — revisión próxima, (c) sector (banca, manufactura, salud), (d) sin ningún producto cloud activo. <strong>Estos son los leads más calientes — ya confían en Personal Tech para algo crítico.</strong></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-amber-l);color:var(--pt-amber);border:2px solid var(--pt-amber-m);">2</div>
+          <div class="tl-content">
+            <div class="tl-title">Pedir al ejecutivo de cuenta una reunión de "revisión tecnológica"</div>
+            <div class="tl-desc">No entrar como "consultor de cloud". Entrar como <strong>"revisión de la situación tecnológica actual"</strong>. Es no-amenazante, aporta valor sin costo, y es el pretexto perfecto para hacer el relevamiento de infraestructura que abre la conversación de cloud.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-green-l);color:var(--pt-green);border:2px solid var(--pt-green-m);">3</div>
+          <div class="tl-content">
+            <div class="tl-title">Usar las preguntas de discovery del playbook vertical</div>
+            <div class="tl-desc">Según el sector del cliente, aplicar las 4–5 preguntas del playbook que revelan el dolor específico (BCRA para banca, paradas de línea para manufactura, picos de tráfico para retail). El objetivo de la primera reunión es <strong>escuchar, no vender</strong>. El que entra con respuestas pierde; el que entra con preguntas, gana la cancha.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-coral-l);color:var(--pt-coral-m);border:2px solid var(--pt-coral-m);">4</div>
+          <div class="tl-content">
+            <div class="tl-title">Entregar el TCO comparativo personalizado en la segunda reunión</div>
+            <div class="tl-desc">Con los datos del relevamiento, armar el análisis TCO real del cliente. <strong>Nunca llevar los valores por defecto de la calculadora a una propuesta</strong> — usar los números reales del cliente. Un TCO con los datos propios del cliente es 3× más persuasivo que un benchmark genérico.</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('gtm2')">
+      <span class="acc-badge" style="background:var(--pt-amber-l);color:var(--pt-amber);">Movimiento 2</span>
+      <div class="acc-info">
+        <div class="acc-name">Desayunos y eventos por vertical — múltiples clientes en 2 horas</div>
+        <div class="acc-sub">El modelo de aceleración: en lugar de 1 cliente por reunión, 10 clientes en un desayuno</div>
+      </div>
+      <span class="acc-chv" id="achv-gtm2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-gtm2"><div class="ab-inner">
+      <div class="block-text" style="margin-bottom:12px;">Los eventos verticales son el multiplicador de tiempo más eficiente en ventas enterprise. En 2 horas de desayuno con 10 CTOs del sector bancario, se logra más que en 10 reuniones individuales de 1 hora cada una.</div>
+      <div class="grid2">
+        <div>
+          <div class="block-label">Formato recomendado</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Desayuno ejecutivo (8:30–10:30am):</strong> 8–12 asistentes. Un caso de éxito real (20 min), panel de discusión (40 min), networking (30 min). Nunca más de 5 minutos de "pitch" de producto.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Tema convocante, no el producto:</strong> "Cloud soberana y compliance BCRA 2025" convoca más que "Las nubes de Personal Tech". El tema tiene que resolver un dolor del sector.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Un cliente referente que presente:</strong> un CTO o CISO bancario que ya use Personal Tech vale más que cualquier presentación de producto. El peer-to-peer es el cierre más poderoso.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Follow-up en 48 horas:</strong> a cada asistente, un email personalizado con el caso de éxito del sector + la propuesta de una "revisión tecnológica sin costo" como próximo paso.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-label">Calendario sugerido de eventos por vertical (año 1)</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--pt-blue-m);"></span><strong>Q1 — Banca:</strong> "Cloud soberana y cumplimiento BCRA Com. A 7724". Invitar a 15 CTOs/CISOs de bancos medianos.</li>
+            <li><span class="fdot" style="background:var(--pt-amber-m);"></span><strong>Q1 — Manufactura:</strong> "Mantenimiento predictivo con IoT y 5G — casos reales de reducción de paradas". Target: Gerentes de Planta y CTO industriales.</li>
+            <li><span class="fdot" style="background:var(--pt-green-m);"></span><strong>Q2 — Retail:</strong> "Infraestructura para el próximo Hot Sale — cómo no caerse cuando más se necesita". Antes del Hot Sale.</li>
+            <li><span class="fdot" style="background:var(--pt-coral-m);"></span><strong>Q2 — Gobierno:</strong> Workshop de Smart City con casos de municipios. Invitar a Secretarios de Modernización.</li>
+            <li><span class="fdot" style="background:var(--pt-teal-m);"></span><strong>Q3 — Salud privada:</strong> "Cloud soberana para datos de salud — cumplimiento Ley 26.529 y digitalización de HCE".</li>
+          </ul>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('gtm3')">
+      <span class="acc-badge" style="background:var(--pt-amber-l);color:var(--pt-amber);">Movimiento 3</span>
+      <div class="acc-info">
+        <div class="acc-name">Alianzas estratégicas con partners de implementación</div>
+        <div class="acc-sub">SAP · Microsoft · Fortinet · Accenture · Deloitte — los que llegan a donde el ejecutivo de Personal Tech no llega solo</div>
+      </div>
+      <span class="acc-chv" id="achv-gtm3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-gtm3"><div class="ab-inner">
+      <div class="block-text" style="margin-bottom:12px;">Los grandes proyectos de modernización no los inicia el área de IT del cliente — los inicia una consultora (Accenture, Deloitte, Everis) o el vendor (SAP, Microsoft). Estar en la propuesta de esa consultora antes de que el cliente pida cotizaciones es ganar la licitación antes de que empiece.</div>
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Partner</th><th>Por qué importa</th><th>Cómo activar la alianza</th><th>Qué aporta Personal Tech</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">SAP Argentina</td><td>Todos los clientes con SAP R/3 deben migrar a S/4HANA antes de 2027. SAP recomienda proveedores cloud certificados para el destino de la migración.</td><td>Certificarse como SAP Certified Infrastructure Partner. Desarrollar una arquitectura de referencia SAP S/4HANA en Pacheco.</td><td>Cloud soberana certificada SAP en Argentina. Dato en el país. Facturación en pesos. SAP no puede ofrecer esto — Personal Tech sí.</td></tr>
+          <tr><td class="tn">Microsoft Argentina</td><td>Azure ExpressRoute requiere un partner local de conectividad. Personal Tech puede ser ese partner Y ofrecer su cloud complementaria.</td><td>Activar la certificación de ExpressRoute Partner. Co-vender con el equipo de Azure commercial de Microsoft Argentina.</td><td>El circuito físico de Direct Connect/ExpressRoute que Microsoft no puede proveer directamente. Personal Tech es la "última milla" hacia Azure/AWS.</td></tr>
+          <tr><td class="tn">Fortinet Argentina</td><td>Personal Tech ya usa FortiGate. Co-branded offerings de seguridad + cloud + conectividad son más creíbles que vender solo.</td><td>Co-marketing: desayunos de seguridad conjuntos. Casos de éxito compartidos.</td><td>La capa de nube soberana donde el FWaaS de Fortinet corre. Fortinet da la seguridad, Personal Tech da la infraestructura.</td></tr>
+          <tr><td class="tn">Consultoras (Accenture, Deloitte)</td><td>Diseñan las arquitecturas de los proyectos de modernización de los 500 clientes más grandes del país. Ser su "proveedor de cloud local" es entrar a todos esos proyectos.</td><td>Programa de partners formales. Capacitar a sus arquitectos en el portfolio de Personal Tech. Co-delivery en proyectos.</td><td>La capa de cloud soberana que no pueden dar los hyperscalers. El diferenciador regulatorio que la consultora necesita para proyectos bancarios y de gobierno.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s4 -->
+
+
+<!-- ══════ S5: PROCESO DE VENTA ══════ -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-title">Proceso de venta — etapas y criterios de avance</div>
+    <span class="section-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">Pipeline management</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('pv1')">
+      <span class="acc-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">El embudo de ventas cloud enterprise</span>
+      <div class="acc-info">
+        <div class="acc-name">Las 6 etapas del ciclo de venta — con criterios de salida de cada etapa</div>
+        <div class="acc-sub">Ciclo típico banca: 6–12 meses · Manufactura: 3–6 meses · Retail: 2–4 meses</div>
+      </div>
+      <span class="acc-chv" id="achv-pv1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-pv1"><div class="ab-inner">
+      <div class="funnel">
+        <div class="funnel-step" style="background:var(--pt-blue-l);">
+          <div class="funnel-num">1</div>
+          <div class="funnel-info">
+            <div class="funnel-title" style="color:var(--pt-blue);">Identificación y calificación inicial</div>
+            <div class="funnel-desc" style="color:var(--pt-blue);">¿Tiene el cliente un problema que Personal Tech puede resolver? ¿Tiene presupuesto? ¿Quién decide? <strong>Criterio de salida: </strong>MEDDPICC completado al 50%.</div>
+          </div>
+          <div class="funnel-kpi" style="color:var(--pt-blue);">Conversión esperada<br>100% → 40%</div>
+        </div>
+        <div class="funnel-step" style="background:var(--pt-teal-l);">
+          <div class="funnel-num">2</div>
+          <div class="funnel-info">
+            <div class="funnel-title" style="color:var(--pt-teal);">Discovery y relevamiento técnico</div>
+            <div class="funnel-desc" style="color:var(--pt-teal);">Reunión de diagnóstico. Aplicar las preguntas del playbook vertical. Inventariar infraestructura actual. Identificar el dolor principal y el interlocutor champion. <strong>Criterio de salida:</strong> dolor documentado y acceso al decisor identificado.</div>
+          </div>
+          <div class="funnel-kpi" style="color:var(--pt-teal);">Conversión esperada<br>40% → 25%</div>
+        </div>
+        <div class="funnel-step" style="background:var(--pt-amber-l);">
+          <div class="funnel-num">3</div>
+          <div class="funnel-info">
+            <div class="funnel-title" style="color:var(--pt-amber);">Propuesta técnica y análisis TCO</div>
+            <div class="funnel-desc" style="color:var(--pt-amber);">Diseñar la arquitectura recomendada. Completar el TCO con datos reales del cliente. Presentar internamente al equipo antes de ir al cliente. <strong>Criterio de salida:</strong> cliente acepta presentación formal de propuesta con los números del TCO.</div>
+          </div>
+          <div class="funnel-kpi" style="color:var(--pt-amber);">Conversión esperada<br>25% → 18%</div>
+        </div>
+        <div class="funnel-step" style="background:var(--pt-purple-l);">
+          <div class="funnel-num">4</div>
+          <div class="funnel-info">
+            <div class="funnel-title" style="color:var(--pt-purple);">Presentación ejecutiva y validación</div>
+            <div class="funnel-desc" style="color:var(--pt-purple);">Presentación frente a CFO + CTO + CISO con el análisis TCO/ROI completo. Responder objeciones. Ajustar la propuesta si hay pedidos de cambio de alcance. <strong>Criterio de salida:</strong> "en principio interesa" del decisor económico.</div>
+          </div>
+          <div class="funnel-kpi" style="color:var(--pt-purple);">Conversión esperada<br>18% → 10%</div>
+        </div>
+        <div class="funnel-step" style="background:var(--pt-coral-l);">
+          <div class="funnel-num">5</div>
+          <div class="funnel-info">
+            <div class="funnel-title" style="color:var(--pt-coral-m);">Negociación y aprobación interna del cliente</div>
+            <div class="funnel-desc" style="color:var(--pt-coral-m);">Negociación de precio, SLA, plazo y condiciones. El cliente lleva internamente al directorio o al comité de compras. <strong>Criterio de salida:</strong> OC (orden de compra) o carta de intención firmada.</div>
+          </div>
+          <div class="funnel-kpi" style="color:var(--pt-coral-m);">Conversión esperada<br>10% → 7%</div>
+        </div>
+        <div class="funnel-step" style="background:var(--pt-green-l);">
+          <div class="funnel-num">6</div>
+          <div class="funnel-info">
+            <div class="funnel-title" style="color:var(--pt-green);">Cierre y onboarding</div>
+            <div class="funnel-desc" style="color:var(--pt-green);">Firma del contrato. Kick-off técnico. Plan de implementación. <strong>El cliente firmó — ahora empieza el trabajo de retención.</strong> El primer trimestre de operación define si el cliente queda o se va al año.</div>
+          </div>
+          <div class="funnel-kpi" style="color:var(--pt-green);">Conversión final<br>7% de calificados</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('pv2')">
+      <span class="acc-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">MEDDPICC aplicado a cloud</span>
+      <div class="acc-info">
+        <div class="acc-name">El framework de calificación adaptado para oportunidades de cloud enterprise</div>
+        <div class="acc-sub">Si no podés responder estas preguntas, la oportunidad no está calificada</div>
+      </div>
+      <span class="acc-chv" id="achv-pv2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-pv2"><div class="ab-inner">
+      <div class="medd-grid">
+        <div class="medd-card" style="border-color:var(--pt-blue-m);">
+          <div class="medd-letter" style="color:var(--pt-blue);">M</div>
+          <div class="medd-name">Metrics (Métricas)</div>
+          <div class="medd-q">"¿Cuánto pierde el cliente por hora de caída? ¿Cuánto gasta en mantenimiento de hardware al año? ¿Cuánto cuesta la renovación de VMware post-Broadcom?" → Sin métricas, no hay urgencia.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-green-m);">
+          <div class="medd-letter" style="color:var(--pt-green);">E</div>
+          <div class="medd-name">Economic Buyer</div>
+          <div class="medd-q">"¿Quién firma el contrato? ¿Es el CTO solo o necesita aprobación del directorio? ¿Cuál es el umbral de aprobación sin comité de compras?" → Si no llegaste al que firma, no estás en la oportunidad real.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-amber-m);">
+          <div class="medd-letter" style="color:var(--pt-amber);">D</div>
+          <div class="medd-name">Decision Criteria</div>
+          <div class="medd-q">"¿Con qué criterios van a elegir el proveedor? ¿Precio, SLA, compliance, soporte local, marca?" → Necesitás conocer los criterios antes de armar la propuesta para que la propuesta los cumpla.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-coral-m);">
+          <div class="medd-letter" style="color:var(--pt-coral-m);">D</div>
+          <div class="medd-name">Decision Process</div>
+          <div class="medd-q">"¿Cuál es el proceso de compra? ¿Hay licitación? ¿Cuántos pasos tiene la aprobación interna? ¿Cuándo empieza el siguiente presupuesto?" → El proceso determina el timeline real.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-purple-m);">
+          <div class="medd-letter" style="color:var(--pt-purple-m);">P</div>
+          <div class="medd-name">Paper Process</div>
+          <div class="medd-q">"¿Cuánto tarda el proceso legal/compras una vez que hay acuerdo técnico y comercial? ¿Necesitan crear a Personal Tech como proveedor en su sistema?" → El paper process puede demorar 2–3 meses en empresas grandes.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-red-m);">
+          <div class="medd-letter" style="color:var(--pt-red-m);">I</div>
+          <div class="medd-name">Identify Pain</div>
+          <div class="medd-q">"¿Cuál es el dolor específico y quién lo siente más intensamente? ¿La Com. A 7724 tiene al CISO urgido? ¿VMware duplicó el costo y el CFO está furioso?" → El dolor define el urgency.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-teal-m);">
+          <div class="medd-letter" style="color:var(--pt-teal-m);">C</div>
+          <div class="medd-name">Champion</div>
+          <div class="medd-q">"¿Quién dentro del cliente defiende la propuesta de Personal Tech cuando no estamos en la sala? ¿Tiene suficiente influencia para mover el proyecto?" → Sin champion interno, no hay cierre.</div>
+        </div>
+        <div class="medd-card" style="border-color:var(--pt-navy);">
+          <div class="medd-letter" style="color:var(--pt-navy);">C</div>
+          <div class="medd-name">Competition</div>
+          <div class="medd-q">"¿Están evaluando a AWS/Azure? ¿A Arsat? ¿Están considerando no hacer nada (status quo)? ¿Cuál es la narrativa de cada competidor?" → Conocer la competencia para reforzar el diferenciador correcto.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s5 -->
+
+
+<!-- ══════ S6: PIPELINE Y KPIS ══════ -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-title">Pipeline management y KPIs del consultor cloud</div>
+    <span class="section-badge" style="background:var(--pt-green-l);color:var(--pt-green);">Medir para mejorar</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('kpi1')">
+      <span class="acc-badge" style="background:var(--pt-green-l);color:var(--pt-green);">Los KPIs que Gerardo va a pedir</span>
+      <div class="acc-info">
+        <div class="acc-name">Métricas de pipeline · Facturación · Actividad — los números que definen el desempeño</div>
+      </div>
+      <span class="acc-chv" id="achv-kpi1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-kpi1"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>KPI</th><th>Definición</th><th>Target sugerido (primer año)</th><th>Por qué importa</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">Pipeline generado mensual</td><td>Suma del valor de todas las oportunidades nuevas abiertas en el mes, ponderadas por probabilidad de cierre.</td><td>3× el objetivo mensual de facturación. Si el objetivo es $900K/mes, el pipeline nuevo debe ser $2.7M+.</td><td>Sin pipeline 3× no hay colchón para imprevistos. La tasa de conversión de oportunidades abiertas a closed-won en cloud enterprise es del 15–25%.</td></tr>
+          <tr><td class="tn">Facturación impactada mensual</td><td>Revenue nuevo activado en el mes: contratos nuevos + upsells. No incluye el recurrente ya existente.</td><td>Rampa: $200K mes 1–3, $500K mes 4–6, $900K mes 7–12.</td><td>El negocio cloud es recurrente. Un contrato de $5.000/mes firmado en marzo vale $60.000 anuales.</td></tr>
+          <tr><td class="tn">Cantidad de oportunidades activas</td><td>Número de oportunidades en Salesforce con fecha de cierre vigente y actividad en los últimos 30 días.</td><td>15–25 oportunidades activas en todo momento.</td><td>Mantener un pipeline diversificado evita la dependencia de 1–2 deals grandes que, si se caen, destruyen el trimestre.</td></tr>
+          <tr><td class="tn">Time to Quote</td><td>Días entre que se identifica la oportunidad y se envía la propuesta comercial.</td><td>&lt; 10 días hábiles para propuestas estándar. &lt; 20 días para proyectos complejos.</td><td>Un Time to Quote largo da tiempo al competidor. El cliente que espera 3 semanas una cotización ya está hablando con AWS.</td></tr>
+          <tr><td class="tn">Win rate</td><td>% de oportunidades calificadas (etapa 3+) que se cierran favorablemente.</td><td>20–30% en el primer año. 35–45% al segundo año con casos de éxito propios.</td><td>Si el win rate es &lt;15%, hay un problema de calificación (estamos persiguiendo oportunidades que no son nuestras) o de propuesta.</td></tr>
+          <tr><td class="tn">Ratio cloud / conectividad</td><td>% del revenue de cloud vs. revenue de conectividad pura en las cuentas del territorio.</td><td>Objetivo: llegar al 30% de revenue cloud sobre el total del territorio.</td><td>La transformación del negocio de Telecom hacia cloud emergente. Este ratio define el éxito estratégico, no solo comercial.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note note-green"><strong>✅ El tablero personal de Salesforce:</strong> En el día a día, monitorear: (1) oportunidades con fecha de cierre vencida sin actualizar — limpiarlas o actualizarlas semanalmente. (2) oportunidades sin actividad en 14+ días — contactar o cerrar como perdidas. (3) el forecast del mes vs. el objetivo — si hay brecha, generar pipeline nuevo, no esperar que los deals actuales se cierren solos.</div>
+    </div></div>
+  </div>
+</div><!-- /s6 -->
+
+
+<!-- ══════ S7: PLAN 90 DÍAS ══════ -->
+<div class="section" id="s7">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <div class="section-title">Plan de acción — primeros 90 días en el territorio</div>
+    <span class="section-badge" style="background:var(--pt-purple-l);color:var(--pt-purple-m);">El mapa de arranque</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('p90')">
+      <span class="acc-badge" style="background:var(--pt-purple-l);color:var(--pt-purple-m);">Roadmap semana a semana</span>
+      <div class="acc-info">
+        <div class="acc-name">De escuchar y mapear (días 1–30) a liderar y generar (días 61–90)</div>
+      </div>
+      <span class="acc-chv" id="achv-p90">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-p90"><div class="ab-inner">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-blue-l);color:var(--pt-blue);border:2px solid var(--pt-blue-m);">1–2</div>
+          <div class="tl-content">
+            <div class="tl-title">Semanas 1–2 · Escuchar y aprender antes de hablar</div>
+            <div class="tl-desc"><strong>Hacer:</strong> 1:1 con cada ejecutivo de cuenta del territorio (hay 16). Preguntar: "¿Cuáles son tus 3 cuentas donde más oportunidad cloud ves y por qué?" No proponer nada todavía. <strong>Leer:</strong> el portfolio completo de Personal Tech, los últimos 5 contratos ganados y perdidos del equipo, la estructura de Salesforce.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-blue-l);color:var(--pt-blue);border:2px solid var(--pt-blue-m);">3–4</div>
+          <div class="tl-content">
+            <div class="tl-title">Semanas 3–4 · Mapear el pipeline y los top 10</div>
+            <div class="tl-desc"><strong>Hacer:</strong> abrir Salesforce y mapear las oportunidades cloud activas del territorio. Identificar las top 10 cuentas con más potencial: sector, pain point probable, madurez cloud, factura actual de Telecom. <strong>Acompañar</strong> en modo escucha activa 2–3 reuniones con clientes. No hablar más que el ejecutivo de cuenta.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-amber-l);color:var(--pt-amber);border:2px solid var(--pt-amber-m);">5–6</div>
+          <div class="tl-content">
+            <div class="tl-title">Semanas 5–6 · Primeras arquitecturas y TCOs propios</div>
+            <div class="tl-desc"><strong>Hacer:</strong> tomar 2–3 oportunidades del pipeline y armar la arquitectura técnica + TCO con datos reales. Mostrárselas al equipo ANTES de ir al cliente — construye credibilidad interna. <strong>Objetivo:</strong> tener la primera propuesta técnica propia presentada al cliente en la semana 6.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-amber-l);color:var(--pt-amber);border:2px solid var(--pt-amber-m);">7–8</div>
+          <div class="tl-content">
+            <div class="tl-title">Semanas 7–8 · Primera presentación frente al cliente</div>
+            <div class="tl-desc"><strong>Hacer:</strong> liderar la primera presentación ejecutiva con TCO/ROI. Usar los argumentos del playbook bancario o del vertical correspondiente. <strong>Objetivo:</strong> que el cliente diga "esto es exactamente lo que necesitamos hablar". Eso es éxito de esta etapa, no el cierre todavía.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-green-l);color:var(--pt-green);border:2px solid var(--pt-green-m);">9–10</div>
+          <div class="tl-content">
+            <div class="tl-title">Semanas 9–10 · Escalar y sistematizar</div>
+            <div class="tl-desc"><strong>Hacer:</strong> organizar el primer desayuno ejecutivo vertical con 8–10 clientes bancarios. Aplicar MEDDPICC a las 5 oportunidades más avanzadas del pipeline. Proponer internamente mejoras al proceso de preventa: checklist de calificación, template de propuesta estándar.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--pt-green-l);color:var(--pt-green);border:2px solid var(--pt-green-m);">11–13</div>
+          <div class="tl-content">
+            <div class="tl-title">Semanas 11–13 · Primeros cierres y definir la cancha</div>
+            <div class="tl-desc"><strong>Objetivo:</strong> cerrar el primer contrato cloud propio — aunque sea un DR básico de $2.000/mes. El primer cierre establece el precedente, genera el caso de éxito y demuestra la dinámica del negocio al equipo. <strong>Hacer:</strong> documentar el caso de éxito con métricas. Que Gerardo lo vea. Que sirva para el desayuno ejecutivo del próximo quarter.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note note-blue"><strong>💡 El principio rector:</strong> El que entra con respuestas pierde. El que entra con las preguntas correctas gana la cancha en 30 días y el territorio en 90. La prioridad de los primeros 30 días no es vender — es entender. La venta llega sola cuando el cliente siente que el consultor entiende su negocio mejor que él mismo.</div>
+    </div></div>
+  </div>
+</div><!-- /s7 -->
+
+
+<!-- ══════ S8: ANTI-OBJECIONES ══════ -->
+<div class="section" id="s8">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <div class="section-title">Playbook anti-objeciones — las más frecuentes en banca y corporaciones</div>
+    <span class="section-badge" style="background:var(--pt-coral-l);color:var(--pt-coral-m);">Para la reunión</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('obj1')">
+      <span class="acc-badge" style="background:var(--pt-coral-l);color:var(--pt-coral-m);">Referencia rápida</span>
+      <div class="acc-info">
+        <div class="acc-name">Las 10 objeciones más frecuentes en enterprise y su pivot exacto</div>
+        <div class="acc-sub">Para leer antes de cada reunión — 5 minutos de preparación valen más que 30 de improvisación</div>
+      </div>
+      <span class="acc-chv" id="achv-obj1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-obj1"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Objeción</th><th>Interlocutor típico</th><th>Pivot en una línea</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">"Ya usamos AWS y estamos conformes."</td><td>CTO</td><td>"AWS es excelente para datos no regulados. ¿Sus datos financieros cumplen la Com. A 7266 estando en São Paulo? Le muestro cómo el modelo híbrido les permite mantener AWS para lo que ya tienen y agregar Personal Tech para lo que la regulación exige."</td></tr>
+          <tr><td class="tn">"El cloud es muy caro comparado con lo que tenemos."</td><td>CFO</td><td>"Esa comparación tiene un error: compara el costo del cloud contra el costo actual de on-premise sin incluir la renovación de hardware del año 3, las licencias VMware actualizadas y el costo de las caídas. ¿Puedo mostrarle el TCO completo de 3 años con sus números reales?"</td></tr>
+          <tr><td class="tn">"Si se corta internet no podemos trabajar."</td><td>Gerente de Operaciones</td><td>"Con MPLS + 4G como backup, la disponibilidad efectiva es 99.97%. Además, pregunto: ¿hoy, si se cae internet, pueden trabajar el 100%? Si usan correo, ERP en SaaS o usuarios remotos, ya dependen de internet — el on-premise no los protege."</td></tr>
+          <tr><td class="tn">"¿Y si el gobierno requisa los servidores?"</td><td>CEO / Directorio</td><td>"El dato está cifrado con claves del cliente — el acceso físico al servidor no da acceso al dato. Y Telecom Argentina cotiza en NYSE: una requisa de sus activos generaría un impacto internacional que ningún gobierno quiere asumir."</td></tr>
+          <tr><td class="tn">"No tenemos presupuesto IT este año."</td><td>CFO</td><td>"¿La renovación de hardware también está frenada por presupuesto? Porque el cloud elimina precisamente ese CAPEX. Con OPEX mensual predecible, no necesitan presupuesto extraordinario — entra como gasto operativo."</td></tr>
+          <tr><td class="tn">"Nuestro equipo IT no tiene experiencia en cloud."</td><td>CTO</td><td>"Eso es exactamente por qué el servicio gestionado de Personal Tech existe. No migran para gestionar cloud ustedes — migran para que Personal Tech lo gestione por ustedes. Su equipo se ocupa de los proyectos de negocio, nosotros de la infraestructura."</td></tr>
+          <tr><td class="tn">"Acabamos de renovar el hardware."</td><td>CTO / CFO</td><td>"Perfecto — mientras ese hardware amortiza, empezamos por el DR y los proyectos nuevos en cloud. Cuando llegue la próxima renovación, ya tienen el cloud funcionando y probado. No es todo o nada."</td></tr>
+          <tr><td class="tn">"Queremos ver referencias de clientes similares."</td><td>CTO / CISO</td><td>"Puedo conectarlos con el CTO de [cliente referente en el mismo sector] que lleva 18 meses con nosotros. ¿Prefieren una llamada directa con él o una visita al DC de Pacheco para ver la infraestructura in situ?"</td></tr>
+          <tr><td class="tn">"El proceso de licitación dura 12 meses."</td><td>Gerente de Compras</td><td>"Entonces hay que empezar hoy. Les hago el relevamiento técnico gratuito esta semana y les entrego el informe que necesitan para armar el pliego. Si no empezamos el diseño ahora, cuando abra el proceso ya van atrasados."</td></tr>
+          <tr><td class="tn">"¿Por qué Personal Tech y no Arsat?"</td><td>CTO / Director IT gobierno</td><td>"Arsat es excelente para colocation estatal. Pero Arsat no da SD-WAN, no da IoT, no da IA generativa, no da Direct Connect a AWS/Azure y no tiene SLA privado con penalidades. Personal Tech da todo eso en un solo contrato bajo ley argentina."</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s8 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Plan de Comercialización Cloud · Uso interno · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var secs=document.querySelectorAll('.section');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  secs.forEach(function(s){
+    if(sy>=s.offsetTop&&sy<s.offsetTop+s.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+s.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casos de Éxito — Personal Tech</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* INTRO STRIP */
+.intro-strip{background:var(--text);border-radius:var(--radius);padding:20px 24px;margin-bottom:32px;display:flex;align-items:flex-start;gap:16px;}
+.intro-icon{font-size:28px;flex-shrink:0;}
+.intro-text{color:rgba(255,255,255,.75);font-size:13px;line-height:1.7;}
+.intro-text strong{color:#fff;}
+
+/* CASE CARD — full width */
+.case-card{border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:28px;scroll-margin-top:52px;}
+.case-hero{padding:24px 28px 20px;position:relative;overflow:hidden;}
+.case-hero::after{content:'';position:absolute;bottom:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;}
+.case-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;opacity:.6;}
+.case-client{font-size:24px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:6px;}
+.case-headline{font-size:14px;color:rgba(255,255,255,.7);line-height:1.5;font-style:italic;margin-bottom:14px;}
+.case-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.case-tag{font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);}
+
+.case-body{padding:24px 28px;}
+
+/* METRICS ROW */
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:22px;}
+.metric{background:var(--bg2);border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);text-align:center;}
+.metric-val{font-size:22px;font-weight:700;color:var(--text);line-height:1.1;}
+.metric-label{font-size:10.5px;color:var(--text-ter);margin-top:3px;line-height:1.4;}
+
+/* COLS */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.col-block{padding:14px 16px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.col-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.acc-name{font-size:13.5px;font-weight:700;color:var(--text);flex:1;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:3px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);padding:15px 17px 17px;}
+.acc-body.open{display:block;}
+
+/* QUOTE */
+.exec-quote{background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 15px;margin:12px 0;font-size:13px;color:var(--text-sec);font-style:italic;line-height:1.65;}
+.exec-quote strong{color:var(--text);font-style:normal;}
+.exec-source{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-top:5px;}
+
+/* PITCH */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+
+/* WIN NOTE */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+
+/* REPLICAR BLOCK */
+.replicar{background:var(--blue-light);border:.5px solid var(--blue-mid);border-radius:var(--radius-sm);padding:13px 16px;margin-top:14px;}
+.replicar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue-dark);margin-bottom:6px;}
+.replicar-text{font-size:12.5px;color:var(--text-sec);line-height:1.6;}
+.replicar-text strong{color:var(--blue-dark);}
+
+/* TEMPLATE CARD */
+.template-section{background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);padding:22px 26px;margin-top:32px;}
+.template-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.template-sub{font-size:12px;color:var(--text-ter);margin-bottom:18px;font-style:italic;}
+.template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;}
+.tfield{background:var(--bg);border-radius:var(--radius-sm);padding:11px 13px;border:.5px solid var(--border);}
+.tfield-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:4px;}
+.tfield-val{font-size:12.5px;color:var(--text-sec);line-height:1.5;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .cols,.metrics{grid-template-columns:1fr;}
+  .template-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🏆 Casos de Éxito</div>
+  <a class="tnav" href="#ecosan">Ecosan — IoT</a>
+  <a class="tnav" href="#megatlon">Megatlon — Biometría</a>
+  <a class="tnav" href="#cafemartinez">Café Martínez — WiFi6</a>
+  <a class="tnav" href="#template">Estructura de caso</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Casos de Éxito — Historias de Transformación</div>
+    <div class="doc-sub">Clientes reales · Resultados documentados · Argumentos de venta probados en producción</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<div class="intro-strip">
+  <div class="intro-icon">💡</div>
+  <div class="intro-text">Los casos de éxito son el argumento de venta más poderoso que existe: <strong>no sos vos diciendo que funciona — es un cliente que lo está usando.</strong> Para cada caso se incluye el contexto, el desafío, la solución, los resultados, el argumento de ventas replicable y a qué industrias puede extrapolarse.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ ECOSAN -->
+<div class="case-card" id="ecosan">
+  <div class="case-hero" style="background:linear-gradient(135deg,#085041 0%,#1D9E75 100%);">
+    <div class="case-label" style="color:rgba(255,255,255,.55);">IoT · Industria · Monitoreo de activos</div>
+    <div class="case-client">Ecosan S.A.</div>
+    <div class="case-headline">IoT para gestión inteligente y centralizada de activos críticos en tiempo real</div>
+    <div class="case-tags">
+      <span class="case-tag">🌐 IoT</span>
+      <span class="case-tag">📡 Conectividad M2M</span>
+      <span class="case-tag">📊 Analytics en tiempo real</span>
+      <span class="case-tag">🏭 Activos críticos</span>
+    </div>
+  </div>
+
+  <div class="case-body">
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-val" style="color:var(--green-dark);">100%</div>
+        <div class="metric-label">Visibilidad en tiempo real de activos críticos</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--green-dark);">↓ Costos</div>
+        <div class="metric-label">Optimización de recursos operativos</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--green-dark);">1 panel</div>
+        <div class="metric-label">Gestión centralizada de todos los activos</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--green-dark);">Datos</div>
+        <div class="metric-label">Toma de decisiones basada en información precisa</div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="col-block" style="background:var(--coral-light);border-color:var(--coral-mid);">
+        <div class="col-title" style="color:var(--coral-dark);">⚠️ El desafío</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Operaciones distribuidas en múltiples puntos sin visibilidad centralizada.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Gestión reactiva de activos críticos — los problemas se descubrían cuando ya habían ocurrido.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Decisiones operativas basadas en información desactualizada o incompleta.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Altos costos de visitas técnicas para verificar el estado de activos en campo.</li>
+        </ul>
+      </div>
+      <div class="col-block" style="background:var(--green-light);border-color:var(--green-mid);">
+        <div class="col-title" style="color:var(--green-dark);">✅ La solución Personal Tech</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Integración de sensores IoT con conectividad M2M de Personal Tech sobre red privada.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Plataforma de monitoreo centralizada con datos en tiempo real de todos los activos.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Alertas automáticas ante desvíos operativos para respuesta proactiva.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Dashboard de analytics para toma de decisiones basada en datos precisos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('eco1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Por qué Personal Tech</span>
+        <div class="acc-name">Lo que hizo diferente la propuesta de Personal Tech vs. otras alternativas</div>
+        <span class="acc-chv" id="achv-eco1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-eco1">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Un solo proveedor para todo:</strong> Personal Tech proveyó la conectividad M2M (SIM + red), los dispositivos IoT y la plataforma de analytics. Ecosan no tuvo que coordinar múltiples vendors.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>APN privado:</strong> los datos de los activos críticos viajan por red privada de Telecom — nunca por internet público. Mayor seguridad y fiabilidad para datos operativos sensibles.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Escalabilidad sin fricción:</strong> la plataforma IoT de Personal Tech crece con el negocio — si Ecosan agrega nuevos activos, se conectan al mismo sistema sin rediseñar la arquitectura.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Soporte local:</strong> ante cualquier problema con la conectividad o la plataforma, un equipo en Argentina responde — no un ticket internacional.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('eco2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Argumento de ventas replicable</span>
+        <div class="acc-name">Cómo usar este caso con clientes similares</div>
+        <span class="acc-chv" id="achv-eco2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-eco2">
+        <div class="pitch">
+          <div class="pitch-label">Para cualquier empresa con activos distribuidos</div>
+          <div class="pitch-text">"Ecosan tiene operaciones críticas en múltiples ubicaciones. Antes de Personal Tech, no sabían qué estaba pasando hasta que algo fallaba. Hoy tienen visibilidad en tiempo real de todos sus activos desde un solo panel — con alertas automáticas que les permiten actuar antes de que el problema escale. Si tu empresa tiene activos en campo que necesitás monitorear, podemos hacer lo mismo."</div>
+        </div>
+        <div class="replicar">
+          <div class="replicar-title">Industrias donde este caso es directamente replicable</div>
+          <div class="replicar-text"><strong>Manufactura:</strong> maquinaria, líneas de producción. <strong>Agro:</strong> silos, equipos de riego, sistemas de monitoreo de campo. <strong>Logística:</strong> vehículos refrigerados, containers. <strong>Energía:</strong> transformadores, generadores, subestaciones. <strong>Salud:</strong> equipamiento médico crítico. <strong>Retail:</strong> refrigeradores en puntos de venta.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /ecosan -->
+
+
+<!-- ══════════════════════════════════════════════ MEGATLON -->
+<div class="case-card" id="megatlon">
+  <div class="case-hero" style="background:linear-gradient(135deg,#26215C 0%,#7F77DD 100%);">
+    <div class="case-label" style="color:rgba(255,255,255,.55);">Ciberseguridad · Biometría · Control de acceso</div>
+    <div class="case-client">Megatlon</div>
+    <div class="case-headline">Tecnología biométrica de reconocimiento facial para accesos seguros, rápidos y automatizados en centros deportivos</div>
+    <div class="case-tags">
+      <span class="case-tag">🔐 Reconocimiento Facial</span>
+      <span class="case-tag">🏟 Múltiples sedes</span>
+      <span class="case-tag">⚡ Acceso automatizado</span>
+      <span class="case-tag">🛡 Seguridad</span>
+    </div>
+  </div>
+
+  <div class="case-body">
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-val" style="color:var(--purple-dark);">0 tarjetas</div>
+        <div class="metric-label">Eliminación de tarjetas físicas de acceso</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--purple-dark);">Segundos</div>
+        <div class="metric-label">Tiempo de acceso vs. minutos anterior</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--purple-dark);">24/7</div>
+        <div class="metric-label">Control automático sin personal dedicado</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--purple-dark);">100%</div>
+        <div class="metric-label">Trazabilidad de ingresos y egresos</div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="col-block" style="background:var(--coral-light);border-color:var(--coral-mid);">
+        <div class="col-title" style="color:var(--coral-dark);">⚠️ El desafío</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Cadena con decenas de centros deportivos en todo el país, cada uno con flujos de ingreso de cientos de socios por día.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Control de acceso basado en tarjetas físicas: pérdidas, duplicados, colas en horarios pico.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Personal dedicado a controlar el ingreso en cada turno — costo operativo significativo.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Sin trazabilidad centralizada de quién accedió, cuándo y en qué sede.</li>
+        </ul>
+      </div>
+      <div class="col-block" style="background:var(--purple-light);border-color:var(--purple-mid);">
+        <div class="col-title" style="color:var(--purple-dark);">✅ La solución Personal Tech</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Implementación de Reconocimiento Facial en los puntos de acceso de todos los centros.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>El socio se identifica con su cara en segundos — sin tarjeta, sin PIN, sin esperar a un operador.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Plataforma centralizada con trazabilidad de todos los accesos en tiempo real por sede.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Automatización completa del control de acceso — el personal se redirige a tareas de valor.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('meg1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Por qué Personal Tech</span>
+        <div class="acc-name">Lo que hizo diferente la propuesta frente a sistemas de acceso genéricos</div>
+        <span class="acc-chv" id="achv-meg1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-meg1">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Integración con la conectividad existente:</strong> los centros de Megatlon ya tenían conectividad con Personal/Telecom. La solución de biometría se montó sobre la misma infraestructura de red — sin tender nueva conectividad ni contratar un tercero.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Despliegue en múltiples sedes coordinado:</strong> Personal Tech puede implementar en paralelo en decenas de locaciones — algo que un proveedor de nicho no puede hacer con la misma escala.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Soporte unificado:</strong> un solo número para reportar cualquier problema — sea de conectividad, hardware o software de la solución biométrica.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Dato biométrico en Argentina:</strong> los datos de reconocimiento facial son altamente sensibles. Que el procesamiento y almacenamiento sea en infraestructura local bajo jurisdicción argentina es un diferenciador de privacidad y compliance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('meg2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Argumento de ventas replicable</span>
+        <div class="acc-name">Cómo usar este caso con clientes que tienen múltiples accesos físicos</div>
+        <span class="acc-chv" id="achv-meg2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-meg2">
+        <div class="pitch">
+          <div class="pitch-label">Para empresas con múltiples accesos y flujo de personas</div>
+          <div class="pitch-text">"Megatlon tiene decenas de centros con cientos de socios entrando y saliendo todo el día. Con reconocimiento facial de Personal Tech, automatizaron completamente el control de acceso — sin tarjetas, sin PIN, sin personal en la puerta. El acceso tarda segundos en vez de minutos y tienen trazabilidad de todo. Si tu empresa tiene personal distribuido en múltiples sedes o un flujo de personas que necesitás controlar, podemos replicar exactamente esto."</div>
+        </div>
+        <div class="replicar">
+          <div class="replicar-title">Industrias donde este caso es directamente replicable</div>
+          <div class="replicar-text"><strong>Retail y gastronomía:</strong> cadenas de locales con acceso a áreas restringidas. <strong>Manufactura:</strong> plantas industriales con control estricto de acceso por zona. <strong>Salud:</strong> hospitales y clínicas con áreas de acceso restringido. <strong>Educación:</strong> colegios y universidades con control de asistencia. <strong>Oficinas corporativas:</strong> edificios con múltiples pisos y áreas. <strong>Hoteles:</strong> check-in automatizado y acceso a habitaciones.</div>
+        </div>
+        <div class="win-note" style="margin-top:10px;"><strong>El argumento de privacidad:</strong> Dato biométrico es el dato más sensible que existe. Procesarlo en infraestructura en Argentina bajo derecho argentino — y no en servidores en el exterior — es un diferenciador de compliance que muchas empresas reguladas van a valorar específicamente.</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /megatlon -->
+
+
+<!-- ══════════════════════════════════════════════ CAFÉ MARTÍNEZ -->
+<div class="case-card" id="cafemartinez">
+  <div class="case-hero" style="background:linear-gradient(135deg,#633806 0%,#BA7517 100%);">
+    <div class="case-label" style="color:rgba(255,255,255,.55);">Conectividad · WiFi6 · Transformación de espacios</div>
+    <div class="case-client">Café Martínez</div>
+    <div class="case-headline">WiFi6 de alta velocidad que transformó cada local en un espacio de trabajo moderno y hub de coworking</div>
+    <div class="case-tags">
+      <span class="case-tag">📶 WiFi6 – HFC</span>
+      <span class="case-tag">☕ Cadena de locales</span>
+      <span class="case-tag">💻 Coworking</span>
+      <span class="case-tag">🚀 Experiencia de cliente</span>
+    </div>
+  </div>
+
+  <div class="case-body">
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-val" style="color:var(--amber-dark);">WiFi6</div>
+        <div class="metric-label">La tecnología de conectividad más avanzada disponible</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--amber-dark);">↑ Tiempo</div>
+        <div class="metric-label">Mayor permanencia de clientes en los locales</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--amber-dark);">Nuevo</div>
+        <div class="metric-label">Segmento de trabajadores remotos capturado</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--amber-dark);">HFC</div>
+        <div class="metric-label">Red híbrida de fibra y coaxial de alta capacidad</div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="col-block" style="background:var(--coral-light);border-color:var(--coral-mid);">
+        <div class="col-title" style="color:var(--coral-dark);">⚠️ El desafío</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Cadena de locales con WiFi básico que no soportaba la demanda simultánea de múltiples usuarios.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>El crecimiento del trabajo remoto generó una oportunidad: los locales podían ser hubs de coworking, pero la conectividad no lo permitía.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Clientes con laptops que se frustraban con la lentitud y buscaban otros espacios más conectados.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Diferenciación competitiva limitada frente a otras cadenas de café.</li>
+        </ul>
+      </div>
+      <div class="col-block" style="background:var(--amber-light);border-color:var(--amber-mid);">
+        <div class="col-title" style="color:var(--amber-dark);">✅ La solución Personal Tech</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Implementación de WiFi6 sobre infraestructura HFC (Hybrid Fiber Coax) de Personal Tech.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Capacidad para decenas de dispositivos simultáneos sin degradación de velocidad.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Despliegue coordinado en todos los locales de la cadena con gestión centralizada.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Los locales se convirtieron en hubs de coworking con conectividad comparable a una oficina corporativa.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cafe1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Por qué Personal Tech</span>
+        <div class="acc-name">Lo que hizo diferente la propuesta vs. contratar WiFi estándar</div>
+        <span class="acc-chv" id="achv-cafe1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cafe1">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>HFC — ventaja de infraestructura propia:</strong> Personal Tech (ex-Fibertel/Cablevisión) tiene red HFC tendida en gran parte de Argentina. Esto permite ofrecer WiFi6 de alta capacidad en locaciones donde otras tecnologías no llegan con el mismo rendimiento.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Despliegue a escala en toda la cadena:</strong> coordinar el rollout de WiFi6 en decenas de locales simultáneamente requiere un proveedor con capacidad operativa nacional. Personal Tech lo hizo de forma coordinada y consistente.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Gestión centralizada:</strong> todas las sucursales se gestionan desde un solo panel. Si hay un problema en una sucursal, el NOC de Personal Tech lo detecta y actúa sin que Café Martínez tenga que reportarlo.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>SLA con soporte:</strong> no es un router hogareño — es un servicio con SLA de disponibilidad y un equipo que responde cuando falla.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cafe2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Argumento de ventas replicable</span>
+        <div class="acc-name">Cómo usar este caso con cadenas de gastronomía, hospitalidad y retail</div>
+        <span class="acc-chv" id="achv-cafe2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cafe2">
+        <div class="pitch">
+          <div class="pitch-label">Para cadenas de gastronomía, hoteles y espacios comerciales</div>
+          <div class="pitch-text">"Café Martínez tenía un problema que muchos locales ignoran: el WiFi básico era una barrera para retener clientes que trabajan remotamente. Con WiFi6 de Personal Tech convirtieron cada local en un hub de coworking. El resultado fue más permanencia, más consumo y un diferenciador competitivo real. ¿Cuántos de tus clientes se van porque no pueden trabajar cómodamente en tu local?"</div>
+        </div>
+        <div class="replicar">
+          <div class="replicar-title">Industrias donde este caso es directamente replicable</div>
+          <div class="replicar-text"><strong>Gastronomía:</strong> restaurantes y cafeterías con público trabajador remoto. <strong>Hospitalidad:</strong> hoteles que quieren mejorar la experiencia de huéspedes de negocios. <strong>Retail:</strong> locales que quieren generar mayor tiempo de permanencia. <strong>Salud:</strong> clínicas y consultorios con salas de espera. <strong>Educación:</strong> campus universitarios y colegios.</div>
+        </div>
+        <div class="win-note" style="margin-top:10px;"><strong>El argumento de negocio:</strong> Invertir en WiFi6 no es un gasto de IT — es una inversión en experiencia de cliente que se mide en tiempo de permanencia y ticket promedio. Enmarcarlo así convierte la conversación de "costo de conectividad" a "inversión en el negocio".</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /café martínez -->
+
+
+<!-- ══════════════════════════════════════════════ TEMPLATE -->
+<div class="template-section" id="template">
+  <div class="template-title">📋 Estructura para documentar nuevos casos de éxito</div>
+  <div class="template-sub">Usá esta estructura cuando cierres un proyecto propio o identifiques un caso en el equipo que vale la pena documentar</div>
+  <div class="template-grid">
+    <div class="tfield">
+      <div class="tfield-label">Cliente</div>
+      <div class="tfield-val">Nombre de la empresa y sector/industria.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">El desafío</div>
+      <div class="tfield-val">Qué problema tenía antes de Personal Tech. En lenguaje de negocio, no técnico.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">La solución</div>
+      <div class="tfield-val">Qué producto o servicio de Personal Tech resolvió el problema. Cómo se implementó.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">Los resultados</div>
+      <div class="tfield-val">Métricas concretas: % de reducción, tiempo ahorrado, incidentes evitados, ROI calculado.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">Por qué Personal Tech</div>
+      <div class="tfield-val">Qué hizo que Personal Tech ganara frente a otras alternativas que el cliente evaluó.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">Dónde se replica</div>
+      <div class="tfield-val">Industrias o tipos de empresa donde el mismo caso aplica directamente.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">La frase de ventas</div>
+      <div class="tfield-val">Una o dos frases que el vendedor puede usar para abrir la conversación con un prospect similar.</div>
+    </div>
+    <div class="tfield">
+      <div class="tfield-label">Contacto de referencia</div>
+      <div class="tfield-val">Si el cliente está dispuesto a ser referencia pública o solo interna. Quién en Personal Tech puede validar.</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Casos documentados públicamente en el sitio de Personal Tech — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var navs=document.querySelectorAll('.tnav');
+var cases=document.querySelectorAll('.case-card, .template-section');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  cases.forEach(function(c){
+    if(sy>=c.offsetTop&&sy<c.offsetTop+c.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var id=c.getAttribute('id');
+      var a=document.querySelector('.tnav[href="#'+id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Sección GCP -->
+<div style="margin-top:50px; padding:24px; background:#E8F7FF; border-left:4px solid #4A90E2; border-radius:8px;">
+  <h3 style="color:#0066CC; margin-bottom:12px; font-size:18px;">🟩 Casos de Éxito: Google Cloud Alternative</h3>
+  <p style="font-size:13px; color:#1a1a18; line-height:1.6; margin-bottom:12px;">
+    <strong>Google Cloud casos similares:</strong> Netflix, Spotify, Stripe, Shopify usan GCP para BigQuery (analytics) + Cloud Run (serverless).
+  </p>
+  <p style="font-size:13px; color:#1a1a18; margin-bottom:10px;"><strong>Por qué GCP en estos casos:</strong></p>
+  <ul style="font-size:13px; color:#1a1a18; margin-left:20px; margin-bottom:14px;">
+    <li><strong>BigQuery:</strong> Analytics masivo sin infraestructura. Querys on-demand.</li>
+    <li><strong>Cloud Run:</strong> Deploy containers sin gestionar infraestructura. Auto-scaling.</li>
+    <li><strong>Pub/Sub:</strong> Messaging global ultra-confiable.</li>
+    <li><strong>Pricing:</strong> ~10-15% más barato que AWS equivalente.</li>
+  </ul>
+  <p style="font-size:12px; color:#0066CC;"><strong>📌 Diferencia clave:</strong> AWS es mejor para infraestructura. GCP es mejor para datos + IA.</p>
+</div>
+
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Reference — Personal Tech | Edgardo Celata</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+a{text-decoration:none;color:inherit;}
+
+/* ── TOP NAV ── */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 24px;}
+.topnav-brand{font-size:13px;font-weight:700;white-space:nowrap;padding:12px 16px 12px 0;border-right:0.5px solid var(--border);margin-right:8px;color:var(--text);}
+.tnav{font-size:11.5px;font-weight:700;padding:13px 13px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .18s,color .18s;color:var(--text-ter);}
+.tnav:hover{color:var(--text);border-bottom-color:var(--text);}
+.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* ── PAGE ── */
+.page{max-width:980px;margin:0 auto;padding:36px 28px 60px;}
+
+/* ── DOC HEADER ── */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:12px;color:var(--text-ter);}
+
+/* ── CHAPTER ── */
+.chapter{margin-bottom:56px;scroll-margin-top:52px;}
+.chapter-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;cursor:pointer;user-select:none;}
+.chapter-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chapter-title{font-size:20px;font-weight:700;flex:1;}
+.chapter-toggle{font-size:12px;color:var(--text-ter);transition:transform .25s;}
+.chapter-toggle.open{transform:rotate(180deg);}
+.chapter-body{display:none;}
+.chapter-body.open{display:block;}
+.chapter-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin-bottom:18px;padding:12px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.chapter-intro strong{color:var(--text);}
+
+/* ── SUBSECTION ── */
+.subsec{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);border-bottom:.5px solid var(--border);padding-bottom:5px;margin:22px 0 14px;}
+
+/* ── COLLAPSIBLE ITEM (accordion row) ── */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;padding:16px 18px 18px;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+
+/* ── CONTENT INSIDE ACC ── */
+.analogy{background:var(--bg2);border-left:3px solid var(--border);padding:11px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:14px;font-size:13px;color:var(--text-sec);line-height:1.65;}
+.analogy strong{color:var(--text);}
+.def-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:12px 0 5px;}
+.def-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.def-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:5px;margin:10px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:7px;align-items:flex-start;line-height:1.55;}
+.fdot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+.mindset{font-size:13px;font-style:italic;color:var(--text-ter);padding:9px 13px;border-left:2px solid var(--border);margin-top:12px;line-height:1.65;}
+.kpi-strip{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding:10px 12px;background:var(--bg2);border-radius:var(--radius-sm);}
+.kpi-strip span.label{font-size:10.5px;font-weight:700;color:var(--text-ter);text-transform:uppercase;letter-spacing:.05em;width:100%;margin-bottom:2px;}
+.kpill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.sep{border:none;border-top:.5px solid var(--border);margin:12px 0;}
+
+/* ── GRID LAYOUTS ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:11px 13px;border:.5px solid var(--border);}
+.mini-card .mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mini-card .mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+
+/* ── VPS TABLE ── */
+.vps-wrap{overflow-x:auto;margin-top:10px;}
+.vps-table{width:100%;border-collapse:collapse;font-size:12px;}
+.vps-table th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);padding:7px 10px;border-bottom:1.5px solid var(--border);background:var(--bg2);text-align:left;}
+.vps-table td{padding:9px 10px;border-bottom:.5px solid var(--border);color:var(--text-sec);vertical-align:middle;}
+.vps-table tr:last-child td{border-bottom:none;}
+.vps-table tr:hover td{background:var(--bg2);}
+.plan-name{font-weight:700;color:var(--text);}
+.plan-free{background:var(--green-light) !important;}
+
+/* ── FREE SOLUTIONS GRID ── */
+.free-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:8px;}
+.free-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.free-card .fc-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.free-card .fc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-bottom:6px;}
+.free-card .fc-desc{font-size:12px;color:var(--text-sec);line-height:1.55;}
+
+/* ── DIAGRAM ── */
+.diagram{border:.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin:12px 0;background:var(--bg);overflow-x:auto;}
+.drow{display:flex;align-items:center;gap:4px;margin:5px 0;flex-wrap:wrap;}
+.dbox{font-size:11px;font-weight:600;padding:6px 11px;border-radius:var(--radius-sm);white-space:nowrap;flex-shrink:0;}
+.darr{font-size:13px;color:var(--text-ter);padding:0 4px;flex-shrink:0;}
+.darr.g{color:var(--green-mid);}
+.darr.r{color:var(--coral-mid);}
+.dlabel{font-size:11px;color:var(--text-ter);margin-top:6px;font-style:italic;}
+.dvs{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dvs-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+
+/* ── REFERENCE TABLE ── */
+.ref-wrap{overflow-x:auto;}
+.ref-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.ref-table th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);padding:7px 10px;border-bottom:1.5px solid var(--border);background:var(--bg2);text-align:left;}
+.ref-table td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);color:var(--text-sec);line-height:1.55;}
+.ref-table tr:last-child td{border-bottom:none;}
+.ref-table tr:hover td{background:var(--bg2);}
+.tbl-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);padding:10px 10px 3px;border-bottom:.5px solid var(--border);background:var(--bg);}
+.tn{font-weight:700;color:var(--text);font-size:13px;white-space:nowrap;}
+.tsub{font-size:10px;color:var(--text-ter);display:block;}
+
+/* ── DC BOX ── */
+.dc-box{border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:4px;}
+.dc-head{background:var(--bg2);padding:13px 16px;}
+.dc-name{font-size:15px;font-weight:700;}
+.dc-sub{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.dc-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;padding:14px 16px;}
+.dc-stat{background:var(--bg2);border-radius:var(--radius-sm);padding:9px 11px;}
+.dc-stat-val{font-size:16px;font-weight:700;color:var(--text);}
+.dc-stat-lbl{font-size:10.5px;color:var(--text-ter);margin-top:2px;}
+.dc-certs{display:flex;flex-wrap:wrap;gap:5px;padding:0 16px 14px;}
+.cert{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;}
+
+/* ── SECTOR GRID ── */
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-top:4px;}
+.sc{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;border:.5px solid var(--border);}
+.sc-icon{font-size:17px;margin-bottom:4px;}
+.sc-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.sc-desc{font-size:11px;color:var(--text-ter);line-height:1.45;}
+
+/* ── FOOTER ── */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;}
+
+/* ── PRINT ── */
+@media print{
+  .topnav{display:none;}
+  .chapter-body,.acc-body{display:block!important;}
+  .chapter-toggle,.acc-chv{display:none;}
+  .page{padding:16px;max-width:100%;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3,.dvs{grid-template-columns:1fr;}
+  .topnav{padding:0 8px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════ TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">Personal Tech · Referencia</div>
+  <a class="tnav" href="#cap-roadmap">01 Roadmap 90d</a>
+  <a class="tnav" href="#cap-cloud">02 Cloud &amp; Multicloud</a>
+  <a class="tnav" href="#cap-vps">03 VPS</a>
+  <a class="tnav" href="#cap-dc">04 Datacenter</a>
+  <a class="tnav" href="#cap-saas">05 Servicios Nube SaaS</a>
+  <a class="tnav" href="#cap-procloud">06 Prof. Cloud</a>
+  <a class="tnav" href="#cap-proinfra">07 Prof. Infra</a>
+  <a class="tnav" href="#cap-free">08 Soluciones Free</a>
+  <a class="tnav" href="#cap-conect">09 Conectividad</a>
+  <a class="tnav" href="#cap-ciber">10 Ciberseguridad</a>
+  <a class="tnav" href="#cap-iot">11 IoT</a>
+  <a class="tnav" href="#cap-reftech">12 Ref. Técnica</a>
+  <a class="tnav" href="#cap-glosario">13 Glosario</a>
+  <a class="tnav" href="#cap-mapa">14 Mapa Mental</a>
+</nav>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Master Reference — Personal Tech</div>
+    <div class="doc-sub">Roadmap 90 días · Portfolio completo · Referencia técnica · Glosario</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Solutions Manager | Pre-Sales<br><span id="fecha"></span></div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════ 01 ROADMAP -->
+<div class="chapter" id="cap-roadmap">
+  <div class="chapter-header" onclick="toggleChapter('roadmap')">
+    <div class="chapter-icon" style="background:var(--blue-light)">🗓</div>
+    <div class="chapter-title">01 — Roadmap: Los primeros 90 días</div>
+    <span class="chapter-toggle" id="ctgl-roadmap">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-roadmap">
+
+    <!-- FASE 1 -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('f1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Días 1–30</span>
+        <div class="acc-info"><div class="acc-name">Escuchar, mapear y no disparar</div><div class="acc-tag">Entendés el terreno antes de proponer</div></div>
+        <span class="acc-chv" id="achv-f1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-f1">
+        <div class="def-label">Semana 1</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Reuniones 1:1 con cada miembro del equipo comercial y preventa. Preguntá más de lo que hablás.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Pedí el portfolio completo: Multicloud, VPS, Datacenter, SaaS, Servicios Profesionales, IoT. Leélo todo antes de opinar.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Revisá las últimas 5–10 propuestas ganadas y perdidas. Buscá patrones de por qué ganaron o perdieron.</li>
+        </ul>
+        <hr class="sep">
+        <div class="def-label">Semana 2</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Mapeá el diferenciador real de Personal Tech vs AWS/Azure: soberanía del dato, latencia, SLA con soporte local, conectividad integrada, facturación en pesos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Revisá documentación técnica de SD-WAN, MPLS, DIA, VPS, Multicloud. Armá tus propias notas de posicionamiento.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Identificá CRM que usan y estado del pipeline. Sin datos del pipeline, estás ciego.</li>
+        </ul>
+        <hr class="sep">
+        <div class="def-label">Semanas 3–4</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Acompañá reuniones con clientes en modo escucha activa. No propongas arquitecturas todavía.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Armá tu mapa mental de las top 10 cuentas del pipeline: sector, pain point principal, madurez cloud.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Mapeá gaps internos en la preventa. No los comuniques todavía — solo registralos.</li>
+        </ul>
+        <div class="kpi-strip">
+          <span class="label">Hito al día 30</span>
+          <span class="kpill" style="background:var(--blue-light);color:var(--blue-dark);">Portfolio dominado</span>
+          <span class="kpill" style="background:var(--blue-light);color:var(--blue-dark);">Pipeline mapeado</span>
+          <span class="kpill" style="background:var(--blue-light);color:var(--blue-dark);">Lenguaje telco incorporado</span>
+          <span class="kpill" style="background:var(--blue-light);color:var(--blue-dark);">Confianza interna ganada</span>
+        </div>
+        <p class="mindset">"El que entra con respuestas pierde. El que entra con las preguntas correctas, gana la cancha en 30 días."</p>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('f2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Días 31–60</span>
+        <div class="acc-info"><div class="acc-name">Articular tu valor diferencial</div><div class="acc-tag">Empezás a diseñar y a posicionarte</div></div>
+        <span class="acc-chv" id="achv-f2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-f2">
+        <div class="def-label">Semanas 5–6</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Tomá 2–3 oportunidades del pipeline y armá tu primera arquitectura técnica. Mostrásela al equipo antes del cliente — construye confianza.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Introducí análisis TCO/ROI donde no exista. Tu diferenciador inmediato: la mayoría de las preventas no lo hacen con el rigor necesario.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>En cada propuesta incluí comparativa Personal Tech vs hyperscaler: precio en pesos, latencia, soberanía, SLA, egress fees.</li>
+        </ul>
+        <hr class="sep">
+        <div class="def-label">Semanas 7–8</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Liderá tu primera presentación frente a un cliente. Usá tu experiencia C-level: sabés traducir técnico a negocio.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Armá un template BOM reutilizable para las soluciones más frecuentes: migración, DR, hybrid cloud, VPS + conectividad.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Identificá clientes de sectores que ya conocés (Banca, Gobierno, Retail) en el pipeline — tu background previo vale doble ahí.</li>
+        </ul>
+        <div class="kpi-strip">
+          <span class="label">Hito al día 60</span>
+          <span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Primera propuesta liderada</span>
+          <span class="kpill" style="background:var(--green-light);color:var(--green-dark);">TCO como hábito</span>
+          <span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Template BOM armado</span>
+          <span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Reconocido internamente</span>
+        </div>
+        <p class="mindset">"Tu valor no está en aprender más tecnología. Está en combinar arquitectura técnica con análisis financiero — algo que el 90% de la preventa no hace."</p>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('f3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Días 61–90</span>
+        <div class="acc-info"><div class="acc-name">Liderar y dejar huella</div><div class="acc-tag">Ya no sos nuevo — sos el referente</div></div>
+        <span class="acc-chv" id="achv-f3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-f3">
+        <div class="def-label">Semanas 9–10</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Proponé formalmente una mejora al proceso de preventa: checklist de calificación, template SOW, o criterio Go/NoGo.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Posicionarte como referente interno en FinOps. Eso abre puertas con CFOs y CIOs que los vendors puros no pueden abrir.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Aplicá MEDDPICC en 2–3 cuentas clave. Mostrá que el pipeline no es solo volumen, es calidad.</li>
+        </ul>
+        <hr class="sep">
+        <div class="def-label">Semanas 11–13</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Presentá internamente un caso de éxito propio: propuesta ganada con análisis de por qué ganó. Que quede documentado.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Construí relaciones con los equipos de ingeniería y operaciones. La preventa que tiene el respeto de Ops cierra más rápido y sin fricciones.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Definí tus KPIs personales para el trimestre siguiente: pipeline generado, conversión de propuestas, Time-to-Quote. Que tu jefe los vea antes de que te los pida.</li>
+        </ul>
+        <div class="kpi-strip">
+          <span class="label">Hito al día 90</span>
+          <span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">Proceso mejorado</span>
+          <span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">Referente FinOps interno</span>
+          <span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">KPIs propios definidos</span>
+          <span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">Confianza total ganada</span>
+        </div>
+        <p class="mindset">"A los 90 días, la pregunta ya no es si estás a la altura. La pregunta es para qué proyecto querés que te llamen primero."</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /roadmap -->
+
+
+<!-- ════════════════════════════════════════════════════════ 02 MULTICLOUD -->
+<div class="chapter" id="cap-cloud">
+  <div class="chapter-header" onclick="toggleChapter('cloud')">
+    <div class="chapter-icon" style="background:var(--blue-light)">☁️</div>
+    <div class="chapter-title">02 — Cloud &amp; Multicloud</div>
+    <span class="chapter-toggle" id="ctgl-cloud">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-cloud">
+    <p class="chapter-intro">Estrategia que permite acceder y gestionar servicios de múltiples proveedores de nube (Personal Cloud + hyperscalers). Personal Tech actúa como integrador y broker de conectividad: <strong>un solo contrato, un solo soporte, facturación en pesos argentinos.</strong></p>
+
+    <!-- Personal Cloud -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pc')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Cloud propia</span>
+        <div class="acc-info"><div class="acc-name">Personal Cloud</div><div class="acc-tag">Infraestructura autogestionada, flexible, escalable. Pagás en pesos con soporte local 24/7</div></div>
+        <span class="acc-chv" id="achv-pc">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pc">
+        <p class="def-text">Plataforma IaaS propia de Personal Tech. El cliente aprovisiona VMs, storage y red desde un portal, paga por uso real, y el dato queda en el datacenter de Pacheco — en Argentina, bajo jurisdicción local.</p>
+        <div class="def-label">Características clave</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Infraestructura escalable:</strong> aumentá o reducí recursos según la demanda, optimizando costos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Modelo pago por uso:</strong> facturación en pesos argentinos basada en consumo real, sin costos fijos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Portal de gestión:</strong> monitoreo en tiempo real, administración de consumos y optimización de recursos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Seguridad avanzada:</strong> cumplimiento de estándares internacionales, protección de datos e infraestructura.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Soporte en español 24/7:</strong> equipo local de especialistas, sin tickets en inglés ni desfase horario.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Control total:</strong> gestioná y escalá recursos desde un portal centralizado con reglas de seguridad propias.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Soberanía del dato</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Facturación en $ARS</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">BCRA/CNV compliant</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Soporte local</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AWS -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('aws')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Partner Advanced</span>
+        <div class="acc-info"><div class="acc-name">AWS — Amazon Web Services</div><div class="acc-tag">+200 servicios con Personal Tech como Advanced Partner</div></div>
+        <span class="acc-chv" id="achv-aws">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-aws">
+        <p class="def-text">Acceso a más de 200 servicios de AWS con Personal Tech como <strong>Advanced Partner certificado</strong>. Personal Tech actúa como intermediario — el cliente obtiene los servicios de AWS con soporte local en castellano, facturación unificada y asesoramiento de arquitectura.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Compute (EC2), Storage (S3, EBS), Bases de datos (RDS, DynamoDB), IA/ML (SageMaker, Bedrock).</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Acceso a créditos y programas de prueba exclusivos gracias a la alianza de Partner.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Conexión privada vía <strong>Direct Connect AWS</strong>: enlace dedicado de baja latencia sin pasar por internet público.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Acompañamiento experto en planificación, implementación y optimización.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Advanced Partner</span>
+          <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Direct Connect</span>
+          <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Soporte local</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Azure -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('az')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">ExpressRoute Partner</span>
+        <div class="acc-info"><div class="acc-name">Microsoft Azure</div><div class="acc-tag">Escalabilidad, IA avanzada y cumplimiento para sectores regulados</div></div>
+        <span class="acc-chv" id="achv-az">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-az">
+        <p class="def-text">Infraestructura global de Microsoft con IA avanzada, herramientas de desarrollo y cumplimiento normativo. Personal Tech es partner de <strong>Azure ExpressRoute</strong> — proporciona la conexión privada dedicada que necesitan las empresas reguladas para conectarse a Azure sin pasar por internet.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>IaaS, PaaS, SaaS: desde VMs hasta Azure OpenAI y Microsoft 365.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>ExpressRoute:</strong> circuito privado entre la red de Personal Tech y los datacenters de Azure. Latencia predecible, sin internet.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Compliance para sectores regulados: finanzas, salud, gobierno.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Combinable con Personal Cloud: workloads críticos en AR, workloads flexibles en Azure.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">ExpressRoute Partner</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Hybrid cloud</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Sectores regulados</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Otros clouds -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('otros')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Alianzas estratégicas</span>
+        <div class="acc-info"><div class="acc-name">Google Cloud · Huawei Cloud · IBM Cloud · Oracle Cloud</div><div class="acc-tag">Ecosistema multicloud completo con los principales proveedores globales</div></div>
+        <span class="acc-chv" id="achv-otros">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-otros">
+        <div class="grid2">
+          <div class="mini-card">
+            <div class="mc-title">Google Cloud Platform</div>
+            <div class="mc-text">Infraestructura rápida y escalable para desarrollar, ejecutar y ampliar aplicaciones con la confiabilidad de Google. BigQuery, Vertex AI, GKE.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Huawei Cloud</div>
+            <div class="mc-text">Agilidad y despliegue flexible en entornos híbridos con IA, automatización y alto rendimiento. Opción costo-eficiente para workloads de cómputo intensivo.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">IBM Cloud</div>
+            <div class="mc-text">Nube híbrida con IaaS, PaaS y SaaS. Seguridad, IA (Watson) y cumplimiento para sectores regulados como finanzas y salud. Fuerte en mainframe workloads.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Oracle Cloud</div>
+            <div class="mc-text">Infraestructura potente y segura para cargas críticas y gestión avanzada de datos. Ideal para empresas que ya usan Oracle DB, ERP o JD Edwards.</div>
+          </div>
+        </div>
+        <div class="def-label" style="margin-top:14px;">Cloud Connect</div>
+        <p class="def-text">Conexión internacional segura y directa a nubes públicas (AWS, Azure, GCP, SAP) con baja latencia y alto rendimiento. Personal Tech como broker de conectividad hacia todos los hyperscalers.</p>
+        <div class="tags" style="margin-top:8px;">
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">GCP</span>
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Huawei</span>
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">IBM</span>
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Oracle</span>
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Cloud Connect</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /cloud -->
+
+
+<!-- ════════════════════════════════════════════════════════ 03 VPS -->
+<div class="chapter" id="cap-vps">
+  <div class="chapter-header" onclick="toggleChapter('vps')">
+    <div class="chapter-icon" style="background:var(--green-light)">🖥</div>
+    <div class="chapter-title">03 — Servidores Virtuales Privados (VPS)</div>
+    <span class="chapter-toggle" id="ctgl-vps">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-vps">
+    <p class="chapter-intro">Máquina virtual en infraestructura compartida con <strong>recursos dedicados</strong> (CPU, RAM, storage, red). Control total para ejecutar cualquier sistema operativo y aplicación en un entorno aislado. Sin inversión en hardware, despliegue inmediato.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('vps1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Qué es y para qué</span>
+        <div class="acc-info"><div class="acc-name">Beneficios y funcionalidades clave</div><div class="acc-tag">Por qué elegir VPS sobre infraestructura física propia</div></div>
+        <span class="acc-chv" id="achv-vps1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-vps1">
+        <div class="grid2">
+          <div>
+            <div class="def-label">Beneficios</div>
+            <ul class="feat">
+              <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Performance y confiabilidad:</strong> tecnología de virtualización líder con soporte especializado 24/7.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Escalabilidad:</strong> infraestructura 100% escalable, actualizaciones transparentes sin downtime.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Seguridad:</strong> datacenters de clase mundial con conectividad, energía y refrigeración redundante.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Optimización de costos:</strong> sin inversión en hardware, sin infraestructura ociosa.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="def-label">Funcionalidades</div>
+            <ul class="feat">
+              <li><span class="fdot" style="background:var(--green-mid)"></span>Múltiples OS: Ubuntu, Windows Server, CentOS.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span>Escalamiento vertical y horizontal según demanda.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span>Contratación flexible, períodos cortos, despliegue inmediato.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span>IP pública y Firewall incluidos en todos los planes.</li>
+              <li><span class="fdot" style="background:var(--green-mid)"></span>Mecanismos de recuperación ante desastres integrados.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('vps2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Planes</span>
+        <div class="acc-info"><div class="acc-name">Tabla comparativa de planes VPS</div><div class="acc-tag">Desde SVP Free hasta SVP Proyecto — todos con SSD, IP pública y Firewall</div></div>
+        <span class="acc-chv" id="achv-vps2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-vps2">
+        <div class="vps-wrap">
+          <table class="vps-table">
+            <thead>
+              <tr>
+                <th>Plan</th><th>RAM</th><th>CPU</th><th>Storage SSD</th><th>IOPS máx</th><th>Disponibilidad</th><th>OS</th><th>Custom</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="plan-free">
+                <td class="plan-name">SVP Free 🆓</td><td>1 GB</td><td>1 vCPU</td><td>40 GB</td><td>600</td><td>Best Effort</td><td>Ubuntu</td><td>No</td>
+              </tr>
+              <tr>
+                <td class="plan-name">SVP XS</td><td>1 GB</td><td>1 vCPU</td><td>100 GB</td><td>600</td><td>99,982%</td><td>Ubuntu / Win / CentOS</td><td>Sí</td>
+              </tr>
+              <tr>
+                <td class="plan-name">SVP M</td><td>8 GB</td><td>2 vCPU</td><td>500 GB</td><td>600</td><td>99,982%</td><td>Ubuntu / Win / CentOS</td><td>Sí</td>
+              </tr>
+              <tr>
+                <td class="plan-name">SVP L</td><td>16 GB</td><td>4 vCPU</td><td>1 TB</td><td>600</td><td>99,982%</td><td>Ubuntu / Win / CentOS</td><td>Sí</td>
+              </tr>
+              <tr>
+                <td class="plan-name">SVP XL</td><td>32 GB</td><td>8 vCPU</td><td>5 TB</td><td>600</td><td>99,982%</td><td>Ubuntu / Win / CentOS</td><td>Sí</td>
+              </tr>
+              <tr style="background:var(--purple-light);">
+                <td class="plan-name">SVP Proyecto</td><td>Custom</td><td>Custom</td><td>Custom</td><td>Custom</td><td>99,982%</td><td>Ubuntu / Win / CentOS</td><td>Sí</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="def-text" style="margin-top:10px;">Todos los planes incluyen IP pública y Firewall. Conectividad compartida o dedicada disponible, con ancho de banda simétrico o asimétrico según necesidad.</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /vps -->
+
+
+<!-- ════════════════════════════════════════════════════════ 04 DATACENTER -->
+<div class="chapter" id="cap-dc">
+  <div class="chapter-header" onclick="toggleChapter('dc')">
+    <div class="chapter-icon" style="background:var(--teal-light)">🏭</div>
+    <div class="chapter-title">04 — Datacenter &amp; Housing (Colocation)</div>
+    <span class="chapter-toggle" id="ctgl-dc">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-dc">
+    <p class="chapter-intro">Espacio seguro en los datacenters de Personal Tech en Argentina (CABA, AMBA, Córdoba, Corrientes) para alojar servidores propios. Personal Tech provee energía redundante, cooling, seguridad 24/7 y conectividad. <strong>El cliente conserva control total de su hardware.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dc1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">DC Principal</span>
+        <div class="acc-info"><div class="acc-name">Datacenter Pacheco — EZE1</div><div class="acc-tag">#1 de Buenos Aires por servicios activos · Certificado CEEDA · 100% energía renovable</div></div>
+        <span class="acc-chv" id="achv-dc1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dc1">
+        <div class="dc-box">
+          <div class="dc-head"><div class="dc-name">Pacheco Datacenter — EZE1</div><div class="dc-sub">Colectora Este 32375, Pacheco, Buenos Aires · Telecom Argentina</div></div>
+          <div class="dc-stats">
+            <div class="dc-stat"><div class="dc-stat-val">1.29 MW</div><div class="dc-stat-lbl">Capacidad de potencia total</div></div>
+            <div class="dc-stat"><div class="dc-stat-val">N+1</div><div class="dc-stat-lbl">Redundancia cooling (aire + agua)</div></div>
+            <div class="dc-stat"><div class="dc-stat-val">100%</div><div class="dc-stat-lbl">Energía renovable desde 2024</div></div>
+            <div class="dc-stat"><div class="dc-stat-val">24/7</div><div class="dc-stat-lbl">Seguridad física biometría + CCTV</div></div>
+            <div class="dc-stat"><div class="dc-stat-val">#1</div><div class="dc-stat-lbl">DC Buenos Aires por servicios</div></div>
+            <div class="dc-stat"><div class="dc-stat-val">IXP</div><div class="dc-stat-lbl">Internet Exchange Point anclado</div></div>
+          </div>
+          <div class="dc-certs">
+            <span class="cert" style="background:var(--green-light);color:var(--green-dark);">✓ CEEDA — Eficiencia energética internacional</span>
+            <span class="cert" style="background:var(--blue-light);color:var(--blue-dark);">✓ Anchor PoP cables submarinos AR</span>
+            <span class="cert" style="background:var(--amber-light);color:var(--amber-dark);">✓ Carrier Neutral — todos los ISPs</span>
+            <span class="cert" style="background:var(--purple-light);color:var(--purple-dark);">✓ Peering directo AWS y Azure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dc2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Housing</span>
+        <div class="acc-info"><div class="acc-name">Servicio de Housing (Colocation)</div><div class="acc-tag">½ rack o rack completo · SLA 99,9% · Conectividad pública o privada</div></div>
+        <span class="acc-chv" id="achv-dc2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dc2">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Espacio físico:</strong> ½ rack (20U) o rack completo (40U) con infraestructura redundante.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Conectividad:</strong> enlaces públicos (Internet) o privados (MPLS/L2L) según requerimiento.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Energía:</strong> doble alimentación eléctrica A/B, UPS y generadores de respaldo.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Seguridad 24/7:</strong> acceso controlado con biometría, monitoreo permanente en sala blanca.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Cross-Connect:</strong> cable físico dentro del DC al switch de Personal Tech — latencia sub-milisegundo.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>SLA contractual 99,9%</strong> de uptime garantizado con penalidades.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Backbone nacional:</strong> conectado a carriers nacionales e internacionales y al IXP del DC.</li>
+        </ul>
+        <div class="def-label">Packs de servicios incluidos</div>
+        <div class="grid2">
+          <div class="mini-card">
+            <div class="mc-title">Pack Básico</div>
+            <div class="mc-text">Reconexión y reinicio de equipos · administración de medios magnéticos · conexión de periféricos y storage externo · revisión de patchcord en rack · monitoreo físico en sala blanca.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Pack Advanced</div>
+            <div class="mc-text">Tareas personalizadas definidas en la etapa de diseño · intervenciones según requerimientos del proyecto (rackeo/desrackeo, cableados adicionales, configuraciones especiales).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /dc -->
+
+
+<!-- ════════════════════════════════════════════════════════ 05 SAAS -->
+<div class="chapter" id="cap-saas">
+  <div class="chapter-header" onclick="toggleChapter('saas')">
+    <div class="chapter-icon" style="background:var(--purple-light)">💼</div>
+    <div class="chapter-title">05 — Servicios Nube (SaaS de Productividad)</div>
+    <span class="chapter-toggle" id="ctgl-saas">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-saas">
+    <p class="chapter-intro">Software as a Service para potenciar la colaboración y productividad empresarial. Herramientas seguras, escalables y siempre actualizadas que eliminan complejidad, costos de licenciamiento y mantenimiento de servidores locales.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m365')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Microsoft Partner</span>
+        <div class="acc-info"><div class="acc-name">Microsoft 365</div><div class="acc-tag">Productividad, seguridad y colaboración para el puesto de trabajo moderno</div></div>
+        <span class="acc-chv" id="achv-m365">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m365">
+        <p class="def-text">Plataforma integral que combina aplicaciones de productividad, colaboración, seguridad y gestión de dispositivos. Diseñada para modelos híbridos y transformación digital.</p>
+        <div class="def-label">Aplicaciones y servicios incluidos</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Productividad:</strong> Word, Excel, PowerPoint en versiones online y escritorio.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Colaboración:</strong> Teams para reuniones, telefonía VoIP y chat unificado.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Gestión documental:</strong> OneDrive y SharePoint para compartir y versionar archivos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Seguridad:</strong> Microsoft Defender (anti-ransomware, phishing), Intune (gestión de dispositivos), control de identidades.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Copilot IA:</strong> inteligencia artificial integrada en Word, Excel, Outlook y Teams para acelerar tareas y contenidos.</li>
+        </ul>
+        <div class="def-label">Planes disponibles</div>
+        <div class="grid2">
+          <div class="mini-card">
+            <div class="mc-title">Business (Basic / Standard / Premium)</div>
+            <div class="mc-text">Para empresas de hasta 300 usuarios. Basic incluye apps online + Teams + Exchange. Standard agrega apps de escritorio. Premium suma seguridad avanzada e Intune.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Enterprise (E3 / E5) + IA</div>
+            <div class="mc-text">Sin límite de usuarios. E3 incluye cumplimiento y gestión avanzada. E5 agrega analítica de seguridad, protección avanzada contra amenazas y Copilot IA completo.</div>
+          </div>
+        </div>
+        <div class="def-label">Casos de uso</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Equipos de ventas colaborando en propuestas en tiempo real desde distintas ciudades.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Operaciones híbridas con movilidad segura (empleados en campo + oficina).</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Automatización de tareas repetitivas con Copilot IA integrado en los flujos habituales.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Facturación mensual o anual</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Pago por usuario</span>
+          <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Copilot IA</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('gws')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Google Partner</span>
+        <div class="acc-info"><div class="acc-name">Google Workspace</div><div class="acc-tag">Suite nativa cloud para equipos distribuidos con IA integrada</div></div>
+        <span class="acc-chv" id="achv-gws">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-gws">
+        <p class="def-text">Suite nativa en la nube que potencia la colaboración entre equipos distribuidos, integrando comunicaciones unificadas, gestión documental y herramientas con IA en un solo lugar.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Gmail, Drive, Docs, Sheets, Slides:</strong> suite de productividad 100% online con edición colaborativa en tiempo real.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Meet:</strong> videoconferencias HD integradas con grabación automática y transcripción.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Gemini IA:</strong> asistente inteligente integrado en Gmail, Drive y Meet.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Administración centralizada:</strong> control de usuarios, dispositivos y seguridad desde la Admin Console.</li>
+        </ul>
+        <div class="def-label">Planes</div>
+        <p class="def-text">Starter · Standard · Plus · Enterprise. Modelo pago por usuario con escalabilidad según las necesidades de la organización. Facturación mensual o anual.</p>
+        <div class="tags">
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Nativo cloud</span>
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Gemini IA</span>
+          <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Equipos distribuidos</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /saas -->
+
+
+<!-- ════════════════════════════════════════════════════════ 06 PROF CLOUD -->
+<div class="chapter" id="cap-procloud">
+  <div class="chapter-header" onclick="toggleChapter('procloud')">
+    <div class="chapter-icon" style="background:var(--amber-light)">🧠</div>
+    <div class="chapter-title">06 — Servicios Profesionales Cloud</div>
+    <span class="chapter-toggle" id="ctgl-procloud">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-procloud">
+    <p class="chapter-intro">Asesoramiento de especialistas certificados en cloud que aportan conocimiento técnico para eficientizar resultados, generar más ingresos, mayor escalabilidad y alto desempeño corporativo. <strong>Acá es donde más impacto podés generar desde pre-venta.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cons')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Consultoría</span>
+        <div class="acc-info"><div class="acc-name">Consultoría Cloud</div><div class="acc-tag">Asesoría de especialistas para migrar desde entornos on-premise</div></div>
+        <span class="acc-chv" id="achv-cons">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cons">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Relevamiento de la infraestructura existente: servidores, red, aplicaciones, equipo humano.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Diseño de arquitectura cloud target con BOM (Bill of Materials) detallado.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Análisis TCO: costo real del estado actual vs. costo proyectado en cloud a 3 y 5 años.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Roadmap de migración con fases, hitos y criterios de éxito.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Definición de la mejor arquitectura según objetivos de negocio del cliente.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">TCO/ROI</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">BOM</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Roadmap</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('mig')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Ejecución</span>
+        <div class="acc-info"><div class="acc-name">Migración Cloud</div><div class="acc-tag">Traslado seguro de aplicaciones y sistemas locales a la nube sin cortar operaciones</div></div>
+        <span class="acc-chv" id="achv-mig">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-mig">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Lift &amp; Shift:</strong> migración directa sin rediseño — el servidor se mueve tal cual a la nube.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Re-platforming:</strong> ajuste de la aplicación para aprovechar servicios cloud nativos (ej: base de datos gestionada vs. instalada en VM).</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Testing de carga post-migración para validar rendimiento antes del go-live.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Plan de rollback: si algo falla, reversión al estado previo en minutos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Migraciones desde nubes públicas hacia nubes privadas u on-premise (repatriación).</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Lift &amp; Shift</span><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Re-platform</span><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Cero downtime</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('drs')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Continuidad</span>
+        <div class="acc-info"><div class="acc-name">DRS — Disaster Recovery Services</div><div class="acc-tag">Recuperación rápida de sistemas ante incidentes. RTO y RPO contractuales</div></div>
+        <span class="acc-chv" id="achv-drs">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-drs">
+        <p class="def-text">Replicación continua de sistemas productivos hacia el datacenter de Personal Tech. Ante una falla (datacenter propio, incendio, ransomware), los sistemas levantan automáticamente en minutos.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>RTO (Recovery Time Objective):</strong> tiempo máximo para restaurar operaciones. Definido y garantizado en contrato.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>RPO (Recovery Point Objective):</strong> máxima pérdida de datos aceptable (ej: máximo 1 hora). También contractual.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Drills periódicos de recuperación para validar el plan sin impacto productivo.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Compatible con entornos físicos, virtuales y cargas en hyperscaler.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">DRaaS</span><span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">BCRA compliance</span><span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Continuidad crítica</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('bkp')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Backup</span>
+        <div class="acc-info"><div class="acc-name">Cloud Backup (Veeam)</div><div class="acc-tag">Copias automáticas en la nube para equipos on-premise con tecnología Veeam</div></div>
+        <span class="acc-chv" id="achv-bkp">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-bkp">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Backup automatizado de servidores físicos, VMs y datos críticos hacia el DC de Personal Tech.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Tecnología <strong>Veeam</strong>: estándar de la industria para backup y replicación empresarial.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Retención configurable: 7, 30, 90 días o más según política del cliente.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Cifrado en tránsito y en reposo. Dato siempre en territorio argentino.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Monitoreo y alertas automáticas si una copia falla.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">BaaS</span><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Veeam</span><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Dato en AR</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('finops')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Optimización</span>
+        <div class="acc-info"><div class="acc-name">FinOps</div><div class="acc-tag">Gestión financiera para controlar y optimizar costos en entornos cloud</div></div>
+        <span class="acc-chv" id="achv-finops">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-finops">
+        <p class="def-text">FinOps es la disciplina que pone a ingeniería, finanzas y negocio a hablar el mismo idioma: el del costo por resultado de negocio. Es donde tu perfil tiene más impacto diferencial frente al resto del equipo de pre-venta.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Rightsizing:</strong> VMs sobredimensionadas que pagan capacidad que no usan.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Recursos zombies:</strong> servidores encendidos sin carga, snapshots acumulados, IPs reservadas sin uso.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Dashboard de costos por proyecto, área o aplicación.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Recomendaciones de Reserved Instances o compromisos de consumo para bajar el precio unitario.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Informes ejecutivos para CFO y CIO: cuánto se gasta, dónde, y cómo reducirlo.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--green-light);color:var(--green-dark);">FinOps</span><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Rightsizing</span><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Reducción de costos</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('otros-pro')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Servicios adicionales</span>
+        <div class="acc-info"><div class="acc-name">Cloud Assistance · Pack Starter · VDI · Seguridad en la Nube</div><div class="acc-tag">Soporte, identidad, escritorios remotos y protección cloud</div></div>
+        <span class="acc-chv" id="achv-otros-pro">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-otros-pro">
+        <div class="grid2">
+          <div class="mini-card">
+            <div class="mc-title">Cloud Assistance</div>
+            <div class="mc-text">Soporte y administración de tu infraestructura cloud por especialistas certificados. Monitoreo continuo, gestión de incidentes y recomendaciones de mejora.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Pack Starter Cloud</div>
+            <div class="mc-text">Implementación de gestión de identidad (IAM) y autenticación multifactor (MFA). Primera capa de seguridad para empresas que recién migran a la nube.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Escritorios Remotos (VDI)</div>
+            <div class="mc-text">Escritorios Windows o Linux en la nube, listos en minutos y con escalabilidad garantizada. Ideal para trabajo remoto masivo, call centers y empresas con usuarios en múltiples ubicaciones.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-title">Seguridad en la Nube</div>
+            <div class="mc-text">Assessment y protección de aplicaciones, infraestructura y datos en entornos cloud. Incluye revisión de configuraciones, gestión de vulnerabilidades y hardening.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /prof cloud -->
+
+
+<!-- ════════════════════════════════════════════════════════ 07 PROF INFRA -->
+<div class="chapter" id="cap-proinfra">
+  <div class="chapter-header" onclick="toggleChapter('proinfra')">
+    <div class="chapter-icon" style="background:var(--coral-light)">🔧</div>
+    <div class="chapter-title">07 — Servicios Profesionales Infraestructura IT</div>
+    <span class="chapter-toggle" id="ctgl-proinfra">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-proinfra">
+    <p class="chapter-intro">Soluciones personalizadas que acompañan a la empresa en todo el ciclo tecnológico — desde diseño e implementación hasta administración y housing. Datacenters disponibles en <strong>CABA, AMBA, Córdoba y Corrientes.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pi1')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Consultoría</span>
+        <div class="acc-info"><div class="acc-name">Consultoría de Infraestructura</div><div class="acc-tag">Relevamiento, ingeniería de la solución y costeo de alternativas técnicas</div></div>
+        <span class="acc-chv" id="achv-pi1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pi1">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Relevamiento detallado de requerimientos del cliente: cargas, usuarios, disponibilidad requerida.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Desarrollo de la ingeniería de la solución: topología de red, dimensionamiento de cómputo y storage.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Costeo y presentación de alternativas técnicas: mínimo 2–3 opciones con análisis costo/beneficio.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pi2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Deployment</span>
+        <div class="acc-info"><div class="acc-name">Deployment &amp; Project Management</div><div class="acc-tag">Implementación on-premise y en DC · gestión integral del proyecto</div></div>
+        <span class="acc-chv" id="achv-pi2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pi2">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Implementación en entornos On-Premise y en los datacenters de Personal Tech.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Gestión integral del proceso de deployment con aseguramiento de requisitos técnicos y de negocio.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Migraciones desde nubes públicas hacia nubes privadas u on-premise.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Supervisión experta en cada etapa: calidad, cronogramas y presupuestos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pi3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Managed</span>
+        <div class="acc-info"><div class="acc-name">Managed Services de Infraestructura</div><div class="acc-tag">Monitoreo continuo, informes periódicos y recomendaciones proactivas</div></div>
+        <span class="acc-chv" id="achv-pi3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pi3">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Monitoreo continuo de recursos: CPU, RAM, disco, red, disponibilidad.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Informes periódicos sobre consumos, incidentes y tendencias.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Recomendaciones para cambios y actualizaciones antes de que el problema ocurra.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Soporte 24/7 con equipo IT certificado que asume la gestión operativa.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /prof infra -->
+
+
+<!-- ════════════════════════════════════════════════════════ 08 SOLUCIONES FREE -->
+<div class="chapter" id="cap-free">
+  <div class="chapter-header" onclick="toggleChapter('free')">
+    <div class="chapter-icon" style="background:var(--green-light)">🎁</div>
+    <div class="chapter-title">08 — Soluciones Free (Herramientas gratuitas para clientes)</div>
+    <span class="chapter-toggle" id="ctgl-free">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-free">
+    <p class="chapter-intro">Herramientas digitales gratuitas disponibles para clientes de Personal Tech. Un ecosistema de SaaS partners que cubre desde RRHH y ERP hasta firma digital, CX, email marketing y automatización. <strong>Argumento de retención y diferenciación muy potente en la venta.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('free1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">RRHH &amp; Gestión</span>
+        <div class="acc-info"><div class="acc-name">Napsis · Clock · WorkON · Hexis</div><div class="acc-tag">Nómina, asistencia, empleo y formación profesional</div></div>
+        <span class="acc-chv" id="achv-free1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-free1">
+        <div class="free-grid">
+          <div class="free-card">
+            <div class="fc-cat">RRHH integral</div>
+            <div class="fc-name">Napsis</div>
+            <div class="fc-desc">Plataforma de RRHH que centraliza Nómina, Licencias, Legajos, Firma digital, Beneficios y Comunicación interna. Digitaliza procesos y reduce errores operativos.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Control de asistencia</div>
+            <div class="fc-name">Clock (Software)</div>
+            <div class="fc-desc">Software de control de asistencia. Para clientes de Telecom: licencia gratuita para hasta 10 empleados. El más vanguardista del mercado actual.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Marketplace de empleo</div>
+            <div class="fc-name">WorkON</div>
+            <div class="fc-desc">Marketplace de empleo en tiempo real. Mapa de geolocalización para seleccionar candidatos cercanos al negocio. Ideal para cargos operativos y posiciones de campo.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Campus online</div>
+            <div class="fc-name">Hexis</div>
+            <div class="fc-desc">Plataforma de formación corporativa. Creá tu campus online, personalizá la formación por rol, medí el progreso y accedé a catálogo de universidades de primer nivel.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('free2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">ERP &amp; Finanzas</span>
+        <div class="acc-info"><div class="acc-name">Odoo · Contagram · Braulio · TheEye · Codin</div><div class="acc-tag">ERP, gestión, conciliación, compras y captura inteligente de documentos</div></div>
+        <span class="acc-chv" id="achv-free2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-free2">
+        <div class="free-grid">
+          <div class="free-card">
+            <div class="fc-cat">ERP Open Source</div>
+            <div class="fc-name">Odoo (Quilsoft)</div>
+            <div class="fc-desc">ERP mundialmente conocido por facilidad de uso, escalabilidad y gran cantidad de módulos. Implementado por Quilsoft (Gold Partner) en modalidad SaaS con portal de capacitación.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">ERP SaaS simplificado</div>
+            <div class="fc-name">Contagram</div>
+            <div class="fc-desc">Sistema ERP cloud en formato SaaS, curva de aprendizaje rápida. Gestión y administración de negocio, control de ventas, compras y gastos de manera eficiente.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Captura inteligente</div>
+            <div class="fc-name">Braulio®</div>
+            <div class="fc-desc">Plataforma cloud que captura datos con IA, clasifica documentos automáticamente, elimina entrada manual, exporta en múltiples formatos o directo al ERP. Reduce costos y errores significativamente.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Conciliación automática</div>
+            <div class="fc-name">TheEye Concilia</div>
+            <div class="fc-desc">Plataforma SaaS para automatizar conciliaciones financieras: ganás tiempo, reducís errores, aumentás productividad y eliminás trabajo repetitivo de robot.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Gestión de compras</div>
+            <div class="fc-name">Codin® Sourcing</div>
+            <div class="fc-desc">Comunidad colaborativa para licitaciones y cotizaciones. Formaliza procesos de compra de materiales y contratación de servicios. Ecosistema de +10.000 proveedores en Argentina y el mundo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('free3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">CX &amp; Marketing</span>
+        <div class="acc-info"><div class="acc-name">Smile CX · Bamline · ClickExperts · GEO Lite</div><div class="acc-tag">Experiencia de cliente, canales digitales y presencia web</div></div>
+        <span class="acc-chv" id="achv-free3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-free3">
+        <div class="free-grid">
+          <div class="free-card">
+            <div class="fc-cat">Gestión de CX con IA</div>
+            <div class="fc-name">Smile CX</div>
+            <div class="fc-desc">Plataforma de gestión de la experiencia de clientes con IA. Métricas NPS, CSAT, Text Analytics, alertas en tiempo real y gestión de reclamos con tickets y reportes automatizados.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Omnichannel messaging</div>
+            <div class="fc-name">Bamline</div>
+            <div class="fc-desc">Portal que centraliza WhatsApp, Instagram y Facebook Messenger. Todas las conversaciones con clientes y prospectos en un solo lugar, con historial asociado por contacto.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Email Marketing</div>
+            <div class="fc-name">ClickExperts (Mailtrack Pro)</div>
+            <div class="fc-desc">Herramienta SaaS para gestionar grandes volúmenes de emails: campañas de Email Marketing, Alertas y Email Transaccional.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Presencia web PyME</div>
+            <div class="fc-name">GEO Lite</div>
+            <div class="fc-desc">Para PyMEs y profesionales independientes: presencia web profesional sin esfuerzo técnico. Ideal para quienes no tienen página web o quieren actualizarla.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('free4')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Legal &amp; Seguridad</span>
+        <div class="acc-info"><div class="acc-name">VaFirma · VU Identity Link · Planexware · Full Audits · Geoposicionamiento</div><div class="acc-tag">Firma digital, identidad, proveedores, auditorías y seguimiento de campo</div></div>
+        <span class="acc-chv" id="achv-free4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-free4">
+        <div class="free-grid">
+          <div class="free-card">
+            <div class="fc-cat">Firma digital jurídica</div>
+            <div class="fc-name">VaFirma</div>
+            <div class="fc-desc">Primera solución integral para gestión de cualquier firma digital con validez jurídica en Latinoamérica. Centraliza múltiples alternativas y gestiona el ciclo de vida de documentos legales.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Verificación de identidad</div>
+            <div class="fc-name">VU Identity Link</div>
+            <div class="fc-desc">Autentica y verifica la identidad de clientes, previene fraudes y protege el negocio. Validación en 3 pasos para transacciones más confiables.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Portal de proveedores</div>
+            <div class="fc-name">Planexware</div>
+            <div class="fc-desc">Sistema cloud Freemium para conectar empresas con proveedores mediante intercambio de documentos comerciales. Reduce costos operativos y errores en pagos.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Auditorías y calidad</div>
+            <div class="fc-name">Full Audits</div>
+            <div class="fc-desc">Plataforma para gestión de auditorías y mejora de seguridad y calidad operativa. Checklist digitales, hallazgos y seguimiento de planes de acción.</div>
+          </div>
+          <div class="free-card">
+            <div class="fc-cat">Field tracking</div>
+            <div class="fc-name">Geoposicionamiento (Telecom)</div>
+            <div class="fc-desc">Supervisá en tiempo real la ubicación de equipos de trabajo en campo. Mejora la comunicación, seguridad y eficiencia operativa en empresas con fuerza de trabajo distribuida.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /free -->
+
+
+<!-- ════════════════════════════════════════════════════════ 09 CONECTIVIDAD -->
+<div class="chapter" id="cap-conect">
+  <div class="chapter-header" onclick="toggleChapter('conect')">
+    <div class="chapter-icon" style="background:var(--teal-light)">🔗</div>
+    <div class="chapter-title">09 — Conectividad Empresarial</div>
+    <span class="chapter-toggle" id="ctgl-conect">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-conect">
+    <p class="chapter-intro">Personal Tech (Telecom Argentina) opera una de las redes de fibra más grandes del país. <strong>El único proveedor que puede vender el circuito, el cloud y el SLA en un solo contrato.</strong> AWS y Azure estructuralmente no pueden hacer esto.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('mpls')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">WAN privada</span>
+        <div class="acc-info"><div class="acc-name">MPLS Empresarial</div><div class="acc-tag">Red privada — el tráfico nunca toca internet público — SLA contractual</div></div>
+        <span class="acc-chv" id="achv-mpls">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-mpls">
+        <div class="analogy"><strong>La analogía:</strong> como una autopista privada que solo usa tu empresa. En internet público, el tráfico comparte la ruta con todos — puede haber congestión y cualquiera puede ver lo que llevás. En MPLS, la autopista es tuya, solo vos la usás, y nadie puede ver tu carga.</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Conecta múltiples sedes en una red privada unificada. Tráfico con etiquetas predefinidas — sin pasar por internet.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>QoS configurable: prioridad para voz, video o datos críticos.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Cloud OnRamp:</strong> el circuito MPLS termina directo en el DC de Pacheco — dato nunca sale del carrier.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Latencia garantizada por contrato. SLA con uptime 99,9%.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Banca</span><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Gobierno</span><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Industria crítica</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sdwan')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">WAN por software</span>
+        <div class="acc-info"><div class="acc-name">SD-WAN</div><div class="acc-tag">Gestión inteligente de múltiples links con orquestación centralizada</div></div>
+        <span class="acc-chv" id="achv-sdwan">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sdwan">
+        <div class="analogy"><strong>La analogía:</strong> como un GPS inteligente que monitorea en tiempo real tres caminos (autopista, ruta y calle barrial) y manda tu tráfico por el mejor disponible en cada momento — automáticamente, sin que nadie intervenga.</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Abstrae el transporte (MPLS, fibra broadband, 4G): la empresa no sabe ni le importa qué link está usando.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Panel único para todas las sedes. Un solo técnico opera toda la WAN.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Failover automático: si cae un link, el tráfico salta sin intervención manual.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Cloud Gateway:</strong> envía tráfico al DC de Personal Tech o directo a Azure/AWS según política.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Reducción de costo WAN típica: <strong>30–60%</strong> frente a MPLS puro.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Retail</span><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Muchas sucursales</span><span class="tag" style="background:var(--green-light);color:var(--green-dark);">-60% costo WAN</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dia')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Internet dedicado</span>
+        <div class="acc-info"><div class="acc-name">DIA — Dedicated Internet Access</div><div class="acc-tag">Ancho de banda exclusivo, simétrico, con SLA de velocidad garantizada</div></div>
+        <span class="acc-chv" id="achv-dia">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dia">
+        <div class="analogy"><strong>La analogía:</strong> la diferencia entre un colectivo (internet compartido) y un taxi (DIA). El colectivo te lleva, pero si hay muchos pasajeros llegás tarde. El taxi (DIA) es solo para vos: el chofer se compromete a llevarte en X tiempo, y si no cumple hay penalidades.</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>No compartido. La velocidad contratada está disponible el 100% del tiempo.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Simétrico: misma velocidad de subida y bajada — crítico para backups, videoconferencias HD y cloud.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Direct Peering con AWS y Azure:</strong> menos saltos de red, mejor latencia hacia hyperscalers que desde ISPs genéricos.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>SLA con penalidades económicas si no se cumple el ancho de banda comprometido.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Alto consumo cloud</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Teletrabajo masivo</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Direct Peering</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ded')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Circuito privado</span>
+        <div class="acc-info"><div class="acc-name">Acceso Dedicado + Cross-Connect</div><div class="acc-tag">Cable físico punto a punto. Latencia sub-milisegundo. Sin internet en ningún punto</div></div>
+        <span class="acc-chv" id="achv-ded">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ded">
+        <div class="analogy"><strong>La analogía:</strong> en vez de usar el wifi del edificio (que comparten todos), pedís un cable físico desde tu oficina directo a la sala de servidores. Solo para vos. Cero variabilidad.</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Circuito de fibra óptica exclusivo entre sede del cliente y el DC. Sin compartir infraestructura.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>Cross-Connect dentro del DC:</strong> cable físico entre rack del cliente (colo) y switch de Personal Tech. Latencia sub-ms.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Ideal para replicación de bases de datos en tiempo real, trading, sistemas de misión crítica.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Capacidades desde 1 Gbps hasta 100 Gbps.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Colocation</span><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">DR activo-activo</span><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Trading / Fintech</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('mob')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Móvil &amp; Satelital</span>
+        <div class="acc-info"><div class="acc-name">4G/LTE Empresarial + Conectividad Satelital</div><div class="acc-tag">Backup de enlace fijo y conectividad primaria en zonas sin fibra</div></div>
+        <span class="acc-chv" id="achv-mob">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-mob">
+        <div class="grid2">
+          <div>
+            <div class="def-label">4G/LTE con APN privado</div>
+            <ul class="feat">
+              <li><span class="fdot" style="background:var(--teal-mid)"></span>APN privado: tráfico de la empresa en red aislada, sin pasar por internet público.</li>
+              <li><span class="fdot" style="background:var(--teal-mid)"></span>SIM Management centralizado desde un portal.</li>
+              <li><span class="fdot" style="background:var(--teal-mid)"></span>Failover automático integrado con SD-WAN.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="def-label">Satelital</div>
+            <ul class="feat">
+              <li><span class="fdot" style="background:var(--teal-mid)"></span>Para zonas sin fibra ni cobertura 4G: campo, minería, logística remota.</li>
+              <li><span class="fdot" style="background:var(--teal-mid)"></span>Integrable con SD-WAN — gestión unificada desde el mismo portal.</li>
+              <li><span class="fdot" style="background:var(--teal-mid)"></span>Complementa con IoT para monitoreo de maquinaria y activos remotos.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tags" style="margin-top:10px;"><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Agro</span><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Minería</span><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Logística</span><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Backup WAN</span></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /conectividad -->
+
+
+<!-- ════════════════════════════════════════════════════════ 10 CIBERSEGURIDAD -->
+<div class="chapter" id="cap-ciber">
+  <div class="chapter-header" onclick="toggleChapter('ciber')">
+    <div class="chapter-icon" style="background:var(--coral-light)">🔒</div>
+    <div class="chapter-title">10 — Ciberseguridad</div>
+    <span class="chapter-toggle" id="ctgl-ciber">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-ciber">
+    <p class="chapter-intro">Protección end-to-end: red, endpoint, identidad y operaciones de seguridad 24/7. Personal Tech cubre la seguridad tanto de la red de acceso como de la infraestructura cloud — un solo responsable para toda la cadena.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('soc')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">SOC as a Service</span>
+        <div class="acc-info"><div class="acc-name">SOC — Centro de Operaciones de Seguridad</div><div class="acc-tag">Monitoreo 24/7 de amenazas con respuesta activa ante incidentes</div></div>
+        <span class="acc-chv" id="achv-soc">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-soc">
+        <p class="def-text">Equipo de analistas que monitorea en tiempo real todos los eventos de la infraestructura del cliente. Cuando detectan una amenaza, actúan antes de que cause daño. Como tener un equipo de seguridad propio, sin el costo de armarlo.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Monitoreo 24/7/365. Sin cortes de guardia, fines de semana ni feriados.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>SIEM:</strong> correlación de eventos de toda la infraestructura en un motor de alertas.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Playbooks de respuesta automática ante ciertos tipos de ataque.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span>Informes de incidentes y métricas de seguridad para el CISO o el directorio.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">SOC</span><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">SIEM</span><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">24/7</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ngfw')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Seguridad de red</span>
+        <div class="acc-info"><div class="acc-name">Firewall Gestionado + NGFW</div><div class="acc-tag">Protección perimetral con inspección profunda de paquetes</div></div>
+        <span class="acc-chv" id="achv-ngfw">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ngfw">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Inspección profunda de paquetes (DPI):</strong> ve qué hay dentro del tráfico, no solo de dónde viene.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>IPS/IDS:</strong> detección y prevención de intrusiones en tiempo real.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Filtrado de URLs y control de aplicaciones (bloquea Netflix, permite Zoom).</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Alta disponibilidad: dos firewalls activo-pasivo.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">NGFW</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">IPS/IDS</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Gestionado</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('edr')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Endpoint</span>
+        <div class="acc-info"><div class="acc-name">EDR — Endpoint Detection &amp; Response</div><div class="acc-tag">Protección avanzada en laptops, servidores y dispositivos móviles</div></div>
+        <span class="acc-chv" id="achv-edr">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-edr">
+        <p class="def-text">Va más allá del antivirus tradicional. Si un proceso empieza a cifrar archivos (ransomware), el EDR lo detecta y lo detiene antes de que afecte al resto de la organización.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Detección de comportamientos anómalos, no solo firmas de virus conocidos.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Respuesta automática: aislamiento del dispositivo comprometido de la red.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Consola centralizada para todos los endpoints de la empresa.</li>
+          <li><span class="fdot" style="background:var(--purple-mid)"></span>Integrado con el SOC: los eventos del EDR alimentan el SIEM en tiempo real.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">EDR</span><span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Anti-ransomware</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ztna')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Acceso seguro</span>
+        <div class="acc-info"><div class="acc-name">ZTNA — Zero Trust Network Access</div><div class="acc-tag">Nadie accede a nada sin verificación explícita. Reemplaza la VPN tradicional</div></div>
+        <span class="acc-chv" id="achv-ztna">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ztna">
+        <p class="def-text">Elimina la confianza implícita de las redes corporativas. En lugar de "estás dentro de la red, confiamos en vos", ZTNA verifica identidad y contexto en cada acceso a cada aplicación.</p>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>MFA obligatorio para todo acceso sensible.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Acceso basado en identidad y contexto: mismo usuario, distintos permisos desde oficina vs. café.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Reemplaza la VPN con un modelo más seguro y granular.</li>
+          <li><span class="fdot" style="background:var(--blue-mid)"></span>Alineado con ISO 27001 y NIST CSF.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Zero Trust</span><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">ZTNA</span><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Teletrabajo</span></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /ciber -->
+
+
+<!-- ════════════════════════════════════════════════════════ 11 IoT -->
+<div class="chapter" id="cap-iot">
+  <div class="chapter-header" onclick="toggleChapter('iot')">
+    <div class="chapter-icon" style="background:var(--amber-light)">📡</div>
+    <div class="chapter-title">11 — IoT (Internet de las Cosas)</div>
+    <span class="chapter-toggle" id="ctgl-iot">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-iot">
+    <p class="chapter-intro">Personal Tech integra conectividad (4G, satelital, LPWAN) con plataformas de ingesta y análisis de datos de dispositivos. El mismo proveedor gestiona el sensor, el circuito y la plataforma cloud — eliminando la fragmentación típica de proyectos IoT.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Plataforma</span>
+        <div class="acc-info"><div class="acc-name">Plataforma IoT</div><div class="acc-tag">Ingesta, procesamiento y visualización de datos de dispositivos conectados</div></div>
+        <span class="acc-chv" id="achv-iot1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot1">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Compatibilidad con protocolos estándar: MQTT, HTTP, CoAP.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Dashboards de monitoreo en tiempo real configurables por el cliente.</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>Motor de reglas: si condición X, entonces acción Y (alertas, actuaciones sobre dispositivos).</li>
+          <li><span class="fdot" style="background:var(--amber-mid)"></span>API REST para integración con ERP, SCADA y sistemas de gestión existentes.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Industria 4.0</span><span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Monitoreo remoto</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Vertical Agro</span>
+        <div class="acc-info"><div class="acc-name">AgTech — IoT para Agronegocios</div><div class="acc-tag">Sensores, conectividad 4G/satelital y datos operativos para el campo</div></div>
+        <span class="acc-chv" id="achv-iot2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot2">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Sensores de suelo, clima, humedad y maquinaria conectados por 4G o satélite según cobertura.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Centro de Monitoreo Operativo: visualización en tiempo real de toda la explotación.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Alertas de anomalías: fallo de bomba de riego, temperatura fuera de rango.</li>
+          <li><span class="fdot" style="background:var(--green-mid)"></span>Trazabilidad de lotes para exportación y cumplimiento normativo internacional.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Agricultura</span><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Ganadería</span><span class="tag" style="background:var(--green-light);color:var(--green-dark);">Agroindustria</span></div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot3')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Vertical Industrial</span>
+        <div class="acc-info"><div class="acc-name">IoT Industrial</div><div class="acc-tag">Monitoreo de activos y mantenimiento predictivo</div></div>
+        <span class="acc-chv" id="achv-iot3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot3">
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--teal-mid)"></span>Sensores de vibración, temperatura, corriente y presión en maquinaria.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span>Modelos de mantenimiento predictivo: detectar señales de falla antes de que ocurra la parada.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span>Integración con sistemas SCADA y MES existentes vía API.</li>
+          <li><span class="fdot" style="background:var(--teal-mid)"></span>APN privado: los datos de la planta nunca pasan por internet público.</li>
+        </ul>
+        <div class="tags"><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Manufactura</span><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Oil &amp; Gas</span><span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Predictivo</span></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /iot -->
+
+
+<!-- ════════════════════════════════════════════════════════ 12 REF TÉCNICA -->
+<div class="chapter" id="cap-reftech">
+  <div class="chapter-header" onclick="toggleChapter('reftech')">
+    <div class="chapter-icon" style="background:var(--gray-light)">📋</div>
+    <div class="chapter-title">12 — Referencia Técnica: Conectividad + Cloud</div>
+    <span class="chapter-toggle" id="ctgl-reftech">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-reftech">
+    <div class="ref-wrap">
+    <table class="ref-table">
+      <thead><tr><th style="width:110px">Tecnología</th><th style="width:90px">Tipo</th><th>Qué es</th><th style="width:125px">Caso de uso</th><th style="width:115px">Bundle con cloud</th><th style="width:105px">Arg. de venta</th></tr></thead>
+      <tbody>
+        <tr><td colspan="6" class="tbl-sec">WAN y conectividad empresarial</td></tr>
+        <tr>
+          <td><span class="tn">MPLS</span></td>
+          <td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark)">WAN privada</span></td>
+          <td>Red privada conmutada por etiquetas. Sin internet público en ningún punto del recorrido.</td>
+          <td>Banca, industria, gobierno con baja tolerancia a latencia.</td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">Cloud OnRamp</span> Termina en el DC del carrier.</td>
+          <td>SLA garantizado, latencia fija, tráfico 100% privado.</td>
+        </tr>
+        <tr>
+          <td><span class="tn">SD-WAN</span></td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">WAN por software</span></td>
+          <td>Abstrae el transporte (MPLS, broadband, LTE). Gestiona el tráfico dinámicamente vía políticas. Orquestación centralizada.</td>
+          <td>Empresas con muchas sedes que quieren reducir costos de MPLS.</td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark)">Cloud Gateway</span> Envía tráfico al DC o a AWS/Azure según política.</td>
+          <td>-30–60% costo WAN, visibilidad unificada, failover automático.</td>
+        </tr>
+        <tr>
+          <td><span class="tn">DIA</span><span class="tsub">Dedicated Internet Access</span></td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark)">Internet dedicado</span></td>
+          <td>Ancho de banda exclusivo, simétrico. No compartido. SLA de disponibilidad y velocidad garantizados.</td>
+          <td>Alto consumo cloud, teletrabajo masivo, videoconferencia HD.</td>
+          <td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark)">Direct Peering</span> Personal Tech tiene peering con hyperscalers.</td>
+          <td>Ancho de banda predecible, SLA con penalidades.</td>
+        </tr>
+        <tr>
+          <td><span class="tn">Acceso dedicado</span></td>
+          <td><span class="tag" style="background:var(--coral-light);color:var(--coral-dark)">Circuito privado</span></td>
+          <td>Fibra óptica punto a punto entre sede del cliente y el DC de Personal Tech. Sin compartir infraestructura.</td>
+          <td>Colocation, DR activo-activo, sistemas de trading.</td>
+          <td><span class="tag" style="background:var(--coral-light);color:var(--coral-dark)">Cross-Connect</span> Cable físico en el DC. Latencia sub-ms.</td>
+          <td>Máximo rendimiento, cero variabilidad, ideal para DR y backup masivo.</td>
+        </tr>
+        <tr><td colspan="6" class="tbl-sec">Modelos de bundle conectividad + cloud</td></tr>
+        <tr>
+          <td><span class="tn">Bundle básico</span></td>
+          <td><span class="tag" style="background:var(--gray-light);color:var(--gray-dark)">IaaS + DIA</span></td>
+          <td>VM/storage en el DC + acceso a internet dedicado.</td>
+          <td>Empresa mediana migrando su primer workload.</td>
+          <td>Todo en una factura. El carrier es también el cloud provider.</td>
+          <td>Un solo SLA, un solo punto de contacto.</td>
+        </tr>
+        <tr>
+          <td><span class="tn">Bundle premium</span></td>
+          <td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark)">MPLS + IaaS + DR</span></td>
+          <td>Red privada MPLS + IaaS + replicación para DR.</td>
+          <td>Banco, aseguradora, gobierno regulado.</td>
+          <td>Tráfico nunca toca internet. RTO/RPO contractual.</td>
+          <td>Compliance BCRA/CNV, soberanía del dato.</td>
+        </tr>
+        <tr>
+          <td><span class="tn">Bundle híbrido</span></td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">SD-WAN + IaaS + Multicloud</span></td>
+          <td>SD-WAN con tráfico dinámico hacia cloud propio y hyperscaler según latencia/costo.</td>
+          <td>Empresa con workloads mixtos: críticos en AR, resto en hyperscaler.</td>
+          <td>Personal Tech como broker. Peering con AWS/Azure incluido.</td>
+          <td>Flexibilidad multicloud, costo optimizado.</td>
+        </tr>
+        <tr><td colspan="6" class="tbl-sec">Diferenciadores vs hyperscalers</td></tr>
+        <tr>
+          <td><span class="tn">vs AWS Direct Connect</span></td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark)">Diferenciador</span></td>
+          <td>AWS Direct Connect da conectividad privada a AWS. Personal Tech da lo mismo + hostea el compute + peering local + dato en AR.</td>
+          <td>Cliente que ya usa AWS y quiere bajar latencia y cumplir soberanía.</td>
+          <td>Cloud local + acceso privado a AWS en el mismo contrato.</td>
+          <td>Soberanía + latencia + un solo proveedor local.</td>
+        </tr>
+        <tr>
+          <td><span class="tn">vs Azure ExpressRoute</span></td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark)">Diferenciador</span></td>
+          <td>ExpressRoute requiere un partner de conectividad. Personal Tech puede ser ese partner Y tener cloud propio — elimina un actor.</td>
+          <td>Empresa regulada que necesita ExpressRoute + cloud local.</td>
+          <td>ExpressRoute partner + cloud soberano en un proveedor.</td>
+          <td>Menos vendors, menos contratos, más accountability.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="grid3" style="margin-top:16px;">
+      <div class="mini-card"><div class="mc-title">Argumento maestro</div><div class="mc-text">Personal Tech es el único que vende el circuito, el cloud y el SLA en un solo contrato. Los hyperscalers no pueden hacer eso.</div></div>
+      <div class="mini-card"><div class="mc-title">Objeción más común</div><div class="mc-text">"AWS es más barato." → Mostrá el TCO completo: egress fees, soporte, conectividad y riesgo de tipo de cambio.</div></div>
+      <div class="mini-card"><div class="mc-title">Tu ventaja FinOps</div><div class="mc-text">Calculá el costo real de AWS incluyendo egress, soporte Enterprise y latencia. Pocos en la competencia lo hacen con ese rigor.</div></div>
+    </div>
+  </div>
+</div><!-- /reftech -->
+
+
+<!-- ════════════════════════════════════════════════════════ 13 GLOSARIO -->
+<div class="chapter" id="cap-glosario">
+  <div class="chapter-header" onclick="toggleChapter('glosario')">
+    <div class="chapter-icon" style="background:var(--blue-light)">📖</div>
+    <div class="chapter-title">13 — Glosario Técnico</div>
+    <span class="chapter-toggle" id="ctgl-glosario">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-glosario">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Diferenciador</span>
+        <div class="acc-info"><div class="acc-name">Soberanía del dato</div><div class="acc-tag">El dato nunca sale del país — ni siquiera para viajar a otro DC</div></div>
+        <span class="acc-chv" id="achv-g1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g1">
+        <div class="analogy"><strong>La analogía:</strong> imaginate que tu información más sensible es una caja fuerte. Con AWS o Azure, esa caja fuerte está en un edificio en EE.UU. — vos tenés la llave, pero el edificio no es tuyo y está bajo leyes extranjeras (CLOUD Act). Con Personal Tech, la caja fuerte está en Argentina, en Pacheco, bajo jurisdicción local.</div>
+        <div class="def-label">Por qué importa al CIO/CFO</div>
+        <p class="def-text">Bancos, aseguradoras, empresas de salud y gobierno tienen <strong>obligación legal</strong> de mantener datos en territorio argentino (Comunicación A del BCRA, CNV, Ley de Protección de Datos Personales). Personal Tech lo resuelve de fábrica. AWS y Azure lo resuelven solo parcialmente con costo extra.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Diferenciador</span>
+        <div class="acc-info"><div class="acc-name">Latencia</div><div class="acc-tag">La velocidad de respuesta entre el usuario y el servidor</div></div>
+        <span class="acc-chv" id="achv-g2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g2">
+        <div class="analogy"><strong>La analogía:</strong> si tu servidor está en São Paulo o Virginia, cada vez que un empleado en Buenos Aires accede a una aplicación, el dato viaja miles de kilómetros de ida y vuelta. Si el servidor está en Pacheco (30 km de CABA), el viaje es local.</div>
+        <div class="def-label">Los números</div>
+        <p class="def-text"><strong>AWS São Paulo:</strong> 30–50 ms desde Buenos Aires. <strong>AWS Virginia:</strong> 130–180 ms. <strong>Personal Tech Pacheco:</strong> 5–10 ms. Para ERP, VDI, videollamadas y sistemas transaccionales, esa diferencia es crítica.</p>
+        <div class="diagram">
+          <div class="dvs">
+            <div><div class="dvs-title" style="color:var(--coral-mid)">AWS (región más cercana)</div><div class="drow"><div class="dbox" style="background:var(--blue-light);color:var(--blue-dark)">Usuario CABA</div><div class="darr r">→→→→→</div><div class="dbox" style="background:var(--coral-light);color:var(--coral-dark)">Servidor São Paulo</div></div><div class="dlabel">~30–50 ms · viaje internacional</div></div>
+            <div><div class="dvs-title" style="color:var(--green-mid)">Personal Tech</div><div class="drow"><div class="dbox" style="background:var(--blue-light);color:var(--blue-dark)">Usuario CABA</div><div class="darr g">→</div><div class="dbox" style="background:var(--green-light);color:var(--green-dark)">DC Pacheco</div></div><div class="dlabel">~5–10 ms · tráfico local</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Diferenciador</span>
+        <div class="acc-info"><div class="acc-name">SLA con soporte local</div><div class="acc-tag">Un número de teléfono en Argentina cuando algo se rompe</div></div>
+        <span class="acc-chv" id="achv-g3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g3">
+        <div class="analogy"><strong>La analogía:</strong> AWS tiene SLA, pero el soporte empresarial serio cuesta miles de dólares adicionales por mes y está operado desde el exterior. Con Personal Tech, el técnico que te responde está en Argentina, habla castellano y conoce el contexto regulatorio local.</div>
+        <p class="def-text">El SLA define: <strong>disponibilidad</strong> (ej: 99,95% = máximo 4hs de caída por año), <strong>tiempo de respuesta</strong> ante incidentes y <strong>penalidades</strong> económicas si no se cumple. Personal Tech incluye el soporte local en el mismo contrato de servicio. Sin tiers adicionales.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g4')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Diferenciador</span>
+        <div class="acc-info"><div class="acc-name">Conectividad integrada</div><div class="acc-tag">El único que vende el cable Y el servidor en el mismo contrato</div></div>
+        <span class="acc-chv" id="achv-g4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g4">
+        <div class="analogy"><strong>La analogía:</strong> con AWS comprás el aparato de aire acondicionado (el cloud) pero necesitás contratar a un electricista aparte (la telco). Si algo falla, AWS dice que es problema del electricista y viceversa. Con Personal Tech, la misma empresa vende el aparato Y hace la instalación — hay un solo responsable.</div>
+        <div class="diagram">
+          <div class="dvs">
+            <div><div class="dvs-title" style="color:var(--coral-mid)">Con AWS</div><div class="drow"><div class="dbox" style="background:var(--gray-light);color:var(--gray-dark)">Sede</div><div class="darr">→</div><div class="dbox" style="background:var(--coral-light);color:var(--coral-dark)">Telco A (contrato 1)</div><div class="darr">→</div><div class="dbox" style="background:var(--coral-light);color:var(--coral-dark)">AWS (contrato 2)</div></div><div class="dlabel">2 contratos · nadie dueño del problema</div></div>
+            <div><div class="dvs-title" style="color:var(--green-mid)">Con Personal Tech</div><div class="drow"><div class="dbox" style="background:var(--gray-light);color:var(--gray-dark)">Sede</div><div class="darr g">→</div><div class="dbox" style="background:var(--green-light);color:var(--green-dark)">Personal Tech (1 contrato)</div></div><div class="dlabel">1 proveedor · 1 SLA end-to-end</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g5')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Concepto técnico</span>
+        <div class="acc-info"><div class="acc-name">Cloud OnRamp</div><div class="acc-tag">El punto donde tu red privada termina y empieza el cloud — sin internet</div></div>
+        <span class="acc-chv" id="achv-g5">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g5">
+        <p class="def-text">El Cloud OnRamp es el punto de entrada al cloud dentro de la red privada del carrier. Cuando el circuito MPLS del cliente termina en el DC de Pacheco, está llegando directo al cloud de Personal Tech sin haber pasado por internet en ningún momento. El cliente no "sale" a internet para acceder a sus servidores cloud — viaja por la red privada hasta el datacenter y ahí están sus VMs.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g6')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Concepto técnico</span>
+        <div class="acc-info"><div class="acc-name">Cloud Gateway (SD-WAN)</div><div class="acc-tag">El controlador que decide a dónde va cada flujo de tráfico</div></div>
+        <span class="acc-chv" id="achv-g6">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g6">
+        <p class="def-text">En una arquitectura SD-WAN, el Cloud Gateway es el componente que conecta la red SD-WAN del cliente con los destinos cloud. Personal Tech puede configurar el controlador SD-WAN para que: el tráfico del ERP vaya al DC de Pacheco (cloud soberano), el tráfico de Office 365 vaya directo a internet, y el tráfico hacia Azure vaya por el peering directo. Todo configurable por políticas, sin cambios de hardware.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g7')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Concepto técnico</span>
+        <div class="acc-info"><div class="acc-name">Direct Peering</div><div class="acc-tag">Conexión directa entre redes que evita saltos innecesarios</div></div>
+        <span class="acc-chv" id="achv-g7">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g7">
+        <p class="def-text">Peering significa que dos redes se conectan directamente entre sí, sin pasar por redes de terceros. Personal Tech tiene acuerdos de peering directo con AWS y Azure, lo que significa que cuando un cliente de Personal Tech accede a esos servicios, el tráfico viaja directo de la red de Personal Tech a la de AWS/Azure. Menos saltos = menor latencia, mayor estabilidad y mejor rendimiento que con un ISP genérico.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g8')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Concepto técnico</span>
+        <div class="acc-info"><div class="acc-name">Cross-Connect</div><div class="acc-tag">El cable más corto y más rápido del mundo — dentro del mismo datacenter</div></div>
+        <span class="acc-chv" id="achv-g8">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g8">
+        <p class="def-text">El Cross-Connect es un cable físico dentro del datacenter que conecta el rack del cliente (en colocation) con la infraestructura de Personal Tech. Es la opción de mayor rendimiento posible porque los servidores están literalmente a metros de distancia. La latencia es sub-milisegundo — no hay internet, no hay red pública, no hay variabilidad. Ideal para replicación en tiempo real, DR activo-activo y trading.</p>
+        <div class="diagram">
+          <div style="text-align:center;font-size:11px;font-weight:700;color:var(--text-ter);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Datacenter Personal Tech (Pacheco)</div>
+          <div style="border:1.5px dashed var(--border);border-radius:var(--radius);padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+            <div class="dbox" style="background:var(--coral-light);color:var(--coral-dark)">Rack cliente (colo)</div>
+            <div style="font-size:12px;color:var(--text-ter);font-weight:600;">← cable físico →</div>
+            <div class="dbox" style="background:var(--green-light);color:var(--green-dark)">Switch Personal Tech</div>
+            <div class="darr g">→</div>
+            <div class="dbox" style="background:var(--green-light);color:var(--green-dark)">Cloud Personal Tech</div>
+          </div>
+          <div class="dlabel">Todo dentro del mismo DC. Sin internet. Latencia sub-ms.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /glosario -->
+
+
+<!-- ════════════════════════════════════════════════════════ 14 MAPA MENTAL -->
+<div class="chapter" id="cap-mapa">
+  <div class="chapter-header" onclick="toggleChapter('mapa')">
+    <div class="chapter-icon" style="background:var(--gray-light)">🗺</div>
+    <div class="chapter-title">14 — Mapa Mental: cuándo usar cada tecnología</div>
+    <span class="chapter-toggle" id="ctgl-mapa">▼</span>
+  </div>
+  <div class="chapter-body" id="cbdy-mapa">
+    <p class="chapter-intro">Referencia rápida para el momento de la conversación con el cliente. Escenario → tecnología → argumento principal.</p>
+    <div class="ref-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Escenario del cliente</th><th style="width:160px">Tecnología recomendada</th><th>Argumento principal</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Banco con 30 sucursales que necesita máxima seguridad y compliance regulatorio</td>
+          <td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark)">MPLS + IaaS + DR</span></td>
+          <td>Tráfico nunca toca internet. Soberanía del dato. SLA end-to-end. Compliance BCRA.</td>
+        </tr>
+        <tr>
+          <td>Retail con 100+ sucursales que quiere bajar costos de red sin perder visibilidad</td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">SD-WAN + IaaS</span></td>
+          <td>Reducción WAN 30–60%. Panel único de gestión. Failover automático entre links.</td>
+        </tr>
+        <tr>
+          <td>Empresa mediana que usa Azure pero quiere mejor latencia y dato soberano</td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark)">DIA + Cloud híbrida</span></td>
+          <td>Peering directo = mejor latencia que ISP genérico. Workloads críticos en AR, resto en Azure.</td>
+        </tr>
+        <tr>
+          <td>Empresa con hardware propio que quiere conectarse al cloud sin salir a internet</td>
+          <td><span class="tag" style="background:var(--coral-light);color:var(--coral-dark)">Colocation + Cross-Connect</span></td>
+          <td>Sub-ms de latencia. Sin internet en ningún punto. Máximo rendimiento para DB críticas.</td>
+        </tr>
+        <tr>
+          <td>Gobierno o empresa regulada que empieza su primer migración a cloud</td>
+          <td><span class="tag" style="background:var(--gray-light);color:var(--gray-dark)">Bundle básico IaaS + DIA</span></td>
+          <td>Una sola factura, un solo proveedor, SLA unificado. Puerta de entrada con mínima complejidad.</td>
+        </tr>
+        <tr>
+          <td>Empresa con workloads mixtos: algunos críticos, otros flexibles en hyperscaler</td>
+          <td><span class="tag" style="background:var(--purple-light);color:var(--purple-dark)">Bundle híbrido SD-WAN + Multicloud</span></td>
+          <td>Personal Tech como broker. Peering con AWS/Azure. Visibilidad y costo optimizado.</td>
+        </tr>
+        <tr>
+          <td>PyME que necesita servidores pero no quiere invertir en hardware</td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">VPS (SVP XS o M)</span></td>
+          <td>Despliegue inmediato, pago por uso, SSD, IP pública y Firewall incluidos.</td>
+        </tr>
+        <tr>
+          <td>Empresa que quiere probar cloud sin compromiso</td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">VPS Free / Soluciones Free</span></td>
+          <td>SVP Free: 1 vCPU, 1GB RAM, 40GB SSD, Ubuntu. Sin costo. Más todas las herramientas SaaS gratuitas del ecosistema.</td>
+        </tr>
+        <tr>
+          <td>Empresa con campo o maquinaria remota sin cobertura de fibra</td>
+          <td><span class="tag" style="background:var(--teal-light);color:var(--teal-dark)">IoT + 4G/Satelital</span></td>
+          <td>Un solo proveedor para el sensor, el circuito y la plataforma de datos. APN privado.</td>
+        </tr>
+        <tr>
+          <td>Cliente con ransomware o que quiere evitarlo</td>
+          <td><span class="tag" style="background:var(--coral-light);color:var(--coral-dark)">SOC + EDR + Cloud Backup</span></td>
+          <td>Detección antes del daño + aislamiento automático + recovery desde backup inmutable en AR.</td>
+        </tr>
+        <tr>
+          <td>Empresa que ya tiene infraestructura y quiere reducir costos cloud</td>
+          <td><span class="tag" style="background:var(--green-light);color:var(--green-dark)">FinOps + Consultoría Cloud</span></td>
+          <td>Rightsizing, eliminación de recursos zombies, dashboard de costos. Ahorro típico 20–40% del gasto cloud actual.</td>
+        </tr>
+        <tr>
+          <td>Empresa sin equipo IT interno que quiere externalizar operaciones</td>
+          <td><span class="tag" style="background:var(--amber-light);color:var(--amber-dark)">Managed Cloud + Managed Infra</span></td>
+          <td>Personal Tech opera todo. Monitoreo 24/7, parchado, gestión de capacidad, informes ejecutivos.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="subsec" style="margin-top:22px;">Sectores verticales y argumentos clave</div>
+    <div class="sector-grid">
+      <div class="sc"><div class="sc-icon">🏦</div><div class="sc-name">Banca y Seguros</div><div class="sc-desc">MPLS + DR + Cloud soberana. Compliance BCRA/CNV. Soberanía obligatoria.</div></div>
+      <div class="sc"><div class="sc-icon">🏛️</div><div class="sc-name">Gobierno</div><div class="sc-desc">Cloud privada on-shore, 100% renovable. Normativas de datos públicos.</div></div>
+      <div class="sc"><div class="sc-icon">🛒</div><div class="sc-name">Retail</div><div class="sc-desc">SD-WAN para 100+ sucursales, escalado en temporada alta (Hot Sale).</div></div>
+      <div class="sc"><div class="sc-icon">🏭</div><div class="sc-name">Manufactura</div><div class="sc-desc">IoT industrial, 4G + APN privado, mantenimiento predictivo.</div></div>
+      <div class="sc"><div class="sc-icon">🌾</div><div class="sc-name">Agronegocios</div><div class="sc-desc">AgTech: 4G+satelital, sensores IoT, trazabilidad de lotes.</div></div>
+      <div class="sc"><div class="sc-icon">⚡</div><div class="sc-name">Oil, Gas &amp; Energía</div><div class="sc-desc">Conectividad zonas remotas, IoT de activos críticos, seguridad OT/IT.</div></div>
+      <div class="sc"><div class="sc-icon">🏥</div><div class="sc-name">Salud</div><div class="sc-desc">Cloud soberana para historia clínica, DR sistemas críticos, seguridad endpoints.</div></div>
+      <div class="sc"><div class="sc-icon">📦</div><div class="sc-name">Logística</div><div class="sc-desc">Trazabilidad de flota por IoT+4G, SD-WAN para operaciones distribuidas.</div></div>
+    </div>
+
+  </div>
+</div><!-- /mapa -->
+
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Personal Tech · Referencia comercial y técnica</span>
+  <span>Documento de uso personal — confidencial — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha2').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function toggleChapter(id){
+  var b=document.getElementById('cbdy-'+id);
+  var t=document.getElementById('ctgl-'+id);
+  var open=b.classList.toggle('open');
+  t.classList.toggle('open',open);
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  var open=b.classList.toggle('open');
+  c.classList.toggle('open',open);
+}
+// Highlight active nav on scroll
+var chapters=document.querySelectorAll('.chapter');
+var navLinks=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var scrollY=window.scrollY+80;
+  chapters.forEach(function(ch){
+    var top=ch.offsetTop;
+    var bottom=top+ch.offsetHeight;
+    if(scrollY>=top&&scrollY<bottom){
+      navLinks.forEach(function(l){l.classList.remove('active');});
+      var id=ch.getAttribute('id');
+      var active=document.querySelector('.tnav[href="#'+id+'"]');
+      if(active)active.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora TCO/ROI Cloud | Personal Tech</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --red-light:#FFE8E8;--red-mid:#D63030;--red-dark:#7A0000;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#f7f5f0;--bg2:#ffffff;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.6;}
+
+/* HEADER */
+.header{background:var(--text);color:#fff;padding:28px 32px 24px;}
+.header-inner{max-width:1100px;margin:0 auto;}
+.header-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:6px;}
+.header-title{font-size:24px;font-weight:700;color:#fff;margin-bottom:4px;}
+.header-sub{font-size:13px;color:rgba(255,255,255,.55);font-style:italic;}
+
+/* LAYOUT */
+.layout{max-width:1100px;margin:0 auto;padding:24px 20px 60px;display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start;}
+
+/* FORM PANEL */
+.form-panel{display:flex;flex-direction:column;gap:16px;}
+.section-card{background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.sc-head{padding:14px 18px;background:var(--bg);border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sc-icon{width:30px;height:30px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.sc-title{font-size:13.5px;font-weight:700;color:var(--text);}
+.sc-body{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sc-body.single{grid-template-columns:1fr;}
+
+/* FORM FIELDS */
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);}
+.field-hint{font-size:10.5px;color:var(--text-ter);font-style:italic;margin-top:-2px;}
+.field input,.field select{
+  border:.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:8px 11px;font-size:13px;font-family:inherit;color:var(--text);
+  background:var(--bg);outline:none;transition:border-color .18s;width:100%;
+}
+.field input:focus,.field select:focus{border-color:var(--blue-mid);}
+.field input[type="range"]{padding:4px 0;border:none;background:none;cursor:pointer;}
+.range-val{font-size:13px;font-weight:700;color:var(--blue-dark);text-align:right;}
+
+/* CALCULATE BTN */
+.calc-btn{
+  background:var(--blue-mid);color:#fff;border:none;border-radius:var(--radius);
+  padding:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:background .18s;width:100%;
+}
+.calc-btn:hover{background:var(--blue-dark);}
+
+/* RESULTS PANEL */
+.results-panel{position:sticky;top:16px;display:flex;flex-direction:column;gap:14px;}
+
+/* HERO RESULT */
+.hero-result{background:var(--text);border-radius:var(--radius);padding:20px;color:#fff;}
+.hr-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.hr-val{font-size:36px;font-weight:700;color:#fff;line-height:1.1;}
+.hr-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;}
+.hr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.hr-stat{background:rgba(255,255,255,.06);border-radius:var(--radius-sm);padding:10px 12px;}
+.hr-stat-val{font-size:18px;font-weight:700;color:#fff;}
+.hr-stat-label{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px;}
+
+/* BREAKDOWN */
+.breakdown-card{background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.bk-head{padding:11px 15px;background:var(--bg);border-bottom:.5px solid var(--border);font-size:12px;font-weight:700;color:var(--text);}
+.bk-body{padding:12px 15px;display:flex;flex-direction:column;gap:8px;}
+.bk-row{display:flex;align-items:center;gap:8px;}
+.bk-label{font-size:12px;color:var(--text-sec);flex:1;}
+.bk-bar-wrap{width:90px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;flex-shrink:0;}
+.bk-bar{height:100%;border-radius:3px;transition:width .5s;}
+.bk-val{font-size:12px;font-weight:700;text-align:right;min-width:70px;flex-shrink:0;}
+
+/* YEAR TABLE */
+.year-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
+.year-table th{padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg);}
+.year-table td{padding:8px 10px;border-bottom:.5px solid var(--border);color:var(--text-sec);}
+.year-table tr:last-child td{border-bottom:none;font-weight:700;color:var(--text);background:var(--bg);}
+.green{color:var(--green-dark)!important;}
+.red{color:var(--red-dark)!important;}
+
+/* EMPTY STATE */
+.empty-state{padding:32px 20px;text-align:center;color:var(--text-ter);}
+.empty-icon{font-size:36px;margin-bottom:10px;}
+.empty-text{font-size:13px;line-height:1.6;}
+
+/* DISCLAIMER */
+.disclaimer{font-size:10.5px;color:var(--text-ter);line-height:1.55;padding:10px 12px;background:var(--gray-light);border-radius:var(--radius-sm);border:.5px solid var(--border);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr;}
+  .results-panel{position:static;}
+  .sc-body{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-label">Personal Tech · Herramienta de preventa</div>
+    <div class="header-title">Calculadora TCO/ROI Cloud</div>
+    <div class="header-sub">Completá los datos del cliente para comparar el costo real de on-premise vs. cloud a 3 años</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ── FORM ── -->
+  <div class="form-panel">
+
+    <!-- INFRAESTRUCTURA ACTUAL -->
+    <div class="section-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:var(--coral-light);">🖥</div>
+        <div class="sc-title">Infraestructura actual (on-premise)</div>
+      </div>
+      <div class="sc-body">
+        <div class="field">
+          <label>Cantidad de servidores</label>
+          <div class="field-hint">Físicos o virtualizados on-premise</div>
+          <input type="number" id="servers" value="20" min="1" max="500" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Edad promedio del hardware (años)</label>
+          <div class="field-hint">Mayor edad = mayor riesgo de renovación próxima</div>
+          <input type="number" id="hw-age" value="4" min="1" max="15" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Costo del hardware (USD)</label>
+          <div class="field-hint">Valor de reposición total estimado</div>
+          <input type="number" id="hw-cost" value="120000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Licencias software/año (USD)</label>
+          <div class="field-hint">VMware, SO, antivirus, backup, monitoreo</div>
+          <input type="number" id="sw-cost" value="35000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Personal IT de infraestructura</label>
+          <div class="field-hint">Personas dedicadas a administrar servidores</div>
+          <input type="number" id="it-staff" value="2" min="0" max="20" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Costo por persona IT/año (USD)</label>
+          <div class="field-hint">Salario + cargas sociales + capacitación</div>
+          <input type="number" id="it-salary" value="45000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Energía + cooling/año (USD)</label>
+          <div class="field-hint">Electricidad de servidores + aire acondicionado sala</div>
+          <input type="number" id="energy-cost" value="18000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Espacio físico sala DC/año (USD)</label>
+          <div class="field-hint">Alquiler proporcional, UPS, CCTV, acceso</div>
+          <input type="number" id="space-cost" value="8000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Costo DR actual/año (USD)</label>
+          <div class="field-hint">Sitio alternativo, backup, hardware espejo</div>
+          <input type="number" id="dr-cost" value="35000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Uptime actual estimado (%)</label>
+          <div class="field-hint">Típico on-premise: 99.5%. Ingresá el real.</div>
+          <input type="number" id="uptime" value="99.5" min="90" max="100" step="0.1" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Ingreso promedio por hora (USD)</label>
+          <div class="field-hint">Para calcular costo del downtime evitado</div>
+          <input type="number" id="hourly-revenue" value="5000" min="0" oninput="update()">
+        </div>
+      </div>
+    </div>
+
+    <!-- SOLUCIÓN CLOUD -->
+    <div class="section-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:var(--green-light);">☁️</div>
+        <div class="sc-title">Solución cloud propuesta</div>
+      </div>
+      <div class="sc-body">
+        <div class="field">
+          <label>Costo cloud mensual (USD)</label>
+          <div class="field-hint">Personal Tech Cloud o hyperscaler — precio del servicio</div>
+          <input type="number" id="cloud-monthly" value="6000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Costo de migración (USD)</label>
+          <div class="field-hint">Servicios profesionales + proyecto de migración</div>
+          <input type="number" id="migration-cost" value="25000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Licencias residuales en cloud/año (USD)</label>
+          <div class="field-hint">Lo que el cliente sigue pagando (ej: licencias de aplicaciones)</div>
+          <input type="number" id="cloud-licenses" value="10000" min="0" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Personal IT post-migración</label>
+          <div class="field-hint">Personas que quedan gestionando. Resto se redirige.</div>
+          <input type="number" id="cloud-staff" value="0.5" min="0" max="10" step="0.5" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Uptime del cloud (%)</label>
+          <div class="field-hint">Personal Tech Cloud: 99.982%. Ajustá según propuesta.</div>
+          <input type="number" id="cloud-uptime" value="99.982" min="90" max="100" step="0.001" oninput="update()">
+        </div>
+        <div class="field">
+          <label>Ahorro FinOps esperado (%)</label>
+          <div class="field-hint">Optimización continua: rightsizing, zombies. Típico: 20-35%</div>
+          <input type="number" id="finops-pct" value="25" min="0" max="50" oninput="update()">
+        </div>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">⚡ Calcular TCO y ROI a 3 años</button>
+
+    <div class="disclaimer">
+      📋 <strong>Nota metodológica:</strong> Los valores son orientativos y deben ajustarse con los datos reales del cliente. Para una propuesta formal, completar con los números exactos del relevamiento técnico. Moneda base: USD. Los costos en pesos se convierten según el tipo de cambio vigente al momento de la propuesta.
+    </div>
+
+  </div><!-- /form-panel -->
+
+
+  <!-- ── RESULTS ── -->
+  <div class="results-panel" id="results-panel">
+    <div class="section-card">
+      <div class="sc-head">
+        <div class="sc-icon" style="background:var(--blue-light);">📊</div>
+        <div class="sc-title">Resultados</div>
+      </div>
+      <div id="results-content">
+        <div class="empty-state">
+          <div class="empty-icon">🧮</div>
+          <div class="empty-text">Completá los datos del cliente y hacé click en <strong>Calcular</strong> para ver el análisis TCO/ROI a 3 años.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<script>
+function fmt(n){
+  if(isNaN(n)||!isFinite(n)) return '$0';
+  return '$' + Math.round(n).toLocaleString('es-AR');
+}
+function fmtPct(n){
+  if(isNaN(n)||!isFinite(n)) return '0%';
+  return Math.round(n) + '%';
+}
+
+function update(){
+  // live update only basic fields — full calc on button
+}
+
+function calculate(){
+  // ── INPUTS ──
+  var servers       = +document.getElementById('servers').value || 0;
+  var hwAge         = +document.getElementById('hw-age').value || 0;
+  var hwCost        = +document.getElementById('hw-cost').value || 0;
+  var swCost        = +document.getElementById('sw-cost').value || 0;
+  var itStaff       = +document.getElementById('it-staff').value || 0;
+  var itSalary      = +document.getElementById('it-salary').value || 0;
+  var energyCost    = +document.getElementById('energy-cost').value || 0;
+  var spaceCost     = +document.getElementById('space-cost').value || 0;
+  var drCost        = +document.getElementById('dr-cost').value || 0;
+  var uptime        = +document.getElementById('uptime').value || 99.5;
+  var hourlyRev     = +document.getElementById('hourly-revenue').value || 0;
+  var cloudMonthly  = +document.getElementById('cloud-monthly').value || 0;
+  var migrationCost = +document.getElementById('migration-cost').value || 0;
+  var cloudLicenses = +document.getElementById('cloud-licenses').value || 0;
+  var cloudStaff    = +document.getElementById('cloud-staff').value || 0;
+  var cloudUptime   = +document.getElementById('cloud-uptime').value || 99.982;
+  var finopsPct     = +document.getElementById('finops-pct').value || 25;
+
+  // ── ON-PREMISE COSTS ──
+  // Hardware: full cost year 1 + renewal if age >= 3 in year 3
+  var hwY1 = hwAge >= 4 ? hwCost * 0.3 : 0; // partial refresh if old
+  var hwY3 = hwAge >= 3 ? hwCost * 0.5 : hwCost * 0.15; // bigger renewal in yr 3
+  var opHardware = [hwY1, 0, hwY3];
+
+  var opSoftware  = [swCost, swCost * 1.1, swCost * 1.21]; // +10% annual increase
+  var opStaff     = [itStaff * itSalary, itStaff * itSalary * 1.08, itStaff * itSalary * 1.17];
+  var opEnergy    = [energyCost, energyCost * 1.05, energyCost * 1.1];
+  var opSpace     = [spaceCost, spaceCost, spaceCost];
+  var opDR        = [drCost, drCost * 0.5 + drCost, drCost]; // DR capex year 1 + maint
+
+  // Downtime cost: hours down per year * hourly revenue
+  var hoursDown = 8760 * (1 - uptime / 100);
+  var downtimeCost = hoursDown * hourlyRev;
+  var opDowntime = [downtimeCost, downtimeCost, downtimeCost];
+
+  var opTotal = [0,0,0];
+  for(var i=0;i<3;i++){
+    opTotal[i] = opHardware[i] + opSoftware[i] + opStaff[i] + opEnergy[i] + opSpace[i] + opDR[i] + opDowntime[i];
+  }
+
+  // ── CLOUD COSTS ──
+  var cloudAnnual = cloudMonthly * 12;
+  var finopsMonthly = cloudAnnual * (finopsPct / 100);
+  var cloudStaffCost = cloudStaff * itSalary; // reusing same salary estimate
+
+  // Cloud downtime
+  var cloudHoursDown = 8760 * (1 - cloudUptime / 100);
+  var cloudDowntimeCost = cloudHoursDown * hourlyRev;
+
+  var clCosts = [
+    migrationCost + cloudAnnual + cloudLicenses + cloudStaffCost * itSalary * cloudStaff - finopsMonthly + cloudDowntimeCost,
+    cloudAnnual + cloudLicenses + cloudStaff * itSalary * 1.08 - finopsMonthly * 1.1 + cloudDowntimeCost,
+    cloudAnnual + cloudLicenses + cloudStaff * itSalary * 1.17 - finopsMonthly * 1.2 + cloudDowntimeCost,
+  ];
+  // Recalculate properly
+  clCosts[0] = migrationCost + (cloudAnnual - finopsMonthly) + cloudLicenses + (cloudStaff * itSalary) + cloudDowntimeCost;
+  clCosts[1] = (cloudAnnual - finopsMonthly * 1.1) + cloudLicenses + (cloudStaff * itSalary * 1.08) + cloudDowntimeCost;
+  clCosts[2] = (cloudAnnual - finopsMonthly * 1.2) + cloudLicenses + (cloudStaff * itSalary * 1.17) + cloudDowntimeCost;
+
+  // ── TOTALS ──
+  var totalOP = opTotal.reduce(function(a,b){return a+b;}, 0);
+  var totalCL = clCosts.reduce(function(a,b){return a+b;}, 0);
+  var savings = totalOP - totalCL;
+  var roi = totalCL > 0 ? ((savings / totalCL) * 100) : 0;
+
+  // Payback: when does cumulative savings exceed migration cost?
+  var paybackMonths = 0;
+  var cumSaving = 0;
+  var monthlyOp = totalOP / 36;
+  var monthlyCl = (totalCL - migrationCost) / 36;
+  if(monthlyOp > monthlyCl){
+    paybackMonths = Math.ceil(migrationCost / (monthlyOp - monthlyCl));
+  } else {
+    paybackMonths = 999;
+  }
+
+  // ── DOWNTIME SAVINGS ──
+  var downtimeSaved = (hoursDown - cloudHoursDown) * hourlyRev * 3;
+
+  // ── IT STAFF REDIRECT VALUE ──
+  var itRedirected = (itStaff - cloudStaff) * itSalary * 3;
+
+  // ── BUILD HTML ──
+  var color = savings > 0 ? 'var(--green-mid)' : 'var(--red-mid)';
+  var sign  = savings > 0 ? '+' : '';
+
+  // Bar chart percentages for on-premise breakdown
+  var opComp = [
+    {label:'Hardware', val: opHardware.reduce(function(a,b){return a+b;},0), color:'var(--coral-mid)'},
+    {label:'Software / Licencias', val: opSoftware.reduce(function(a,b){return a+b;},0), color:'var(--amber-mid)'},
+    {label:'Personal IT', val: opStaff.reduce(function(a,b){return a+b;},0), color:'var(--blue-mid)'},
+    {label:'Energía + Cooling', val: opEnergy.reduce(function(a,b){return a+b;},0), color:'var(--teal-mid)'},
+    {label:'Espacio físico', val: opSpace.reduce(function(a,b){return a+b;},0), color:'var(--purple-mid)'},
+    {label:'Disaster Recovery', val: opDR.reduce(function(a,b){return a+b;},0), color:'var(--gray-mid)'},
+    {label:'Costo de downtime', val: opDowntime.reduce(function(a,b){return a+b;},0), color:'var(--red-mid)'},
+  ];
+  var maxVal = Math.max.apply(null, opComp.map(function(c){return c.val;}));
+
+  var barsHtml = opComp.map(function(c){
+    var pct = maxVal > 0 ? (c.val / maxVal * 100) : 0;
+    return '<div class="bk-row">' +
+      '<div class="bk-label">' + c.label + '</div>' +
+      '<div class="bk-bar-wrap"><div class="bk-bar" style="width:'+pct+'%;background:'+c.color+';"></div></div>' +
+      '<div class="bk-val" style="color:'+c.color+'">' + fmt(c.val) + '</div>' +
+      '</div>';
+  }).join('');
+
+  var html = `
+    <div class="hero-result">
+      <div class="hr-label">Ahorro neto a 3 años</div>
+      <div class="hr-val" style="color:${savings>0?'#5ce89a':'#ff7070'}">${sign}${fmt(savings)}</div>
+      <div class="hr-sub">${savings>0?'Cloud es más económico que on-premise en el período':'On-premise resulta más económico — revisá los inputs'}</div>
+      <div class="hr-grid">
+        <div class="hr-stat">
+          <div class="hr-stat-val" style="color:${savings>0?'#5ce89a':'#ff7070'}">${fmtPct(roi)}</div>
+          <div class="hr-stat-label">ROI 3 años</div>
+        </div>
+        <div class="hr-stat">
+          <div class="hr-stat-val">${paybackMonths < 900 ? paybackMonths + ' meses' : 'N/A'}</div>
+          <div class="hr-stat-label">Payback period</div>
+        </div>
+        <div class="hr-stat">
+          <div class="hr-stat-val">${fmt(totalOP)}</div>
+          <div class="hr-stat-label">TCO On-Premise 3 años</div>
+        </div>
+        <div class="hr-stat">
+          <div class="hr-stat-val">${fmt(totalCL)}</div>
+          <div class="hr-stat-label">TCO Cloud 3 años</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="bk-head">📋 Composición del TCO on-premise (3 años)</div>
+      <div class="bk-body">${barsHtml}</div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="bk-head">📅 Evolución año por año</div>
+      <div style="padding:12px 15px;">
+      <table class="year-table">
+        <thead><tr><th>Período</th><th>On-Premise</th><th>Cloud</th><th>Diferencia</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Año 1</td>
+            <td class="red">${fmt(opTotal[0])}</td>
+            <td>${fmt(clCosts[0])}</td>
+            <td class="${opTotal[0]>clCosts[0]?'green':'red'}">${fmt(opTotal[0]-clCosts[0])}</td>
+          </tr>
+          <tr>
+            <td>Año 2</td>
+            <td class="red">${fmt(opTotal[1])}</td>
+            <td>${fmt(clCosts[1])}</td>
+            <td class="${opTotal[1]>clCosts[1]?'green':'red'}">${fmt(opTotal[1]-clCosts[1])}</td>
+          </tr>
+          <tr>
+            <td>Año 3</td>
+            <td class="red">${fmt(opTotal[2])}</td>
+            <td>${fmt(clCosts[2])}</td>
+            <td class="${opTotal[2]>clCosts[2]?'green':'red'}">${fmt(opTotal[2]-clCosts[2])}</td>
+          </tr>
+          <tr>
+            <td>TOTAL 3 años</td>
+            <td class="red">${fmt(totalOP)}</td>
+            <td>${fmt(totalCL)}</td>
+            <td class="${savings>0?'green':'red'}">${fmt(savings)}</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="bk-head">💡 Beneficios adicionales (no incluidos en TCO)</div>
+      <div class="bk-body">
+        <div class="bk-row">
+          <div class="bk-label">Downtime evitado (uptime mejorado)</div>
+          <div class="bk-val" style="color:var(--green-dark)">${fmt(downtimeSaved)}</div>
+        </div>
+        <div class="bk-row">
+          <div class="bk-label">Valor IT redirigido a proyectos de negocio</div>
+          <div class="bk-val" style="color:var(--green-dark)">${fmt(itRedirected)}</div>
+        </div>
+        <div class="bk-row">
+          <div class="bk-label">Horas de downtime/año on-premise</div>
+          <div class="bk-val" style="color:var(--red-dark)">${hoursDown.toFixed(1)} hs</div>
+        </div>
+        <div class="bk-row">
+          <div class="bk-label">Horas de downtime/año cloud</div>
+          <div class="bk-val" style="color:var(--green-dark)">${cloudHoursDown.toFixed(2)} hs</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('results-content').innerHTML = html;
+}
+
+// Auto-calculate on load with defaults
+window.onload = function(){ calculate(); };
+</script>
+
+<!-- Sección GCP -->
+<section style="margin-top:40px; padding:24px; background:#E8F7FF; border-left:4px solid #4A90E2; border-radius:8px;">
+  <h3 style="color:#0066CC; margin-bottom:12px; font-size:18px;">🟩 Google Cloud Platform — Pricing Comparison</h3>
+  <p style="font-size:13px; color:#1a1a18; line-height:1.6;">
+    <strong>GCP vs AWS Pricing:</strong> GCP suele ser ~10-15% más barato en compute. BigQuery (data warehouse) es donde GCP sobresale — 1 TB queries/mes GRATIS.
+  </p>
+  <p style="font-size:13px; color:#1a1a18; margin-top:10px;"><strong>Servicios clave GCP:</strong></p>
+  <ul style="font-size:13px; color:#1a1a18; margin-left:20px; margin-top:8px;">
+    <li><strong>Compute Engine</strong> (~10% menos que EC2)</li>
+    <li><strong>Cloud Storage</strong> (~13% menos que S3)</li>
+    <li><strong>BigQuery</strong> (1 TB gratis/mes — AWS NO tiene equivalente)</li>
+    <li><strong>Cloud SQL</strong> (similar RDS pero más barato)</li>
+    <li><strong>Cloud Run</strong> (serverless sin instancias mínimas)</li>
+  </ul>
+  <p style="font-size:12px; color:#0066CC; margin-top:12px;"><strong>💡 Recomendación:</strong> Para workloads de datos → GCP. Para infraestructura general → AWS. Para hybrid → Azure.</p>
+</section>
+
+</body>
+</html>

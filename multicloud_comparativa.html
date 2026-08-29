@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparativa Multicloud — AWS · Azure · GCP · IBM · Oracle · Huawei</title>
+<style>
+:root {
+  --aws:#FF9900;--aws-l:#FFF4E0;--aws-d:#7A4700;
+  --az:#0078D4;--az-l:#E6F2FF;--az-d:#004578;
+  --gcp:#4285F4;--gcp-l:#E8F0FE;--gcp-d:#1A3A7A;
+  --ibm:#054ADA;--ibm-l:#E8EFFE;--ibm-d:#021F5C;
+  --ora:#F80000;--ora-l:#FFE8E8;--ora-d:#7A0000;
+  --hwa:#CF0A2C;--hwa-l:#FFE8EC;--hwa-d:#6A0016;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+a{text-decoration:none;color:inherit;}
+
+/* TOP NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1040px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:16px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* CLOUD LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;padding:12px 14px;background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);}
+.legend-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);width:100%;margin-bottom:4px;}
+.lpill{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;white-space:nowrap;}
+
+/* VERTICAL (chapter) */
+.vertical{margin-bottom:48px;scroll-margin-top:50px;}
+.vert-header{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;margin-bottom:4px;}
+.vert-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:12px 0 18px;padding:11px 14px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* SUBSECTION */
+.subsec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);border-bottom:.5px solid var(--border);padding-bottom:4px;margin:18px 0 12px;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:9px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);flex-shrink:0;margin-top:3px;min-width:80px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.acc-chv{font-size:10px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+
+/* COMPARISON TABLE inside acc */
+.ctable-wrap{overflow-x:auto;}
+.ctable{width:100%;border-collapse:collapse;font-size:12px;}
+.ctable th{padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;white-space:nowrap;}
+.ctable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.ctable tr:last-child td{border-bottom:none;}
+.ctable tr:hover td{background:var(--bg2);}
+.ctable .svc-name{font-weight:700;color:var(--text);font-size:12.5px;white-space:nowrap;}
+.ctable .svc-desc{font-size:11.5px;color:var(--text-ter);display:block;margin-top:1px;}
+.th-aws{color:var(--aws-d)!important;background:var(--aws-l);}
+.th-az{color:var(--az-d)!important;background:var(--az-l);}
+.th-gcp{color:var(--gcp-d)!important;background:var(--gcp-l);}
+.th-ibm{color:var(--ibm-d)!important;background:var(--ibm-l);}
+.th-ora{color:var(--ora-d)!important;background:var(--ora-l);}
+.th-hwa{color:var(--hwa-d)!important;background:var(--hwa-l);}
+.td-aws{border-left:2px solid var(--aws);}
+.td-az{border-left:2px solid var(--az);}
+.td-gcp{border-left:2px solid var(--gcp);}
+.td-ibm{border-left:2px solid var(--ibm);}
+.td-ora{border-left:2px solid var(--ora);}
+.td-hwa{border-left:2px solid var(--hwa);}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;margin:1px 2px 0 0;}
+
+/* DESCRIPTION BLOCK */
+.desc-block{padding:14px 16px 16px;}
+.def-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:10px 0 4px;}
+.def-label:first-child{margin-top:0;}
+.def-text{font-size:12.5px;color:var(--text-sec);line-height:1.65;}
+.def-text strong{color:var(--text);}
+.analogy{font-size:12.5px;color:var(--text-sec);line-height:1.65;padding:9px 12px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:8px 0;}
+.analogy strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:4px;margin:6px 0;}
+.feat li{font-size:12px;color:var(--text-sec);display:flex;gap:6px;align-items:flex-start;line-height:1.5;}
+.fdot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.winner-note{font-size:11.5px;color:var(--text-sec);padding:8px 12px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:10px;border-left:2px solid var(--green-mid);}
+.winner-note strong{color:var(--green-dark);}
+
+/* PORQUE BLOCK */
+.porque{background:var(--green-light);border-left:3px solid var(--green-mid);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:10px 13px;margin-top:12px;}
+.porque .plabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green-dark);margin-bottom:7px;}
+.porque .pfeat{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.porque .pfeat li{font-size:12px;color:var(--text-sec);display:flex;gap:7px;align-items:flex-start;line-height:1.55;}
+.porque .pfeat li strong{color:var(--text);}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:13px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;}
+
+@media print{
+  .topnav{display:none;}
+  .vert-body,.acc-body{display:block!important;}
+  .vert-toggle,.acc-chv{display:none;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:8px;}
+  .doc-meta{text-align:left;}
+  .tnav{font-size:10px;padding:10px 7px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">☁️ Multicloud Ref.</div>
+  <a class="tnav" href="#v1">01 Infraestructura</a>
+  <a class="tnav" href="#v2">02 Almacenamiento</a>
+  <a class="tnav" href="#v3">03 Bases de Datos</a>
+  <a class="tnav" href="#v4">04 Redes &amp; CDN</a>
+  <a class="tnav" href="#v5">05 IA &amp; ML</a>
+  <a class="tnav" href="#v6">06 DevOps &amp; Dev</a>
+  <a class="tnav" href="#v7">07 Contenedores</a>
+  <a class="tnav" href="#v8">08 Analítica &amp; Data</a>
+  <a class="tnav" href="#v9">09 Seguridad &amp; IAM</a>
+  <a class="tnav" href="#v10">10 IoT</a>
+  <a class="tnav" href="#v11">11 Integración &amp; Messaging</a>
+  <a class="tnav" href="#v12">12 Computación especial</a>
+  <a class="tnav" href="#v13">13 Ventajas por nube</a>
+  <a class="tnav" href="#v14">14 Red &amp; DDoS</a>
+  <a class="tnav" href="#v15">15 VMware vs Nutanix</a>
+  <a class="tnav" href="#v16">16 Cloud + RPA/IA</a>
+  <a class="tnav" href="#v17">17 Contexto Personal Tech</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Comparativa de Servicios Multicloud</div>
+    <div class="doc-sub">AWS · Azure · GCP · IBM Cloud · Oracle Cloud · Huawei Cloud — guía de referencia por vertical</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Solutions Manager | Pre-Sales<br><span id="fecha"></span></div>
+</div>
+
+<div class="legend">
+  <div class="legend-title">Referencia de colores por proveedor</div>
+  <span class="lpill" style="background:var(--aws-l);color:var(--aws-d);">🟠 AWS — Amazon Web Services</span>
+  <span class="lpill" style="background:var(--az-l);color:var(--az-d);">🔵 Azure — Microsoft</span>
+  <span class="lpill" style="background:var(--gcp-l);color:var(--gcp-d);">🔷 GCP — Google Cloud</span>
+  <span class="lpill" style="background:var(--ibm-l);color:var(--ibm-d);">🟦 IBM Cloud</span>
+  <span class="lpill" style="background:var(--ora-l);color:var(--ora-d);">🔴 Oracle Cloud</span>
+  <span class="lpill" style="background:var(--hwa-l);color:var(--hwa-d);">🟥 Huawei Cloud</span>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 INFRAESTRUCTURA -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:#FFF4E0;">🖥</div>
+    <div class="vert-title">01 — Infraestructura (IaaS) · Cómputo</div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">La base de toda estrategia cloud. Los servicios IaaS proveen servidores virtuales (VMs), capacidad de cómputo bajo demanda y opciones de hardware especializado (GPUs, FPGAs). <strong>AWS domina en variedad de instancias; Azure en integración con entornos Microsoft; GCP en precios por cómputo puro; Oracle Cloud en instancias bare metal económicas.</strong></p>
+
+    <!-- SERVIDORES VIRTUALES -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c1')">
+        <span class="acc-cat">Servidores</span>
+        <div class="acc-info"><div class="acc-name">Máquinas Virtuales (VMs)</div><div class="acc-tag">Servidores en la nube de propósito general con pago por hora</div></div>
+        <span class="acc-chv" id="achv-c1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c1">
+        <div class="desc-block">
+          <div class="analogy"><strong>Qué es:</strong> una computadora completa que corre sobre el hardware del proveedor cloud. Vos elegís cuántas CPUs, cuánta RAM y qué sistema operativo. Podés tenerla lista en minutos y pagarla por hora.</div>
+        </div>
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:110px">Característica</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+            <th class="th-ibm">🟦 IBM</th>
+            <th class="th-ora">🔴 Oracle</th>
+            <th class="th-hwa">🟥 Huawei</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Servicio</strong></td>
+              <td class="td-aws"><span class="svc-name">EC2</span><span class="svc-desc">Elastic Compute Cloud</span></td>
+              <td class="td-az"><span class="svc-name">Azure Virtual Machines</span></td>
+              <td class="td-gcp"><span class="svc-name">Compute Engine</span></td>
+              <td class="td-ibm"><span class="svc-name">IBM VPC Virtual Servers</span></td>
+              <td class="td-ora"><span class="svc-name">OCI Compute</span><span class="svc-desc">Bare Metal + VM</span></td>
+              <td class="td-hwa"><span class="svc-name">ECS</span><span class="svc-desc">Elastic Cloud Server</span></td>
+            </tr>
+            <tr>
+              <td><strong>Variedad</strong></td>
+              <td class="td-aws">500+ tipos de instancia. Máxima variedad del mercado.</td>
+              <td class="td-az">Alta variedad. Familias D, E, F, N (GPU), H (HPC).</td>
+              <td class="td-gcp">Instancias personalizadas (vCPU/RAM a medida). Diferenciador clave.</td>
+              <td class="td-ibm">Menor variedad pero integración con mainframe Z.</td>
+              <td class="td-ora">Bare metal disponible al precio de VM. Ventaja de costo.</td>
+              <td class="td-hwa">Variedad media, muy competitivo en Asia y LATAM.</td>
+            </tr>
+            <tr>
+              <td><strong>Modelo de precio</strong></td>
+              <td class="td-aws">On-demand · Reserved (hasta -72%) · Spot (hasta -90%, interrumpible)</td>
+              <td class="td-az">Pay-as-you-go · Reserved · Spot (Eviction)</td>
+              <td class="td-gcp">On-demand · Committed use · Preemptible · Spot</td>
+              <td class="td-ibm">Pay-as-you-go · Reservado</td>
+              <td class="td-ora">On-demand · Universal Credits</td>
+              <td class="td-hwa">Pay-per-use · Anuales prepago</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">Mayor ecosistema. Graviton (ARM propio, -40% costo vs x86).</td>
+              <td class="td-az">Integración nativa con Windows Server, AD y SQL Server sin licencia extra.</td>
+              <td class="td-gcp">Custom machine types: pagás exactamente lo que necesitás.</td>
+              <td class="td-ibm">Hybrid Cloud con IBM Z (mainframe). Único en el mercado.</td>
+              <td class="td-ora">Bare metal al mismo precio que VMs. Ideal para Oracle DB.</td>
+              <td class="td-hwa">Mejor precio en algunos mercados, fuerte en Latinoamérica B2B.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>¿Cuándo mencionar cada uno en una venta?</strong> AWS si el cliente ya tiene workloads AWS o quiere máxima variedad. Azure si el cliente es Microsoft-first (Windows, SQL Server, AD). GCP si quiere optimizar costo de cómputo exacto. Oracle si corre Oracle DB y quiere reducir costos de licencia. IBM si tiene sistemas legados mainframe.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGHTSAIL / VPS SIMPLES -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c2')">
+        <span class="acc-cat">VPS Simple</span>
+        <div class="acc-info"><div class="acc-name">VPS para desarrolladores y pequeñas cargas</div><div class="acc-tag">Precio fijo mensual, configuración simplificada — equivalente al SVP de Personal Tech</div></div>
+        <span class="acc-chv" id="achv-c2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c2">
+        <div class="desc-block">
+          <div class="analogy"><strong>Qué es:</strong> versión simplificada de los servidores virtuales, con precio fijo mensual (no por hora), plantillas preconfiguradas y panel de gestión simple. Ideal para desarrolladores, sitios web, WordPress, apps pequeñas. La misma propuesta que el SVP de Personal Tech, pero en el ecosistema del hyperscaler.</div>
+        </div>
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:110px">Servicio</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+            <th class="th-ora">🔴 Oracle</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Nombre</strong></td>
+              <td class="td-aws"><span class="svc-name">AWS Lightsail</span></td>
+              <td class="td-az"><span class="svc-name">Azure App Service (Basic)</span></td>
+              <td class="td-gcp"><span class="svc-name">Cloud Run / GCE f1-micro</span></td>
+              <td class="td-ora"><span class="svc-name">OCI Always Free Tier</span></td>
+            </tr>
+            <tr>
+              <td><strong>Propuesta</strong></td>
+              <td class="td-aws">Precio fijo mensual. CPU + SSD + IP estática + backups incluidos. Plantillas: WordPress, LAMP, Node.js, PrestaShop. Panel simplificado.</td>
+              <td class="td-az">Orientado a apps web más que VPS puro. PaaS más que IaaS.</td>
+              <td class="td-gcp">Instancias micro muy económicas (incluso gratuitas). Menos amigable para principiantes.</td>
+              <td class="td-ora">2 VMs AMD gratis permanentes (1 OCPU, 1GB RAM c/u). El más generoso free tier del mercado.</td>
+            </tr>
+            <tr>
+              <td><strong>Precio referencial</strong></td>
+              <td class="td-aws">Desde ~USD 3.50/mes (512MB RAM, 1 vCPU, 20GB SSD)</td>
+              <td class="td-az">Desde ~USD 13/mes (B1S: 1 vCPU, 1GB RAM)</td>
+              <td class="td-gcp">f1-micro: ~USD 5/mes. e2-micro: gratuito 1 instancia/mes</td>
+              <td class="td-ora">2 VMs gratuitas permanentes + 200GB storage</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador vs Personal Tech SVP</strong></td>
+              <td class="td-aws">Precio en USD + factura internacional. SVP da lo mismo pero en pesos, con soporte en castellano y dato en Argentina.</td>
+              <td class="td-az">Más orientado a PaaS. SVP es más flexible como IaaS puro.</td>
+              <td class="td-gcp">Más técnico, curva de aprendizaje mayor. SVP más simple de gestionar.</td>
+              <td class="td-ora">Free tier es una ventaja enorme para PoCs, pero dato en el exterior.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVERLESS -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c3')">
+        <span class="acc-cat">Serverless</span>
+        <div class="acc-info"><div class="acc-name">Funciones serverless (FaaS)</div><div class="acc-tag">Ejecutá código sin gestionar servidores — pagás solo por ejecución, no por tiempo encendido</div></div>
+        <span class="acc-chv" id="achv-c3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c3">
+        <div class="desc-block">
+          <div class="analogy"><strong>Qué es:</strong> en vez de tener un servidor corriendo 24/7, subís una función de código. Cada vez que se necesita ejecutar (ej: procesar una imagen al subirla, responder una API), la nube la ejecuta en milisegundos, la cobra por ejecución y la apaga. Sin servidores que gestionar.</div>
+        </div>
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:110px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Lambda</th>
+            <th class="th-az">🔵 Azure Functions</th>
+            <th class="th-gcp">🔷 Cloud Functions</th>
+            <th class="th-ibm">🟦 IBM Cloud Functions</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Lenguajes soportados</strong></td>
+              <td class="td-aws">Python, Node.js, Java, Go, Ruby, .NET, Custom Runtime</td>
+              <td class="td-az">C#, JS, Python, Java, PowerShell, Bash</td>
+              <td class="td-gcp">Node.js, Python, Go, Java, Ruby, PHP, .NET</td>
+              <td class="td-ibm">Node.js, Python, Java, PHP, Go (basado en Apache OpenWhisk)</td>
+            </tr>
+            <tr>
+              <td><strong>Timeout máx.</strong></td>
+              <td class="td-aws">15 minutos</td>
+              <td class="td-az">10 minutos (Consumption) · ilimitado (Premium)</td>
+              <td class="td-gcp">9 minutos (Gen1) · 60 minutos (Gen2)</td>
+              <td class="td-ibm">5 minutos</td>
+            </tr>
+            <tr>
+              <td><strong>Free tier</strong></td>
+              <td class="td-aws">1M req/mes + 400.000 GB-seg gratis permanente</td>
+              <td class="td-az">1M req/mes gratis permanente</td>
+              <td class="td-gcp">2M req/mes gratis permanente</td>
+              <td class="td-ibm">5M ejecuciones/mes gratis</td>
+            </tr>
+            <tr>
+              <td><strong>Mejor para</strong></td>
+              <td class="td-aws">Ecosistema más maduro. Mejor con S3, DynamoDB, API Gateway.</td>
+              <td class="td-az">Integración nativa con Azure Logic Apps y Event Grid.</td>
+              <td class="td-gcp">Mejor precio para cargas eventuales. Integración con Firebase.</td>
+              <td class="td-ibm">Entornos híbridos con OpenWhisk on-premise.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 ALMACENAMIENTO -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:#E1F5EE;">💾</div>
+    <div class="vert-title">02 — Almacenamiento</div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">Almacenamiento de objetos, bloques y archivos. <strong>S3 de AWS es el estándar de facto del mercado y la API que todos replican.</strong> Para clientes de Personal Tech el argumento clave es que el dato permanece en Argentina, a diferencia de todos los hyperscalers que lo guardan en el exterior.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s1')">
+        <span class="acc-cat">Objetos</span>
+        <div class="acc-info"><div class="acc-name">Object Storage (tipo S3)</div><div class="acc-tag">Almacenamiento ilimitado de archivos, backups, datos no estructurados, imágenes, videos</div></div>
+        <span class="acc-chv" id="achv-s1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s1">
+        <div class="desc-block">
+          <div class="analogy"><strong>Qué es:</strong> como un disco duro infinito en internet donde guardás cualquier archivo (un backup de 500GB, millones de imágenes, logs, videos) y accedés por una URL o API. No tiene límite de tamaño total y pagás por lo que usás.</div>
+        </div>
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS S3</th>
+            <th class="th-az">🔵 Azure Blob Storage</th>
+            <th class="th-gcp">🔷 Cloud Storage</th>
+            <th class="th-ibm">🟦 IBM Cloud Object Storage</th>
+            <th class="th-ora">🔴 OCI Object Storage</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Nombre</strong></td>
+              <td class="td-aws">Simple Storage Service (S3)</td>
+              <td class="td-az">Azure Blob Storage</td>
+              <td class="td-gcp">Cloud Storage</td>
+              <td class="td-ibm">IBM COS</td>
+              <td class="td-ora">OCI Object Storage</td>
+            </tr>
+            <tr>
+              <td><strong>Durabilidad</strong></td>
+              <td class="td-aws">99,999999999% (11 nueves)</td>
+              <td class="td-az">99,999999999% (LRS/GRS)</td>
+              <td class="td-gcp">99,999999999% (multi-región)</td>
+              <td class="td-ibm">99,999999999% geo-disperso</td>
+              <td class="td-ora">99,999999999%</td>
+            </tr>
+            <tr>
+              <td><strong>Clases/tiers</strong></td>
+              <td class="td-aws">Standard · Infrequent Access · Glacier (archivo, muy barato) · Deep Archive</td>
+              <td class="td-az">Hot · Cool · Cold · Archive</td>
+              <td class="td-gcp">Standard · Nearline · Coldline · Archive</td>
+              <td class="td-ibm">Standard · Vault · Cold Vault · Flex</td>
+              <td class="td-ora">Standard · Infrequent Access · Archive</td>
+            </tr>
+            <tr>
+              <td><strong>Egress fees</strong></td>
+              <td class="td-aws">Sí — cobra por datos que salen de AWS. Argumento de venta contra AWS.</td>
+              <td class="td-az">Sí — cobra por salida de datos de Azure.</td>
+              <td class="td-gcp">Sí (pero el primero 1TB/mes gratis hacia internet)</td>
+              <td class="td-ibm">Sí, similar al resto.</td>
+              <td class="td-ora"><strong>Sin egress fees entre regiones OCI.</strong> Diferenciador fuerte.</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">Ecosistema más maduro. API S3 es el estándar que todos replican. Glacier es el más económico para archivo de largo plazo.</td>
+              <td class="td-az">Mejor integración con Azure Data Lake y análisis de big data.</td>
+              <td class="td-gcp">Mejor consistencia global multi-región. Mejor para apps globales.</td>
+              <td class="td-ibm">Almacenamiento geoespacialmente disperso, ideal para compliance estricto.</td>
+              <td class="td-ora">Sin egress fees + gratuito hasta 10GB/mes en Free Tier.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>Argumento Personal Tech:</strong> Personal Tech ofrece Object Storage equivalente (compatible con API S3) pero el dato queda en Argentina. Sin egress fees en pesos. Para empresas con dato regulado o confidencial, esto es el argumento definitivo frente a cualquier hyperscaler.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s2')">
+        <span class="acc-cat">Bloques</span>
+        <div class="acc-info"><div class="acc-name">Block Storage</div><div class="acc-tag">Disco duro virtual para montar en servidores — bases de datos, sistemas operativos</div></div>
+        <span class="acc-chv" id="achv-s2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s2">
+        <div class="desc-block">
+          <div class="analogy"><strong>Qué es:</strong> el disco duro de la VM. Si Object Storage es como una caja de archivos, Block Storage es el disco rígido que montás dentro del servidor. Necesitás uno para instalar el sistema operativo y correr bases de datos.</div>
+        </div>
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+            <th class="th-ora">🔴 Oracle</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Servicio</strong></td>
+              <td class="td-aws">EBS (Elastic Block Store)</td>
+              <td class="td-az">Azure Managed Disks</td>
+              <td class="td-gcp">Persistent Disk / Hyperdisk</td>
+              <td class="td-ora">OCI Block Volume</td>
+            </tr>
+            <tr>
+              <td><strong>Tipos</strong></td>
+              <td class="td-aws">gp3 (propósito general) · io2 (alta performance IOPS) · st1 (throughput) · sc1 (barato)</td>
+              <td class="td-az">Standard HDD · Standard SSD · Premium SSD · Ultra Disk</td>
+              <td class="td-gcp">Standard HDD · Balanced SSD · SSD · Hyperdisk Extreme</td>
+              <td class="td-ora">Balanced · Higher Performance · Ultra High Performance</td>
+            </tr>
+            <tr>
+              <td><strong>Max IOPS</strong></td>
+              <td class="td-aws">256.000 IOPS (io2 Block Express)</td>
+              <td class="td-az">160.000 IOPS (Ultra Disk)</td>
+              <td class="td-gcp">350.000 IOPS (Hyperdisk Extreme)</td>
+              <td class="td-ora">300.000 IOPS (Ultra High)</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s3')">
+        <span class="acc-cat">Archivo largo plazo</span>
+        <div class="acc-info"><div class="acc-name">Almacenamiento de Archivos a Largo Plazo (Cold Storage)</div><div class="acc-tag">Backups históricos, compliance, archivos que raramente se consultan — precio muy bajo</div></div>
+        <span class="acc-chv" id="achv-s3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s3">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Glacier</th>
+            <th class="th-az">🔵 Azure Archive</th>
+            <th class="th-gcp">🔷 Cloud Storage Archive</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Precio aproximado</strong></td>
+              <td class="td-aws">~$0.0036/GB/mes (Deep Archive) — el más barato del mercado</td>
+              <td class="td-az">~$0.00099/GB/mes (Archive tier)</td>
+              <td class="td-gcp">~$0.0012/GB/mes (Archive)</td>
+            </tr>
+            <tr>
+              <td><strong>Tiempo de recuperación</strong></td>
+              <td class="td-aws">Glacier: 1–5 min (Expedited), 3–5 hs (Standard), 5–12 hs (Bulk). Deep Archive: 12–48 hs.</td>
+              <td class="td-az">Horas (rehydration requerida antes de acceder)</td>
+              <td class="td-gcp">Milisegundos — acceso inmediato aunque el precio es de archivo</td>
+            </tr>
+            <tr>
+              <td><strong>Caso de uso</strong></td>
+              <td class="td-aws">Compliance regulatorio, auditorías, backups históricos que raramente se usan.</td>
+              <td class="td-az">Idem AWS, buen precio para grandes volúmenes.</td>
+              <td class="td-gcp">Ideal si se necesita acceso ocasional sin demora de recuperación.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 BASES DE DATOS -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:#EEEDFE;">🗄</div>
+    <div class="vert-title">03 — Bases de Datos (DBaaS)</div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">Base de datos como servicio gestionado: el proveedor se encarga de los backups, parchado, failover y alta disponibilidad. <strong>AWS tiene el catálogo más amplio; Azure es la opción obvia para entornos SQL Server; Oracle es imbatible para Oracle Database; GCP lidera en bases de datos globalmente distribuidas.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('db1')">
+        <span class="acc-cat">SQL Relacional</span>
+        <div class="acc-info"><div class="acc-name">Bases de datos relacionales gestionadas (PostgreSQL, MySQL, SQL Server)</div><div class="acc-tag">Motor SQL tradicional sin gestionar el servidor de base de datos</div></div>
+        <span class="acc-chv" id="achv-db1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-db1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Proveedor</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+            <th class="th-ibm">🟦 IBM</th>
+            <th class="th-ora">🔴 Oracle</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Servicio RDS</strong></td>
+              <td class="td-aws"><strong>Amazon RDS</strong> — soporta MySQL, PostgreSQL, MariaDB, SQL Server, Oracle. Más Amazon Aurora (motor propio 5x más rápido).</td>
+              <td class="td-az"><strong>Azure SQL Database</strong> — best in class para SQL Server. Azure DB for PostgreSQL / MySQL también disponibles.</td>
+              <td class="td-gcp"><strong>Cloud SQL</strong> — MySQL, PostgreSQL, SQL Server. Y <strong>AlloyDB</strong> (PostgreSQL compatible, alta performance).</td>
+              <td class="td-ibm"><strong>IBM Db2 on Cloud</strong> — fuerte en entornos enterprise con legado IBM.</td>
+              <td class="td-ora"><strong>Oracle Autonomous Database</strong> — auto-parchado, auto-tuning, sin DBA. Ideal para Oracle ERP/EBS.</td>
+            </tr>
+            <tr>
+              <td><strong>Aurora</strong></td>
+              <td class="td-aws">Motor propio de AWS compatible con MySQL/PostgreSQL. 5x más rápido que MySQL estándar. Multi-master disponible. Serverless option.</td>
+              <td class="td-az">No tiene equivalente propio — Hyperscale SQL Server es lo más cercano.</td>
+              <td class="td-gcp">AlloyDB for PostgreSQL es la respuesta de GCP: 4x más rápido que PostgreSQL estándar.</td>
+              <td class="td-ibm">No tiene equivalente directo.</td>
+              <td class="td-ora">Autonomous DB es el equivalente Oracle — auto-todo, pero solo para Oracle.</td>
+            </tr>
+            <tr>
+              <td><strong>Para SQL Server</strong></td>
+              <td class="td-aws">RDS for SQL Server disponible pero sin beneficios de licencia Azure Hybrid.</td>
+              <td class="td-az"><strong>Mejor opción del mercado.</strong> Azure Hybrid Benefit: usás las licencias SQL Server que ya tenés, ahorrás hasta 55%.</td>
+              <td class="td-gcp">Cloud SQL for SQL Server disponible pero no es el punto fuerte de GCP.</td>
+              <td class="td-ibm">No recomendado para SQL Server.</td>
+              <td class="td-ora">No recomendado para SQL Server.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('db2')">
+        <span class="acc-cat">NoSQL</span>
+        <div class="acc-info"><div class="acc-name">Bases de datos NoSQL (documentos, clave-valor, columnar)</div><div class="acc-tag">Para apps web, e-commerce, gaming, IoT — alta escala, esquema flexible</div></div>
+        <span class="acc-chv" id="achv-db2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-db2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Tipo</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Clave-Valor / Documentos</strong></td>
+              <td class="td-aws"><strong>DynamoDB</strong> — milisegundo garantizado, serverless, escala infinita. El NoSQL más usado del mercado.</td>
+              <td class="td-az"><strong>Azure Cosmos DB</strong> — multi-modelo (documentos, grafos, columnar, clave-valor). SLA 99,999% de disponibilidad. Distribución global nativa.</td>
+              <td class="td-gcp"><strong>Firestore + Cloud Bigtable</strong> — Firestore para documentos (Firebase), Bigtable para series temporales y analytics.</td>
+            </tr>
+            <tr>
+              <td><strong>Columnar</strong></td>
+              <td class="td-aws"><strong>DocumentDB</strong> (compatible MongoDB) · <strong>Keyspaces</strong> (Cassandra compatible)</td>
+              <td class="td-az">Cosmos DB Apache Cassandra API</td>
+              <td class="td-gcp">Bigtable — procesamiento de petabytes con latencia milisegundo</td>
+            </tr>
+            <tr>
+              <td><strong>Caché</strong></td>
+              <td class="td-aws"><strong>ElastiCache</strong> — Redis o Memcached gestionado</td>
+              <td class="td-az"><strong>Azure Cache for Redis</strong></td>
+              <td class="td-gcp"><strong>Memorystore</strong> — Redis y Memcached</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('db3')">
+        <span class="acc-cat">Globalmente distribuida</span>
+        <div class="acc-info"><div class="acc-name">Bases de datos globalmente distribuidas y NewSQL</div><div class="acc-tag">Para apps con usuarios en todo el mundo que necesitan consistencia y latencia baja en cualquier región</div></div>
+        <span class="acc-chv" id="achv-db3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-db3">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Servicio</strong></td>
+              <td class="td-aws">Amazon Aurora Global / DynamoDB Global Tables</td>
+              <td class="td-az"><strong>Azure Cosmos DB</strong> — líder en esta categoría. Multi-región activo-activo nativo.</td>
+              <td class="td-gcp"><strong>Cloud Spanner</strong> — base de datos SQL global, ACID a escala planetaria. Única en el mercado en combinar SQL + distribución global.</td>
+            </tr>
+            <tr>
+              <td><strong>Caso de uso</strong></td>
+              <td class="td-aws">Multi-región con failover automático.</td>
+              <td class="td-az">Apps globales que necesitan leer y escribir desde cualquier región con consistencia configurable.</td>
+              <td class="td-gcp"><strong>El mejor para apps financieras globales, inventario en tiempo real, reservas de vuelos.</strong> SQL semántico + consistencia global sin compromisos.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 REDES & CDN -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:#E0F5F5;">🌐</div>
+    <div class="vert-title">04 — Redes, CDN y Conectividad Privada</div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">Redes virtuales, balanceo de carga, distribución de contenido y conexiones privadas dedicadas a los hyperscalers. Este vertical es donde Personal Tech tiene su mayor ventaja competitiva: <strong>es el partner de conectividad que conecta al cliente con AWS (Direct Connect) y Azure (ExpressRoute) desde Argentina.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('n1')">
+        <span class="acc-cat">Red virtual</span>
+        <div class="acc-info"><div class="acc-name">VPC — Virtual Private Cloud / Redes virtuales</div><div class="acc-tag">Tu red privada dentro de la nube — subredes, firewalls, tablas de enrutamiento</div></div>
+        <span class="acc-chv" id="achv-n1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-n1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS VPC</th>
+            <th class="th-az">🔵 Azure VNet</th>
+            <th class="th-gcp">🔷 GCP VPC</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Nombre</strong></td>
+              <td class="td-aws">Virtual Private Cloud (VPC)</td>
+              <td class="td-az">Virtual Network (VNet)</td>
+              <td class="td-gcp">Virtual Private Cloud (VPC)</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">VPC regional. Security Groups por instancia. Transit Gateway para conectar múltiples VPCs.</td>
+              <td class="td-az">VNet + NSG (Network Security Groups). Mejor integración con Azure AD y entornos híbridos on-premise.</td>
+              <td class="td-gcp"><strong>VPC global</strong> — una sola red que abarca todas las regiones sin VPC peering. Diferenciador único frente a AWS y Azure.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('n2')">
+        <span class="acc-cat">Conexión privada</span>
+        <div class="acc-info"><div class="acc-name">Conexión privada dedicada a la nube (Direct Connect / ExpressRoute)</div><div class="acc-tag">Circuito privado desde la empresa al hyperscaler — sin pasar por internet</div></div>
+        <span class="acc-chv" id="achv-n2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-n2">
+        <div class="desc-block">
+          <div class="analogy"><strong>Qué es:</strong> en vez de conectarse a AWS/Azure por internet (con sus variabilidades y riesgos de seguridad), la empresa tiene un circuito privado dedicado que va directamente de su datacenter o sede a los servidores del hyperscaler. Personal Tech provee este circuito como partner certificado.</div>
+        </div>
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Direct Connect</th>
+            <th class="th-az">🔵 Azure ExpressRoute</th>
+            <th class="th-gcp">🔷 GCP Cloud Interconnect</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Nombre</strong></td>
+              <td class="td-aws">AWS Direct Connect</td>
+              <td class="td-az">Azure ExpressRoute</td>
+              <td class="td-gcp">Cloud Interconnect (Dedicated / Partner)</td>
+            </tr>
+            <tr>
+              <td><strong>Cómo se accede desde AR</strong></td>
+              <td class="td-aws">A través de un partner como Personal Tech que tiene conexión directa a los PoPs de AWS.</td>
+              <td class="td-az">A través de un ExpressRoute Partner. <strong>Personal Tech es partner certificado de Azure ExpressRoute.</strong></td>
+              <td class="td-gcp">A través de un Partner Interconnect. Menor número de partners en Argentina.</td>
+            </tr>
+            <tr>
+              <td><strong>Beneficios</strong></td>
+              <td class="td-aws">Latencia predecible, SLA de red, no pasa por internet, menor costo de egress que por internet.</td>
+              <td class="td-az">Idem, más integración con Azure AD, Office 365 y servicios Microsoft.</td>
+              <td class="td-gcp">Menor costo de egress. SLA 99,9% o 99,99% según tipo.</td>
+            </tr>
+            <tr>
+              <td><strong>Arg. de venta Personal Tech</strong></td>
+              <td class="td-aws" colspan="3" style="background:var(--green-light);color:var(--green-dark);font-weight:600;">Personal Tech puede dar acceso a AWS Direct Connect, Azure ExpressRoute y GCP Cloud Interconnect desde una sola contratación, combinado con cloud propio en el DC de Pacheco. Un solo proveedor para todo. Nadie más puede ofrecer eso en Argentina.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('n3')">
+        <span class="acc-cat">CDN</span>
+        <div class="acc-info"><div class="acc-name">CDN — Content Delivery Network</div><div class="acc-tag">Distribuye contenido estático (imágenes, videos, JS) desde servidores cercanos al usuario final</div></div>
+        <span class="acc-chv" id="achv-n3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-n3">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Aspecto</th>
+            <th class="th-aws">🟠 AWS CloudFront</th>
+            <th class="th-az">🔵 Azure CDN / Front Door</th>
+            <th class="th-gcp">🔷 Cloud CDN</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>PoPs globales</strong></td>
+              <td class="td-aws">450+ PoPs en 90+ ciudades</td>
+              <td class="td-az">130+ PoPs. Azure Front Door agrega WAF y balanceo global.</td>
+              <td class="td-gcp">Integrado con la red global de Google. 100+ edge locations.</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">Mejor integración con S3 y Lambda@Edge (ejecuta código en el edge).</td>
+              <td class="td-az">Azure Front Door combina CDN + WAF + load balancing global en uno.</td>
+              <td class="td-gcp">Integración nativa con Cloud Storage y GKE. Menor latencia dentro de la red Google.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 IA & ML -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:#EEEDFE;">🤖</div>
+    <div class="vert-title">05 — Inteligencia Artificial &amp; Machine Learning</div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">El vertical de mayor crecimiento. Incluye plataformas de entrenamiento de modelos, servicios de IA pre-entrenados (visión, lenguaje, voz) y acceso a modelos fundacionales de IA generativa. <strong>GCP lidera en infraestructura de IA (TPUs propias, Gemini); Azure es el mejor punto de entrada a OpenAI/GPT; AWS tiene el catálogo más amplio de servicios IA pre-entrenados; IBM lidera en IA responsable y regulada para enterprise.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ai1')">
+        <span class="acc-cat">Plataforma ML</span>
+        <div class="acc-info"><div class="acc-name">Plataformas de entrenamiento y despliegue de modelos ML</div><div class="acc-tag">Entrenar modelos propios, experimentos, registro de modelos, despliegue a producción</div></div>
+        <span class="acc-chv" id="achv-ai1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ai1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS SageMaker</th>
+            <th class="th-az">🔵 Azure ML</th>
+            <th class="th-gcp">🔷 Vertex AI</th>
+            <th class="th-ibm">🟦 IBM Watson Studio</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Qué es</strong></td>
+              <td class="td-aws">Plataforma end-to-end para construir, entrenar y desplegar modelos ML. GPUs por demanda. El más completo del mercado.</td>
+              <td class="td-az">Azure Machine Learning — integrado con Azure DevOps y GitHub Actions para MLOps.</td>
+              <td class="td-gcp">Vertex AI — unifica Data Science (notebooks) con producción (Feature Store, Model Registry, pipelines). <strong>Acceso a TPUs propias de Google.</strong></td>
+              <td class="td-ibm">Watson Studio — fuerte en AutoML y en modelos explicables. Clave para IA regulada en finanzas y salud.</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador clave</strong></td>
+              <td class="td-aws">Mayor variedad de instancias GPU/Trainium (chip ML propio). Integración con todos los servicios AWS. JumpStart: modelos pre-entrenados listos para usar.</td>
+              <td class="td-az">Mejor para equipos que ya usan Azure DevOps. Responsible AI dashboard integrado. Integración con Power BI para presentar resultados a negocio.</td>
+              <td class="td-gcp"><strong>TPU v4/v5 propias</strong> — más baratas que GPUs A100 para ciertos workloads de entrenamiento. Mejor para PyTorch y TensorFlow nativos.</td>
+              <td class="td-ibm">AI Fairness 360, AI Explainability 360 — herramientas de IA ética únicas. Requisito en algunas licitaciones reguladas.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ai2')">
+        <span class="acc-cat">IA Generativa</span>
+        <div class="acc-info"><div class="acc-name">IA Generativa — Modelos Fundacionales (LLMs, Imágenes, Voz)</div><div class="acc-tag">GPT, Gemini, Claude, Llama, Titan, Stable Diffusion — acceso a los modelos más potentes</div></div>
+        <span class="acc-chv" id="achv-ai2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ai2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Bedrock</th>
+            <th class="th-az">🔵 Azure OpenAI</th>
+            <th class="th-gcp">🔷 Vertex AI (Gemini)</th>
+            <th class="th-ibm">🟦 IBM watsonx.ai</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Modelos disponibles</strong></td>
+              <td class="td-aws">Anthropic Claude (todos los modelos) · Meta Llama · Amazon Titan · Stability AI · Cohere · Mistral. <strong>Máxima variedad del mercado.</strong></td>
+              <td class="td-az"><strong>OpenAI GPT-4, GPT-4o, DALL-E, Whisper, Sora.</strong> Acceso exclusivo y con mejores SLAs que OpenAI directo. Copilot stack integrado.</td>
+              <td class="td-gcp"><strong>Gemini Ultra/Pro/Flash</strong> (modelo propio de Google). Imagen 3, Chirp (voz). Integración nativa con Google Workspace.</td>
+              <td class="td-ibm"><strong>Granite</strong> (modelo propio) + acceso a Llama, Mistral. <strong>IA 100% explicable y auditable.</strong> Requisito en sectores regulados.</td>
+            </tr>
+            <tr>
+              <td><strong>Para qué es mejor</strong></td>
+              <td class="td-aws">Si querés múltiples modelos en un solo lugar para comparar y elegir el mejor por caso de uso. Mejor para construir productos de IA flexibles.</td>
+              <td class="td-az">Si el cliente quiere GPT-4 con SLA empresarial, datos privados y sin compartir datos con OpenAI público. Mejor opción para Copilot en Microsoft 365.</td>
+              <td class="td-gcp">Si el cliente usa Google Workspace o quiere el modelo más potente de Google nativamente integrado.</td>
+              <td class="td-ibm">Si el cliente necesita IA auditada, explicable y que cumpla con regulaciones de IA (UE, BCRA, etc.).</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ai3')">
+        <span class="acc-cat">IA pre-entrenada</span>
+        <div class="acc-info"><div class="acc-name">Servicios de IA pre-entrenados (visión, lenguaje, voz, traducción)</div><div class="acc-tag">API lista para usar — reconocimiento de imágenes, transcripción, traducción, chatbots</div></div>
+        <span class="acc-chv" id="achv-ai3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ai3">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Capacidad</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Visión (imágenes)</strong></td>
+              <td class="td-aws">Amazon Rekognition — detección de objetos, caras, texto en imágenes, moderación de contenido</td>
+              <td class="td-az">Azure Computer Vision / Face API — OCR avanzado, análisis de imágenes</td>
+              <td class="td-gcp">Cloud Vision API — el mejor OCR del mercado por la calidad de los modelos de Google</td>
+            </tr>
+            <tr>
+              <td><strong>Voz a texto</strong></td>
+              <td class="td-aws">Amazon Transcribe — múltiples idiomas, vocabulario personalizado, diarización</td>
+              <td class="td-az">Azure Speech Services — Text to Speech y Speech to Text con voces naturales</td>
+              <td class="td-gcp">Speech-to-Text / Text-to-Speech — excelente en castellano latinoamericano</td>
+            </tr>
+            <tr>
+              <td><strong>Traducción</strong></td>
+              <td class="td-aws">Amazon Translate — traducción en tiempo real</td>
+              <td class="td-az">Azure Translator — integrado con Cognitive Services</td>
+              <td class="td-gcp">Cloud Translation — basado en los modelos de Google Translate, el mejor del mercado</td>
+            </tr>
+            <tr>
+              <td><strong>Chatbots</strong></td>
+              <td class="td-aws">Amazon Lex — el motor detrás de Alexa. Fácil de integrar con Lambda y Connect.</td>
+              <td class="td-az">Azure Bot Service + CLU (Conversational Language Understanding)</td>
+              <td class="td-gcp">Dialogflow CX — el mejor para IVRs y chatbots complejos multi-turno</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 DEVOPS & DEV -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--green-light);">⚙️</div>
+    <div class="vert-title">06 — DevOps, Desarrollo &amp; PaaS</div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro">Herramientas para que los equipos de desarrollo construyan, prueben y desplieguen aplicaciones más rápido. Incluye CI/CD, plataformas de aplicación gestionadas (PaaS) y herramientas de infraestructura como código. <strong>Azure DevOps lidera en entornos enterprise Microsoft; AWS CodePipeline en ecosistema AWS; GCP Cloud Build destaca por velocidad; GitHub Actions es el estándar de facto de la industria.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dv1')">
+        <span class="acc-cat">CI/CD</span>
+        <div class="acc-info"><div class="acc-name">Pipelines CI/CD — Integración y Entrega Continua</div><div class="acc-tag">Automatizar build, test y deploy de código en cada commit</div></div>
+        <span class="acc-chv" id="achv-dv1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dv1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Herramienta</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>CI/CD nativo</strong></td>
+              <td class="td-aws">CodePipeline + CodeBuild + CodeDeploy. Tres servicios separados que se encadenan.</td>
+              <td class="td-az"><strong>Azure DevOps</strong> — pipeline completo en un solo producto (Repos, Boards, Pipelines, Artifacts, Test Plans). El más completo para enterprise.</td>
+              <td class="td-gcp">Cloud Build — muy rápido, integrado con Artifact Registry y Cloud Deploy.</td>
+            </tr>
+            <tr>
+              <td><strong>GitHub Actions</strong></td>
+              <td class="td-aws" colspan="3" style="background:var(--az-l);">GitHub (propiedad de <strong>Microsoft/Azure</strong>) es el estándar de facto. Azure tiene integración nativa privilegiada. Los tres providers tienen actions runners disponibles.</td>
+            </tr>
+            <tr>
+              <td><strong>Infraestructura como código</strong></td>
+              <td class="td-aws"><strong>CloudFormation</strong> (nativo AWS) · <strong>CDK</strong> (código Python/JS/TS → CF) · Terraform (multi-cloud, el más usado)</td>
+              <td class="td-az"><strong>Bicep / ARM Templates</strong> (nativo Azure) · Terraform</td>
+              <td class="td-gcp"><strong>Deployment Manager</strong> (nativo GCP) · Terraform</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dv2')">
+        <span class="acc-cat">PaaS</span>
+        <div class="acc-info"><div class="acc-name">PaaS — Plataforma de Aplicación Gestionada</div><div class="acc-tag">Subís el código, el proveedor gestiona el servidor, el OS, el escalado y la disponibilidad</div></div>
+        <span class="acc-chv" id="achv-dv2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dv2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Elastic Beanstalk</th>
+            <th class="th-az">🔵 Azure App Service</th>
+            <th class="th-gcp">🔷 Google App Engine</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Qué hace</strong></td>
+              <td class="td-aws">Sube código (Java, Python, Node, PHP, Docker), Beanstalk gestiona EC2, load balancer y autoescalado. Menos popular que App Service.</td>
+              <td class="td-az"><strong>El PaaS más usado del mercado.</strong> Soporte nativo para .NET, Node, Python, PHP, Java. SSL, custom domains, deployment slots para blue/green sin costo extra.</td>
+              <td class="td-gcp">Autoescalado total, incluyendo escalar a cero. Muy económico para tráfico variable. Dos modos: Standard (más barato) y Flexible.</td>
+            </tr>
+            <tr>
+              <td><strong>Mejor para</strong></td>
+              <td class="td-aws">Equipos que quieren PaaS dentro del ecosistema AWS sin aprender Kubernetes.</td>
+              <td class="td-az">Empresas con stack .NET o PHP. El más fácil para devs Windows.</td>
+              <td class="td-gcp">Apps con tráfico muy variable o intermitente — paga solo cuando hay requests.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 CONTENEDORES -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--teal-light);">📦</div>
+    <div class="vert-title">07 — Contenedores &amp; Kubernetes</div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">Docker y Kubernetes son los estándares de facto para desplegar aplicaciones modernas. Todos los clouds ofrecen Kubernetes gestionado. <strong>GCP inventó Kubernetes y tiene el GKE más maduro; Azure AKS tiene la mejor integración con Azure AD y DevOps; AWS EKS es el más usado en producción enterprise.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('k1')">
+        <span class="acc-cat">Kubernetes gestionado</span>
+        <div class="acc-info"><div class="acc-name">Kubernetes Gestionado (K8s as a Service)</div><div class="acc-tag">Orquestación de contenedores sin gestionar el control plane de Kubernetes</div></div>
+        <span class="acc-chv" id="achv-k1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-k1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 Amazon EKS</th>
+            <th class="th-az">🔵 Azure AKS</th>
+            <th class="th-gcp">🔷 Google GKE</th>
+            <th class="th-ibm">🟦 IBM ROKS</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Qué es</strong></td>
+              <td class="td-aws">Elastic Kubernetes Service. El control plane es gestionado por AWS. Workers son EC2 o Fargate.</td>
+              <td class="td-az">Azure Kubernetes Service. Control plane gratuito (solo pagás los nodos workers). Integración nativa con Azure AD y Azure DevOps.</td>
+              <td class="td-gcp">Google Kubernetes Engine. <strong>El inventó Kubernetes.</strong> Autopilot mode: GCP gestiona incluso los nodos workers.</td>
+              <td class="td-ibm">Red Hat OpenShift on IBM Cloud — Kubernetes con capa enterprise OpenShift encima. El más corporativo.</td>
+            </tr>
+            <tr>
+              <td><strong>Precio control plane</strong></td>
+              <td class="td-aws">~$144/mes por cluster (costo de EKS)</td>
+              <td class="td-az"><strong>Gratuito</strong> — solo pagás los VMs workers</td>
+              <td class="td-gcp">$73/mes por cluster (Autopilot: sin costo fijo)</td>
+              <td class="td-ibm">Incluido en el costo del servicio</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">Mejor integración con ECR (registry), ALB Ingress y IAM roles por pod.</td>
+              <td class="td-az">Control plane gratuito + Workload Identity con Azure AD. Mejor para equipos DevOps con Azure.</td>
+              <td class="td-gcp"><strong>GKE Autopilot:</strong> GCP gestiona todo incluyendo los nodos. El más serverless de los tres. Parchado automático sin interrupciones.</td>
+              <td class="td-ibm">OpenShift agrega operadores, security policies enterprise y soporte RHEL.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('k2')">
+        <span class="acc-cat">Registry & Serverless containers</span>
+        <div class="acc-info"><div class="acc-name">Container Registry + Contenedores Serverless</div><div class="acc-tag">Guardar imágenes Docker y correr contenedores sin gestionar clusters</div></div>
+        <span class="acc-chv" id="achv-k2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-k2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Servicio</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Registry</strong></td>
+              <td class="td-aws">ECR (Elastic Container Registry)</td>
+              <td class="td-az">Azure Container Registry (ACR)</td>
+              <td class="td-gcp">Artifact Registry (también npm, Maven, Python)</td>
+            </tr>
+            <tr>
+              <td><strong>Serverless containers</strong></td>
+              <td class="td-aws"><strong>AWS Fargate</strong> — corré contenedores sin gestionar EC2. Pago por vCPU/memoria usada. <strong>ECS Fargate</strong> o <strong>EKS Fargate</strong>.</td>
+              <td class="td-az"><strong>Azure Container Apps</strong> — Kubernetes serverless, escala a cero. + <strong>Azure Container Instances (ACI)</strong> para tareas puntuales.</td>
+              <td class="td-gcp"><strong>Cloud Run</strong> — el mejor del mercado. Contenedor HTTP serverless, escala a cero, pago por request. Basado en Knative.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 ANALÍTICA & DATA -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--purple-light);">📊</div>
+    <div class="vert-title">08 — Analítica, Big Data &amp; Ciencia de Datos</div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+    <p class="vert-intro">Servicios para procesar, analizar y visualizar grandes volúmenes de datos. Incluye data warehouses, streaming en tiempo real, ETL y herramientas de Business Intelligence. <strong>AWS Redshift lidera en data warehouse coste-eficiente; GCP BigQuery es el más potente en análisis ad-hoc sin infraestructura; Azure Synapse integra SQL + Spark + Power BI en un solo servicio; IBM lidera en gobernanza de datos enterprise.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('da1')">
+        <span class="acc-cat">Data Warehouse</span>
+        <div class="acc-info"><div class="acc-name">Data Warehouse en la nube</div><div class="acc-tag">Analizar petabytes de datos históricos con SQL — sin gestionar servidores</div></div>
+        <span class="acc-chv" id="achv-da1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-da1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Redshift</th>
+            <th class="th-az">🔵 Azure Synapse</th>
+            <th class="th-gcp">🔷 BigQuery</th>
+            <th class="th-ibm">🟦 IBM Db2 Warehouse</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Modelo</strong></td>
+              <td class="td-aws">Columnar basado en PostgreSQL. Serverless disponible. Muy costo-eficiente para grandes volúmenes.</td>
+              <td class="td-az">Azure Synapse Analytics — combina SQL dedicado (DWH) + Apache Spark + integración nativa con Power BI y Azure ML.</td>
+              <td class="td-gcp"><strong>Serverless puro.</strong> Pagás por query, no por cluster. Sin aprovisionar infraestructura. Procesa PBs en segundos con SQL estándar.</td>
+              <td class="td-ibm">Db2 Warehouse on Cloud — fuerte para workloads de reporting de empresas con legado IBM.</td>
+            </tr>
+            <tr>
+              <td><strong>Precio modelo</strong></td>
+              <td class="td-aws">Por nodo (RA3): separa cómputo de storage. Serverless: por RPU (Redshift Processing Unit) por segundo.</td>
+              <td class="td-az">Pool dedicado (por DWU) o Serverless (por TB procesado).</td>
+              <td class="td-gcp"><strong>$5/TB procesado en queries.</strong> Storage a $0.02/GB. Primeros 10GB/mes de queries gratis. Sin clusters.</td>
+              <td class="td-ibm">Por vCPU/mes.</td>
+            </tr>
+            <tr>
+              <td><strong>Mejor para</strong></td>
+              <td class="td-aws">Grandes volúmenes con queries recurrentes y predecibles. Mejor precio para alto uso continuo.</td>
+              <td class="td-az">Si el cliente ya usa Azure y quiere integrar DWH con Power BI, ML y Spark en un solo servicio.</td>
+              <td class="td-gcp"><strong>Mejor para análisis ad-hoc y equipos de Data Science.</strong> Sin infraestructura, sin DBA, resultados inmediatos.</td>
+              <td class="td-ibm">Migraciones desde Db2 on-premise a nube.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('da2')">
+        <span class="acc-cat">Streaming</span>
+        <div class="acc-info"><div class="acc-name">Streaming de datos en tiempo real</div><div class="acc-tag">Procesar eventos al instante — IoT, logs, clics, transacciones financieras</div></div>
+        <span class="acc-chv" id="achv-da2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-da2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Kinesis</th>
+            <th class="th-az">🔵 Azure Event Hubs</th>
+            <th class="th-gcp">🔷 Pub/Sub + Dataflow</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Qué hace</strong></td>
+              <td class="td-aws">Kinesis Data Streams (ingestión) + Kinesis Data Firehose (carga a S3/Redshift) + Kinesis Analytics (SQL sobre streams).</td>
+              <td class="td-az">Event Hubs — Apache Kafka compatible. Millones de eventos/seg. Azure Stream Analytics para procesar en tiempo real.</td>
+              <td class="td-gcp">Pub/Sub (ingestión) + Dataflow (Apache Beam, procesamiento) + BigQuery Streaming. Totalmente serverless.</td>
+            </tr>
+            <tr>
+              <td><strong>Kafka compatible</strong></td>
+              <td class="td-aws">AWS MSK (Managed Streaming for Kafka) — Kafka gestionado</td>
+              <td class="td-az"><strong>Event Hubs es compatible con API Kafka</strong> — migración directa sin cambiar código</td>
+              <td class="td-gcp">Confluent Cloud (partner) — Kafka gestionado en GCP</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('da3')">
+        <span class="acc-cat">ETL</span>
+        <div class="acc-info"><div class="acc-name">ETL — Extracción, Transformación y Carga de datos</div><div class="acc-tag">Mover y transformar datos entre sistemas sin escribir código complejo</div></div>
+        <span class="acc-chv" id="achv-da3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-da3">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS Glue</th>
+            <th class="th-az">🔵 Azure Data Factory</th>
+            <th class="th-gcp">🔷 Cloud Data Fusion / Dataflow</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Qué es</strong></td>
+              <td class="td-aws">AWS Glue — ETL serverless basado en Apache Spark. Crawlers para descubrir esquemas automáticamente. Interfaz visual disponible.</td>
+              <td class="td-az"><strong>Azure Data Factory</strong> — interfaz visual de arrastrar y soltar. El más usado en entornos enterprise no técnicos. Integración nativa con SQL Server, SAP, Oracle.</td>
+              <td class="td-gcp">Cloud Data Fusion (interfaz visual, basado en CDAP) + Dataflow (Apache Beam, para pipelines complejos en código).</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 SEGURIDAD & IAM -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:#FAECE7;">🔐</div>
+    <div class="vert-title">09 — Seguridad, Identidad &amp; Compliance</div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <p class="vert-intro">Gestión de identidades, accesos, detección de amenazas y cumplimiento normativo. <strong>Azure AD (ahora Entra ID) es el directorio de identidades más usado del mundo enterprise — si el cliente tiene Active Directory, Azure ya ganó la mitad del argumento de identidad.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sec1')">
+        <span class="acc-cat">Identidad &amp; Acceso</span>
+        <div class="acc-info"><div class="acc-name">IAM — Gestión de Identidades y Accesos</div><div class="acc-tag">Quién puede hacer qué en la nube — usuarios, roles, permisos, MFA</div></div>
+        <span class="acc-chv" id="achv-sec1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sec1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS IAM</th>
+            <th class="th-az">🔵 Azure Entra ID (AD)</th>
+            <th class="th-gcp">🔷 Cloud IAM</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Modelo</strong></td>
+              <td class="td-aws">Políticas JSON por recurso. IAM Roles para servicios. Sin costo por IAM (se incluye en el servicio).</td>
+              <td class="td-az"><strong>Active Directory / Entra ID</strong> — el más completo. MFA, Conditional Access, Privileged Identity Management (PIM), SSO federado con miles de apps SaaS. <strong>El estándar para empresas con Windows.</strong></td>
+              <td class="td-gcp">IAM basado en recursos (proyecto, carpeta, organización). Workload Identity Federation para apps sin clave de servicio.</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">Granularidad extrema por recurso. Condition keys para políticas muy específicas.</td>
+              <td class="td-az"><strong>Si el cliente tiene AD on-premise, Azure AD Connect lo sincroniza automáticamente.</strong> Single Sign-On hacia Microsoft 365, Salesforce, ServiceNow y miles de apps sin configuración extra.</td>
+              <td class="td-gcp">Mejor para entornos multi-proyecto con jerarquía organizacional compleja.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sec2')">
+        <span class="acc-cat">Detección de amenazas</span>
+        <div class="acc-info"><div class="acc-name">SIEM, SOAR y detección de amenazas en la nube</div><div class="acc-tag">Monitoreo de seguridad, detección de intrusiones y respuesta automatizada</div></div>
+        <span class="acc-chv" id="achv-sec2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sec2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Servicio</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Detección</strong></td>
+              <td class="td-aws">Amazon GuardDuty — detección de amenazas con ML sobre logs de VPC, DNS y CloudTrail. Sin agentes. Activo en minutos.</td>
+              <td class="td-az"><strong>Microsoft Sentinel</strong> — SIEM + SOAR cloud-native. El más avanzado del mercado. Integrado con Microsoft 365, Defender y toda la telemetría de Azure.</td>
+              <td class="td-gcp">Security Command Center — visibilidad de postura de seguridad + Event Threat Detection.</td>
+            </tr>
+            <tr>
+              <td><strong>WAF</strong></td>
+              <td class="td-aws">AWS WAF — reglas gestionadas y personalizadas. Integrado con CloudFront y ALB.</td>
+              <td class="td-az">Azure WAF — integrado con Azure Front Door y Application Gateway.</td>
+              <td class="td-gcp">Cloud Armor — WAF + protección DDoS a nivel global en la red de Google.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 IoT -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--aws-l);">📡</div>
+    <div class="vert-title">10 — IoT (Internet de las Cosas)</div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+    <p class="vert-intro">Plataformas para conectar, gestionar y procesar datos de dispositivos físicos. <strong>AWS IoT Core es el líder indiscutido del mercado por volumen; Azure IoT Hub tiene la mejor integración con entornos industriales (OPC-UA, Siemens); GCP destaca en análisis en tiempo real con Pub/Sub + BigQuery. Personal Tech tiene la ventaja de proveer la conectividad (APN privado + 4G) además de la plataforma.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot1')">
+        <span class="acc-cat">Core IoT</span>
+        <div class="acc-info"><div class="acc-name">Plataforma central IoT</div><div class="acc-tag">Conectar, autenticar y gestionar millones de dispositivos</div></div>
+        <span class="acc-chv" id="achv-iot1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS IoT Core</th>
+            <th class="th-az">🔵 Azure IoT Hub</th>
+            <th class="th-gcp">🔷 Cloud IoT Core / Pub/Sub</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Qué hace</strong></td>
+              <td class="td-aws">Conecta y gestiona billones de mensajes de dispositivos. MQTT, HTTP, WebSockets. Reglas que enrutan datos a Lambda, S3, DynamoDB.</td>
+              <td class="td-az">Azure IoT Hub — gestión bidireccional de dispositivos. Azure IoT Edge para procesamiento en el dispositivo sin nube. <strong>Mejor para industria (OPC-UA, SCADA).</strong></td>
+              <td class="td-gcp">Cloud IoT Core (deprecado en 2023, migración a terceros sobre Pub/Sub). GCP apuesta más a la analítica de los datos que al core IoT.</td>
+            </tr>
+            <tr>
+              <td><strong>Diferenciador</strong></td>
+              <td class="td-aws">Mayor ecosistema de servicios conectados (Greengrass para edge, SiteWise para industria, FreeRTOS para microcontroladores).</td>
+              <td class="td-az">Azure IoT Edge: desplega modelos ML y lógica en el dispositivo offline. Clave para plantas industriales sin conectividad permanente.</td>
+              <td class="td-gcp">La fortaleza de GCP está en el backend analítico (BigQuery, Pub/Sub) más que en la gestión de dispositivos.</td>
+            </tr>
+            <tr>
+              <td><strong>vs Personal Tech</strong></td>
+              <td class="td-aws" colspan="3" style="background:var(--green-light);color:var(--green-dark);font-weight:600;">Personal Tech ofrece plataforma IoT + la conectividad del dispositivo (APN privado 4G + satelital) en el mismo contrato. Con AWS/Azure/GCP el cliente necesita contratar aparte a una telco para la SIM. Personal Tech elimina ese actor.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 INTEGRACIÓN & MESSAGING -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--green-light);">📨</div>
+    <div class="vert-title">11 — Integración, Mensajería &amp; Automatización</div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+    <p class="vert-intro">Colas de mensajes, eventos, notificaciones y automatización de flujos de trabajo sin código (no-code). Infraestructura invisible que conecta los distintos servicios y sistemas entre sí.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('msg1')">
+        <span class="acc-cat">Colas &amp; Eventos</span>
+        <div class="acc-info"><div class="acc-name">Colas de mensajes y buses de eventos</div><div class="acc-tag">Desacoplar sistemas — si A falla, B sigue funcionando con los mensajes en cola</div></div>
+        <span class="acc-chv" id="achv-msg1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-msg1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Tipo</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Cola simple</strong></td>
+              <td class="td-aws">SQS (Simple Queue Service) — el más simple y barato del mercado. Estándar o FIFO.</td>
+              <td class="td-az">Azure Queue Storage (simple) · Azure Service Bus (enterprise con topics y subscriptions)</td>
+              <td class="td-gcp">Cloud Tasks — cola de tareas asíncronas</td>
+            </tr>
+            <tr>
+              <td><strong>Pub/Sub</strong></td>
+              <td class="td-aws">SNS (Simple Notification Service) — fan-out a múltiples destinos (SQS, Lambda, email, SMS)</td>
+              <td class="td-az">Azure Event Grid — eventos reactivos a cambios en recursos Azure</td>
+              <td class="td-gcp"><strong>Cloud Pub/Sub</strong> — el más escalable, backbone del streaming de GCP</td>
+            </tr>
+            <tr>
+              <td><strong>Workflows</strong></td>
+              <td class="td-aws">AWS Step Functions — máquinas de estado visuales para orquestar servicios</td>
+              <td class="td-az"><strong>Azure Logic Apps</strong> — no-code, 400+ conectores. El más fácil para integraciones entre SaaS (Salesforce, SAP, SharePoint)</td>
+              <td class="td-gcp">Cloud Workflows — orquestación de servicios basada en YAML</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<!-- ══════════════════════════════════════════════ 12 COMPUTACIÓN ESPECIAL -->
+<div class="vertical" id="v12">
+  <div class="vert-header" onclick="toggleV('v12')">
+    <div class="vert-icon" style="background:var(--purple-light);">⚛️</div>
+    <div class="vert-title">12 — Computación Especial (HPC, Cuántica, Robótica)</div>
+    <span class="vert-toggle" id="vtgl-v12">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v12">
+    <p class="vert-intro">Servicios de nicho para casos de uso avanzados: simulaciones científicas, computación cuántica, robótica y satélites. Más relevantes para proyectos de investigación, defensa, farmacéuticas y energía. No son el foco de Personal Tech, pero sirven para conversaciones con clientes de esos sectores.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sp1')">
+        <span class="acc-cat">HPC</span>
+        <div class="acc-info"><div class="acc-name">HPC — High Performance Computing</div><div class="acc-tag">Simulaciones científicas, dinámica de fluidos, modelado climático, finanzas cuantitativas</div></div>
+        <span class="acc-chv" id="achv-sp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sp1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:90px">Aspecto</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Servicio</strong></td>
+              <td class="td-aws">AWS ParallelCluster + instancias HPC (Hpc6a, Trn1 para ML). Redes EFA (Elastic Fabric Adapter) de ultra-baja latencia.</td>
+              <td class="td-az">Azure CycleCloud + instancias H-series. Mejor integración con herramientas de simulación de Siemens y ANSYS.</td>
+              <td class="td-gcp">A3 Mega (H100x8) — las instancias GPU más potentes del mercado para entrenar LLMs y simulaciones.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sp2')">
+        <span class="acc-cat">Cuántica &amp; otros</span>
+        <div class="acc-info"><div class="acc-name">Computación cuántica, robótica y satélites</div><div class="acc-tag">Servicios futuristas — más para PoC que para producción hoy</div></div>
+        <span class="acc-chv" id="achv-sp2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sp2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:120px">Servicio</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Computación cuántica</strong></td>
+              <td class="td-aws">Amazon Braket — acceso a hardware cuántico de D-Wave, IonQ y Rigetti en la misma API.</td>
+              <td class="td-az">Azure Quantum — acceso a hardware de IonQ, Quantinuum y simuladores.</td>
+              <td class="td-gcp">Google Quantum AI — hardware propio Sycamore. El más avanzado en investigación cuántica.</td>
+            </tr>
+            <tr>
+              <td><strong>Robótica / Simulación</strong></td>
+              <td class="td-aws">AWS RoboMaker — simula y prueba robots con ROS (Robot Operating System).</td>
+              <td class="td-az">No tiene equivalente directo.</td>
+              <td class="td-gcp">No tiene equivalente directo.</td>
+            </tr>
+            <tr>
+              <td><strong>Satélites</strong></td>
+              <td class="td-aws">AWS Ground Station — controla satélites y descarga datos directamente a AWS.</td>
+              <td class="td-az">Azure Orbital — similar a AWS Ground Station.</td>
+              <td class="td-gcp">No tiene equivalente directo.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v12 -->
+
+
+<!-- ══════════════════════════════════════════════ 13 VENTAJAS POR NUBE -->
+<div class="vertical" id="v13">
+  <div class="vert-header" onclick="toggleV('v13')">
+    <div class="vert-icon" style="background:var(--aws-l);">🏆</div>
+    <div class="vert-title">13 — Resumen: ¿Cuándo recomendar cada nube?</div>
+    <span class="vert-toggle" id="vtgl-v13">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v13">
+    <p class="vert-intro">Guía rápida de criterios de selección por proveedor. Para usarla en conversaciones de preventa cuando el cliente pregunta "¿y qué nube me recomendás?"</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w1')">
+        <span class="acc-badge" style="background:var(--aws-l);color:var(--aws-d);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;">🟠 AWS</span>
+        <div class="acc-info"><div class="acc-name">Cuándo es la mejor opción</div><div class="acc-tag">Máxima variedad de servicios, ecosistema más maduro, liderazgo de mercado</div></div>
+        <span class="acc-chv" id="achv-w1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w1">
+        <ul class="feat" style="padding:14px 16px;">
+          <li><span class="fdot" style="background:var(--aws)"></span>El cliente ya tiene workloads en AWS y quiere consolidar.</li>
+          <li><span class="fdot" style="background:var(--aws)"></span>Necesita la mayor variedad de servicios posibles (200+ servicios).</li>
+          <li><span class="fdot" style="background:var(--aws)"></span>Proyectos de startup o scale-up con equipo técnico cloud-native.</li>
+          <li><span class="fdot" style="background:var(--aws)"></span>Quiere instancias Graviton (ARM, -40% costo vs x86) para workloads de cómputo intensivo.</li>
+          <li><span class="fdot" style="background:var(--aws)"></span>Usa serverless intensivamente (Lambda + DynamoDB + S3 = stack clásico).</li>
+          <li><span class="fdot" style="background:var(--aws)"></span>IA generativa con acceso a múltiples modelos (Bedrock: Claude, Llama, Titan).</li>
+        </ul>
+        <div class="porque" style="margin:0 16px 16px;">
+          <div class="plabel">¿Por qué AWS es imbatible en esto?</div>
+          <ul class="pfeat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>200+ servicios:</strong> AWS inició en 2006 y lleva casi 20 años de ventaja de desarrollo. Azure y GCP tienen ~180 y ~100+ servicios respectivamente. La diferencia no es solo cantidad sino madurez — los servicios de AWS llevan años en producción con millones de empresas como casos de uso reales y documentación exhaustiva.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Startups y cloud-native:</strong> AWS tiene la comunidad developer más grande del mundo. Cualquier ingeniero en el mercado ya conoce AWS. Azure requiere contexto Microsoft-first y GCP tiene menos masa crítica en la comunidad developer global. El time-to-market de un proyecto nuevo en AWS es el más rápido por el acceso a tutoriales, herramientas y soporte comunitario.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Graviton ARM -40% costo:</strong> Es el único hyperscaler con chip propio de producción masiva para cómputo general. Azure usa Ampere (ARM de terceros) y GCP tiene TPUs solo para ML. Graviton es hardware propietario de Amazon optimizado para sus workloads — el ahorro del 40% vs x86 es real y está documentado en benchmarks independientes.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Lambda serverless:</strong> Lambda fue el pionero del mercado (2014). Azure Functions llegó dos años después y Cloud Functions de GCP tiene menos integraciones nativas. El ecosistema Lambda tiene más triggers (S3, DynamoDB, SNS, API Gateway, IoT) y más tiempo de batalla comprobado en producción a escala global.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Bedrock multi-modelo:</strong> Es el único que entrega en una sola API acceso a modelos de Anthropic (Claude), Meta (Llama), Cohere, Stability AI y Amazon Titan. Azure OpenAI solo da acceso a modelos de OpenAI. GCP Vertex AI solo da acceso a modelos de Google. Si el cliente quiere comparar modelos o no depender de un solo vendor de IA, AWS Bedrock es la única opción.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w2')">
+        <span class="acc-badge" style="background:var(--az-l);color:var(--az-d);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;">🔵 Azure</span>
+        <div class="acc-info"><div class="acc-name">Cuándo es la mejor opción</div><div class="acc-tag">Entornos Microsoft, Active Directory, SQL Server, Office 365</div></div>
+        <span class="acc-chv" id="achv-w2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w2">
+        <ul class="feat" style="padding:14px 16px;">
+          <li><span class="fdot" style="background:var(--az)"></span>El cliente usa Windows Server, SQL Server o Active Directory — Azure Hybrid Benefit ahorra hasta 55% en licencias.</li>
+          <li><span class="fdot" style="background:var(--az)"></span>Ya paga Microsoft 365 — Azure AD / Entra ID ya está incluido.</li>
+          <li><span class="fdot" style="background:var(--az)"></span>Necesita integración con SAP, Dynamics 365 o Power Platform.</li>
+          <li><span class="fdot" style="background:var(--az)"></span>Requiere OpenAI GPT-4 con SLA enterprise y datos privados (Azure OpenAI Service).</li>
+          <li><span class="fdot" style="background:var(--az)"></span>Sector regulado que necesita compliance Microsoft + BCRA/CNV proof.</li>
+          <li><span class="fdot" style="background:var(--az)"></span>Equipo DevOps que ya usa Azure DevOps / GitHub.</li>
+        </ul>
+        <div class="porque" style="margin:0 16px 16px;">
+          <div class="plabel">¿Por qué Azure es imbatible en esto?</div>
+          <ul class="pfeat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Azure Hybrid Benefit — ahorro del 55%:</strong> Azure es el único hyperscaler con acuerdo de licenciamiento Microsoft que permite reutilizar licencias de Windows Server y SQL Server ya pagadas para reducir el costo en nube. En AWS o GCP, si usás SQL Server, pagás la licencia completa encima del costo del servidor. Un cliente con 50 VMs Windows en AWS podría ahorrar decenas de miles de dólares al año migrando a Azure solo por este concepto.</li>
+            <li><span class="fdot" style="background:var(--az)"></span><strong>Microsoft 365 ya incluye Azure AD:</strong> Si la empresa ya paga M365, Azure Entra ID (antes Azure AD) está incluido sin costo adicional. Implementar SSO, MFA y Conditional Access en AWS requiere AWS IAM Identity Center más configuración extra. En GCP requiere Google Workspace separado. En Azure, si tenés M365, ya tenés el directorio de identidades más completo del mercado sin pagar nada adicional.</li>
+            <li><span class="fdot" style="background:var(--az)"></span><strong>Azure OpenAI — el único GPT-4 enterprise:</strong> Azure OpenAI es la única forma de acceder a GPT-4 de OpenAI con SLA empresarial, datos 100% privados (el prompt no se usa para entrenar modelos) y compliance certificado (SOC2, ISO27001, HIPAA). OpenAI directo no tiene SLA enterprise comparable. AWS Bedrock tiene Claude y Llama pero no GPT-4. Si el cliente quiere GPT-4 en producción con garantías enterprise, Azure es la única opción.</li>
+            <li><span class="fdot" style="background:var(--az)"></span><strong>Azure DevOps + GitHub:</strong> Microsoft es dueño de GitHub — la plataforma con más de 100 millones de desarrolladores del mundo. La integración entre GitHub Actions, Azure DevOps y los servicios de Azure es nativa y privilegiada. AWS y GCP ofrecen integraciones con GitHub, pero sin el nivel de profundidad que tiene el dueño de la plataforma.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w3')">
+        <span class="acc-badge" style="background:var(--gcp-l);color:var(--gcp-d);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;">🔷 GCP</span>
+        <div class="acc-info"><div class="acc-name">Cuándo es la mejor opción</div><div class="acc-tag">IA/ML, Big Data, Kubernetes, Google Workspace</div></div>
+        <span class="acc-chv" id="achv-w3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w3">
+        <ul class="feat" style="padding:14px 16px;">
+          <li><span class="fdot" style="background:var(--gcp)"></span>Proyectos de Data Science o Big Data — BigQuery sin infraestructura es imbatible.</li>
+          <li><span class="fdot" style="background:var(--gcp)"></span>Entrenamiento de modelos ML con TPUs propias de Google (más baratas que GPUs A100).</li>
+          <li><span class="fdot" style="background:var(--gcp)"></span>Apps Kubernetes nativas — GKE Autopilot es el más maduro y serverless.</li>
+          <li><span class="fdot" style="background:var(--gcp)"></span>El cliente ya usa Google Workspace — integración nativa con Gemini IA.</li>
+          <li><span class="fdot" style="background:var(--gcp)"></span>Necesita base de datos globalmente distribuida con SQL (Cloud Spanner).</li>
+          <li><span class="fdot" style="background:var(--gcp)"></span>Quiere mejores precios de cómputo con instancias personalizadas (vCPU/RAM exactos).</li>
+        </ul>
+        <div class="porque" style="margin:0 16px 16px;">
+          <div class="plabel">¿Por qué GCP es imbatible en esto?</div>
+          <ul class="pfeat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>BigQuery — serverless puro:</strong> BigQuery no tiene clusters que aprovisionar, escalar ni gestionar — es serverless absoluto. AWS Redshift requiere provisionar clusters (su modo serverless es más reciente y menos maduro). Azure Synapse también requiere gestionar pools de DWU. BigQuery cobra $5/TB procesado: podés analizar petabytes con una query SQL estándar sin tener ningún servidor encendido. Para equipos de Data Science, esto elimina toda la operación de infraestructura.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>TPUs — chip propio para ML:</strong> Google diseñó las TPUs (Tensor Processing Units) específicamente para entrenamiento de redes neuronales. Una TPU v4 pod puede entrenar un modelo de lenguaje hasta 10x más rápido que una GPU equivalente para arquitecturas transformer. AWS y Azure dependen de GPUs NVIDIA (A100, H100) que son hardware de terceros a precio de mercado. Google tiene ventaja estructural de costo porque diseña y fabrica su propio silicio para ML.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>GKE Autopilot — Kubernetes sin gestión:</strong> Google creó Kubernetes en 2014 y lo donó como open source. GKE lleva una década de ventaja en estabilidad y features. GKE Autopilot va un paso más allá: gestiona incluso los nodos worker — no hay que decidir tipos de VMs ni escalar manualmente. Azure AKS da el control plane gratis pero requiere más intervención manual en los nodos. AWS EKS cobra $144/mes por cluster y tiene la curva de configuración más alta de los tres.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Cloud Spanner — único SQL global:</strong> Cloud Spanner es literalmente único en el mercado. Combina SQL semántico completo con distribución global activo-activo y consistencia ACID. AWS Aurora Global tiene replicación cross-region pero con lag y no es completamente activo-activo. Azure Cosmos DB es multi-modelo pero no SQL nativo — tiene API SQL pero no es un motor relacional puro. Para apps financieras globales con requisitos de consistencia fuerte, no hay alternativa equivalente.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Instancias personalizadas:</strong> Solo GCP permite definir exactamente la cantidad de vCPUs y GB de RAM que necesitás, sin tener que elegir de una lista predefinida de tamaños. AWS y Azure tienen familias de instancias con tamaños fijos — si tu app necesita 6 vCPUs y 20GB RAM, en AWS pagás la instancia de 8 vCPUs y 32GB. En GCP pagás exactamente 6 vCPUs y 20GB. A escala, el ahorro es significativo.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w4')">
+        <span class="acc-badge" style="background:var(--ibm-l);color:var(--ibm-d);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;">🟦 IBM</span>
+        <div class="acc-info"><div class="acc-name">Cuándo es la mejor opción</div><div class="acc-tag">Entornos legacy mainframe, IA regulada, OpenShift</div></div>
+        <span class="acc-chv" id="achv-w4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w4">
+        <ul class="feat" style="padding:14px 16px;">
+          <li><span class="fdot" style="background:var(--ibm)"></span>El cliente tiene mainframe IBM Z y quiere extenderlo a cloud híbrida sin reescribir sistemas.</li>
+          <li><span class="fdot" style="background:var(--ibm)"></span>Necesita IA auditable y explicable — IBM es el único con herramientas maduras de IA responsable.</li>
+          <li><span class="fdot" style="background:var(--ibm)"></span>Entornos de finanzas o salud con regulaciones estrictas de IA y privacidad.</li>
+          <li><span class="fdot" style="background:var(--ibm)"></span>Kubernetes enterprise con OpenShift (ROKS) — mejor soporte y seguridad para grandes corporaciones.</li>
+        </ul>
+        <div class="porque" style="margin:0 16px 16px;">
+          <div class="plabel">¿Por qué IBM es imbatible en esto?</div>
+          <ul class="pfeat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Mainframe IBM Z — monopolio real:</strong> IBM Z es el único mainframe enterprise que existe en producción. Si el cliente corre COBOL, sistemas bancarios legados o cualquier workload de mainframe, IBM tiene el único camino de modernización que no implica reescribir todo desde cero. AWS, Azure y GCP directamente no tienen soporte para IBM Z — no existe para ellos como categoría de solución. El camino de migración de un banco con 30 años de sistemas COBOL pasa obligatoriamente por IBM.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>IA explicable y auditable:</strong> AI Fairness 360 y AI Explainability 360 son frameworks open source pioneros en IA responsable, desarrollados y mantenidos por IBM Research. AWS Bedrock y Azure OpenAI no tienen herramientas equivalentes de auditoría de modelos. En sectores como finanzas y salud, algunos reguladores de la Unión Europea (AI Act) y otros marcos normativos exigen que los modelos de IA sean explicables — IBM es el único hyperscaler que entrega esto de fábrica, certificado y con soporte enterprise.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>OpenShift — Kubernetes enterprise con soporte RHEL:</strong> Red Hat OpenShift agrega sobre Kubernetes una capa de operadores, políticas de seguridad enterprise, soporte para RHEL y certificaciones de seguridad que los Kubernetes gestionados de AWS, Azure y GCP no incluyen. Para grandes corporaciones con auditorías de seguridad estrictas, OpenShift ofrece el nivel de soporte y certificación que los otros no pueden igualar.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w5')">
+        <span class="acc-badge" style="background:var(--ora-l);color:var(--ora-d);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;">🔴 Oracle</span>
+        <div class="acc-info"><div class="acc-name">Cuándo es la mejor opción</div><div class="acc-tag">Oracle Database, ERP Oracle, cargas críticas, free tier generoso</div></div>
+        <span class="acc-chv" id="achv-w5">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w5">
+        <ul class="feat" style="padding:14px 16px;">
+          <li><span class="fdot" style="background:var(--ora)"></span>El cliente corre Oracle Database — en OCI el costo de licencia baja drásticamente (BYOL + descuentos).</li>
+          <li><span class="fdot" style="background:var(--ora)"></span>Usa Oracle ERP, JD Edwards, PeopleSoft o Fusion — la nube más optimizada para Oracle apps.</li>
+          <li><span class="fdot" style="background:var(--ora)"></span>Necesita bare metal al precio de VM — único en el mercado.</li>
+          <li><span class="fdot" style="background:var(--ora)"></span>PoC o workload pequeño: OCI Always Free da 2 VMs + 200GB storage + bases de datos Autonomous permanentemente gratis.</li>
+          <li><span class="fdot" style="background:var(--ora)"></span>Sin egress fees entre regiones OCI — diferenciador de costo para arquitecturas multi-región.</li>
+        </ul>
+        <div class="porque" style="margin:0 16px 16px;">
+          <div class="plabel">¿Por qué Oracle OCI es imbatible en esto?</div>
+          <ul class="pfeat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Oracle DB en OCI — costo de licencia hasta -60%:</strong> Oracle tiene un modelo de licenciamiento que en la nube de terceros (AWS, Azure) se multiplica según el tipo de instancia. En OCI, Oracle permite BYOL (Bring Your Own License) con descuentos máximos y el conteo de procesadores es el más favorable del mercado. Una empresa que migra su Oracle Database de AWS a OCI puede reducir hasta un 60% el costo total de licenciamiento. Es la única nube donde Oracle no "castiga" al cliente con su propio software.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Bare metal al precio de VM — exclusivo OCI:</strong> En AWS y Azure, el bare metal tiene un costo premium significativo sobre las VMs (generalmente 2-3x más caro). En OCI, una instancia bare metal cuesta lo mismo que una VM equivalente. Esto permite workloads de rendimiento extremo (Oracle Database, SAP HANA) sin el overhead de la virtualización y sin pagar el premium habitual.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Sin egress fees — el único hyperscaler que no cobra salida de datos:</strong> AWS cobra entre $0.08 y $0.09 por GB de datos que salen hacia internet. Azure y GCP cobran similar. OCI tiene 10 TB/mes gratuito de egress y entre regiones OCI no cobra absolutamente nada. Para empresas con grandes volúmenes de transferencia de datos (backups, analytics, media, DR), esto puede representar miles de dólares de ahorro mensual que directamente no existen en ningún otro hyperscaler.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Free Tier permanente más generoso del mercado:</strong> El OCI Always Free da 2 VMs AMD completas (1 OCPU, 1GB RAM c/u) + 200GB de storage + Oracle Autonomous Database + Load Balancer — permanentemente y sin tarjeta de crédito. AWS Lightsail Free tiene 750 horas pero caduca al año. Azure y GCP tienen free tiers pero mucho más limitados. Para un PoC de cliente o una demo técnica, OCI da la infraestructura más completa sin costo.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w6')">
+        <span class="acc-badge" style="background:var(--hwa-l);color:var(--hwa-d);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;">🟥 Huawei</span>
+        <div class="acc-info"><div class="acc-name">Cuándo es la mejor opción</div><div class="acc-tag">Precio competitivo en LATAM, entornos Huawei, telecomunicaciones</div></div>
+        <span class="acc-chv" id="achv-w6">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w6">
+        <ul class="feat" style="padding:14px 16px;">
+          <li><span class="fdot" style="background:var(--hwa)"></span>El cliente ya usa hardware Huawei (routers, switches, servidores) — integración nativa.</li>
+          <li><span class="fdot" style="background:var(--hwa)"></span>Precio muy competitivo para workloads de cómputo intensivo en LATAM.</li>
+          <li><span class="fdot" style="background:var(--hwa)"></span>Proyectos de telecomunicaciones, smart cities o gobierno en mercados donde Huawei tiene presencia fuerte.</li>
+          <li><span class="fdot" style="background:var(--hwa)"></span>Empresas con restricciones para usar proveedores estadounidenses.</li>
+        </ul>
+        <div class="porque" style="margin:0 16px 16px;">
+          <div class="plabel">¿Por qué Huawei Cloud es imbatible en esto?</div>
+          <ul class="pfeat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Hardware Huawei — integración sin fricción:</strong> Si la empresa tiene routers, switches, servidores o equipos de red Huawei, la integración con Huawei Cloud es nativa y sin capas de abstracción adicionales. AWS, Azure y GCP no tienen integraciones de hardware con Huawei — requieren configuraciones adicionales y en algunos casos drivers o adaptadores. La gestión unificada de hardware on-premise + cloud en el mismo stack de Huawei es un diferenciador real en empresas con infraestructura de red Huawei.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Precio en LATAM — agresivo por estrategia de mercado:</strong> Huawei subsidia el costo de sus servicios cloud en mercados emergentes para ganar cuota de mercado. En ciertos workloads de cómputo intensivo en Latinoamérica, puede ser entre un 20% y 35% más barato que AWS o Azure en la misma región. Es una ventaja temporal por estrategia de expansión, pero real mientras dure.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Restricciones geopolíticas:</strong> En algunos mercados públicos o empresas con restricciones de uso de proveedores estadounidenses (por regulación local, acuerdos comerciales o políticas de gobierno), Huawei Cloud es la única alternativa enterprise viable con escala y soporte. Personal Tech tiene alianza con Huawei Cloud, lo que permite ofrecerlo como opción para estos casos sin salir del portfolio.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v13 -->
+
+
+<!-- ══════════════════════════════════════════════ 14 RED & DDoS -->
+<div class="vertical" id="v14">
+  <div class="vert-header" onclick="toggleV('v14')">
+    <div class="vert-icon" style="background:#FAECE7;">🛡</div>
+    <div class="vert-title">14 — Arquitectura de Red: Load Balancer, DDoS y WAF</div>
+    <span class="vert-toggle" id="vtgl-v14">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v14">
+    <p class="vert-intro">Una pregunta frecuente en arquitectura cloud: <em>"Si el Load Balancer está expuesto a internet, ¿no es vulnerable a un ataque DDoS?"</em> La respuesta es que tanto Azure como AWS protegen el Load Balancer con capas de defensa integradas que lo convierten en el primer eslabón de seguridad, no en un punto débil. <strong>Entender esto es clave para diseñar arquitecturas seguras y explicarlas a clientes.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('lb1')">
+        <span class="acc-cat">Concepto base</span>
+        <div class="acc-info"><div class="acc-name">¿Por qué el Load Balancer va al frente? ¿No es un riesgo?</div><div class="acc-tag">El Load Balancer no es una VM común — es un servicio gestionado con protección integrada</div></div>
+        <span class="acc-chv" id="achv-lb1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-lb1">
+        <div class="desc-block">
+          <div class="analogy"><strong>La analogía:</strong> El Load Balancer es como el portero de un edificio de oficinas. Está en la puerta (expuesto al público) por diseño — su trabajo es recibir a todo el que llega y dirigirlo al lugar correcto. Pero ese portero tiene seguridad privada detrás (DDoS Protection), un detector de metales en la entrada (WAF) y una lista de quién puede pasar y quién no (NSG / Security Groups). No está desprotegido — está el más protegido de todos porque es el punto de entrada.</div>
+        </div>
+        <div class="def-label">Por qué el Load Balancer no "revienta" ante un DDoS</div>
+        <ul class="feat">
+          <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>No es un servidor fijo:</strong> El Load Balancer no es una VM que vos administrás con CPU y RAM fijos. Es un servicio distribuido que escala horizontalmente de forma automática. Puede absorber un volumen enorme de tráfico sin "reventarse" como pasaría con una VM normal.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>Azure DDoS Protection:</strong> El Load Balancer de Azure está respaldado por Azure DDoS Protection, que filtra tráfico malicioso antes de que llegue a tus recursos. El tráfico anómalo se absorbe en la red global de Microsoft antes de llegar al Load Balancer.</li>
+          <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>AWS Shield:</strong> El Elastic Load Balancer (ELB) de AWS está integrado con AWS Shield Standard (gratuito y automático), que detecta y mitiga ataques DDoS de red y transporte en tiempo real, sin intervención manual.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('lb2')">
+        <span class="acc-cat">Arquitectura típica</span>
+        <div class="acc-info"><div class="acc-name">Capas de defensa en una arquitectura cloud bien diseñada</div><div class="acc-tag">DDoS → WAF → Load Balancer → Firewall (NSG/SG) → VMs → Base de datos</div></div>
+        <span class="acc-chv" id="achv-lb2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-lb2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:130px">Capa</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th style="width:200px">Qué hace</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1 · Anti-DDoS</strong></td>
+              <td class="td-aws">AWS Shield Standard (gratis) / Shield Advanced (pago)</td>
+              <td class="td-az">Azure DDoS Protection Basic (gratis) / Standard (pago)</td>
+              <td>Filtra tráfico malicioso masivo antes de que llegue a tu infraestructura. Actúa a nivel de red (L3/L4).</td>
+            </tr>
+            <tr>
+              <td><strong>2 · WAF</strong></td>
+              <td class="td-aws">AWS WAF integrado con ALB o CloudFront</td>
+              <td class="td-az">Azure WAF integrado con Application Gateway o Front Door</td>
+              <td>Inspecciona tráfico HTTP/HTTPS y bloquea ataques de aplicación (SQL injection, XSS, OWASP Top 10). Actúa a nivel L7.</td>
+            </tr>
+            <tr>
+              <td><strong>3 · Load Balancer</strong></td>
+              <td class="td-aws">ELB (ALB para HTTP, NLB para TCP/UDP)</td>
+              <td class="td-az">Azure Load Balancer / Application Gateway</td>
+              <td>Distribuye el tráfico entre múltiples instancias. Es el punto de entrada visible desde internet.</td>
+            </tr>
+            <tr>
+              <td><strong>4 · Firewall de red</strong></td>
+              <td class="td-aws">Security Groups (por instancia) + NACLs (por subred)</td>
+              <td class="td-az">NSG — Network Security Groups (por NIC o subred)</td>
+              <td>Controla qué tráfico puede llegar a las VMs. Solo permite puertos específicos desde el Load Balancer.</td>
+            </tr>
+            <tr>
+              <td><strong>5 · VMs / App</strong></td>
+              <td class="td-aws">EC2 en subredes privadas</td>
+              <td class="td-az">VMs en subredes privadas</td>
+              <td>Las VMs están en subredes privadas — no tienen IP pública directa. Solo reciben tráfico desde el Load Balancer.</td>
+            </tr>
+            <tr>
+              <td><strong>6 · Base de datos</strong></td>
+              <td class="td-aws">RDS en subred privada, sin acceso desde internet</td>
+              <td class="td-az">Azure SQL en subred privada, sin acceso desde internet</td>
+              <td>Solo puede recibir conexiones desde las VMs de la aplicación, no desde internet ni desde el Load Balancer directamente.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>Conclusión para la venta:</strong> Cuando un cliente pregunta "¿el Load Balancer no queda expuesto?", la respuesta es que está expuesto por diseño — es su función — pero está protegido por al menos 3 capas de seguridad antes de que el tráfico llegue a cualquier servidor. La arquitectura cloud bien diseñada es más segura que un servidor on-premise expuesto directamente.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v14 -->
+
+
+<!-- ══════════════════════════════════════════════ 15 VMWARE vs NUTANIX -->
+<div class="vertical" id="v15">
+  <div class="vert-header" onclick="toggleV('v15')">
+    <div class="vert-icon" style="background:#E0F5F5;">🖧</div>
+    <div class="vert-title">15 — Virtualización Privada: VMware Cloud Foundation vs Nutanix</div>
+    <span class="vert-toggle" id="vtgl-v15">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v15">
+    <p class="vert-intro">Dos plataformas líderes para construir nubes privadas e híbridas on-premise. Relevantes en Personal Tech cuando el cliente no quiere o no puede migrar todo a la nube pública y necesita virtualizar su datacenter propio. <strong>Ambas soportan integración con AWS, Azure y GCP, pero con enfoques distintos.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('vm1')">
+        <span class="acc-cat">Comparativa</span>
+        <div class="acc-info"><div class="acc-name">VMware Cloud Foundation vs Nutanix — diferencias clave</div><div class="acc-tag">Cuándo recomendar cada una en una propuesta de nube privada o híbrida</div></div>
+        <span class="acc-chv" id="achv-vm1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-vm1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:130px">Dimensión</th>
+            <th style="width:45%;background:#E8F0FE;color:#1A3A7A;font-weight:700;">VMware Cloud Foundation (VCF)</th>
+            <th style="background:#E1F5EE;color:#085041;font-weight:700;">Nutanix Cloud Platform</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Modelo</strong></td>
+              <td>Stack completo integrado: vSphere (cómputo) + vSAN (almacenamiento) + NSX (redes) + vCenter (gestión). Arquitectura tradicional modernizada.</td>
+              <td>Hiperconvergencia nativa: cómputo, almacenamiento y red en un solo nodo. Enfoque en simplicidad operativa y automatización desde el origen.</td>
+            </tr>
+            <tr>
+              <td><strong>Integración híbrida</strong></td>
+              <td>Arquitectura consistente entre on-premise y cloud (VMware en AWS, Azure VMware Solution, Google VMware Engine). Énfasis en integración con redes y almacenamiento tradicionales.</td>
+              <td>Integración muy fluida con nube pública, privada e híbrida. Nutanix Clusters corre en AWS y Azure con la misma interfaz que on-premise. Foco en simplicidad y automatización.</td>
+            </tr>
+            <tr>
+              <td><strong>Gestión</strong></td>
+              <td>Herramientas de gestión integradas pero con mayor complejidad operativa. Requiere expertise en NSX para redes avanzadas. Más control granular sobre cada componente.</td>
+              <td>Panel único (Prism) que gestiona toda la infraestructura con automatización nativa. Curva de aprendizaje más baja. Menos intervención manual requerida.</td>
+            </tr>
+            <tr>
+              <td><strong>Fortaleza</strong></td>
+              <td>Mayor énfasis en integración con redes y almacenamiento tradicionales. Ideal para empresas con hardware legado y equipos con expertise VMware existente.</td>
+              <td>Integración muy fluida en entornos de nube privada, híbrida y pública. Enfoque en simplicidad y automatización. Migración más rápida para empresas sin expertise VMware.</td>
+            </tr>
+            <tr>
+              <td><strong>Licenciamiento</strong></td>
+              <td>Licenciamiento por socket de CPU. Tras la adquisición de VMware por Broadcom (2023), los precios aumentaron significativamente.</td>
+              <td>Modelo de suscripción por nodo o por core. Más predecible y en algunos casos más económico post-adquisición Broadcom.</td>
+            </tr>
+            <tr>
+              <td><strong>Escenario ideal</strong></td>
+              <td>Empresa con infraestructura VMware existente, equipos con expertise en vSphere/NSX, requisitos complejos de red y almacenamiento.</td>
+              <td>Empresa que quiere simplificar su datacenter, migrar a nube híbrida con mínima fricción operativa, o que está evaluando alternativas post-Broadcom.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>Contexto importante — post-Broadcom:</strong> La adquisición de VMware por Broadcom en 2023 generó aumentos de licencia del 300-500% para muchos clientes. Esto abrió una ventana real para que Nutanix se posicione como alternativa. En conversaciones con clientes que usan VMware, el tema del costo de licenciamiento post-Broadcom es un pain point concreto que se puede atacar con la propuesta de Nutanix o con migración a cloud pública.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('vm2')">
+        <span class="acc-cat">Integración con cloud pública</span>
+        <div class="acc-info"><div class="acc-name">Cómo se conectan VMware y Nutanix con AWS, Azure y GCP</div><div class="acc-tag">La nube privada como extensión de la nube pública — hybrid cloud real</div></div>
+        <span class="acc-chv" id="achv-vm2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-vm2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:120px">Servicio</th>
+            <th class="th-aws">🟠 AWS</th>
+            <th class="th-az">🔵 Azure</th>
+            <th class="th-gcp">🔷 GCP</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>VMware en la nube</strong></td>
+              <td class="td-aws">VMware Cloud on AWS — VMs VMware corriendo directamente sobre hardware bare metal de AWS. Mismo vCenter, misma herramienta, en la nube.</td>
+              <td class="td-az">Azure VMware Solution — igual concepto: VMs VMware sobre hardware dedicado en Azure. Ideal para extensión de datacenter on-premise a Azure.</td>
+              <td class="td-gcp">Google Cloud VMware Engine — VMs VMware en GCP. Menos extendido que AWS y Azure.</td>
+            </tr>
+            <tr>
+              <td><strong>Nutanix en la nube</strong></td>
+              <td class="td-aws">Nutanix Cloud Clusters on AWS — el mismo Nutanix que on-premise corriendo sobre instancias bare metal de AWS. Misma interfaz Prism.</td>
+              <td class="td-az">Nutanix Cloud Clusters on Azure — disponible con integración nativa. Permite mover workloads entre on-premise y Azure sin reconfigurar.</td>
+              <td class="td-gcp">Disponible en etapa de expansión. Menor madurez que en AWS y Azure.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v15 -->
+
+
+<!-- ══════════════════════════════════════════════ 16 CLOUD + RPA/IA -->
+<div class="vertical" id="v16">
+  <div class="vert-header" onclick="toggleV('v16')">
+    <div class="vert-icon" style="background:#EEEDFE;">📈</div>
+    <div class="vert-title">16 — Beneficios Estratégicos: Cloud + RPA/IA más allá del ROI económico</div>
+    <span class="vert-toggle" id="vtgl-v16">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v16">
+    <p class="vert-intro">El ROI económico (reducción de costos de hardware, licencias, personal IT) es el argumento más obvio para justificar cloud. Pero en conversaciones con CIOs, CFOs y directorios, los beneficios estratégicos son los que cierran la decisión. <strong>Cloud y RPA/IA son ecosistemas complementarios: la IA optimiza procesos internos, mientras que Cloud provee la infraestructura flexible y segura para que esa optimización escale.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('str1')">
+        <span class="acc-cat">Beneficios cloud</span>
+        <div class="acc-info"><div class="acc-name">10 beneficios estratégicos del Cloud más allá del ahorro de costos</div><div class="acc-tag">Para conversaciones con CIO, CFO y Directorio — no con el equipo técnico</div></div>
+        <span class="acc-chv" id="achv-str1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-str1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr><th style="width:140px">Dimensión</th><th>Qué significa en la práctica</th><th style="width:200px">Cómo se traduce al negocio</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Gobernanza</strong></td><td>Políticas centralizadas de acceso, seguridad y cumplimiento con trazabilidad en toda la infraestructura.</td><td>Auditorías más rápidas, menos riesgo regulatorio, cumplimiento demostrable ante entes como BCRA o CNV.</td></tr>
+            <tr><td><strong>Escalabilidad inmediata</strong></td><td>Capacidad de crecer o reducir recursos según la demanda, sin inversiones físicas ni fricciones operativas.</td><td>Un retailer puede triplicar su infraestructura para Hot Sale en minutos y volver al baseline sin pagar extra.</td></tr>
+            <tr><td><strong>Agilidad operativa</strong></td><td>Despliegues más rápidos, integración continua y reducción de tiempos de innovación.</td><td>De semanas a horas para lanzar un nuevo ambiente de desarrollo o una nueva feature al mercado.</td></tr>
+            <tr><td><strong>Resiliencia y continuidad</strong></td><td>Redundancia y recuperación ante desastres integradas, minimizando riesgos de interrupción.</td><td>Un banco puede garantizar continuidad operativa ante cualquier falla con RTO de minutos vs. horas en on-premise.</td></tr>
+            <tr><td><strong>Seguridad reforzada</strong></td><td>Servicios con certificaciones y controles avanzados que difícilmente se logran on-premise con el mismo presupuesto.</td><td>ISO 27001, SOC2, PCI-DSS incluidos en el proveedor — no hay que construirlo ni certificarlo internamente.</td></tr>
+            <tr><td><strong>Innovación habilitada</strong></td><td>Acceso a servicios de IA, analítica y automatización directamente desde la nube, sin infraestructura propia.</td><td>Un equipo de 3 personas puede construir un modelo de ML y ponerlo en producción sin un data center propio.</td></tr>
+            <tr><td><strong>Colaboración global</strong></td><td>Datos y aplicaciones disponibles desde cualquier lugar, potenciando equipos distribuidos y trabajo remoto.</td><td>Los empleados trabajan con las mismas herramientas y datos desde CABA, Córdoba o cualquier país.</td></tr>
+            <tr><td><strong>Cumplimiento normativo</strong></td><td>Alineación con estándares internacionales y locales, reduciendo exposición a sanciones.</td><td>Personal Tech Cloud cumple soberanía del dato argentina — argumento directo frente a reguladores locales.</td></tr>
+            <tr><td><strong>Optimización de RRHH</strong></td><td>Menos tiempo dedicado a mantenimiento de infraestructura, más foco en proyectos estratégicos.</td><td>El equipo IT deja de apagar incendios en servidores y empieza a construir herramientas de negocio.</td></tr>
+            <tr><td><strong>Reputación tecnológica</strong></td><td>Posicionar a la organización como moderna, confiable y preparada para competir en mercados digitales.</td><td>Los clientes y socios perciben la empresa como más sólida. Atrae mejor talento IT.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('str2')">
+        <span class="acc-cat">Comparativa RPA/IA vs Cloud</span>
+        <div class="acc-info"><div class="acc-name">RPA / IA vs Cloud — beneficios estratégicos comparados</div><div class="acc-tag">Son complementarios, no competidores — la IA optimiza procesos, Cloud provee la infraestructura para escalarlos</div></div>
+        <span class="acc-chv" id="achv-str2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-str2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:140px">Dimensión</th>
+            <th style="background:#EEEDFE;color:#26215C;font-weight:700;">🤖 RPA / IA</th>
+            <th style="background:#E1F5EE;color:#085041;font-weight:700;">☁️ Cloud</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><strong>Gobernanza</strong></td><td>Procesos trazables, reducción de errores humanos, control automatizado con auditoría por transacción.</td><td>Políticas centralizadas de acceso, seguridad y cumplimiento normativo con visibilidad total.</td></tr>
+            <tr><td><strong>Agilidad operativa</strong></td><td>Automatización de tareas repetitivas, decisiones más rápidas basadas en datos en tiempo real.</td><td>Despliegues inmediatos, integración continua, elasticidad de recursos según demanda.</td></tr>
+            <tr><td><strong>Reducción de riesgos</strong></td><td>Menos fallos críticos por error humano, mayor confiabilidad en los datos procesados.</td><td>Resiliencia, redundancia y recuperación ante desastres integradas en la arquitectura.</td></tr>
+            <tr><td><strong>Innovación</strong></td><td>Libera tiempo de tareas repetitivas para que los equipos se enfoquen en proyectos de valor estratégico.</td><td>Acceso directo a servicios avanzados de IA, analítica e IoT sin infraestructura propia.</td></tr>
+            <tr><td><strong>Escalabilidad</strong></td><td>Robots y modelos que se replican sin aumentar costos humanos proporcionalmente.</td><td>Escalado automático de infraestructura según la demanda, sin inversión de capital.</td></tr>
+            <tr><td><strong>Cumplimiento normativo</strong></td><td>Automatización que asegura adherencia consistente a regulaciones y procedimientos estándar.</td><td>Certificaciones internacionales y locales integradas en los servicios del proveedor.</td></tr>
+            <tr><td><strong>Experiencia del cliente</strong></td><td>Servicios más consistentes y rápidos, respuestas automatizadas sin tiempos de espera.</td><td>Disponibilidad global, latencia baja, colaboración en tiempo real desde cualquier dispositivo.</td></tr>
+            <tr><td><strong>Reputación</strong></td><td>Demuestra inversión en eficiencia e innovación operativa ante el mercado y los socios.</td><td>Posiciona a la empresa como moderna, segura y competitiva en mercados digitales.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>El mensaje ejecutivo:</strong> El ROI estratégico no se mide solo en dinero, sino en capacidad de adaptación, resiliencia y competitividad. <strong>RPA/IA y Cloud son ecosistemas complementarios:</strong> la IA optimiza los procesos internos, mientras que Cloud provee la infraestructura flexible y segura para que esa optimización escale y se sostenga en el tiempo. Presentarlos juntos en una propuesta ejecutiva multiplica el impacto percibido.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v16 -->
+
+
+<!-- ══════════════════════════════════════════════ 17 CONTEXTO PERSONAL TECH -->
+<div class="vertical" id="v17">
+  <div class="vert-header" onclick="toggleV('v17')">
+    <div class="vert-icon" style="background:#FFF4E0;">🏢</div>
+    <div class="vert-title">17 — Contexto Personal Tech: Stack interno + Ruta de certificación</div>
+    <span class="vert-toggle" id="vtgl-v17">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v17">
+    <p class="vert-intro">Contexto estratégico sobre cómo Personal Tech (Telecom Argentina) usa internamente el multicloud, y la ruta de certificación recomendada para posicionarte como Arquitecto de Soluciones Azure — que es el título que valida que sos el que "dibuja los planos", no el que ejecuta los comandos.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt1')">
+        <span class="acc-cat">Stack interno</span>
+        <div class="acc-info"><div class="acc-name">Cómo Personal Tech usa el multicloud internamente</div><div class="acc-tag">GCP para datos · AWS para infra ágil · Azure para el entorno corporativo · Huawei como alianza</div></div>
+        <span class="acc-chv" id="achv-pt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt1">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:100px">Proveedor</th>
+            <th>Uso interno en Personal Tech</th>
+            <th style="width:200px">Por qué este proveedor para este uso</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="td-gcp"><span class="svc-name" style="color:var(--gcp-d)">🔷 GCP</span></td>
+              <td>Plataforma de <strong>datos y analytics</strong>. BigQuery para analítica de grandes volúmenes, Vertex AI para modelos de ML internos.</td>
+              <td>BigQuery serverless es la herramienta más eficiente para analítica de escala telco (billones de registros CDR, datos de red). Las TPUs de GCP reducen costos de entrenamiento de modelos.</td>
+            </tr>
+            <tr>
+              <td class="td-aws"><span class="svc-name" style="color:var(--aws-d)">🟠 AWS</span></td>
+              <td><strong>Infraestructura ágil</strong>. Workloads variables, entornos de desarrollo, servicios que requieren rápido despliegue y máxima variedad de servicios.</td>
+              <td>El ecosistema AWS permite el time-to-market más rápido para nuevos servicios. La variedad de instancias y servicios permite experimentar con mínima fricción.</td>
+            </tr>
+            <tr>
+              <td class="td-az"><span class="svc-name" style="color:var(--az-d)">🔵 Azure</span></td>
+              <td><strong>Entorno corporativo</strong>. Microsoft 365, Azure AD para identidad y acceso, servicios integrados con el ecosistema Microsoft del negocio.</td>
+              <td>Como organización con miles de empleados usando herramientas Microsoft, Azure AD y M365 son la elección natural. El Azure Hybrid Benefit optimiza los costos de licencias.</td>
+            </tr>
+            <tr>
+              <td class="td-hwa"><span class="svc-name" style="color:var(--hwa-d)">🟥 Huawei</span></td>
+              <td><strong>Alianza estratégica</strong>. Complementa el portfolio con soluciones para clientes con infraestructura Huawei o requisitos específicos de mercado.</td>
+              <td>Personal Tech tiene alianza directa con Huawei Cloud, lo que permite ofrecer sus servicios como parte del portfolio sin que el cliente necesite contratar directamente con Huawei.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>Por qué esto importa en tu rol:</strong> Entender el stack interno de Personal Tech te permite hablar con autoridad sobre multicloud en las conversaciones internas. Si viene al caso, podés anclar tus propuestas en la misma lógica que usa la empresa — GCP para datos, AWS para agilidad, Azure para entorno corporativo. Es un argumento de credibilidad muy fuerte.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt2')">
+        <span class="acc-cat">Certificaciones Azure</span>
+        <div class="acc-info"><div class="acc-name">Ruta de certificación recomendada — del fundamento al Arquitecto Expert</div><div class="acc-tag">AZ-900 → AZ-104 → AZ-305 | La meta es el título que valida que diseñás los planos</div></div>
+        <span class="acc-chv" id="achv-pt2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt2">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:120px">Certificación</th>
+            <th style="width:100px">Nivel</th>
+            <th>Qué valida</th>
+            <th style="width:180px">Por qué es necesaria</th>
+          </tr></thead>
+          <tbody>
+            <tr style="background:var(--green-light);">
+              <td><strong>AZ-900</strong><br><span style="font-size:11px;color:var(--text-ter)">Azure Fundamentals</span></td>
+              <td><span style="background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">La base — AHORA</span></td>
+              <td>Conceptos fundamentales de cloud, servicios de Azure, seguridad básica, precios y SLAs. No requiere experiencia técnica profunda.</td>
+              <td>Es el "pasaporte" que demuestra que sabés de qué hablás cuando decís Azure en una reunión de ventas. No es técnica — es comprensión del ecosistema.</td>
+            </tr>
+            <tr>
+              <td><strong>AZ-104</strong><br><span style="font-size:11px;color:var(--text-ter)">Azure Administrator</span></td>
+              <td><span style="background:var(--amber-light);color:var(--amber-dark);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">Associate — Peaje técnico</span></td>
+              <td>Administración de VMs, redes virtuales, storage, identidad y seguridad en Azure. Es de administrador, no de arquitecto.</td>
+              <td>Microsoft lo exige como prerequisito para AZ-305. Es el "peaje" técnico obligatorio aunque tu rol sea de arquitecto. Requiere entender cómo funciona Azure desde adentro para poder diseñarlo bien.</td>
+            </tr>
+            <tr style="background:var(--blue-light);">
+              <td><strong>AZ-305</strong><br><span style="font-size:11px;color:var(--text-ter)">Azure Solutions Architect Expert</span></td>
+              <td><span style="background:var(--blue-light);color:var(--blue-dark);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">Expert — La meta final</span></td>
+              <td>Diseño de arquitecturas cloud completas: infraestructura, datos, aplicaciones, seguridad e identidad a escala enterprise. Este es el título que dice "yo diseño los planos".</td>
+              <td>Es la certificación más alta de Microsoft en arquitectura cloud. Valida que podés diseñar soluciones de negocio complejas, no solo administrar VMs. Es el diferenciador que buscás para posicionarte como Arquitecto de Soluciones.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="desc-block">
+          <div class="winner-note"><strong>El framing correcto para comunicarlo:</strong> Si te preguntan en una reunión interna o en una entrevista en qué estás, decí: "Estoy cerrando la base de arquitectura cloud y mi próximo paso es la especialización en Diseño de Soluciones Azure (AZ-305), porque me interesa la visión estratégica y la infraestructura a gran escala." Eso posiciona exactamente dónde está tu valor: no como técnico que ejecuta, sino como arquitecto que diseña.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt3')">
+        <span class="acc-cat">Distinción clave</span>
+        <div class="acc-info"><div class="acc-name">Arquitecto de Soluciones vs Administrador — la distinción que define tu perfil</div><div class="acc-tag">Diseñar los planos vs ejecutar los comandos — dos roles completamente distintos</div></div>
+        <span class="acc-chv" id="achv-pt3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt3">
+        <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr>
+            <th style="width:140px">Dimensión</th>
+            <th style="background:#EEEDFE;color:#26215C;font-weight:700;">🏛 Arquitecto de Soluciones</th>
+            <th style="background:#F1EFE8;color:#2C2C2A;font-weight:700;">⚙️ Administrador / Sysadmin</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><strong>Pregunta que responde</strong></td><td>"¿Qué arquitectura necesita este negocio para escalar de forma segura y rentable?"</td><td>"¿Cómo configuro este servicio para que funcione correctamente?"</td></tr>
+            <tr><td><strong>Herramienta principal</strong></td><td>Diagramas de arquitectura, BOM, análisis TCO, propuestas ejecutivas.</td><td>PowerShell, Bash, Azure CLI, consola de AWS.</td></tr>
+            <tr><td><strong>Interlocutor</strong></td><td>CTO, CIO, CFO, directores de negocio.</td><td>Equipo técnico, ingenieros, DevOps.</td></tr>
+            <tr><td><strong>Valor que entrega</strong></td><td>Decisión de negocio fundamentada técnicamente, con TCO/ROI y hoja de ruta.</td><td>Infraestructura funcionando, incidentes resueltos, configuraciones aplicadas.</td></tr>
+            <tr><td><strong>Certificación Azure</strong></td><td>AZ-305 — Azure Solutions Architect Expert</td><td>AZ-104 — Azure Administrator Associate</td></tr>
+            <tr><td><strong>Tu perfil</strong></td><td>✅ Este es tu rol y tu posicionamiento.</td><td>❌ No es tu foco — aunque necesitás entenderlo para diseñar bien.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v17 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Referencia Multicloud · Pre-Sales Personal Tech</span>
+  <span>Documento de uso personal — confidencial</span>
+</div>
+
+</div><!-- /page -->
+<script>
+document.getElementById('fecha').textContent=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+// Active nav on scroll
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

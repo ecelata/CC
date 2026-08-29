@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorio AWS — Sitios, Herramientas y Arquitecturas para Practicar | Personal Tech</title>
+<style>
+:root {
+  --aws:#FF9900;--aws-l:#FFF4E0;--aws-d:#7A4700;
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* SITE CARD */
+.site-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:12px 0;}
+.site-card{border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;transition:box-shadow .2s,transform .18s;}
+.site-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.09);transform:translateY(-2px);}
+.site-head{padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.site-icon{font-size:26px;flex-shrink:0;}
+.site-meta{flex:1;}
+.site-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.site-type{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:4px;}
+.site-body{padding:0 16px 14px;}
+.site-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;margin-bottom:8px;}
+.site-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.site-tag{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;border:.5px solid var(--border);background:var(--bg2);color:var(--text-sec);}
+.site-url{font-size:11.5px;font-weight:700;color:var(--blue-mid);text-decoration:none;word-break:break-all;}
+.site-url:hover{text-decoration:underline;}
+
+/* CODE BLOCK */
+.code-block{background:#1a1a18;border-radius:var(--radius-sm);padding:14px 16px;margin:10px 0;overflow-x:auto;}
+.code-block pre{font-family:'Courier New',Courier,monospace;font-size:12px;color:#e8e8e2;line-height:1.6;white-space:pre;}
+.code-comment{color:#6a9955;}
+.code-key{color:#9cdcfe;}
+.code-val{color:#ce9178;}
+.code-cmd{color:#4ec9b0;}
+.code-str{color:#ce9178;}
+.code-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.3);margin-bottom:8px;}
+
+/* STEP LIST */
+.steps{display:flex;flex-direction:column;gap:12px;margin:10px 0;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-content{flex:1;}
+.step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.step-desc{font-size:12.5px;color:var(--text-sec);line-height:1.55;}
+.step-desc strong{color:var(--text);}
+
+/* TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.check{color:var(--green-dark);font-weight:700;}
+.cross{color:var(--coral-dark);font-weight:700;}
+
+/* NOTES */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+
+/* ROADMAP TRACK */
+.track{display:flex;flex-direction:column;gap:0;margin:12px 0;}
+.track-item{display:flex;gap:16px;position:relative;}
+.track-item:not(:last-child)::before{content:'';position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--border);}
+.track-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+.track-content{flex:1;padding-bottom:18px;}
+.track-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.track-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;}
+.track-desc strong{color:var(--text);}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3{grid-template-columns:1fr;}
+  .site-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🟠 Laboratorio AWS</div>
+  <a class="tnav" href="#v1">01 Mapa de recursos</a>
+  <a class="tnav" href="#v2">02 Entornos reales</a>
+  <a class="tnav" href="#v3">03 Aprendizaje guiado</a>
+  <a class="tnav" href="#v4">04 Emulación local</a>
+  <a class="tnav" href="#v5">05 IaC — CloudFormation / CDK / Terraform</a>
+  <a class="tnav" href="#v6">06 Práctica por área</a>
+  <a class="tnav" href="#v7">07 Ejemplos de código</a>
+  <a class="tnav" href="#v8">08 Roadmap de práctica</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Laboratorio AWS — Sitios y Ejemplos para Practicar</div>
+    <div class="doc-sub">Free Tier · Skill Builder · LocalStack · CloudFormation · CDK · Terraform · Ejemplos reales comentados</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO -->
+<div class="hero-strip">
+  <div class="hs" style="background:var(--aws-l);border-color:var(--aws);">
+    <div class="hs-icon">🆓</div>
+    <div class="hs-val">AWS Free Tier</div>
+    <div class="hs-sub">12 meses de servicios gratuitos reales: EC2 t2.micro, S3 5GB, RDS micro, Lambda 1M req/mes.</div>
+  </div>
+  <div class="hs" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="hs-icon">🧪</div>
+    <div class="hs-val">LocalStack</div>
+    <div class="hs-sub">Emulá AWS completo en tu laptop. Sin cuenta, sin costo. Ideal para development y CI/CD.</div>
+  </div>
+  <div class="hs" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="hs-icon">📚</div>
+    <div class="hs-val">Skill Builder</div>
+    <div class="hs-sub">Laboratorios interactivos guiados en español. Entorno real de AWS sin costo extra.</div>
+  </div>
+  <div class="hs" style="background:var(--purple-light);border-color:var(--purple-mid);">
+    <div class="hs-icon">⚙️</div>
+    <div class="hs-val">IaC desde el día 1</div>
+    <div class="hs-sub">CloudFormation, CDK y Terraform. La infraestructura que no está en código no existe.</div>
+  </div>
+  <div class="hs" style="background:var(--teal-light);border-color:var(--teal-mid);">
+    <div class="hs-icon">🎯</div>
+    <div class="hs-val">4 áreas clave</div>
+    <div class="hs-sub">Cómputo (EC2), Almacenamiento (S3), Redes (VPC) y Automatización (IaC). El core que todo arquitecto necesita dominar.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 MAPA DE RECURSOS -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--aws-l);">🗺</div>
+    <div>
+      <div class="vert-title">01 — Mapa completo de recursos para practicar</div>
+      <div class="vert-sub">Cómo elegir el entorno correcto según tu objetivo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">No existe un único entorno ideal para aprender AWS. La clave es elegir el correcto según lo que querés practicar: <strong>si necesitás experimentar con infraestructura real usá el Free Tier; si querés iterar rápido sin preocuparte por costos usá LocalStack; si preferís aprender con guía usá Skill Builder.</strong> Lo ideal es combinar los tres.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('map1')">
+        <span class="acc-badge" style="background:var(--aws-l);color:var(--aws-d);">Cuadro de decisión</span>
+        <div class="acc-info"><div class="acc-name">Qué entorno usar según tu objetivo de práctica</div><div class="acc-tag">La guía rápida de selección</div></div>
+        <span class="acc-chv" id="achv-map1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-map1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Objetivo</th><th>Entorno recomendado</th><th>Por qué</th><th>Costo</th></tr></thead>
+            <tbody>
+              <tr><td>"Quiero ver AWS real funcionando"</td><td class="tn">AWS Free Tier</td><td>Servicios reales, consola real, comportamiento real. La única forma de ver cómo reacciona AWS en producción.</td><td>Gratis 12 meses (con límites)</td></tr>
+              <tr><td>"Quiero practicar IaC y CI/CD sin preocuparme por costos"</td><td class="tn">LocalStack + Docker</td><td>Emula los servicios más usados de AWS localmente. Ciclos de desarrollo muy rápidos sin riesgo de cargos.</td><td>Gratis (Community Edition)</td></tr>
+              <tr><td>"Quiero laboratorios guiados con objetivo claro"</td><td class="tn">AWS Skill Builder</td><td>Sandbox preconfigurado con instrucciones paso a paso. El entorno se destruye al terminar — sin riesgo de olvidar borrar recursos.</td><td>Gratis (plan básico) o $29/mes (plan completo)</td></tr>
+              <tr><td>"Soy estudiante o trabajo en una institución educativa"</td><td class="tn">AWS Academy Learner Lab</td><td>Créditos AWS reales y entorno de sandbox gestionado. No requiere tarjeta de crédito.</td><td>Gratis para instituciones adheridas</td></tr>
+              <tr><td>"Quiero practicar certificaciones"</td><td class="tn">Skill Builder + examenes de práctica</td><td>Los examenes de práctica oficiales de AWS más los laboratorios alineados al examen específico.</td><td>Examenes de práctica: $20–40 USD c/u</td></tr>
+              <tr><td>"Quiero construir un proyecto propio end-to-end"</td><td class="tn">Free Tier + IaC desde el día 1</td><td>La combinación más formativa: construís infraestructura real con Terraform o CDK. Aprendés el flujo completo de un arquitecto.</td><td>Casi gratis si se respetan los límites del Free Tier</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="warn-note"><strong>El error más común al empezar con el Free Tier:</strong> olvidar apagar los recursos al terminar de practicar. Una instancia EC2 t2.micro tiene 750 horas gratuitas por mes — si la dejás corriendo 24/7 la agotás en 31 días. Configurá una alerta de billing en CloudWatch desde el día 1.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 FREE TIER / ENTORNOS REALES -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--aws-l);">🆓</div>
+    <div>
+      <div class="vert-title">02 — Entornos reales y gratuitos</div>
+      <div class="vert-sub">AWS Free Tier · AWS Academy Learner Lab — infraestructura real sin costo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ft1')">
+        <span class="acc-badge" style="background:var(--aws-l);color:var(--aws-d);">AWS Free Tier</span>
+        <div class="acc-info"><div class="acc-name">Qué incluye, qué NO incluye y cómo no tener sorpresas en la factura</div><div class="acc-tag">aws.amazon.com/free — el punto de partida de todo arquitecto AWS</div></div>
+        <span class="acc-chv" id="achv-ft1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ft1">
+        <div class="ab-inner">
+          <div class="block-label">Los servicios más útiles para practicar (gratis 12 meses)</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Servicio</th><th>Límite gratuito</th><th>Para qué practicar</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">EC2</td><td>750 horas/mes de t2.micro o t3.micro (Linux o Windows)</td><td>Servidores web, backends, bases de datos simples, docker host</td></tr>
+              <tr><td class="tn">S3</td><td>5 GB de storage + 20K GET + 2K PUT requests/mes</td><td>Hosting de sitios estáticos, storage de archivos, backup, logs</td></tr>
+              <tr><td class="tn">RDS</td><td>750 horas/mes de db.t2.micro o db.t3.micro (MySQL, PostgreSQL, MariaDB)</td><td>Base de datos relacional gestionada, alta disponibilidad Multi-AZ</td></tr>
+              <tr><td class="tn">Lambda</td><td>1 millón de requests/mes + 400.000 GB-segundos (permanente, no expira)</td><td>Funciones serverless, procesamiento de eventos, APIs sin servidor</td></tr>
+              <tr><td class="tn">API Gateway</td><td>1 millón de llamadas API HTTP/mes (permanente)</td><td>APIs REST y HTTP, integración con Lambda</td></tr>
+              <tr><td class="tn">DynamoDB</td><td>25 GB de storage + 25 WCU + 25 RCU (permanente)</td><td>Base de datos NoSQL, tablas de sesión, catálogos de productos</td></tr>
+              <tr><td class="tn">CloudFormation</td><td>Gratis (solo pagás los recursos que crea)</td><td>IaC, templates de infraestructura, stacks completos</td></tr>
+              <tr><td class="tn">CloudWatch</td><td>10 métricas custom, 5GB logs ingestados, 3 dashboards (permanente)</td><td>Monitoreo, alarmas de billing, logs de aplicaciones</td></tr>
+              <tr><td class="tn">VPC</td><td>1 VPC por región con subredes, route tables e internet gateway (gratis)</td><td>Redes privadas, subredes públicas/privadas, Security Groups</td></tr>
+              <tr><td class="tn">IAM</td><td>Completamente gratis siempre</td><td>Usuarios, roles, políticas de permisos, MFA</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="block-label">Configuración de seguridad obligatoria antes de empezar</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">1</div>
+              <div class="step-content">
+                <div class="step-title">Activar MFA en la cuenta root inmediatamente</div>
+                <div class="step-desc">La cuenta root nunca debe usarse para el día a día. Activá MFA, guardá las credenciales en un lugar seguro y nunca generés Access Keys para root.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">2</div>
+              <div class="step-content">
+                <div class="step-title">Crear un usuario IAM para uso diario</div>
+                <div class="step-desc">Usuario con permisos específicos (no AdministratorAccess para todo). Para practicar podés usar PowerUserAccess pero en producción siempre el principio de mínimo privilegio.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--coral-light);color:var(--coral-dark);">3</div>
+              <div class="step-content">
+                <div class="step-title">Configurar alerta de billing en $5 USD desde el día 1</div>
+                <div class="step-desc"><strong>Billing → Budgets → Create Budget → $5 USD → email alert.</strong> Si algo sale mal o dejaste un recurso corriendo, el email llega antes de que la factura sorprenda.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">4</div>
+              <div class="step-content">
+                <div class="step-title">Elegir la región correcta para practicar</div>
+                <div class="step-desc">Para latencia desde Argentina: <strong>us-east-1 (N. Virginia)</strong> o <strong>sa-east-1 (São Paulo)</strong>. sa-east-1 tiene algunos servicios más caros pero es la más cercana. Para practicar IaC y arquitecturas, us-east-1 tiene más disponibilidad de servicios.</div>
+              </div>
+            </div>
+          </div>
+          <div class="tip-note"><strong>URL:</strong> <a href="https://aws.amazon.com/free" target="_blank" class="site-url">aws.amazon.com/free</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ft2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">AWS Academy Learner Lab</span>
+        <div class="acc-info"><div class="acc-name">Sandbox académico — para estudiantes e instituciones educativas</div><div class="acc-tag">Sin tarjeta de crédito · Créditos AWS reales · Entorno gestionado</div></div>
+        <span class="acc-chv" id="achv-ft2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ft2">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Acceso:</strong> A través de instituciones educativas adheridas al programa AWS Academy. El instructor gestiona el acceso de los alumnos.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Créditos reales:</strong> Cada alumno recibe créditos AWS (usualmente $50–$100 USD) para gastar en servicios reales. Sin tarjeta de crédito personal.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Módulos preconfigurados:</strong> Cursos oficiales de AWS con laboratorios paso a paso alineados a las certificaciones (Cloud Foundations, Architecting, Machine Learning).</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Ideal si no podés usar tarjeta de crédito:</strong> El mayor beneficio para quienes no quieren dar datos bancarios para practicar.</li>
+          </ul>
+          <div class="win-note"><strong>Si no tenés acceso a Academy:</strong> AWS Educate (aws.amazon.com/education/awseducate) es la alternativa pública que no requiere afiliación institucional. Da acceso a contenido y algunos créditos de práctica sin tarjeta de crédito.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 APRENDIZAJE GUIADO -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--blue-light);">📚</div>
+    <div>
+      <div class="vert-title">03 — Aprendizaje guiado y laboratorios</div>
+      <div class="vert-sub">AWS Skill Builder · YouTube · Cursos · Certificaciones</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+
+    <div class="site-grid">
+
+      <div class="site-card">
+        <div class="site-head" style="background:var(--aws-l);">
+          <div class="site-icon">🎓</div>
+          <div class="site-meta">
+            <div class="site-name">AWS Skill Builder</div>
+            <span class="site-type" style="background:var(--aws);color:#fff;">Oficial AWS</span>
+          </div>
+        </div>
+        <div class="site-body">
+          <div class="site-desc">La plataforma oficial de aprendizaje de AWS. Más de 600 cursos, laboratorios interactivos y exámenes de práctica. <strong>Plan gratuito incluye muchos cursos en español y algunos labs.</strong> El plan Individual ($29/mes) da acceso completo con todos los labs y simuladores de examen.</div>
+          <div class="site-tags">
+            <span class="site-tag">En español</span>
+            <span class="site-tag">Labs interactivos</span>
+            <span class="site-tag">Exámenes de práctica</span>
+            <span class="site-tag">Certificaciones</span>
+          </div>
+          <a href="https://skillbuilder.aws" target="_blank" class="site-url">skillbuilder.aws</a>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <div class="site-head" style="background:var(--blue-light);">
+          <div class="site-icon">📖</div>
+          <div class="site-meta">
+            <div class="site-name">AWS Workshop Studio</div>
+            <span class="site-type" style="background:var(--blue-mid);color:#fff;">Labs gratuitos</span>
+          </div>
+        </div>
+        <div class="site-body">
+          <div class="site-desc">Biblioteca de workshops prácticos desarrollados por AWS y la comunidad. Cada workshop es un proyecto completo con instrucciones paso a paso. <strong>Totalmente gratis.</strong> Incluye workshops de arquitecturas serverless, microservicios, ML, seguridad y más.</div>
+          <div class="site-tags">
+            <span class="site-tag">Totalmente gratis</span>
+            <span class="site-tag">Proyectos completos</span>
+            <span class="site-tag">100+ workshops</span>
+            <span class="site-tag">Arquitecturas reales</span>
+          </div>
+          <a href="https://workshops.aws" target="_blank" class="site-url">workshops.aws</a>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <div class="site-head" style="background:var(--green-light);">
+          <div class="site-icon">🏗</div>
+          <div class="site-meta">
+            <div class="site-name">AWS Architecture Center</div>
+            <span class="site-type" style="background:var(--green-mid);color:#fff;">Arquitecturas de referencia</span>
+          </div>
+        </div>
+        <div class="site-body">
+          <div class="site-desc">Biblioteca de arquitecturas de referencia de AWS. Patrones de diseño, casos de uso por industria y diagramas descargables. <strong>El mejor recurso para ver cómo AWS recomienda construir cada tipo de solución.</strong></div>
+          <div class="site-tags">
+            <span class="site-tag">Diagramas descargables</span>
+            <span class="site-tag">Por industria</span>
+            <span class="site-tag">Well-Architected</span>
+          </div>
+          <a href="https://aws.amazon.com/architecture" target="_blank" class="site-url">aws.amazon.com/architecture</a>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <div class="site-head" style="background:var(--purple-light);">
+          <div class="site-icon">▶️</div>
+          <div class="site-meta">
+            <div class="site-name">YouTube — Canales recomendados</div>
+            <span class="site-type" style="background:var(--purple-mid);color:#fff;">Video gratuito</span>
+          </div>
+        </div>
+        <div class="site-body">
+          <div class="site-desc">Los mejores canales para aprender AWS con proyectos reales: <strong>AWS Events</strong> (conferencias y demos oficiales), <strong>freeCodeCamp</strong> (cursos completos gratis), <strong>TechWorld with Nana</strong> (Kubernetes y DevOps), <strong>NetworkChuck</strong> (proyectos prácticos divertidos).</div>
+          <div class="site-tags">
+            <span class="site-tag">AWS Events</span>
+            <span class="site-tag">freeCodeCamp</span>
+            <span class="site-tag">TechWorld Nana</span>
+            <span class="site-tag">NetworkChuck</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <div class="site-head" style="background:var(--amber-light);">
+          <div class="site-icon">📋</div>
+          <div class="site-meta">
+            <div class="site-name">AWS Prescriptive Guidance</div>
+            <span class="site-type" style="background:var(--amber-mid);color:#fff;">Guías detalladas</span>
+          </div>
+        </div>
+        <div class="site-body">
+          <div class="site-desc">Guías prescriptivas de AWS para casos de uso específicos: migraciones, modernización, patrones de datos, seguridad. <strong>El nivel de detalle es el de un arquitecto senior — incluye decisiones de trade-off explicadas.</strong></div>
+          <div class="site-tags">
+            <span class="site-tag">Patrones arquitectónicos</span>
+            <span class="site-tag">Trade-offs explicados</span>
+            <span class="site-tag">Migraciones</span>
+          </div>
+          <a href="https://docs.aws.amazon.com/prescriptive-guidance" target="_blank" class="site-url">docs.aws.amazon.com/prescriptive-guidance</a>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <div class="site-head" style="background:var(--teal-light);">
+          <div class="site-icon">🏆</div>
+          <div class="site-meta">
+            <div class="site-name">A Cloud Guru / Pluralsight</div>
+            <span class="site-type" style="background:var(--teal-mid);color:#fff;">Pago — alta calidad</span>
+          </div>
+        </div>
+        <div class="site-body">
+          <div class="site-desc">Las dos plataformas de pago más reconocidas para certificaciones AWS. A Cloud Guru tiene sandbox incluido en el plan. Pluralsight tiene paths de aprendizaje muy bien estructurados. <strong>Útil para preparar certificaciones con cursos actualizados.</strong></div>
+          <div class="site-tags">
+            <span class="site-tag">~$39/mes</span>
+            <span class="site-tag">Sandbox incluido</span>
+            <span class="site-tag">Certificaciones</span>
+            <span class="site-tag">Cursos actualizados</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 EMULACIÓN LOCAL -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--gray-light);">🧪</div>
+    <div>
+      <div class="vert-title">04 — Emulación local con LocalStack</div>
+      <div class="vert-sub">AWS completo en tu laptop — sin cuenta, sin costo, sin riesgo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro"><strong>LocalStack</strong> es un emulador de AWS que corre localmente en Docker. Simula los servicios más importantes de AWS con la misma API — podés usar AWS CLI, SDKs y Terraform exactamente igual que con AWS real, pero todo corre en tu máquina sin ningún costo ni cuenta de AWS necesaria.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ls1')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Setup en 5 minutos</span>
+        <div class="acc-info"><div class="acc-name">Cómo instalar y usar LocalStack — de cero a S3 y Lambda corriendo localmente</div><div class="acc-tag">Requiere Docker instalado en la máquina</div></div>
+        <span class="acc-chv" id="achv-ls1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ls1">
+        <div class="ab-inner">
+          <div class="block-label">Paso 1 — Instalar LocalStack</div>
+          <div class="code-block">
+            <div class="code-label">Terminal — instalación con pip o docker</div>
+            <pre><span class="code-comment"># Opción A: con pip (recomendado)</span>
+pip install localstack
+
+<span class="code-comment"># Opción B: con docker compose (más control)</span>
+<span class="code-comment"># Crear archivo docker-compose.yml:</span>
+version: "3.8"
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      - SERVICES=s3,lambda,dynamodb,sqs,iam,ec2
+      - DEBUG=1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+<span class="code-comment"># Iniciar LocalStack:</span>
+localstack start          <span class="code-comment"># con pip</span>
+docker compose up         <span class="code-comment"># con docker compose</span></pre>
+          </div>
+
+          <div class="block-label">Paso 2 — Configurar AWS CLI para apuntar a LocalStack</div>
+          <div class="code-block">
+            <pre><span class="code-comment"># Configurar credenciales "falsas" (LocalStack las acepta igual)</span>
+aws configure
+AWS Access Key ID: <span class="code-str">test</span>
+AWS Secret Access Key: <span class="code-str">test</span>
+Default region name: <span class="code-str">us-east-1</span>
+
+<span class="code-comment"># Todos los comandos con --endpoint-url apuntando a LocalStack:</span>
+aws <span class="code-cmd">s3 mb</span> s3://mi-bucket --endpoint-url=http://localhost:4566
+aws <span class="code-cmd">s3 ls</span> --endpoint-url=http://localhost:4566
+aws <span class="code-cmd">s3 cp</span> archivo.txt s3://mi-bucket/ --endpoint-url=http://localhost:4566
+
+<span class="code-comment"># Tip: crear alias para no repetir el endpoint-url</span>
+alias awslocal='aws --endpoint-url=http://localhost:4566'
+awslocal s3 mb s3://mi-bucket     <span class="code-comment"># mucho más cómodo</span></pre>
+          </div>
+
+          <div class="block-label">Paso 3 — Ejemplo: crear función Lambda en LocalStack</div>
+          <div class="code-block">
+            <pre><span class="code-comment"># 1. Crear el código de la función (hello.py)</span>
+<span class="code-key">def</span> <span class="code-cmd">handler</span>(event, context):
+    <span class="code-key">return</span> {<span class="code-str">'statusCode'</span>: 200, <span class="code-str">'body'</span>: <span class="code-str">'Hello from LocalStack!'</span>}
+
+<span class="code-comment"># 2. Empaquetar en ZIP</span>
+zip function.zip hello.py
+
+<span class="code-comment"># 3. Crear la Lambda en LocalStack</span>
+awslocal lambda create-function \
+  --function-name mi-funcion \
+  --runtime python3.11 \
+  --handler hello.handler \
+  --zip-file fileb://function.zip \
+  --role arn:aws:iam::000000000000:role/lambda-role
+
+<span class="code-comment"># 4. Invocar la Lambda</span>
+awslocal lambda invoke \
+  --function-name mi-funcion \
+  output.json && cat output.json</pre>
+          </div>
+
+          <div class="win-note"><strong>Servicios disponibles en LocalStack Community (gratis):</strong> S3, Lambda, DynamoDB, SQS, SNS, API Gateway, IAM, CloudFormation, SSM, Secrets Manager, EventBridge, Kinesis y más de 60 servicios. Los servicios más avanzados (EKS, RDS con Multi-AZ real) requieren el plan Pro ($35/mes).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ls2')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Terraform + LocalStack</span>
+        <div class="acc-info"><div class="acc-name">Practicar IaC con Terraform sin gastar un centavo — el workflow ideal para development</div><div class="acc-tag">El combo más potente para aprender IaC sin riesgo</div></div>
+        <span class="acc-chv" id="achv-ls2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ls2">
+        <div class="ab-inner">
+          <div class="code-block">
+            <div class="code-label">main.tf — Terraform apuntando a LocalStack</div>
+            <pre><span class="code-key">terraform</span> {
+  required_providers {
+    aws = {
+      source  = <span class="code-str">"hashicorp/aws"</span>
+      version = <span class="code-str">"~> 5.0"</span>
+    }
+  }
+}
+
+<span class="code-comment"># Provider apuntando a LocalStack</span>
+<span class="code-key">provider</span> <span class="code-str">"aws"</span> {
+  region                      = <span class="code-str">"us-east-1"</span>
+  access_key                  = <span class="code-str">"test"</span>
+  secret_key                  = <span class="code-str">"test"</span>
+  skip_credentials_validation = true
+  skip_metadata_api_check     = true
+  skip_requesting_account_id  = true
+
+  endpoints {
+    s3       = <span class="code-str">"http://localhost:4566"</span>
+    dynamodb = <span class="code-str">"http://localhost:4566"</span>
+    lambda   = <span class="code-str">"http://localhost:4566"</span>
+    iam      = <span class="code-str">"http://localhost:4566"</span>
+  }
+}
+
+<span class="code-comment"># Crear un bucket S3</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_s3_bucket"</span> <span class="code-str">"mi_bucket"</span> {
+  bucket = <span class="code-str">"mi-bucket-de-practica"</span>
+}
+
+<span class="code-comment"># Crear una tabla DynamoDB</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_dynamodb_table"</span> <span class="code-str">"mi_tabla"</span> {
+  name         = <span class="code-str">"Productos"</span>
+  billing_mode = <span class="code-str">"PAY_PER_REQUEST"</span>
+  hash_key     = <span class="code-str">"ProductId"</span>
+
+  attribute {
+    name = <span class="code-str">"ProductId"</span>
+    type = <span class="code-str">"S"</span>
+  }
+}
+
+<span class="code-comment"># Desplegar:</span>
+<span class="code-comment"># terraform init && terraform plan && terraform apply</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 IaC -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--purple-light);">⚙️</div>
+    <div>
+      <div class="vert-title">05 — IaC: CloudFormation · CDK · Terraform</div>
+      <div class="vert-sub">Las tres herramientas de Infraestructura como Código — cuándo usar cada una y ejemplos comentados</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">La infraestructura que no está en código no existe. <strong>Cualquier recurso AWS creado manualmente desde la consola es un riesgo operativo</strong> — no se puede reproducir, versionar ni auditiar. Las tres herramientas de IaC cubren distintos perfiles y necesidades.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iac0')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Cuándo usar cada una</span>
+        <div class="acc-info"><div class="acc-name">CloudFormation vs. CDK vs. Terraform — la guía de selección</div><div class="acc-tag">Cada herramienta tiene su lugar — no son excluyentes</div></div>
+        <span class="acc-chv" id="achv-iac0">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iac0">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th></th><th>CloudFormation</th><th>AWS CDK</th><th>Terraform</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Lenguaje</td><td>YAML / JSON</td><td>Python, TypeScript, Java, C# (código real)</td><td>HCL (HashiCorp Config Language)</td></tr>
+              <tr><td class="tn">Curva de aprendizaje</td><td>Media — verboso pero predecible</td><td>Alta al inicio, luego muy productivo</td><td>Baja — HCL es muy legible</td></tr>
+              <tr><td class="tn">Multi-cloud</td><td class="cross">Solo AWS</td><td class="cross">Solo AWS (con adaptadores)</td><td class="check">AWS + Azure + GCP + cualquier provider</td></tr>
+              <tr><td class="tn">State management</td><td>AWS lo gestiona (Stack)</td><td>Genera CloudFormation — AWS lo gestiona</td><td>State file local o remoto (S3 + DynamoDB)</td></tr>
+              <tr><td class="tn">Reutilización</td><td>Nested Stacks, StackSets</td><td>Constructs (librerías de componentes)</td><td>Modules (muy potente)</td></tr>
+              <tr><td class="tn">Ideal para</td><td>Equipos 100% AWS, infra estable, compliance estricto</td><td>Desarrolladores que prefieren código sobre YAML, proyectos complejos</td><td>Multi-cloud, equipos DevOps, proyectos donde la infra puede moverse de proveedor</td></tr>
+              <tr><td class="tn">Comunidad</td><td>Grande (AWS)</td><td>Creciendo rápido</td><td class="check">Enorme — el más popular del mercado</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iac1')">
+        <span class="acc-badge" style="background:var(--aws-l);color:var(--aws-d);">CloudFormation</span>
+        <div class="acc-info"><div class="acc-name">Template completo comentado — VPC + EC2 + Security Group</div><div class="acc-tag">El primer template que todo arquitecto AWS debe saber leer y escribir</div></div>
+        <span class="acc-chv" id="achv-iac1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iac1">
+        <div class="ab-inner">
+          <div class="code-block">
+            <div class="code-label">template.yaml — VPC + EC2 + Security Group</div>
+            <pre>AWSTemplateFormatVersion: <span class="code-str">'2010-09-09'</span>
+Description: <span class="code-str">'VPC con EC2 de práctica'</span>
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues: [t2.micro, t3.micro]
+    Description: Tipo de instancia EC2
+
+Resources:
+
+  <span class="code-comment"># 1. La red privada virtual</span>
+  MiVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: <span class="code-str">'10.0.0.0/16'</span>
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: mi-vpc-practica
+
+  <span class="code-comment"># 2. Subred pública donde vivirá el EC2</span>
+  SubredPublica:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MiVPC
+      CidrBlock: <span class="code-str">'10.0.1.0/24'</span>
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true
+
+  <span class="code-comment"># 3. Internet Gateway — la puerta hacia internet</span>
+  IGW:
+    Type: AWS::EC2::InternetGateway
+  AttachIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MiVPC
+      InternetGatewayId: !Ref IGW
+
+  <span class="code-comment"># 4. Route table que dirige el tráfico al IGW</span>
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MiVPC
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: <span class="code-str">'0.0.0.0/0'</span>
+      GatewayId: !Ref IGW
+  SubnetRouteAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubredPublica
+      RouteTableId: !Ref RouteTable
+
+  <span class="code-comment"># 5. Security Group — solo puerto 22 (SSH) y 80 (HTTP)</span>
+  MiSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SG para EC2 de practica
+      VpcId: !Ref MiVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: <span class="code-str">'0.0.0.0/0'</span>  <span class="code-comment"># En prod: restringir a tu IP</span>
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: <span class="code-str">'0.0.0.0/0'</span>
+
+  <span class="code-comment"># 6. La instancia EC2</span>
+  MiEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: ami-0c02fb55956c7d316  <span class="code-comment"># Amazon Linux 2 en us-east-1</span>
+      SubnetId: !Ref SubredPublica
+      SecurityGroupIds: [!Ref MiSG]
+      UserData:  <span class="code-comment"># Script que corre al iniciar</span>
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          echo "&lt;h1&gt;Hola desde CloudFormation&lt;/h1&gt;" &gt; /var/www/html/index.html
+
+Outputs:
+  PublicIP:
+    Description: IP publica del EC2
+    Value: !GetAtt MiEC2.PublicIp</pre>
+          </div>
+          <div class="block-label">Cómo desplegarlo</div>
+          <div class="code-block">
+            <pre><span class="code-comment"># Desde AWS CLI:</span>
+aws cloudformation create-stack \
+  --stack-name mi-stack-practica \
+  --template-body file://template.yaml \
+  --parameters ParameterKey=InstanceType,ParameterValue=t2.micro
+
+<span class="code-comment"># Ver estado del stack:</span>
+aws cloudformation describe-stacks --stack-name mi-stack-practica
+
+<span class="code-comment"># Eliminar todo al terminar (¡importante para no generar costos!):</span>
+aws cloudformation delete-stack --stack-name mi-stack-practica</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iac2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Terraform</span>
+        <div class="acc-info"><div class="acc-name">Ejemplo comentado — S3 + CloudFront + política de bucket (hosting estático)</div><div class="acc-tag">Un caso de uso real y frecuente explicado línea a línea</div></div>
+        <span class="acc-chv" id="achv-iac2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iac2">
+        <div class="ab-inner">
+          <div class="code-block">
+            <div class="code-label">main.tf — Hosting de sitio estático en S3 + CloudFront</div>
+            <pre><span class="code-key">provider</span> <span class="code-str">"aws"</span> {
+  region = <span class="code-str">"us-east-1"</span>
+}
+
+<span class="code-comment"># El bucket S3 donde viven los archivos del sitio</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_s3_bucket"</span> <span class="code-str">"sitio"</span> {
+  bucket = <span class="code-str">"mi-sitio-estatico-unico-12345"</span>
+}
+
+<span class="code-comment"># Configurar el bucket para hosting web estático</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_s3_bucket_website_configuration"</span> <span class="code-str">"sitio"</span> {
+  bucket = aws_s3_bucket.sitio.id
+  index_document { suffix = <span class="code-str">"index.html"</span> }
+  error_document { key    = <span class="code-str">"error.html"</span>  }
+}
+
+<span class="code-comment"># Deshabilitar el bloqueo de acceso público (necesario para hosting)</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_s3_bucket_public_access_block"</span> <span class="code-str">"sitio"</span> {
+  bucket                  = aws_s3_bucket.sitio.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+<span class="code-comment"># Política que permite lectura pública de los archivos</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_s3_bucket_policy"</span> <span class="code-str">"sitio"</span> {
+  bucket = aws_s3_bucket.sitio.id
+  policy = jsonencode({
+    Version = <span class="code-str">"2012-10-17"</span>
+    Statement = [{
+      Effect    = <span class="code-str">"Allow"</span>
+      Principal = <span class="code-str">"*"</span>
+      Action    = <span class="code-str">"s3:GetObject"</span>
+      Resource  = <span class="code-str">"${aws_s3_bucket.sitio.arn}/*"</span>
+    }]
+  })
+}
+
+<span class="code-comment"># CloudFront distribution que sirve el contenido de S3</span>
+<span class="code-key">resource</span> <span class="code-str">"aws_cloudfront_distribution"</span> <span class="code-str">"cdn"</span> {
+  enabled             = true
+  default_root_object = <span class="code-str">"index.html"</span>
+
+  origin {
+    domain_name = aws_s3_bucket_website_configuration.sitio.website_endpoint
+    origin_id   = <span class="code-str">"s3-origin"</span>
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = <span class="code-str">"http-only"</span>
+    }
+  }
+
+  default_cache_behavior {
+    viewer_protocol_policy = <span class="code-str">"redirect-to-https"</span>
+    allowed_methods        = [<span class="code-str">"GET"</span>, <span class="code-str">"HEAD"</span>]
+    cached_methods         = [<span class="code-str">"GET"</span>, <span class="code-str">"HEAD"</span>]
+    target_origin_id       = <span class="code-str">"s3-origin"</span>
+    forwarded_values {
+      query_string = false
+      cookies { forward = <span class="code-str">"none"</span> }
+    }
+  }
+
+  restrictions {
+    geo_restriction { restriction_type = <span class="code-str">"none"</span> }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+}
+
+<span class="code-comment"># Output: la URL de CloudFront para acceder al sitio</span>
+<span class="code-key">output</span> <span class="code-str">"url_sitio"</span> {
+  value = <span class="code-str">"https://${aws_cloudfront_distribution.cdn.domain_name}"</span>
+}
+
+<span class="code-comment"># Comandos: terraform init → terraform plan → terraform apply</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iac3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">AWS CDK (Python)</span>
+        <div class="acc-info"><div class="acc-name">Ejemplo comentado — Lambda + API Gateway con CDK en Python</div><div class="acc-tag">El poder del código real para definir infraestructura</div></div>
+        <span class="acc-chv" id="achv-iac3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iac3">
+        <div class="ab-inner">
+          <div class="code-block">
+            <div class="code-label">app_stack.py — Lambda + API Gateway con AWS CDK</div>
+            <pre"><span class="code-key">from</span> aws_cdk <span class="code-key">import</span> (
+    Stack, Duration,
+    aws_lambda <span class="code-key">as</span> lambda_,
+    aws_apigateway <span class="code-key">as</span> apigw,
+)
+<span class="code-key">from</span> constructs <span class="code-key">import</span> Construct
+
+<span class="code-key">class</span> <span class="code-cmd">MiApiStack</span>(Stack):
+
+    <span class="code-key">def</span> <span class="code-cmd">__init__</span>(self, scope: Construct, id: str, **kwargs):
+        super().__init__(scope, id, **kwargs)
+
+        <span class="code-comment"># Definir la función Lambda</span>
+        mi_funcion = lambda_.Function(
+            self, <span class="code-str">"MiFuncion"</span>,
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler=<span class="code-str">"index.handler"</span>,
+            code=lambda_.Code.from_inline(<span class="code-str">"""
+def handler(event, context):
+    nombre = event.get('queryStringParameters', {}).get('nombre', 'Mundo')
+    return {
+        'statusCode': 200,
+        'body': f'Hola {nombre} desde CDK!'
+    }
+"""</span>),
+            timeout=Duration.seconds(10),
+            memory_size=128,
+        )
+
+        <span class="code-comment"># Crear el API Gateway conectado a la Lambda</span>
+        api = apigw.LambdaRestApi(
+            self, <span class="code-str">"MiApi"</span>,
+            handler=mi_funcion,
+            rest_api_name=<span class="code-str">"API de practica"</span>,
+            description=<span class="code-str">"API creada con CDK"</span>,
+            default_method_options=apigw.MethodOptions(
+                authorization_type=apigw.AuthorizationType.NONE
+            )
+        )
+
+        <span class="code-comment"># CDK genera el output automáticamente</span>
+        <span class="code-comment"># URL del API disponible en: cdk deploy --outputs-file outputs.json</span>
+
+<span class="code-comment"># Comandos:</span>
+<span class="code-comment"># pip install aws-cdk-lib constructs</span>
+<span class="code-comment"># cdk bootstrap  (primera vez por cuenta/región)</span>
+<span class="code-comment"># cdk diff       (ver qué va a cambiar)</span>
+<span class="code-comment"># cdk deploy     (desplegar)</span>
+<span class="code-comment"># cdk destroy    (eliminar todo al terminar)</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 PRÁCTICA POR ÁREA -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--teal-light);">🎯</div>
+    <div>
+      <div class="vert-title">06 — Práctica por área clave</div>
+      <div class="vert-sub">EC2 · S3 · VPC · Automatización — los 4 pilares que todo arquitecto AWS debe dominar</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">EC2 — Cómputo</span>
+        <div class="acc-info"><div class="acc-name">Los ejercicios de EC2 que más enseñan — de instancia básica a Auto Scaling</div><div class="acc-tag">5 ejercicios progresivos para dominar el cómputo en AWS</div></div>
+        <span class="acc-chv" id="achv-pr1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr1">
+        <div class="ab-inner">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">1</div>
+              <div class="step-content">
+                <div class="step-title">Levantar una instancia t2.micro y conectarse por SSH</div>
+                <div class="step-desc">Crear Key Pair, Security Group con puerto 22, lanzar la instancia, conectarse con <strong>ssh -i mi-key.pem ec2-user@IP_PUBLICA</strong>. Instalar nginx y ver la web en el navegador. <em>Tiempo: 30 minutos.</em></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">2</div>
+              <div class="step-content">
+                <div class="step-title">Crear una AMI personalizada desde la instancia configurada</div>
+                <div class="step-desc">Con nginx instalado, crear una AMI desde la instancia. Lanzar una segunda instancia desde la AMI — debe tener nginx ya instalado sin ejecutar ningún script. <em>Entiende el concepto de imagen de máquina.</em></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">3</div>
+              <div class="step-content">
+                <div class="step-title">Application Load Balancer con 2 instancias en distintas AZ</div>
+                <div class="step-desc">Crear 2 instancias en AZ distintas (us-east-1a y us-east-1b), crear un Target Group, crear un ALB. Verificar que el ALB distribuye el tráfico entre las dos. Apagar una — el ALB debe dejar de enviarle tráfico automáticamente. <em>Concepto clave: alta disponibilidad.</em></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">4</div>
+              <div class="step-content">
+                <div class="step-title">Auto Scaling Group que escala según carga de CPU</div>
+                <div class="step-desc">Launch Template + ASG con mínimo 2, máximo 6 instancias. Crear alarma de CloudWatch al 70% CPU que dispara la política de escalado. Usar <strong>stress</strong> para generar carga y ver cómo el ASG agrega instancias automáticamente. <em>Concepto clave: escalado horizontal.</em></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--aws-l);color:var(--aws-d);">5</div>
+              <div class="step-content">
+                <div class="step-title">Todo el stack anterior con CloudFormation o Terraform</div>
+                <div class="step-desc">Definir el VPC, subredes, SG, ALB, ASG y políticas de escalado en un template IaC. El objetivo: destruirlo con un comando y volver a crearlo idéntico en 5 minutos. <em>Concepto clave: infraestructura reproducible.</em></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">S3 — Almacenamiento</span>
+        <div class="acc-info"><div class="acc-name">Los 4 casos de uso de S3 que aparecen en toda arquitectura AWS</div></div>
+        <span class="acc-chv" id="achv-pr2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr2">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-icon">🌐</div>
+              <div class="mc-title">Hosting estático</div>
+              <div class="mc-text">Crear un bucket, subir index.html, habilitar el hosting estático, configurar política de acceso público. Opcional: poner CloudFront delante para HTTPS. <strong>Todo una arquitectura de frontend sin servidores.</strong></div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">📥</div>
+              <div class="mc-title">Upload con pre-signed URLs</div>
+              <div class="mc-text">Generar URLs firmadas temporales con Python (boto3) para que usuarios suban archivos directamente a S3 sin pasar por el backend. <strong>Patrón fundamental en apps web modernas.</strong></div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">⚡</div>
+              <div class="mc-title">Trigger Lambda con S3 Events</div>
+              <div class="mc-text">Configurar que cada archivo subido a un bucket dispare una función Lambda automáticamente. Usar para procesamiento de imágenes, extracción de datos, notificaciones. <strong>El patrón de procesamiento asincrónico más usado.</strong></div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔒</div>
+              <div class="mc-title">Lifecycle + Glacier</div>
+              <div class="mc-text">Configurar reglas de ciclo de vida: archivos creados hace más de 90 días → S3 Standard-IA. Más de 365 días → S3 Glacier. <strong>Reducción automática de costos de storage sin intervención manual.</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr3')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">VPC — Redes</span>
+        <div class="acc-info"><div class="acc-name">Construir una VPC con 3 capas — la arquitectura de red más usada en AWS enterprise</div><div class="acc-tag">Subred pública + privada + NAT Gateway — el patrón de referencia</div></div>
+        <span class="acc-chv" id="achv-pr3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr3">
+        <div class="ab-inner">
+          <p class="block-text">La arquitectura de VPC más usada en producción tiene 3 capas: subred pública (ALB, bastion host), subred privada (servidores de aplicación), subred de base de datos (RDS sin acceso desde internet).</p>
+          <div class="code-block">
+            <div class="code-label">Arquitectura de referencia — 3 capas en 2 AZ</div>
+            <pre><span class="code-comment">VPC: 10.0.0.0/16</span>
+├── <span class="code-cmd">Subred Pública</span>     10.0.1.0/24 (AZ-a)  → ALB, Bastion Host, NAT GW
+├── <span class="code-cmd">Subred Pública</span>     10.0.2.0/24 (AZ-b)  → ALB secundario
+├── <span class="code-cmd">Subred Privada</span>     10.0.3.0/24 (AZ-a)  → EC2 App Servers
+├── <span class="code-cmd">Subred Privada</span>     10.0.4.0/24 (AZ-b)  → EC2 App Servers (réplica)
+├── <span class="code-cmd">Subred BD</span>          10.0.5.0/24 (AZ-a)  → RDS Primary
+└── <span class="code-cmd">Subred BD</span>          10.0.6.0/24 (AZ-b)  → RDS Standby (Multi-AZ)
+
+<span class="code-comment">Internet Gateway  → solo subredes públicas</span>
+<span class="code-comment">NAT Gateway       → permite salida a internet desde subredes privadas (updates, etc.)</span>
+<span class="code-comment">Security Groups:</span>
+<span class="code-comment">  ALB-SG:     entrada 80/443 desde 0.0.0.0/0</span>
+<span class="code-comment">  App-SG:     entrada 8080 solo desde ALB-SG</span>
+<span class="code-comment">  DB-SG:      entrada 5432 solo desde App-SG</span></pre>
+          </div>
+          <div class="win-note"><strong>Por qué esta arquitectura:</strong> El ALB está en la subred pública y recibe tráfico de internet. Los servidores de aplicación están en la subred privada — no tienen IP pública, solo reciben tráfico del ALB. La base de datos está en la subred de BD — solo los servidores de aplicación pueden conectarse. Tres capas de seguridad.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 EJEMPLOS DE CÓDIGO -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--amber-light);">💻</div>
+    <div>
+      <div class="vert-title">07 — Snippets de código AWS CLI y Python (boto3)</div>
+      <div class="vert-sub">Los comandos más usados listos para copiar y adaptar</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('snip1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">AWS CLI — los comandos esenciales</span>
+        <div class="acc-info"><div class="acc-name">S3 · EC2 · Lambda · IAM · CloudFormation desde la terminal</div></div>
+        <span class="acc-chv" id="achv-snip1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-snip1">
+        <div class="ab-inner">
+          <div class="code-block">
+            <div class="code-label">AWS CLI — comandos más usados</div>
+            <pre><span class="code-comment">── S3 ──────────────────────────────────────────────</span>
+aws s3 mb s3://mi-bucket                          <span class="code-comment"># crear bucket</span>
+aws s3 cp archivo.txt s3://mi-bucket/             <span class="code-comment"># subir archivo</span>
+aws s3 sync ./carpeta s3://mi-bucket/carpeta/     <span class="code-comment"># sincronizar carpeta</span>
+aws s3 ls s3://mi-bucket --recursive              <span class="code-comment"># listar contenido</span>
+aws s3 rb s3://mi-bucket --force                  <span class="code-comment"># eliminar bucket y contenido</span>
+
+<span class="code-comment">── EC2 ─────────────────────────────────────────────</span>
+aws ec2 describe-instances --query \
+  'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+  --output table                                  <span class="code-comment"># listar instancias</span>
+aws ec2 stop-instances --instance-ids i-1234567890abcdef0
+aws ec2 start-instances --instance-ids i-1234567890abcdef0
+aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+
+<span class="code-comment">── Lambda ───────────────────────────────────────────</span>
+aws lambda list-functions --output table
+aws lambda invoke --function-name mi-funcion out.json
+aws lambda update-function-code \
+  --function-name mi-funcion \
+  --zip-file fileb://function.zip               <span class="code-comment"># actualizar código</span>
+aws lambda get-function-configuration \
+  --function-name mi-funcion                    <span class="code-comment"># ver configuración</span>
+
+<span class="code-comment">── CloudFormation ───────────────────────────────────</span>
+aws cloudformation validate-template \
+  --template-body file://template.yaml          <span class="code-comment"># validar antes de desplegar</span>
+aws cloudformation deploy \
+  --template-file template.yaml \
+  --stack-name mi-stack \
+  --capabilities CAPABILITY_IAM                 <span class="code-comment"># desplegar</span>
+aws cloudformation describe-stack-events \
+  --stack-name mi-stack                         <span class="code-comment"># ver eventos (útil para debug)</span>
+
+<span class="code-comment">── IAM ──────────────────────────────────────────────</span>
+aws iam list-users
+aws iam get-user --user-name mi-usuario
+aws iam simulate-principal-policy \
+  --policy-source-arn arn:aws:iam::123456:user/juan \
+  --action-names s3:GetObject \
+  --resource-arns arn:aws:s3:::mi-bucket/*       <span class="code-comment"># probar permisos</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('snip2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">boto3 (Python) — SDK de AWS</span>
+        <div class="acc-info"><div class="acc-name">S3 · DynamoDB · Lambda · SES desde Python — el SDK más popular de AWS</div></div>
+        <span class="acc-chv" id="achv-snip2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-snip2">
+        <div class="ab-inner">
+          <div class="code-block">
+            <div class="code-label">boto3 — operaciones más frecuentes comentadas</div>
+            <pre><span class="code-key">import</span> boto3
+<span class="code-key">import</span> json
+<span class="code-key">from</span> datetime <span class="code-key">import</span> datetime
+
+<span class="code-comment">── S3 ──────────────────────────────────────────────</span>
+s3 = boto3.client(<span class="code-str">'s3'</span>)
+
+<span class="code-comment"># Subir archivo</span>
+s3.upload_file(<span class="code-str">'archivo.txt'</span>, <span class="code-str">'mi-bucket'</span>, <span class="code-str">'carpeta/archivo.txt'</span>)
+
+<span class="code-comment"># Leer archivo como texto</span>
+response = s3.get_object(Bucket=<span class="code-str">'mi-bucket'</span>, Key=<span class="code-str">'datos.json'</span>)
+datos = json.loads(response[<span class="code-str">'Body'</span>].read())
+
+<span class="code-comment"># Generar URL pre-firmada para subida (válida 1 hora)</span>
+url = s3.generate_presigned_url(
+    <span class="code-str">'put_object'</span>,
+    Params={<span class="code-str">'Bucket'</span>: <span class="code-str">'mi-bucket'</span>, <span class="code-str">'Key'</span>: <span class="code-str">'uploads/imagen.jpg'</span>},
+    ExpiresIn=3600
+)
+
+<span class="code-comment">── DynamoDB ─────────────────────────────────────────</span>
+ddb = boto3.resource(<span class="code-str">'dynamodb'</span>)
+tabla = ddb.Table(<span class="code-str">'Productos'</span>)
+
+<span class="code-comment"># Insertar item</span>
+tabla.put_item(Item={
+    <span class="code-str">'ProductId'</span>: <span class="code-str">'prod-001'</span>,
+    <span class="code-str">'Nombre'</span>: <span class="code-str">'Laptop'</span>,
+    <span class="code-str">'Precio'</span>: 1200,
+    <span class="code-str">'Timestamp'</span>: datetime.now().isoformat()
+})
+
+<span class="code-comment"># Obtener item por clave</span>
+item = tabla.get_item(Key={<span class="code-str">'ProductId'</span>: <span class="code-str">'prod-001'</span>})
+print(item.get(<span class="code-str">'Item'</span>))
+
+<span class="code-comment"># Query (buscar por índice)</span>
+from boto3.dynamodb.conditions import Key
+items = tabla.query(
+    KeyConditionExpression=Key(<span class="code-str">'ProductId'</span>).eq(<span class="code-str">'prod-001'</span>)
+)
+
+<span class="code-comment">── Lambda desde Lambda (invocar otra función) ───────</span>
+lambda_client = boto3.client(<span class="code-str">'lambda'</span>)
+response = lambda_client.invoke(
+    FunctionName=<span class="code-str">'mi-otra-funcion'</span>,
+    InvocationType=<span class="code-str">'Event'</span>,  <span class="code-comment"># 'Event' = asincrónico, 'RequestResponse' = sincrónico</span>
+    Payload=json.dumps({<span class="code-str">'key'</span>: <span class="code-str">'value'</span>}).encode()
+)
+
+<span class="code-comment">── CloudWatch — métricas personalizadas ─────────────</span>
+cw = boto3.client(<span class="code-str">'cloudwatch'</span>)
+cw.put_metric_data(
+    Namespace=<span class="code-str">'MiApp/Metricas'</span>,
+    MetricData=[{
+        <span class="code-str">'MetricName'</span>: <span class="code-str">'PedidosProcesados'</span>,
+        <span class="code-str">'Value'</span>: 42,
+        <span class="code-str">'Unit'</span>: <span class="code-str">'Count'</span>
+    }]
+)</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 ROADMAP -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--green-light);">🗓</div>
+    <div>
+      <div class="vert-title">08 — Roadmap de práctica — de cero a Solutions Architect</div>
+      <div class="vert-sub">El camino de 12 semanas para ir de la consola de AWS a proponer arquitecturas como un experto</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('rm1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Las 12 semanas</span>
+        <div class="acc-info"><div class="acc-name">Plan progresivo de práctica — 4–6 horas semanales</div><div class="acc-tag">Diseñado para el consultor cloud que trabaja full-time y practica en paralelo</div></div>
+        <span class="acc-chv" id="achv-rm1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-rm1">
+        <div class="ab-inner">
+          <div class="track">
+            <div class="track-item">
+              <div class="track-dot" style="background:var(--aws-l);color:var(--aws-d);">1-2</div>
+              <div class="track-content">
+                <div class="track-title">Semanas 1–2: Fundamentos — Consola, IAM y S3</div>
+                <div class="track-desc">Crear cuenta con Free Tier. Configurar MFA y billing alert. Crear usuario IAM con MFA. Explorar la consola. Crear bucket S3, subir archivos, habilitar versionado, configurar hosting estático. <strong>Entorno: Free Tier + LocalStack para S3.</strong></div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-dot" style="background:var(--aws-l);color:var(--aws-d);">3-4</div>
+              <div class="track-content">
+                <div class="track-title">Semanas 3–4: Cómputo — EC2 y redes básicas</div>
+                <div class="track-desc">Crear VPC con subred pública. Lanzar instancia EC2 t2.micro. Conectar por SSH. Instalar nginx. Crear Security Groups. Crear AMI propia. <strong>Todo desde CloudFormation al final de la semana.</strong></div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-dot" style="background:var(--blue-light);color:var(--blue-dark);">5-6</div>
+              <div class="track-content">
+                <div class="track-title">Semanas 5–6: Alta disponibilidad — ALB + Auto Scaling</div>
+                <div class="track-desc">Multi-AZ con 2 subredes públicas. Application Load Balancer. Auto Scaling Group con política de CPU. CloudWatch alarm. Probar failover apagando instancias. <strong>Entender que el ALB hace health checks y saca las instancias enfermas.</strong></div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-dot" style="background:var(--green-light);color:var(--green-dark);">7-8</div>
+              <div class="track-content">
+                <div class="track-title">Semanas 7–8: Serverless — Lambda + API Gateway + DynamoDB</div>
+                <div class="track-desc">API REST completa sin servidores: API Gateway → Lambda (Python) → DynamoDB. CRUD completo. Probar desde curl o Postman. Agregar authorizer. <strong>Desplegar todo con CDK.</strong></div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-dot" style="background:var(--amber-light);color:var(--amber-dark);">9-10</div>
+              <div class="track-content">
+                <div class="track-title">Semanas 9–10: Bases de datos — RDS Multi-AZ + ElastiCache</div>
+                <div class="track-desc">RDS PostgreSQL en subred privada. Multi-AZ enabled. Conectar desde EC2 (no desde tu laptop). ElastiCache Redis para cachear consultas frecuentes. <strong>Medir la diferencia de latencia con y sin caché.</strong></div>
+              </div>
+            </div>
+            <div class="track-item">
+              <div class="track-dot" style="background:var(--purple-light);color:var(--purple-dark);">11-12</div>
+              <div class="track-content">
+                <div class="track-title">Semanas 11–12: Proyecto integrador — arquitectura completa con Terraform</div>
+                <div class="track-desc">Construir una aplicación completa con todos los conceptos: VPC 3 capas, ALB, EC2 en ASG, RDS Multi-AZ, S3 para estáticos, CloudFront, CloudWatch, IAM roles. <strong>Todo el stack definido en Terraform. Un comando lo crea, un comando lo destruye.</strong> Este es el portfolio que presentás ante Gerardo.</div>
+              </div>
+            </div>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">El objetivo real del roadmap</div>
+            <div class="pitch-text">"Al terminar estas 12 semanas, podés sentarte con cualquier CTO o arquitecto de un cliente y decir: 'He construido y destruido esta arquitectura docenas de veces con Terraform. Sé exactamente qué falla, cómo se comporta bajo carga y cuánto cuesta.' Eso no es teoría — es experiencia."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('rm2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Hacia la certificación AZ-305 / SAA-C03</span>
+        <div class="acc-info"><div class="acc-name">Cómo el roadmap de práctica se mapea con las certificaciones de Solutions Architect</div><div class="acc-tag">AWS SAA-C03 · Azure AZ-305 — los dos títulos más valiosos del mercado</div></div>
+        <span class="acc-chv" id="achv-rm2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-rm2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Dominio del examen</th><th>Peso</th><th>Cubierto en el roadmap</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Diseño de arquitecturas seguras</td><td>30%</td><td>Semanas 1–2 (IAM) + Semanas 3–4 (Security Groups, VPC) + Semanas 11–12 (IAM roles, políticas)</td></tr>
+              <tr><td class="tn">Diseño de cargas de trabajo resilientes</td><td>26%</td><td>Semanas 5–6 (Multi-AZ, ALB, ASG) + Semanas 9–10 (RDS Multi-AZ)</td></tr>
+              <tr><td class="tn">Diseño de arquitecturas de alto rendimiento</td><td>24%</td><td>Semanas 7–8 (Serverless) + Semanas 9–10 (ElastiCache) + CloudFront</td></tr>
+              <tr><td class="tn">Diseño de arquitecturas de bajo costo</td><td>20%</td><td>Free Tier awareness + S3 Lifecycle + Reserved Instances + Spot Instances</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>El orden recomendado de certificaciones para vos:</strong> AZ-900 (Azure Fundamentals, ya tenés experiencia) → <strong>AWS SAA-C03 (Solutions Architect Associate)</strong> en 90 días → <strong>AZ-305 (Azure Solutions Architect Expert)</strong> como siguiente. Esos dos títulos combinados son los más valorados en el mercado cloud de Argentina.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Recursos verificados al <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<!-- GCP Labs Section -->
+<div style="margin-top:48px; padding:24px; background:#E8F7FF; border:1px solid #4A90E2; border-radius:10px;">
+  <h2 style="color:#0C447C; font-size:22px; margin-bottom:12px;">🟩 Google Cloud Labs — Alternativa Práctica</h2>
+  <p style="font-size:13px; color:#2C2C2A; margin-bottom:14px;"><strong>Google Cloud ofrece laboratorios similares:</strong></p>
+  <ul style="font-size:13px; color:#2C2C2A; margin-left:20px; margin-bottom:14px;">
+    <li><strong>Google Cloud Console:</strong> UI free para experimentar (igual que AWS)</li>
+    <li><strong>Cloud Shell:</strong> Terminal browser + 5 GB almacenamiento (vs AWS CloudShell)</li>
+    <li><strong>Google Cloud Skills Boost:</strong> Labs interactivos (vs AWS Immersion Day)</li>
+    <li><strong>Qwiklabs by Google:</strong> Hands-on labs guiados (~$7-15 cada uno)</li>
+    <li><strong>Cloud Run Deploy:</strong> Deployar contenedores gratis (730 horas/mes sin costo)</li>
+  </ul>
+  <p style="font-size:12px; color:#0C447C;"><strong>📌 Diferencia clave:</strong> BigQuery + Cloud Run hacen GCP diferente para proyectos de datos. AWS es mejor para infraestructura tradicional.</p>
+</div>
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

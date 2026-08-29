@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objeciones Avanzadas — Argentina Cloud | Personal Tech</title>
+<style>
+:root{
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 80px;}
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* OBJECTION CARDS — big format */
+.obj-section{margin-bottom:56px;scroll-margin-top:52px;}
+.obj-card{border-radius:var(--radius);overflow:hidden;margin-bottom:16px;border:.5px solid var(--border);}
+
+/* Card header — the objection itself */
+.obj-head{padding:20px 24px;position:relative;}
+.obj-head::before{content:'"';font-size:80px;font-family:Georgia;position:absolute;top:-10px;left:16px;opacity:.07;line-height:1;}
+.obj-category{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;opacity:.7;}
+.obj-quote{font-size:17px;font-weight:700;line-height:1.4;font-style:italic;position:relative;z-index:1;}
+.obj-who{font-size:11px;margin-top:6px;opacity:.6;}
+
+/* Card body */
+.obj-body{background:var(--bg);border-top:.5px solid var(--border);}
+
+/* Accordion inside card */
+.obj-acc{border-bottom:.5px solid var(--border);}
+.obj-acc:last-child{border-bottom:none;}
+.obj-acc-head{display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;background:var(--bg2);transition:background .15s;}
+.obj-acc-head:hover{background:var(--gray-l);}
+.obj-acc-icon{font-size:16px;flex-shrink:0;}
+.obj-acc-title{font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.obj-acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;}
+.obj-acc-chv.open{transform:rotate(180deg);}
+.obj-acc-body{display:none;padding:16px 22px 18px;}
+.obj-acc-body.open{display:block;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);margin:14px 0 7px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:9px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* PIVOT BOX — the actual answer to use */
+.pivot-box{border-radius:var(--radius-sm);padding:16px 18px;margin:12px 0;}
+.pivot-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px;}
+.pivot-text{font-size:13.5px;line-height:1.75;font-style:italic;font-weight:500;}
+.pivot-sub{font-size:11.5px;margin-top:8px;opacity:.7;}
+
+/* NOTES */
+.note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid;line-height:1.6;}
+.note strong{font-weight:700;}
+.note-green{background:var(--green-l);border-color:var(--green-m);color:var(--text-sec);}
+.note-green strong{color:var(--green);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);color:var(--text-sec);}
+.note-amber strong{color:var(--amber);}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);color:var(--text-sec);}
+.note-blue strong{color:var(--blue);}
+.note-red{background:var(--red-l);border-color:var(--red-m);color:var(--text-sec);}
+.note-red strong{color:var(--red);}
+
+/* TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+
+/* DIFFICULTY METER */
+.diff-meter{display:flex;gap:4px;margin-top:6px;}
+.diff-dot{width:10px;height:10px;border-radius:50%;background:var(--border);}
+.diff-dot.on{background:var(--coral-m);}
+
+/* QUICK REF TABLE */
+.qref{width:100%;border-collapse:collapse;font-size:12.5px;margin:16px 0;}
+.qref th{padding:8px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);border-bottom:1.5px solid var(--text);text-align:left;background:var(--bg);}
+.qref td{padding:11px 12px;border-bottom:.5px solid var(--border);vertical-align:top;line-height:1.6;color:var(--text-sec);}
+.qref tr:last-child td{border-bottom:none;}
+.qref td:first-child{font-weight:700;font-style:italic;color:var(--text);width:38%;}
+.qref td:last-child{color:var(--text-sec);}
+
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+@media(max-width:640px){.doc-header,.grid2{flex-direction:column;} .doc-meta{text-align:left;} .grid2{grid-template-columns:1fr;} .hero-strip{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">💬 Objeciones Argentina</div>
+  <a class="tnav" href="#s1">Tipo de cambio</a>
+  <a class="tnav" href="#s2">Requisa del Estado</a>
+  <a class="tnav" href="#s3">Vuelta atrás</a>
+  <a class="tnav" href="#s4">Proveedor que quiebra</a>
+  <a class="tnav" href="#s5">Internet corta</a>
+  <a class="tnav" href="#s6">Seguridad datos</a>
+  <a class="tnav" href="#s7">Ya pagué hardware</a>
+  <a class="tnav" href="#s8">No confío en la nube</a>
+  <a class="tnav" href="#s9">Referencia rápida</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Objeciones Avanzadas — Contexto Argentina</div>
+    <div class="doc-sub">Las 8 objeciones que traban acuerdos cloud en Argentina y cómo responderlas con autoridad</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud · Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<div class="hero-strip">
+  <div class="hs" style="background:var(--red-l);border-color:var(--red-m);">
+    <div class="hs-icon">🇦🇷</div>
+    <div class="hs-val">Objeciones únicas de Argentina</div>
+    <div class="hs-sub">Tipo de cambio, inestabilidad política, desconfianza histórica. No aplican en ningún otro mercado.</div>
+  </div>
+  <div class="hs" style="background:var(--amber-l);border-color:var(--amber-m);">
+    <div class="hs-icon">🧠</div>
+    <div class="hs-val">El contexto es todo</div>
+    <div class="hs-sub">Estas objeciones son legítimas y razonables. Nunca descartarlas — validarlas y redirigirlas.</div>
+  </div>
+  <div class="hs" style="background:var(--green-l);border-color:var(--green-m);">
+    <div class="hs-icon">🏆</div>
+    <div class="hs-val">Personal Tech tiene ventaja estructural</div>
+    <div class="hs-sub">Empresa local, pesos, dato en Argentina, marco legal local. Los hyperscalers no pueden dar esto.</div>
+  </div>
+  <div class="hs" style="background:var(--blue-l);border-color:var(--blue-m);">
+    <div class="hs-icon">🎯</div>
+    <div class="hs-val">Metodología: VAR</div>
+    <div class="hs-sub">Validar la objeción → Agregar contexto → Redirigir con propuesta concreta.</div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 1: TIPO DE CAMBIO ══════ -->
+<div class="obj-section" id="s1">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#1A0A00,#4A1B0C);">
+      <div class="obj-category" style="color:rgba(255,180,80,.7);">💰 Objeción financiera · Dificultad alta</div>
+      <div class="obj-quote" style="color:#fff;">"¿Y si el dólar sube y el cloud en pesos sale más caro?"</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CFO / CEO de empresa mediana · Muy frecuente en períodos de volatilidad cambiaria</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 4/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a1_1')">
+          <div class="obj-acc-icon">🧠</div>
+          <div class="obj-acc-title">Por qué es una objeción válida — y cómo encuadrarla correctamente</div>
+          <span class="obj-acc-chv" id="achv-a1_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a1_1">
+          <p class="block-text">Esta objeción nace de una experiencia real y repetida: en Argentina, todo lo que tiene componente dólar se encarece cuando el tipo de cambio sube. <strong>El CFO tiene razón en preocuparse.</strong> El error del consultor es descartarla o minimizarla. El trabajo es encuadrarla correctamente.</p>
+          <div class="note-amber"><strong>⚠️ El error más común:</strong> Decir "pero nosotros facturamos en pesos" sin explicar cómo se forman esos precios. Si el cliente sabe que la infraestructura tiene componente dólar (servidores, energía, hardware), va a seguir desconfiando aunque la factura sea en pesos.</div>
+          <div class="block-label">La realidad del pricing de Personal Tech en cloud</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>El precio en pesos tiene un componente dólar implícito:</strong> los servidores, el hardware de red y la energía tienen componente importado. Esto es real y hay que reconocerlo.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Pero también lo tiene el on-premise:</strong> renovar servidores Dell/HP en Argentina cuesta en dólares. Las licencias VMware, Microsoft y Oracle se actualizan en dólares. El on-premise tiene más exposición cambiaria que el cloud, no menos.</li>
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>El contrato en pesos da previsibilidad:</strong> aunque el precio pueda ajustarse, el mecanismo de ajuste está definido en el contrato (IPC, CER, etc.). Una renovación de hardware en año 3 es un shock de capital en dólares sin previsibilidad.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a1_2')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot — qué decir exactamente</div>
+          <span class="obj-acc-chv" id="achv-a1_2">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a1_2">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado — decir esto</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Esa preocupación es totalmente válida y entiendo por qué la tenés. Pero hagamos el ejercicio comparativo correcto: su alternativa no es cloud vs. 'nada dolarizado' — es cloud vs. renovar servidores en 2 años. ¿A qué precio dólar proyectan comprar esos servidores en 2026? Ese shock de capital en un año malo puede ser 3× el costo del servicio cloud de ese período. El cloud en pesos tiene ajuste gradual y predecible; el hardware es un shock concentrado en el peor momento posible."</div>
+            <div class="pivot-sub" style="color:rgba(255,255,255,.4);">Completar con: "Además, en el contrato con Personal Tech queda explícito el mecanismo de ajuste — no hay sorpresas."</div>
+          </div>
+          <div class="block-label">El argumento numérico que cierra la discusión</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Escenario</th><th>On-premise (año 3)</th><th>Cloud Personal Tech (mes a mes)</th></tr></thead>
+            <tbody>
+              <tr><td>Dólar estable</td><td>Renovación $120K USD · Shock único en el año</td><td>Ajuste gradual en pesos · Sin shock de capital</td></tr>
+              <tr><td>Dólar sube 50%</td><td>Renovación $120K USD · 50% más cara en pesos</td><td>Ajuste en pesos menor que el shock del hardware</td></tr>
+              <tr><td>Dólar sube 100%</td><td class="tn" style="color:var(--red-m);">Renovación $120K USD · El más dolarizado de los dos</td><td>El cloud en pesos GANA frente al hardware en dólares</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="note-green"><strong>✅ Argumento final:</strong> "La pregunta no es si el cloud tiene componente dólar — es cuál tiene más. Y la respuesta siempre es: el hardware tiene más porque es 100% dólar en un único momento. El cloud lo diluye en el tiempo."</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 2: REQUISA DEL ESTADO ══════ -->
+<div class="obj-section" id="s2">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#1A1A00,#3A3A00);">
+      <div class="obj-category" style="color:rgba(220,220,80,.7);">🏛 Objeción política · Dificultad alta</div>
+      <div class="obj-quote" style="color:#fff;">"¿Qué pasa con mis datos si el gobierno requisa los servidores de Personal Tech?"</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CTO / CEO en sectores sensibles · Muy frecuente en períodos de tensión política</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 5/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a2_1')">
+          <div class="obj-acc-icon">🧠</div>
+          <div class="obj-acc-title">El contexto real — por qué esta objeción surge y qué hay detrás</div>
+          <span class="obj-acc-chv" id="achv-a2_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a2_1">
+          <p class="block-text">Esta objeción es la más argentina de todas. Nace de experiencias reales: el corralito (2001), la intervención de YPF, la estatización de empresas privadas. El interlocutor no es paranoico — tiene memoria histórica de que el Estado argentino puede tomar decisiones extraordinarias.</p>
+          <div class="note-amber"><strong>⚠️ No minimizar esta objeción.</strong> Decir "eso no va a pasar" es el peor pivot posible. Hay que abordarla con datos jurídicos concretos, no con optimismo.</div>
+          <div class="block-label">La realidad jurídica de una "requisa" de servidores</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Una "requisa" de servidores de una empresa privada requeriría:</strong> una orden judicial con causa específica, o una declaración de servicio público de utilidad pública, o una ley del Congreso con expropiación con indemnización. Ninguno es instantáneo ni silencioso.</li>
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Telecom Argentina (Personal Tech) es una empresa cotizante en NYSE y MERVAL.</strong> Una "requisa" de sus activos generaría un impacto en mercados de capitales internacionales que ningún gobierno quiere asumir.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>El dato del cliente está cifrado.</strong> Incluso si alguien accediera físicamente a los servidores, los datos están cifrados con claves que Personal Tech no tiene y el cliente controla.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a2_2')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot — qué decir exactamente</div>
+          <span class="obj-acc-chv" id="achv-a2_2">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a2_2">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Entiendo la preocupación — es legítima en Argentina. Pero pensemos en el escenario completo: si el Estado argentino llega al punto de requisar infraestructura de Telecom Argentina, empresa que cotiza en NYSE y tiene inversores internacionales, el contexto macroeconómico sería tal que el on-premise propio tampoco estaría seguro. Ahora, dentro del contexto normal de Argentina: los datos del cliente están cifrados con claves que nosotros no tenemos. Acceder físicamente a los servidores no da acceso a los datos. Y desde el punto de vista legal, una requisa requeriría un proceso judicial que da tiempo de respuesta y opciones."</div>
+          </div>
+          <div class="block-label">Las protecciones contractuales que mitigar este riesgo</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Cifrado end-to-end con claves del cliente:</strong> los datos en Pacheco están cifrados con AES-256. Las claves las tiene el cliente, no Personal Tech. Acceso físico al servidor ≠ acceso al dato.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Cláusula de portabilidad del dato:</strong> en el contrato, el cliente tiene derecho a exportar todos sus datos en formato estándar en cualquier momento y sin penalidad. Si el vínculo se rompe por cualquier razón, el dato es del cliente.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Replicación geográfica:</strong> si el cliente quiere máxima resiliencia, puede replicar en dos DCs de Personal Tech (Pacheco + Hornos) con plan de exportación automática ante cualquier evento inusual.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 3: VUELTA ATRÁS ══════ -->
+<div class="obj-section" id="s3">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#001A1A,#003A3A);">
+      <div class="obj-category" style="color:rgba(80,220,200,.7);">🔄 Objeción de reversibilidad · Dificultad media</div>
+      <div class="obj-quote" style="color:#fff;">"¿Puedo volver a on-premise si el cloud no funciona para nosotros?"</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CTO / Director IT conservador · Frecuente en primera migración cloud</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot"></div><div class="diff-dot"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 3/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a3_1')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot — y por qué esta es la objeción más fácil de transformar en aliada</div>
+          <span class="obj-acc-chv" id="achv-a3_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a3_1">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Sí, técnicamente podés volver. El dato es tuyo y lo exportamos en formatos estándar. Pero te hago una pregunta: ¿a qué vas a volver? Si tu hardware actual tiene 4 años, en 2 años más ya no va a existir ni el soporte. La alternativa no es 'volver a lo de antes' — es comprar hardware nuevo en dólares en el peor momento. El cloud no es un camino sin retorno — es un camino sin razón para volver."</div>
+          </div>
+          <div class="note-green"><strong>✅ El argumento de la portabilidad:</strong> Personal Tech usa formatos estándar (VMware-compatible OVF, imágenes de disco estándar). Migrar datos fuera es técnicamente posible. Pero el verdadero lock-in no es técnico — es operativo: los equipos aprenden a operar en cloud y perderían esa capacidad al volver.</div>
+          <div class="block-label">Estrategia: proponer una migración por fases (reduce el miedo al "todo o nada")</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--teal-m);"></span><strong>Fase 1 — Workloads no críticos primero:</strong> backup, entornos de desarrollo, sitio web. Si algo no funciona, el impacto es mínimo y se puede ajustar.</li>
+            <li><span class="fdot" style="background:var(--teal-m);"></span><strong>Fase 2 — Validación antes de continuar:</strong> 30–60 días operando la Fase 1 con éxito antes de mover el core del negocio.</li>
+            <li><span class="fdot" style="background:var(--teal-m);"></span><strong>Garantía de reversibilidad contractual:</strong> incluir cláusula de exit sin penalidad en los primeros 90 días si el cliente no está satisfecho con el desempeño.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 4: PROVEEDOR QUE QUIEBRA ══════ -->
+<div class="obj-section" id="s4">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#1A001A,#3A003A);">
+      <div class="obj-category" style="color:rgba(200,120,220,.7);">📉 Objeción de riesgo empresarial · Dificultad media</div>
+      <div class="obj-quote" style="color:#fff;">"¿Qué pasa si Personal Tech / Telecom quiebra o vende el negocio cloud?"</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CTO / Gerente IT prudente · Más frecuente con providers pequeños, pero surge también con Personal Tech</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot"></div><div class="diff-dot"></div><div class="diff-dot"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 2/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a4_1')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot y los datos de contexto</div>
+          <span class="obj-acc-chv" id="achv-a4_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a4_1">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Telecom Argentina es la empresa de telecomunicaciones más grande del país, cotiza en NYSE y MERVAL, tiene más de 6 millones de clientes de banda ancha y es infraestructura crítica nacional. Una quiebra de Telecom sería un evento de tal magnitud que afectaría simultáneamente la telefonía celular, el cable, el internet hogareño y el corporate de medio país. Dicho eso: el contrato incluye garantías de portabilidad del dato — si por cualquier razón el servicio se discontinúa, tenés derecho a exportar todo en formato estándar en un plazo definido."</div>
+          </div>
+          <div class="note-blue"><strong>💡 El contexto financiero de Telecom Argentina (2024):</strong> Facturación anual superior a $1.5 billones de pesos. 20+ millones de clientes móviles. Participación de Cablevisión Holdings (Grupo Clarín) y Liberty Latin America como accionistas internacionales. Es una de las empresas privadas más grandes de Argentina.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 5: INTERNET SE CORTA ══════ -->
+<div class="obj-section" id="s5">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#001A00,#003800);">
+      <div class="obj-category" style="color:rgba(80,220,80,.7);">📶 Objeción de conectividad · Dificultad media</div>
+      <div class="obj-quote" style="color:#fff;">"Si se corta internet, no podemos trabajar. Con los servidores acá adentro, eso no pasa."</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CTO / Gerente de Operaciones · Objeción clásica — más fácil de resolver de lo que parece</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot"></div><div class="diff-dot"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 3/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a5_1')">
+          <div class="obj-acc-icon">🧠</div>
+          <div class="obj-acc-title">Por qué el on-premise tampoco funciona sin internet hoy</div>
+          <span class="obj-acc-chv" id="achv-a5_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a5_1">
+          <p class="block-text">Esta objeción asume que el servidor local funciona perfectamente sin internet. En 2015 era más cierto. En 2025, la gran mayoría de las aplicaciones empresariales tienen componentes que requieren conectividad: actualizaciones de licencias, sincronización de datos, APIs de servicios externos, acceso de usuarios remotos, correo electrónico. <strong>El on-premise "sin internet" es una ficción en el 90% de los casos.</strong></p>
+          <div class="note-amber"><strong>⚠️ La pregunta clave:</strong> "¿Hoy, si se corta internet, pueden seguir trabajando el 100% normal?" La respuesta casi siempre es NO — el ERP no actualiza, el correo no funciona, los usuarios remotos quedan afuera. Si ya dependen de internet, la objeción no tiene base.</div>
+        </div>
+      </div>
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a5_2')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot — y la solución técnica concreta</div>
+          <span class="obj-acc-chv" id="achv-a5_2">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a5_2">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Esa preocupación tiene solución técnica concreta. Le propongo lo siguiente: dos enlaces de conectividad redundantes — el principal con Personal Tech MPLS y un backup por otro carrier con failover automático en menos de 30 segundos. La combinación de MPLS + 4G de backup tiene una disponibilidad efectiva del 99.97%. Además, pregunto: ¿hoy, sin internet, puede el 100% de su operación continuar? Si usan correo, ERP en la nube o usuarios remotos, ya dependen de internet — el on-premise no los protege de ese riesgo."</div>
+          </div>
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-icon">🔗</div>
+              <div class="mc-title">Enlace primario: MPLS Personal Tech</div>
+              <div class="mc-text">Circuito privado dedicado. SLA 99.95%. No pasa por internet público. No se cae por congestión de internet general.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">📶</div>
+              <div class="mc-title">Enlace backup: 4G LTE automático</div>
+              <div class="mc-text">Si el MPLS falla, el router conmuta automáticamente a 4G en &lt;30 segundos. La operación continúa con latencia levemente mayor pero sin interrupción.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 6: SEGURIDAD DEL DATO ══════ -->
+<div class="obj-section" id="s6">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#1A0010,#3A0025);">
+      <div class="obj-category" style="color:rgba(220,80,160,.7);">🔐 Objeción de seguridad · Dificultad alta</div>
+      <div class="obj-quote" style="color:#fff;">"En la nube, mis datos están en los servidores de otro. ¿Cómo sé que no los leen?"</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CEO / CISO · Surge en industrias con datos sensibles: salud, legal, finanzas, RR.HH.</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 4/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a6_1')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot técnico y contractual</div>
+          <span class="obj-acc-chv" id="achv-a6_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a6_1">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Entiendo la preocupación — pero pensemos en el on-premise: ¿cuántas personas de su empresa tienen acceso físico a los servidores? ¿Tienen logs de quién accedió a qué dato y cuándo? ¿Tienen encripción en reposo? En la mayoría de los casos, el on-premise tiene MENOS controles de acceso y auditoría que el cloud. En Personal Tech: cifrado AES-256 en tránsito y en reposo, logs de acceso inmutables, nadie de nuestro staff puede ver el contenido de los datos del cliente sin una autorización firmada y auditada."</div>
+          </div>
+          <div class="block-label">Las garantías técnicas concretas</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Cifrado AES-256 en reposo:</strong> los datos en disco están cifrados. Sin la clave, el acceso físico al storage no da acceso al dato.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Cifrado TLS 1.3 en tránsito:</strong> todo lo que viaja entre el cliente y el cloud está cifrado en la red.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Control de acceso RBAC:</strong> solo las personas autorizadas por el cliente pueden ver los datos. Personal Tech no tiene acceso al contenido — solo a la infraestructura.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Logs de auditoría inmutables:</strong> cada acceso queda registrado con timestamp, usuario y acción. El cliente puede auditar quién hizo qué y cuándo.</li>
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Contractualmente:</strong> Personal Tech no puede acceder, vender ni compartir los datos del cliente. Está explícito en el contrato de servicio bajo ley argentina.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 7: YA PAGUÉ EL HARDWARE ══════ -->
+<div class="obj-section" id="s7">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#0A0A1A,#1A1A3A);">
+      <div class="obj-category" style="color:rgba(120,160,240,.7);">💾 Objeción de sunk cost · Dificultad media</div>
+      <div class="obj-quote" style="color:#fff;">"Acabamos de comprar servidores nuevos. No tiene sentido migrar ahora."</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CFO / CTO · Surge cuando hubo compra reciente de hardware — hay que respetarla pero redirigirla</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot"></div><div class="diff-dot"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 3/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a7_1')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot — validar, no discutir, y replantear el timing</div>
+          <span class="obj-acc-chv" id="achv-a7_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a7_1">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Tienen razón — no tiene sentido tirar lo que acabas de comprar. No te estoy pidiendo eso. Lo que propongo es que mientras ese hardware amortiza los próximos 2–3 años, empecemos a construir la capa cloud para lo que viene: los nuevos proyectos, el crecimiento, el DR. Cuando llegue el momento de renovar, la infraestructura cloud ya está funcionando y probada. El hardware nuevo no es un argumento contra el cloud — es el timing perfecto para planificar la transición sin presión."</div>
+          </div>
+          <div class="block-label">La estrategia de coexistencia IT/Cloud</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Cloud para los workloads nuevos:</strong> toda aplicación nueva nace en cloud. El hardware existente hace lo que ya hace.</li>
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Cloud para el DR:</strong> usar Personal Tech Cloud como sitio de Disaster Recovery del hardware on-premise existente. El cliente paga poco (solo por el DR), gana resiliencia y aprende a operar cloud.</li>
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Migración gradual al vencer la amortización:</strong> año 1: DR en cloud. Año 2: workloads secundarios en cloud. Año 3: migración del core cuando el hardware cumple su ciclo.</li>
+          </ul>
+          <div class="note-green"><strong>✅ El argumento del sunk cost:</strong> "El hardware que compraron ya es un costo hundido — lo pagaron igual. La pregunta no es si migraron o no — es si el PRÓXIMO peso que invierten lo ponen en más hardware o en cloud. Y ahí el cloud siempre gana."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ OBJ 8: NO CONFÍO EN LA NUBE ══════ -->
+<div class="obj-section" id="s8">
+  <div class="obj-card">
+    <div class="obj-head" style="background:linear-gradient(135deg,#1A0800,#3A1500);">
+      <div class="obj-category" style="color:rgba(220,140,60,.7);">😤 Objeción emocional / cultural · Dificultad muy alta</div>
+      <div class="obj-quote" style="color:#fff;">"La nube es una moda. No confío en poner mis datos en manos de otro. Yo quiero tener todo bajo control."</div>
+      <div class="obj-who" style="color:rgba(255,255,255,.5);">CEO / Dueño de empresa mediana · La más difícil porque no es técnica — es filosófica y emocional</div>
+      <div class="diff-meter" style="margin-top:10px;">
+        <div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div><div class="diff-dot on"></div>
+        <span style="font-size:10px;color:rgba(255,255,255,.4);margin-left:6px;">Dificultad 5/5</span>
+      </div>
+    </div>
+    <div class="obj-body">
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a8_1')">
+          <div class="obj-acc-icon">🧠</div>
+          <div class="obj-acc-title">Por qué esta objeción es diferente — y cómo abordarla</div>
+          <span class="obj-acc-chv" id="achv-a8_1">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a8_1">
+          <p class="block-text">Esta objeción no tiene una respuesta técnica que la resuelva sola. Es una objeción de valores y experiencia personal. El interlocutor necesita <strong>sentir</strong> que mantiene el control, no que lo cede. La estrategia es cambiar la narrativa: el cloud no quita control — <strong>da más control</strong> del que el on-premise puede ofrecer.</p>
+          <div class="note-red"><strong>🚫 Errores fatales con esta objeción:</strong> (1) argumentar con datos técnicos — no escucha. (2) decirle que está equivocado — cierra la conversación. (3) ceder y no avanzar — tampoco sirve.</div>
+        </div>
+      </div>
+      <div class="obj-acc">
+        <div class="obj-acc-head" onclick="toggleAcc('a8_2')">
+          <div class="obj-acc-icon">💬</div>
+          <div class="obj-acc-title">El pivot — cambiar la narrativa del control</div>
+          <span class="obj-acc-chv" id="achv-a8_2">▼</span>
+        </div>
+        <div class="obj-acc-body" id="abdy-a8_2">
+          <div class="pivot-box" style="background:var(--text);">
+            <div class="pivot-label" style="color:rgba(255,255,255,.35);">Pivot recomendado</div>
+            <div class="pivot-text" style="color:rgba(255,255,255,.85);">"Perfecto — el control es exactamente lo que el cloud te da. Hoy, ¿sabés en tiempo real cuánto CPU y memoria usa cada servidor? ¿Sabés quién accedió a qué dato y cuándo? ¿Podés ver eso desde tu celular en este momento? En cloud: sí. El on-premise te da control físico de un rack que solo ves cuando vas a la sala. El cloud te da control total y visibilidad en tiempo real desde cualquier lugar. No es una moda — es la forma en que los bancos más grandes del mundo, los gobiernos de países del G7 y las startups más cuidadosas del planeta manejan su infraestructura hoy."</div>
+          </div>
+          <div class="block-label">Si persiste: proponer el piloto sin compromiso</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>No forzar la venta completa.</strong> Proponer un proyecto piloto con un workload no crítico (backup, sitio web, entorno de desarrollo) por 60 días.</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Dar acceso al dashboard de monitoreo desde el día 1.</strong> Que vea en tiempo real qué hace "su" cloud — eso construye confianza más rápido que cualquier argumento.</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Referencias de pares.</strong> ¿Hay algún colega del mismo sector o tamaño similar que ya esté en cloud y con quien pueda hablar? Una referencia de igual a igual vale más que todos los argumentos técnicos.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ S9: REFERENCIA RÁPIDA ══════ -->
+<div class="obj-section" id="s9">
+  <div class="section-header" style="border-bottom:1.5px solid var(--text);padding-bottom:10px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);">09</div>
+    <div style="font-size:17px;font-weight:700;">Referencia rápida — todas las objeciones en una tabla</div>
+  </div>
+  <table class="qref">
+    <thead><tr><th>Objeción</th><th>Pivot en una línea</th></tr></thead>
+    <tbody>
+      <tr><td>"¿Y si el dólar sube?"</td><td>El on-premise es más dolarizado que el cloud — la renovación de hardware en el año 3 es el mayor shock cambiario de todos.</td></tr>
+      <tr><td>"¿Me requisarán los servidores?"</td><td>El dato está cifrado con claves del cliente. Acceso físico ≠ acceso al dato. Y Telecom Argentina es infraestructura crítica cotizante en NYSE.</td></tr>
+      <tr><td>"¿Puedo volver a on-premise?"</td><td>Técnicamente sí, pero ¿a qué? La alternativa es hardware nuevo en dólares en un año incierto. Además, el contrato incluye portabilidad del dato garantizada.</td></tr>
+      <tr><td>"¿Qué pasa si quiebran?"</td><td>Telecom Argentina es la empresa de telecomunicaciones más grande del país. Pero más importante: el contrato garantiza exportar todos los datos si el servicio se discontinúa.</td></tr>
+      <tr><td>"Si se corta internet, no trabajamos"</td><td>Con MPLS + 4G como backup, la disponibilidad efectiva es 99.97%. Y hoy ya dependen de internet para el correo y el ERP — el on-premise no los protege de eso.</td></tr>
+      <tr><td>"¿Quién lee mis datos?"</td><td>Nadie — están cifrados AES-256 y Personal Tech no tiene acceso al contenido. Tenés más auditoría y control en cloud que en tu sala de servidores.</td></tr>
+      <tr><td>"Acabamos de comprar hardware"</td><td>Perfecto — mientras amortiza, el cloud empieza por el DR y los proyectos nuevos. Cuando venza el hardware, ya tienen todo listo.</td></tr>
+      <tr><td>"No confío en la nube"</td><td>El cloud da más control que el on-premise: visibilidad en tiempo real, logs de acceso, monitoreo desde el celular. Propongo un piloto de 60 días para que lo compruebes.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Objeciones Avanzadas · <span id="fecha2"></span></span>
+</div>
+</div>
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var secs=document.querySelectorAll('.obj-section');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  secs.forEach(function(s){
+    if(sy>=s.offsetTop&&sy<s.offsetTop+s.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+s.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

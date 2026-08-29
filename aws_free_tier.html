@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Free Tier 2026 | Referencia de Servicios Gratuitos</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+
+  --tier-always-bg:#E1F5EE;--tier-always:var(--green-m);--tier-always-d:var(--green);
+  --tier-12m-bg:#E6F1FB;--tier-12m:var(--blue-m);--tier-12m-d:var(--blue);
+  --tier-trial-bg:#FAEEDA;--tier-trial:var(--amber-m);--tier-trial-d:var(--amber);
+  --tier-credits-bg:#EEEDFE;--tier-credits:var(--purple-m);--tier-credits-d:var(--purple);
+  --tier-warn-bg:var(--red-l);--tier-warn:var(--red-m);--tier-warn-d:var(--red);
+
+  --cat-compute-bg:#E6F1FB;--cat-compute:var(--blue-m);--cat-compute-d:var(--blue);
+  --cat-storage-bg:#FAEEDA;--cat-storage:var(--amber-m);--cat-storage-d:var(--amber);
+  --cat-db-bg:#EEEDFE;--cat-db:var(--purple-m);--cat-db-d:var(--purple);
+  --cat-network-bg:var(--teal-l);--cat-network:var(--teal-m);--cat-network-d:var(--teal);
+  --cat-integration-bg:var(--green-l);--cat-integration:var(--green-m);--cat-integration-d:var(--green);
+  --cat-monitor-bg:var(--coral-l);--cat-monitor:var(--coral-m);--cat-monitor-d:var(--coral);
+  --cat-security-bg:var(--red-l);--cat-security:var(--red-m);--cat-security-d:var(--red);
+  --cat-ai-bg:#EEEDFE;--cat-ai:var(--purple-m);--cat-ai-d:var(--purple);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.6;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--text);padding:0 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:2px solid var(--green-m);}
+.topbar-brand{font-size:12px;font-weight:700;color:rgba(255,255,255,.4);white-space:nowrap;padding:14px 0;letter-spacing:.06em;}
+.topbar-count{font-size:11px;color:rgba(255,255,255,.25);white-space:nowrap;}
+.search-wrap{flex:1;max-width:600px;position:relative;}
+.search-input{width:100%;padding:10px 16px 10px 42px;font-family:'Roboto',sans-serif;font-size:14px;border:.5px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);background:rgba(255,255,255,.08);color:#fff;outline:none;transition:all .2s;}
+.search-input::placeholder{color:rgba(255,255,255,.3);}
+.search-input:focus{background:rgba(255,255,255,.14);border-color:var(--green-m);}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;background:none;border:none;padding:3px 6px;border-radius:4px;display:none;}
+.search-clear:hover{background:rgba(255,255,255,.1);}
+
+/* ── PAGE ── */
+.page{max-width:1100px;margin:0 auto;padding:28px 24px 80px;}
+
+/* ── DOC HEADER ── */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:26px;font-weight:700;letter-spacing:-.4px;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:3px;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* ── ALERT BANNER ── */
+.alert-banner{background:var(--amber-l);border:.5px solid var(--amber-m);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;}
+.alert-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.alert-text{font-size:12.5px;color:var(--amber-d);line-height:1.55;}
+.alert-text strong{color:var(--amber);}
+
+/* ── TIER LEGEND ── */
+.tier-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+.legend-label{font-size:11px;font-weight:700;color:var(--text-ter);text-transform:uppercase;letter-spacing:.07em;margin-right:4px;}
+.legend-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:5px;}
+.lp-always{background:var(--tier-always-bg);color:var(--tier-always-d);border:.5px solid var(--tier-always);}
+.lp-12m{background:var(--tier-12m-bg);color:var(--tier-12m-d);border:.5px solid var(--tier-12m);}
+.lp-trial{background:var(--tier-trial-bg);color:var(--tier-trial-d);border:.5px solid var(--tier-trial);}
+.lp-credits{background:var(--tier-credits-bg);color:var(--tier-credits-d);border:.5px solid var(--tier-credits);}
+
+/* ── FILTER PILLS ── */
+.filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px;align-items:center;}
+.filter-label{font-size:11px;font-weight:700;color:var(--text-ter);text-transform:uppercase;letter-spacing:.07em;margin-right:4px;}
+.fpill{font-size:11.5px;font-weight:600;padding:5px 13px;border-radius:20px;cursor:pointer;border:.5px solid var(--border);background:var(--bg2);color:var(--text-sec);transition:all .15s;user-select:none;}
+.fpill:hover{border-color:var(--gray-m);}
+.fpill.active{border-color:transparent;}
+.fpill[data-f="all"].active{background:var(--text);color:#fff;}
+.fpill[data-f="always"].active{background:var(--tier-always-bg);color:var(--tier-always-d);border-color:var(--tier-always);}
+.fpill[data-f="12m"].active{background:var(--tier-12m-bg);color:var(--tier-12m-d);border-color:var(--tier-12m);}
+.fpill[data-f="trial"].active{background:var(--tier-trial-bg);color:var(--tier-trial-d);border-color:var(--tier-trial);}
+.fpill[data-f="compute"].active{background:var(--cat-compute-bg);color:var(--cat-compute-d);border-color:var(--cat-compute);}
+.fpill[data-f="db"].active{background:var(--cat-db-bg);color:var(--cat-db-d);border-color:var(--cat-db);}
+.fpill[data-f="storage"].active{background:var(--cat-storage-bg);color:var(--cat-storage-d);border-color:var(--cat-storage);}
+.fpill[data-f="network"].active{background:var(--cat-network-bg);color:var(--cat-network-d);border-color:var(--cat-network);}
+.fpill[data-f="integration"].active{background:var(--cat-integration-bg);color:var(--cat-integration-d);border-color:var(--cat-integration);}
+.fpill[data-f="monitor"].active{background:var(--cat-monitor-bg);color:var(--cat-monitor-d);border-color:var(--cat-monitor);}
+.fpill[data-f="security"].active{background:var(--cat-security-bg);color:var(--cat-security-d);border-color:var(--cat-security);}
+.fpill[data-f="ai"].active{background:var(--cat-ai-bg);color:var(--cat-ai-d);border-color:var(--cat-ai);}
+
+/* ── RESULTS HEADER ── */
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.results-count{font-size:12px;color:var(--text-ter);}
+.results-count span{font-weight:700;color:var(--text);}
+.sort-toggle{font-size:11.5px;color:var(--text-ter);cursor:pointer;background:none;border:.5px solid var(--border);padding:4px 10px;border-radius:var(--radius-sm);font-family:'Roboto',sans-serif;}
+.sort-toggle:hover{background:var(--bg2);}
+
+/* ── GRID ── */
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;}
+
+/* ── CARD ── */
+.term-card{border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .18s;background:var(--bg);}
+.term-card:hover{border-color:var(--gray-m);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.term-card.expanded{border-color:var(--gray-m);}
+.tc-head{padding:12px 15px;display:flex;align-items:flex-start;gap:10px;}
+.tc-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.tc-info{flex:1;min-width:0;}
+.tc-term{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.tc-en{font-size:11px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.tc-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+.tc-cat-pill{font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;}
+.tc-tier-pill{font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;}
+.tc-arrow{font-size:11px;color:var(--text-ter);flex-shrink:0;transition:transform .2s;margin-top:4px;}
+.term-card.expanded .tc-arrow{transform:rotate(180deg);}
+
+/* ── BODY ── */
+.tc-body{display:none;border-top:.5px solid var(--border);padding:14px 15px 15px;}
+.term-card.expanded .tc-body{display:block;}
+.tc-quota{margin-bottom:10px;}
+.tc-quota-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-bottom:6px;}
+.quota-row{display:flex;gap:8px;align-items:baseline;padding:4px 0;border-bottom:.5px solid var(--bg2);}
+.quota-row:last-child{border-bottom:none;}
+.quota-metric{font-size:12px;color:var(--text-sec);flex:1;}
+.quota-val{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;}
+.tc-def{font-size:13px;color:var(--text-sec);line-height:1.65;margin-bottom:8px;}
+.tc-def strong{color:var(--text);}
+.tc-warn{font-size:11.5px;color:var(--tier-warn-d);font-style:italic;padding:7px 10px;background:var(--tier-warn-bg);border-radius:var(--radius-sm);border-left:2px solid var(--tier-warn);line-height:1.55;margin-top:8px;}
+.tc-tip{font-size:11.5px;color:var(--tier-always-d);font-style:italic;padding:7px 10px;background:var(--tier-always-bg);border-radius:var(--radius-sm);border-left:2px solid var(--tier-always);line-height:1.55;margin-top:8px;}
+
+/* ── HIGHLIGHT ── */
+mark{background:#FFF176;color:var(--text);border-radius:2px;padding:0 2px;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-ter);}
+.empty-state-icon{font-size:48px;margin-bottom:16px;}
+
+/* ── FOOTER ── */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;}.doc-meta{text-align:left;}
+  .term-grid{grid-template-columns:1fr;}
+  .search-wrap{max-width:100%;}
+  .topbar{flex-wrap:wrap;padding:10px 16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">☁️ AWS Free Tier</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" type="text" placeholder="Buscar servicio AWS..." autocomplete="off" oninput="doSearch()">
+    <button class="search-clear" id="clearBtn" onclick="clearSearch()">✕</button>
+  </div>
+  <div class="topbar-count" id="topCount">35 servicios</div>
+</div>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">AWS Free Tier — Referencia 2026</div>
+    <div class="doc-sub">Servicios gratuitos · Límites · Advertencias · Cambios julio 2025</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud · Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+  <div class="alert-icon">⚠️</div>
+  <div class="alert-text">
+    <strong>Cambio importante — julio 2025:</strong> AWS modificó el Free Tier para cuentas nuevas (creadas a partir del 15/07/2025). Ya no existe el modelo de "12 meses gratis por servicio". Las cuentas nuevas eligen entre <strong>Free Plan</strong> (hasta $200 en créditos, sin cobro automático) o <strong>Paid Plan</strong> (hasta $200 en créditos + acceso a todos los servicios, con cobro al agotar créditos). Los <strong>servicios Always Free</strong> siguen siendo gratuitos para todas las cuentas sin límite de tiempo. Las cuentas creadas antes del 15/07/2025 mantienen el modelo legacy de 12 meses.
+  </div>
+</div>
+
+<!-- TIER LEGEND -->
+<div class="tier-legend">
+  <span class="legend-label">Tipo:</span>
+  <span class="legend-pill lp-always">♾️ Always Free</span>
+  <span class="legend-pill lp-12m">📅 12 meses (legacy)</span>
+  <span class="legend-pill lp-trial">⏱ Trial</span>
+  <span class="legend-pill lp-credits">💳 Créditos ($200)</span>
+</div>
+
+<!-- FILTER PILLS -->
+<div class="filter-bar">
+  <span class="filter-label">Filtrar:</span>
+  <span class="fpill active" data-f="all" onclick="setFilter('all',this)">Todos</span>
+  <span class="fpill" data-f="always" onclick="setFilter('always',this)">♾️ Always Free</span>
+  <span class="fpill" data-f="12m" onclick="setFilter('12m',this)">📅 12 meses</span>
+  <span class="fpill" data-f="trial" onclick="setFilter('trial',this)">⏱ Trial</span>
+  <span class="fpill" data-f="compute" onclick="setFilter('compute',this)">🖥 Cómputo</span>
+  <span class="fpill" data-f="storage" onclick="setFilter('storage',this)">💾 Storage</span>
+  <span class="fpill" data-f="db" onclick="setFilter('db',this)">🗄 Bases de datos</span>
+  <span class="fpill" data-f="network" onclick="setFilter('network',this)">🌐 Red / CDN</span>
+  <span class="fpill" data-f="integration" onclick="setFilter('integration',this)">🔗 Integración</span>
+  <span class="fpill" data-f="monitor" onclick="setFilter('monitor',this)">📊 Monitoreo</span>
+  <span class="fpill" data-f="security" onclick="setFilter('security',this)">🔐 Seguridad</span>
+  <span class="fpill" data-f="ai" onclick="setFilter('ai',this)">🤖 IA / ML</span>
+</div>
+
+<!-- RESULTS HEADER -->
+<div class="results-header">
+  <div class="results-count" id="resultsCount"><span id="visibleCount">35</span> servicios</div>
+  <button class="sort-toggle" id="sortBtn" onclick="toggleSort()">A→Z ▾</button>
+</div>
+
+<div class="term-grid" id="termGrid"></div>
+<div class="empty-state" id="emptyState" style="display:none;">
+  <div class="empty-state-icon">🔍</div>
+  <div style="font-size:15px;font-weight:700;color:var(--text-sec);margin-bottom:6px;" id="emptyTitle">Sin resultados</div>
+  <div style="font-size:13px;" id="emptySub">Probá con otro nombre o categoría.</div>
+</div>
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Personal Tech · <span id="fecha2"></span></span>
+  <span>Fuente: aws.amazon.com/free — Verificado mayo 2026</span>
+</div>
+
+</div>
+
+<script>
+var CAT = {
+  compute:     { label:'Cómputo',       icon:'🖥',  bg:'var(--cat-compute-bg)',     fg:'var(--cat-compute-d)',     dot:'var(--blue-m)' },
+  storage:     { label:'Storage',       icon:'💾',  bg:'var(--cat-storage-bg)',     fg:'var(--cat-storage-d)',     dot:'var(--amber-m)' },
+  db:          { label:'Base de datos', icon:'🗄',  bg:'var(--cat-db-bg)',          fg:'var(--cat-db-d)',          dot:'var(--purple-m)' },
+  network:     { label:'Red / CDN',     icon:'🌐',  bg:'var(--cat-network-bg)',     fg:'var(--cat-network-d)',     dot:'var(--teal-m)' },
+  integration: { label:'Integración',   icon:'🔗',  bg:'var(--cat-integration-bg)', fg:'var(--cat-integration-d)', dot:'var(--green-m)' },
+  monitor:     { label:'Monitoreo',     icon:'📊',  bg:'var(--cat-monitor-bg)',     fg:'var(--cat-monitor-d)',     dot:'var(--coral-m)' },
+  security:    { label:'Seguridad',     icon:'🔐',  bg:'var(--cat-security-bg)',    fg:'var(--cat-security-d)',    dot:'var(--red-m)' },
+  ai:          { label:'IA / ML',       icon:'🤖',  bg:'var(--cat-ai-bg)',          fg:'var(--cat-ai-d)',          dot:'var(--purple-m)' },
+};
+
+var TIER = {
+  always:  { label:'Always Free', icon:'♾️', bg:'var(--tier-always-bg)',  fg:'var(--tier-always-d)',  border:'var(--tier-always)' },
+  '12m':   { label:'12 meses',    icon:'📅', bg:'var(--tier-12m-bg)',     fg:'var(--tier-12m-d)',     border:'var(--tier-12m)' },
+  trial:   { label:'Trial',       icon:'⏱', bg:'var(--tier-trial-bg)',   fg:'var(--tier-trial-d)',   border:'var(--tier-trial)' },
+  credits: { label:'Créditos',    icon:'💳', bg:'var(--tier-credits-bg)', fg:'var(--tier-credits-d)', border:'var(--tier-credits)' },
+};
+
+// t=nombre, en=subtítulo, cat=categoría, tier=tipo, quotas=[{m,v}], def=descripción, warn=advertencia, tip=consejo
+var SERVICES = [
+  // ── ALWAYS FREE ──
+  {t:'AWS Lambda',en:'Serverless compute',cat:'compute',tier:'always',
+    quotas:[{m:'Requests/mes',v:'1.000.000'},{m:'Cómputo',v:'400.000 GB-segundos'},{m:'Duración máx.',v:'15 min por función'}],
+    def:'Cómputo serverless event-driven. <strong>El pilar del stack Always Free.</strong> Ejecuta código en respuesta a eventos sin gestionar servidores. Ideal para APIs, automatizaciones y procesamiento de eventos.',
+    tip:'Combinado con DynamoDB, S3 y SQS, Lambda es la base de un stack completo que puede correr años sin costo.'},
+  {t:'Amazon DynamoDB',en:'NoSQL database',cat:'db',tier:'always',
+    quotas:[{m:'Storage',v:'25 GB'},{m:'Read Capacity Units',v:'25 RCU/mes'},{m:'Write Capacity Units',v:'25 WCU/mes'},{m:'Requests/mes',v:'200.000.000'}],
+    def:'Base de datos NoSQL de clave-valor totalmente gestionada. Latencia de milisegundo de un dígito. <strong>25 RCU/WCU soportan ~25 lecturas y 25 escrituras por segundo en modo provisioned.</strong> Para tráfico variable, usar on-demand (fuera del free tier).',
+    warn:'El modo on-demand no está cubierto por el free tier. Si el tráfico es irregular y superás las 25 RCU/WCU, activar on-demand genera cargos.'},
+  {t:'Amazon S3',en:'Object storage',cat:'storage',tier:'always',
+    quotas:[{m:'Storage Standard',v:'5 GB'},{m:'GET requests/mes',v:'20.000'},{m:'PUT requests/mes',v:'2.000'},{m:'Data transfer out',v:'100 GB/mes'}],
+    def:'Object storage ilimitado con durabilidad 11-nueves. <strong>5 GB gratuitos permanentes.</strong> La API S3 es el estándar de facto del almacenamiento objeto en todos los clouds.',
+    warn:'El egress (datos salientes a internet) más allá de 100 GB/mes genera cargos desde $0.09/GB. Transferencias entre regiones tampoco son gratuitas.'},
+  {t:'Amazon SQS',en:'Simple Queue Service',cat:'integration',tier:'always',
+    quotas:[{m:'Requests/mes',v:'1.000.000'},{m:'Tipos de cola',v:'Standard y FIFO'},{m:'Retención máx.',v:'14 días'}],
+    def:'Cola de mensajes totalmente gestionada para desacoplamiento de microservicios. Garantiza que ningún mensaje se pierda aunque el consumidor esté caído.',
+    tip:'Stack serverless perfecto: S3 evento → SNS → SQS → Lambda. Todo dentro del free tier permanente.'},
+  {t:'Amazon SNS',en:'Simple Notification Service',cat:'integration',tier:'always',
+    quotas:[{m:'Publicaciones/mes',v:'1.000.000'},{m:'Notificaciones HTTP/HTTPS',v:'100.000'},{m:'Email/mes',v:'1.000'}],
+    def:'Servicio de publicación-suscripción (pub/sub) y notificaciones push. Un evento puede disparar múltiples destinos simultáneamente (fanout). Integrado con Lambda, SQS, email y SMS.',
+    warn:'Las notificaciones SMS tienen costo adicional aún dentro del free tier. HTTP/HTTPS endpoints sí son gratuitos.'},
+  {t:'Amazon CloudWatch',en:'Monitoring & observability',cat:'monitor',tier:'always',
+    quotas:[{m:'Métricas custom',v:'10'},{m:'Alarmas',v:'10'},{m:'Log ingestion',v:'5 GB/mes'},{m:'Log storage',v:'5 GB/mes'},{m:'API requests',v:'1.000.000/mes'}],
+    def:'Plataforma de observabilidad: métricas, logs y alarmas. Base del monitoreo en AWS. <strong>Configurar al menos una alarma de billing en el día 1 es obligatorio.</strong>',
+    warn:'Los logs de Lambda, ECS y otros servicios se acumulan silenciosamente en CloudWatch Logs. Sin configurar retención, pueden superar los 5 GB free y generar cargos continuos aunque hayas eliminado los recursos.'},
+  {t:'AWS CloudTrail',en:'API audit log',cat:'security',tier:'always',
+    quotas:[{m:'Management events',v:'90 días historial gratuito'},{m:'Trails adicionales',v:'$2/100.000 eventos'}],
+    def:'Registro inmutable de todas las llamadas a la API de AWS: quién hizo qué, cuándo y desde dónde. Gratis para ver los últimos 90 días de eventos de gestión en la consola.',
+    warn:'El historial de 90 días en consola es gratis, pero crear un Trail para exportar logs a S3 (práctica recomendada para compliance) tiene costo por eventos adicionales.'},
+  {t:'AWS IAM',en:'Identity & Access Management',cat:'security',tier:'always',
+    quotas:[{m:'Usuarios, roles, políticas',v:'Sin límite en free tier'},{m:'Costo',v:'$0 — siempre gratuito'}],
+    def:'Gestión de identidades y permisos de AWS. Usuarios, roles, políticas y MFA. <strong>Completamente gratuito, sin límites de uso.</strong> Es la base de toda la seguridad en AWS.',
+    tip:'Crear un usuario IAM admin el primer día y no usar nunca el root account para operaciones cotidianas es la práctica número 1 de seguridad en AWS.'},
+  {t:'AWS Step Functions',en:'Workflow orchestration',cat:'integration',tier:'always',
+    quotas:[{m:'Transiciones de estado/mes',v:'4.000'},{m:'Tipo',v:'Standard Workflows'}],
+    def:'Orquestador de workflows serverless. Coordina múltiples funciones Lambda en flujos de trabajo complejos con reintentos, bifurcaciones y manejo de errores.',
+    warn:'Solo aplica a Standard Workflows. Express Workflows tiene otro modelo de precios no cubierto por el free tier.'},
+  {t:'Amazon Cognito',en:'User authentication',cat:'security',tier:'always',
+    quotas:[{m:'Monthly Active Users',v:'50.000 MAU'},{m:'Tipo',v:'User Pools'}],
+    def:'Servicio de autenticación y gestión de usuarios para apps web y móviles. Soporta login social (Google, Facebook), SAML y OIDC. <strong>50.000 MAU gratuitos es suficiente para la mayoría de proyectos personales y startups.</strong>',
+    tip:'Para una app con autenticación propia, Cognito evita implementar toda la lógica de auth desde cero.'},
+  {t:'AWS Config',en:'Configuration compliance',cat:'security',tier:'always',
+    quotas:[{m:'Reglas de evaluación/región',v:'7'},{m:'Config items/mes',v:'10.000'}],
+    def:'Auditoría continua de configuración de recursos AWS. Detecta desviaciones de políticas de seguridad. Free tier permite reglas básicas de compliance.',
+    warn:'Las reglas custom con Lambda evaluator o más de 7 reglas generan cargos adicionales.'},
+
+  // ── 12 MESES (LEGACY — cuentas pre 15/07/2025) ──
+  {t:'Amazon EC2',en:'Elastic Compute Cloud',cat:'compute',tier:'12m',
+    quotas:[{m:'Instancias',v:'750 horas/mes'},{m:'Tipo elegible',v:'t2.micro o t3.micro (según región)'},{m:'EBS incluido',v:'30 GB SSD'}],
+    def:'Máquinas virtuales en AWS. <strong>750 horas cubre exactamente 1 instancia corriendo 24/7 durante un mes de 31 días.</strong> En 2026, la mayoría de las regiones usa t3.micro como tipo free-tier elegible.',
+    warn:'Solo 1 instancia a la vez — si levantás dos t3.micro simultáneamente, la segunda genera costo. Elegir t3.small por error (no elegible) cuesta ~$15/mes. Este beneficio aplica solo a cuentas creadas antes del 15/07/2025.'},
+  {t:'Amazon RDS',en:'Relational Database Service',cat:'db',tier:'12m',
+    quotas:[{m:'Instancias',v:'750 horas/mes'},{m:'Tipo elegible',v:'db.t2.micro o db.t3.micro'},{m:'Storage',v:'20 GB SSD'},{m:'Backup',v:'20 GB'}],
+    def:'Base de datos relacional gestionada. Soporta MySQL, PostgreSQL, SQL Server, MariaDB. Backups y parches automáticos. AWS gestiona el OS y el motor.',
+    warn:'I/O elevado (más de 20 GB/mes en I/O pago separado) y retención de snapshots viejos generan cargos extras. Aplica solo a cuentas legacy (pre 15/07/2025).'},
+  {t:'Amazon CloudFront',en:'CDN — Content Delivery Network',cat:'network',tier:'12m',
+    quotas:[{m:'Data transfer out',v:'1 TB/mes'},{m:'HTTP requests',v:'10.000.000/mes'}],
+    def:'CDN de AWS con 450+ puntos de presencia. Entrega contenido desde el edge más cercano al usuario. <strong>1 TB/mes gratuito es generoso para proyectos personales y apps de tráfico moderado.</strong>',
+    tip:'Combinado con S3, es la arquitectura estándar de hosting de sitios estáticos: S3 almacena, CloudFront entrega con baja latencia globalmente.'},
+  {t:'Elastic Load Balancer',en:'Application Load Balancer',cat:'network',tier:'12m',
+    quotas:[{m:'Horas',v:'750 horas/mes'},{m:'Datos procesados',v:'15 GB/mes'}],
+    def:'Balanceador de carga de capa 7 (HTTP/HTTPS). Distribuye tráfico entre instancias EC2, contenedores o funciones Lambda. Soporta path-based routing y SSL termination.',
+    warn:'El free tier cubre 750 horas (1 ALB corriendo todo el mes). Un ALB adicional o múltiples ELBs generan cargos. Aplica solo a cuentas legacy.'},
+  {t:'Amazon EBS',en:'Elastic Block Store',cat:'storage',tier:'12m',
+    quotas:[{m:'Storage',v:'30 GB SSD (gp2/gp3)'},{m:'Snapshots',v:'1 GB'},{m:'IOPS provisioned',v:'No incluidos en free tier'}],
+    def:'Almacenamiento en bloque persistente para instancias EC2. Los 30 GB están incluidos como parte del free tier de EC2.',
+    warn:'Los snapshots acumulados de EBS siguen cobrándose aunque elimines la instancia EC2. Limpiar snapshots viejos es uno de los quick wins de FinOps más comunes.'},
+  {t:'Amazon Glacier / S3 Glacier',en:'Archival storage',cat:'storage',tier:'12m',
+    quotas:[{m:'Storage',v:'10 GB/mes'},{m:'Retrieval',v:'10 GB/mes sin cargos de restauración'}],
+    def:'Almacenamiento de archivado de largo plazo. Costo: $0.00099/GB/mes en Deep Archive. Ideal para backups y logs históricos.',
+    warn:'Las restauraciones de Glacier tienen cargos adicionales dependiendo del tier (Expedited, Standard, Bulk). Verificar antes de restaurar volúmenes grandes.'},
+
+  // ── TRIAL (inicio al activar el servicio) ──
+  {t:'Amazon SageMaker',en:'Machine Learning platform',cat:'ai',tier:'trial',
+    quotas:[{m:'Studio Lab',v:'Sin costo (instancias CPU/GPU limitadas)'},{m:'Trial SageMaker completo',v:'2 meses (Paid Plan únicamente)'}],
+    def:'Plataforma unificada de ML de AWS. Notebooks, entrenamiento, despliegue y monitoreo de modelos. El trial es el punto de entrada para experimentar con ML gestionado.',
+    warn:'El trial de SageMaker completo solo aplica a cuentas en Paid Plan (post julio 2025). SageMaker Studio Lab es la alternativa gratuita para notebooks sin límite temporal.'},
+  {t:'Amazon Lightsail',en:'Simplified cloud platform',cat:'compute',tier:'trial',
+    quotas:[{m:'Trial',v:'3 meses (Paid Plan)'},{m:'Instancia incluida',v:'$3.50/mes post-trial'},{m:'Storage',v:'20 GB SSD'}],
+    def:'Plataforma cloud simplificada con VMs, bases de datos, CDN y DNS a precio fijo. Ideal para proyectos simples, WordPress, stacks LAMP. Más fácil que EC2 para principiantes.',
+    warn:'Solo disponible en Paid Plan. Post-trial: precio fijo desde $3.50/mes por instancia (no facturación por hora como EC2).'},
+  {t:'Amazon Redshift Serverless',en:'Data warehouse',cat:'db',tier:'trial',
+    quotas:[{m:'Trial',v:'2 meses (Paid Plan)'},{m:'RPU base',v:'8 Redshift Processing Units'}],
+    def:'Data warehouse serverless de AWS. Consultas SQL sobre petabytes. Sin gestión de clústeres. El trial permite explorar capacidades analíticas a escala.',
+    warn:'Post-trial, el costo por RPU puede ser significativo. Dimensionar bien antes de comprometerse a producción.'},
+  {t:'Amazon GuardDuty',en:'Threat detection',cat:'security',tier:'trial',
+    quotas:[{m:'Trial',v:'30 días desde activación'},{m:'Cobertura',v:'CloudTrail + VPC Flow Logs + DNS'}],
+    def:'Detección de amenazas basada en ML. Analiza CloudTrail, DNS y VPC Flow Logs para detectar actividad maliciosa sin instalar agentes. Detección de compromisos de cuentas, minería de criptomonedas y movimiento lateral.',
+    tip:'Activar el trial en cualquier cuenta nueva — 30 días de protección automática sin costo. Post-trial, evaluar el costo según el volumen de logs procesados.'},
+  {t:'Amazon Inspector',en:'Vulnerability scanning',cat:'security',tier:'trial',
+    quotas:[{m:'Trial',v:'15 días'},{m:'Cobertura',v:'EC2, ECR, Lambda'}],
+    def:'Escaneo automático de vulnerabilidades en EC2, imágenes de contenedores y funciones Lambda. Integrado con CVE database. Prioriza por criticidad y exposición.',
+    warn:'Solo aplica el trial a cuentas Paid Plan. Post-trial: precio por instancia/imagen escaneada mensualmente.'},
+
+  // ── CRÉDITOS ($200 — cuentas nuevas post julio 2025) ──
+  {t:'Amazon Bedrock',en:'Managed AI foundation models',cat:'ai',tier:'credits',
+    quotas:[{m:'Acceso',v:'Mediante créditos ($200)'},{m:'Modelos disponibles',v:'Claude, Llama, Titan, Mistral, Cohere'},{m:'Onboarding task',v:'$20 crédito al completar'}],
+    def:'Acceso a múltiples modelos fundacionales via una sola API. Una de las 5 tareas de onboarding que suma $20 de crédito es testear un prompt en Bedrock. <strong>La forma más rápida de experimentar con LLMs en AWS sin configurar infraestructura.</strong>',
+    tip:'Los créditos del Free Plan aplican a Bedrock. Para uso intensivo de LLMs, modelar el costo por tokens antes de agotar los créditos.'},
+  {t:'Amazon ECS / Fargate',en:'Container service',cat:'compute',tier:'credits',
+    quotas:[{m:'Fargate',v:'Cubierto por créditos'},{m:'ECS en EC2',v:'EC2 tiene su propio free tier'},{m:'Spot Fargate',v:'70% más barato'}],
+    def:'Orquestación de contenedores sin gestionar servidores (Fargate) o sobre EC2 propio. Para aprender Kubernetes gestionado, EKS es la alternativa (también cubierta por créditos).',
+    warn:'Fargate tiene un modelo de precios por vCPU y GB de RAM por segundo. Los créditos se agotan relativamente rápido con contenedores corriendo 24/7.'},
+  {t:'Amazon API Gateway',en:'REST / WebSocket API management',cat:'integration',tier:'credits',
+    quotas:[{m:'Calls/mes (legacy 12m)',v:'1.000.000'},{m:'Cuentas nuevas',v:'Cubierto por créditos'},{m:'Data transfer',v:'$0.09/GB post free tier'}],
+    def:'Servicio gestionado para crear, publicar y proteger APIs REST, HTTP y WebSocket. Integración nativa con Lambda. Rate limiting, auth y monitoreo incluidos.',
+    tip:'En el stack serverless clásico, API Gateway es la entrada a Lambda. 1M de requests/mes cubre la mayoría de proyectos personales cómodamente.'},
+  {t:'Amazon ECR',en:'Container registry',cat:'storage',tier:'credits',
+    quotas:[{m:'Storage (legacy 12m)',v:'500 MB/mes'},{m:'Data transfer out',v:'1 GB/mes'},{m:'Cuentas nuevas',v:'Cubierto por créditos'}],
+    def:'Registry privado de imágenes Docker en AWS. Integrado con ECS, EKS y CodeBuild. Escaneo de vulnerabilidades automático (vinculado con Inspector).',
+    warn:'Las imágenes Docker pueden ocupar varios GB. Con 500 MB de free tier legacy, solo alcanza para imágenes pequeñas o testing.'},
+  {t:'AWS CodePipeline',en:'CI/CD pipeline',cat:'integration',tier:'credits',
+    quotas:[{m:'Pipelines activos (legacy)',v:'1 pipeline gratuito/mes'},{m:'Cuentas nuevas',v:'Cubierto por créditos'}],
+    def:'Servicio de CI/CD totalmente gestionado. Automatiza build, test y deploy. Integrado con CodeCommit, GitHub, CodeBuild y CodeDeploy. El pipeline gratis es suficiente para proyectos personales.',
+    tip:'Un solo pipeline CodePipeline puede gestionar múltiples stages (dev → staging → prod) y sigue siendo el pipeline gratuito incluido.'},
+  {t:'AWS CodeBuild',en:'Build service',cat:'integration',tier:'credits',
+    quotas:[{m:'Build minutes (legacy)',v:'100 min/mes en general1.small'},{m:'Cuentas nuevas',v:'Cubierto por créditos'}],
+    def:'Servicio de compilación y testing en la nube. Compila código, corre tests y produce artefactos de despliegue. Sin gestionar servidores de build.',
+    warn:'100 minutos de build es suficiente para proyectos pequeños, pero pipelines de apps más grandes pueden superar ese límite rápidamente.'},
+  {t:'Amazon EventBridge',en:'Event bus serverless',cat:'integration',tier:'always',
+    quotas:[{m:'Events publicados/mes',v:'14.000.000 (bus default)'},{m:'Custom event buses',v:'$1/millón de eventos custom'}],
+    def:'Bus de eventos serverless que conecta aplicaciones y servicios AWS. Reemplaza integraciones polling-based por arquitecturas event-driven. El default event bus (eventos de servicios AWS) es gratuito.',
+    tip:'EventBridge Scheduler (para cron jobs serverless) tiene 14M de invocaciones/mes gratuitas — reemplaza perfectamente las tareas cron en EC2.'},
+  {t:'AWS Budgets',en:'Cost & usage alerts',cat:'monitor',tier:'always',
+    quotas:[{m:'Presupuestos',v:'2 gratuitos/mes'},{m:'Alertas',v:'5 alertas por presupuesto'},{m:'Adicionales',v:'$0.02/presupuesto/mes'}],
+    def:'Alertas de gasto y uso. <strong>Configurar un budget de $1 el primer día de la cuenta es la práctica número 1 para evitar sorpresas en la factura.</strong>',
+    tip:'2 budgets gratuitos son suficientes: uno para el gasto total mensual y otro para EC2 específicamente. Alertar al 80% del límite, no al 100%.'},
+  {t:'AWS Cost Explorer',en:'Cost analysis',cat:'monitor',tier:'always',
+    quotas:[{m:'Acceso al dashboard',v:'Gratuito'},{m:'API requests',v:'$0.01 por request'},{m:'Granularidad',v:'Diaria, mensual, por servicio'}],
+    def:'Herramienta de análisis y visualización del gasto AWS. Desglose por servicio, región, tag o cuenta. Incluye recomendaciones de Reserved Instances y Savings Plans.',
+    warn:'El acceso visual es gratuito, pero si integrás Cost Explorer vía API (para dashboards propios), cada request tiene costo de $0.01.'},
+  {t:'Amazon Route 53',en:'DNS service',cat:'network',tier:'credits',
+    quotas:[{m:'Free tier',v:'No tiene free tier nativo'},{m:'Hosted zone',v:'$0.50/mes'},{m:'Queries',v:'$0.40-0.60/millón'}],
+    def:'Servicio de DNS de AWS. Alta disponibilidad, routing policies avanzadas (latency-based, geolocation, failover). <strong>Route 53 es uno de los pocos servicios de AWS sin free tier en absoluto.</strong>',
+    warn:'Sin free tier. El costo mínimo es $0.50/mes por hosted zone. Para proyectos de aprendizaje, el DNS del registrador de dominio suele ser suficiente al principio.'},
+  {t:'Amazon VPC',en:'Virtual Private Cloud',cat:'network',tier:'always',
+    quotas:[{m:'VPCs por región',v:'5 (límite por defecto, ampliable)'},{m:'Subredes',v:'200 por VPC'},{m:'Costo base VPC',v:'$0 — gratuito crear la VPC'}],
+    def:'La VPC en sí misma es gratuita. Los recursos que generan costo dentro de una VPC son el NAT Gateway (~$33/mes), Elastic IPs no asignadas ($0.005/hora) y VPN connections ($0.05/hora).',
+    warn:'NAT Gateway es la trampa más común: $0.045/hora + $0.045/GB procesado. Un NAT Gateway activo cuesta ~$33/mes solo por existir, sin contar el tráfico. Usar VPC Endpoints para acceder a S3/DynamoDB desde subredes privadas evita este costo.'},
+];
+
+// ── STATE ──
+var activeFilter = 'all';
+var sortAZ = true;
+var expanded = null;
+
+// ── RENDER ──
+function render(query) {
+  var q = (query || '').trim().toLowerCase();
+  var grid = document.getElementById('termGrid');
+  var empty = document.getElementById('emptyState');
+  var vc = document.getElementById('visibleCount');
+  var tc = document.getElementById('topCount');
+
+  var filtered = SERVICES.filter(function(s) {
+    var matchFilter = activeFilter === 'all' || s.tier === activeFilter || s.cat === activeFilter;
+    if (!matchFilter) return false;
+    if (!q) return true;
+    return (s.t.toLowerCase().indexOf(q) > -1) ||
+           (s.en && s.en.toLowerCase().indexOf(q) > -1) ||
+           (s.def && s.def.toLowerCase().indexOf(q) > -1);
+  });
+
+  filtered.sort(function(a, b) {
+    return sortAZ ? a.t.localeCompare(b.t, 'es') : b.t.localeCompare(a.t, 'es');
+  });
+
+  var count = filtered.length;
+  vc.textContent = count;
+  tc.textContent = count + ' servicios' + (q ? ' encontrados' : '');
+
+  if (count === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('emptyTitle').textContent = 'Sin resultados para "' + query + '"';
+    document.getElementById('emptySub').textContent = 'Probá con otro nombre o categoría.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  var html = '';
+  filtered.forEach(function(svc) {
+    var cat = CAT[svc.cat];
+    var tier = TIER[svc.tier];
+    var defHl = q ? highlight(svc.def, q) : svc.def;
+    var termHl = q ? highlight(svc.t, q) : svc.t;
+    var enHl = svc.en ? (q ? highlight(svc.en, q) : svc.en) : '';
+
+    var quotaHtml = '';
+    if (svc.quotas && svc.quotas.length) {
+      quotaHtml = '<div class="tc-quota"><div class="tc-quota-title">Límites del Free Tier</div>';
+      svc.quotas.forEach(function(q2) {
+        quotaHtml += '<div class="quota-row"><span class="quota-metric">' + q2.m + '</span><span class="quota-val">' + q2.v + '</span></div>';
+      });
+      quotaHtml += '</div>';
+    }
+
+    var extraHtml = '';
+    if (svc.warn) extraHtml += '<div class="tc-warn">⚠️ ' + svc.warn + '</div>';
+    if (svc.tip)  extraHtml += '<div class="tc-tip">💡 ' + svc.tip + '</div>';
+
+    html += '<div class="term-card" onclick="toggleCard(this)">' +
+      '<div class="tc-head">' +
+        '<div class="tc-cat-dot" style="background:' + cat.dot + '"></div>' +
+        '<div class="tc-info">' +
+          '<div class="tc-term">' + termHl + '</div>' +
+          (svc.en ? '<div class="tc-en">' + enHl + '</div>' : '') +
+          '<div class="tc-badges">' +
+            '<span class="tc-cat-pill" style="background:' + cat.bg + ';color:' + cat.fg + '">' + cat.icon + ' ' + cat.label + '</span>' +
+            '<span class="tc-tier-pill" style="background:' + tier.bg + ';color:' + tier.fg + ';border:.5px solid ' + tier.border + '">' + tier.icon + ' ' + tier.label + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tc-arrow">▼</div>' +
+      '</div>' +
+      '<div class="tc-body">' +
+        quotaHtml +
+        '<div class="tc-def">' + defHl + '</div>' +
+        extraHtml +
+      '</div>' +
+    '</div>';
+  });
+
+  grid.innerHTML = html;
+}
+
+function highlight(text, q) {
+  if (!q || !text) return text;
+  var escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<mark>$1</mark>');
+}
+
+function toggleCard(el) {
+  if (expanded && expanded !== el) expanded.classList.remove('expanded');
+  el.classList.toggle('expanded');
+  expanded = el.classList.contains('expanded') ? el : null;
+  if (expanded) setTimeout(function() { expanded.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
+}
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.fpill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  expanded = null;
+  render(document.getElementById('searchInput').value);
+}
+
+function doSearch() {
+  var q = document.getElementById('searchInput').value;
+  document.getElementById('clearBtn').style.display = q ? 'block' : 'none';
+  render(q);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').style.display = 'none';
+  render('');
+}
+
+function toggleSort() {
+  sortAZ = !sortAZ;
+  document.getElementById('sortBtn').textContent = sortAZ ? 'A→Z ▾' : 'Z→A ▾';
+  render(document.getElementById('searchInput').value);
+}
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
+  if (e.key === 'Escape') clearSearch();
+});
+
+// GCP Free Tier Comparison
+setTimeout(function() {
+  var footer = document.querySelector('.doc-footer');
+  if (footer) {
+    var gcpSection = document.createElement('div');
+    gcpSection.style.marginTop = '40px';
+    gcpSection.style.padding = '20px';
+    gcpSection.style.background = '#E8F7FF';
+    gcpSection.style.border = '1px solid #4A90E2';
+    gcpSection.style.borderRadius = '8px';
+    gcpSection.innerHTML = `
+      <h3 style="color:#0C447C; margin-bottom:12px;">🟩 Comparativa: Google Cloud Free Tier</h3>
+      <p style="font-size:13px; color:#2C2C2A; margin-bottom:10px;"><strong>Google Cloud Free Tier incluye:</strong></p>
+      <ul style="font-size:12px; color:#2C2C2A; margin-left:20px;">
+        <li><strong>Compute Engine:</strong> 1 VM f1-micro (1GB RAM, 0.2 CPU) sin costo 730h/mes</li>
+        <li><strong>Cloud Storage:</strong> 5 GB gratuito (vs AWS S3: 5 GB)</li>
+        <li><strong>Cloud SQL:</strong> 1 instancia db-f1-micro SQL, 10 GB almacenamiento</li>
+        <li><strong>Cloud Run:</strong> 2 millones requestsGRATIS/mes (vs AWS Lambda: 1M)</li>
+        <li><strong>BigQuery:</strong> 1 TB queries/mes GRATIS (AWS no tiene equivalente)</li>
+        <li><strong>Pub/Sub:</strong> 10 GB/mes flujo de datos (vs AWS SNS/SQS)</li>
+      </ul>
+      <p style="font-size:12px; color:#0C447C; margin-top:12px;"><strong>📌 GCP vs AWS Free Tier:</strong> GCP es MÁS generoso en compute y datos. BigQuery gratis es el diferenciador.</p>
+    `;
+    footer.parentNode.insertBefore(gcpSection, footer);
+  }
+}, 100);
+
+document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', {year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha2').textContent = new Date().toLocaleDateString('es-AR', {year:'numeric',month:'long',day:'numeric'});
+render('');
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

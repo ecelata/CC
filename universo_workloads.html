@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Universo de los Workloads | Cómo los define y licencia cada vendor</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Categorías por tipo de actor */
+  --hyp:#0070F3;--hyp-l:#EBF5FF;--hyp-d:#004DBF;        /* Hyperscalers */
+  --vrt:#7C3AED;--vrt-l:#EDE9FE;--vrt-d:#4C1D95;        /* Virtualización/Hypervisor */
+  --bak:#059669;--bak-l:#D1FAE5;--bak-d:#065F46;        /* Backup/DR */
+  --hci:#D97706;--hci-l:#FEF3C7;--hci-d:#78350F;        /* HCI */
+  --con:#DC2626;--con-l:#FEE2E2;--con-d:#7F1D1D;        /* Conceptos / definición */
+  --ink:#0D1117;--ink2:#1C2333;--ink3:#374151;
+  --muted:#6B7280;--faint:#9CA3AF;--line:#E5E7EB;
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;
+  --r:10px;--r-sm:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px;overflow-x:auto;gap:0;}
+.tn-brand{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap;padding:13px 16px 13px 0;border-right:1px solid var(--line);margin-right:6px;}
+.tn{font-size:11px;font-weight:700;padding:14px 11px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--faint);transition:all .15s;text-decoration:none;}
+.tn:hover,.tn.active{color:var(--ink);border-bottom-color:var(--ink);}
+
+.page{max-width:1100px;margin:0 auto;padding:30px 24px 70px;}
+
+/* HEADER */
+.hdr{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
+.hdr-title{font-size:25px;font-weight:800;letter-spacing:-.4px;line-height:1.15;color:var(--ink);}
+.hdr-sub{font-size:12.5px;color:var(--muted);margin-top:4px;}
+.hdr-meta{text-align:right;font-size:11px;color:var(--faint);}
+
+/* INTRO BANNER */
+.intro-banner{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:22px;}
+.intro-banner-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.intro-banner-text{font-size:12.5px;color:var(--ink3);line-height:1.65;}
+.intro-banner-text strong{color:var(--ink);}
+
+/* STATS */
+.stats{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+.stat{flex:1;min-width:120px;border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;}
+.stat-val{font-size:20px;font-weight:800;color:var(--ink);line-height:1;}
+.stat-label{font-size:10.5px;color:var(--faint);margin-top:4px;}
+
+/* LEGEND TIPO */
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;padding:13px 15px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--line);}
+.legend-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);width:100%;margin-bottom:3px;}
+.lg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.lg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* FILTER BAR */
+.filterbar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;align-items:center;position:sticky;top:48px;z-index:150;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);}
+.search-box{flex:1;min-width:200px;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-family:'Montserrat',sans-serif;color:var(--ink3);}
+.search-box:focus{outline:none;border-color:var(--ink);}
+.tipo-pill{font-size:10.5px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.tipo-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.no-results{display:none;text-align:center;padding:40px 0;color:var(--faint);font-size:13px;}
+
+/* VERTICAL SECTION */
+.vert{margin-bottom:36px;scroll-margin-top:100px;}
+.vert-hd{display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:17px;font-weight:800;color:var(--ink);flex:1;}
+.vert-count{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;}
+.vert-toggle{font-size:11px;color:var(--faint);transition:transform .2s;margin-left:4px;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-intro{font-size:12px;color:var(--muted);margin:8px 0 16px;line-height:1.6;}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+
+/* SUBCAT GROUPS */
+.subcat-group{margin-bottom:18px;}
+.subcat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:8px;padding-left:2px;}
+.prod-grid{display:flex;flex-direction:column;gap:8px;}
+
+/* PRODUCT CARD */
+.prod-card{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--bg);transition:border-color .15s;}
+.prod-card:hover{border-color:#c8cdd6;}
+.prod-card.hidden{display:none;}
+.pc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 15px;cursor:pointer;}
+.pc-head-main{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.pc-name{font-weight:700;color:var(--ink);font-size:13px;}
+.pc-name-sub{font-size:11px;color:var(--faint);font-style:italic;margin-left:6px;}
+.tipo-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.pc-arrow{font-size:10px;color:var(--faint);transition:transform .2s;flex-shrink:0;}
+.pc-arrow.open{transform:rotate(180deg);}
+
+.pc-body{display:none;border-top:1px solid var(--line);padding:14px 15px 16px;background:var(--bg2);}
+.pc-body.open{display:block;}
+.pc-desc{font-size:12.5px;color:var(--ink3);line-height:1.65;margin-bottom:12px;}
+.pc-desc strong{color:var(--ink);}
+.pc-block{margin-bottom:12px;}
+.pc-block:last-child{margin-bottom:0;}
+.pc-block-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+.pc-list{list-style:none;padding:0;}
+.pc-list li{font-size:12px;color:var(--ink3);line-height:1.6;padding:3px 0 3px 16px;position:relative;}
+.pc-list li::before{content:'•';position:absolute;left:2px;color:var(--faint);}
+.pc-list li strong{color:var(--ink);}
+
+/* SPEC TABLE inside card */
+.spec-table{width:100%;border-collapse:collapse;margin-top:4px;}
+.spec-table td{padding:5px 8px;font-size:11.5px;border-bottom:1px solid var(--line);vertical-align:top;}
+.spec-table td:first-child{font-weight:700;color:var(--muted);width:38%;white-space:nowrap;}
+.spec-table tr:last-child td{border-bottom:none;}
+
+/* WARNING / TIP boxes */
+.pc-warn{font-size:11.5px;color:#7F1D1D;font-style:italic;padding:9px 12px;background:#FEE2E2;border-radius:var(--r-sm);border-left:3px solid #DC2626;line-height:1.6;margin-top:10px;}
+.pc-tip{font-size:11.5px;color:#065F46;font-style:italic;padding:9px 12px;background:#D1FAE5;border-radius:var(--r-sm);border-left:3px solid #059669;line-height:1.6;margin-top:10px;}
+.pc-note{font-size:11.5px;color:#004DBF;font-style:italic;padding:9px 12px;background:#EBF5FF;border-radius:var(--r-sm);border-left:3px solid #0070F3;line-height:1.6;margin-top:10px;}
+
+/* Comparison row card (used in matrix vertical) */
+.matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;}
+.matrix-wrap table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:640px;}
+.matrix-wrap th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);padding:9px 10px;border-bottom:1.5px solid var(--line);text-align:left;background:var(--bg2);white-space:nowrap;}
+.matrix-wrap td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink3);vertical-align:top;}
+.matrix-wrap tr:last-child td{border-bottom:none;}
+.matrix-wrap tr:hover td{background:var(--bg2);}
+
+/* FOOTER */
+.doc-footer{border-top:1px solid var(--line);margin-top:50px;padding-top:14px;font-size:11px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+@media print{
+  .topnav,.filterbar{display:none;}
+  .vert-body{display:block!important;}
+  .vert-toggle{display:none;}
+  .pc-body{display:block!important;}
+  .pc-arrow{display:none;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:680px){
+  .hdr{flex-direction:column;align-items:flex-start;}
+  .hdr-meta{text-align:left;}
+  .stats{flex-direction:column;}
+  .pc-head{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="tn-brand">🧩 Universo Workloads</div>
+  <a class="tn" href="#v-concepto">📖 El Concepto</a>
+  <a class="tn" href="#v-hyperscalers">☁️ Hyperscalers</a>
+  <a class="tn" href="#v-hypervisors">🖥 Hypervisors</a>
+  <a class="tn" href="#v-backup">💾 Backup &amp; DR</a>
+  <a class="tn" href="#v-hci">🔷 HCI</a>
+  <a class="tn" href="#v-matriz">📊 Matriz Comparativa</a>
+</nav>
+
+<div class="page">
+
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">El Universo de los Workloads</div>
+      <div class="hdr-sub">Cómo cada hyperscaler, hypervisor y solución de backup define, mide y licencia una "carga de trabajo"</div>
+    </div>
+    <div class="hdr-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+  </div>
+
+  <div class="intro-banner">
+    <div class="intro-banner-title">⚡ Por qué este documento existe</div>
+    <div class="intro-banner-text">
+      La palabra <strong>"workload"</strong> es probablemente el término más sobrecargado de toda la infraestructura moderna. Para AWS es una unidad lógica de arquitectura que se revisa con un framework. Para VMware/Broadcom, desde 2024, ya casi no importa — lo que importa es el <strong>core físico</strong> del host. Para Nutanix, la licencia se basa en <strong>capacidad de cluster</strong>, no en cuántas VMs corren arriba. Para Veeam, un workload es literalmente <strong>la unidad de facturación</strong>: una VM, un servidor físico, una base de datos o un buzón de Microsoft 365 — todos cuentan igual. Entender estas diferencias no es un ejercicio académico: definen cómo se diseña una arquitectura, cómo se la protege con backup y air-gap, y cuánto cuesta cada decisión.
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">Categorías de vendors</div></div>
+    <div class="stat"><div class="stat-val">16</div><div class="stat-label">Vendors / Plataformas</div></div>
+    <div class="stat"><div class="stat-val">3</div><div class="stat-label">Modelos de licenciamiento distintos</div></div>
+    <div class="stat"><div class="stat-val">2024</div><div class="stat-label">Año del quiebre (Broadcom per-core)</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Categorías de vendor en este documento</div>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--con);"></span> Concepto / Framework</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--hyp);"></span> Hyperscaler (Cloud Público)</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--vrt);"></span> Hypervisor / Virtualización</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--bak);"></span> Backup &amp; Disaster Recovery</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--hci);"></span> HCI (Hyperconverged)</span>
+  </div>
+
+  <div class="filterbar">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar vendor, modelo de licencia o concepto..." oninput="filterProducts()">
+    <button class="tipo-pill active" data-tipo="all" onclick="setTipoFilter(this,'all')">Todos</button>
+    <button class="tipo-pill" data-tipo="Per-Core" onclick="setTipoFilter(this,'Per-Core')">Per-Core</button>
+    <button class="tipo-pill" data-tipo="Per-Workload" onclick="setTipoFilter(this,'Per-Workload')">Per-Workload</button>
+    <button class="tipo-pill" data-tipo="Capacidad" onclick="setTipoFilter(this,'Capacidad')">Capacidad</button>
+    <button class="tipo-pill" data-tipo="Consumo" onclick="setTipoFilter(this,'Consumo')">Pago por Uso</button>
+    <button class="tipo-pill" onclick="expandAll()">⊕ Expandir todo</button>
+    <button class="tipo-pill" onclick="collapseAll()">⊖ Colapsar todo</button>
+  </div>
+
+  <div class="no-results" id="noResults">No se encontraron resultados con ese criterio de búsqueda.</div>
+
+  <!-- ══════════════ EL CONCEPTO ══════════════ -->
+  <div class="vert" id="v-concepto">
+    <div class="vert-hd" onclick="toggleVert('concepto')">
+      <div class="vert-icon" style="background:var(--con-l);">📖</div>
+      <div class="vert-title">El Concepto: ¿Qué es un Workload?</div>
+      <span class="vert-count" style="background:var(--con-l);color:var(--con-d);">4 definiciones base</span>
+      <span class="vert-toggle open" id="vt-concepto">▼</span>
+    </div>
+    <div class="vert-intro">Antes de comparar cómo lo factura cada vendor, hay que entender que "workload" tiene múltiples significados simultáneos y válidos según quién lo use: el arquitecto, el ingeniero de virtualización, el administrador de backup o el FinOps.</div>
+    <div class="vert-body open" id="vb-concepto">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Definiciones por disciplina</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Concepto" data-search="workload definicion arquitectura logica aplicacion conjunto recursos">
+            <div class="pc-head" onclick="toggleCard('pc-c1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Definición Arquitectónica</div>
+                <span class="pc-name-sub">la más amplia</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-c1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-c1">
+              <div class="pc-desc">En el sentido más amplio usado por arquitectos cloud, un <strong>workload</strong> es una colección de recursos y código que entrega valor de negocio: una aplicación completa, un componente de esa aplicación, o un proceso técnico que la soporta (un pipeline de datos, una API, un sistema de colas). No es una sola máquina virtual ni un solo servidor — es la unidad lógica que se diseña, se revisa y se factura como conjunto.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Ejemplos de un workload bajo esta definición</div>
+                <ul class="pc-list">
+                  <li>Un e-commerce completo: frontend + backend + base de datos + CDN + cola de pedidos</li>
+                  <li>Un pipeline de ETL: extracción + transformación + carga + orquestador</li>
+                  <li>Un sistema de autenticación: servicio de identidad + base de usuarios + cache de sesiones</li>
+                </ul>
+              </div>
+              <div class="pc-note">📌 Esta es la definición que usan AWS, Azure y GCP en sus Well-Architected Frameworks — y es completamente distinta a cómo VMware o Veeam usan la misma palabra para facturar.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="workload definicion virtualizacion maquina virtual instancia">
+            <div class="pc-head" onclick="toggleCard('pc-c2')">
+              <div class="pc-head-main">
+                <div class="pc-name">Definición de Virtualización</div>
+                <span class="pc-name-sub">la más técnica</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-c2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-c2">
+              <div class="pc-desc">Para un administrador de virtualización (VMware, Hyper-V, Nutanix, Proxmox), un <strong>workload</strong> es simplemente <strong>una VM en ejecución</strong> sobre un host físico, consumiendo CPU, RAM y storage de ese host. Es la unidad que el hypervisor agenda, migra (vMotion/Live Migration) y protege con HA. No importa qué corre dentro de la VM — para el hypervisor, una VM de SQL Server crítico y una VM de testing son ambas "un workload" hasta que se les asignan políticas distintas.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Lo que cuenta como workload aquí</div>
+                <ul class="pc-list">
+                  <li>Una máquina virtual completa (vCPU + vRAM + vDisk)</li>
+                  <li>Un contenedor o pod (en plataformas con soporte nativo de contenedores)</li>
+                  <li>Una VM bare-metal gestionada (en Nutanix AHV o casos similares)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="workload definicion backup proteccion unidad facturacion instancia protegida">
+            <div class="pc-head" onclick="toggleCard('pc-c3')">
+              <div class="pc-head-main">
+                <div class="pc-name">Definición de Backup / Protección de Datos</div>
+                <span class="pc-name-sub">la más comercial</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-c3">▼</div>
+            </div>
+            <div class="pc-body" id="pc-c3">
+              <div class="pc-desc">Para el mundo del backup (Veeam, Rubrik, Cohesity, Commvault), un <strong>workload</strong> es <strong>la unidad protegible mínima que se factura</strong>. Esta es la definición más amplia de todas en términos de variedad de objetos: puede ser una VM, un servidor físico, un endpoint, una base de datos, un buzón de Microsoft 365, un bucket de S3 o un namespace de Kubernetes. Cada uno de esos objetos —sin importar su tamaño o complejidad interna— cuenta como "1 workload" a la hora de licenciar.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Objetos que típicamente cuentan como 1 workload</div>
+                <ul class="pc-list">
+                  <li>1 máquina virtual (VMware, Hyper-V, Nutanix AHV, KVM)</li>
+                  <li>1 servidor físico (Windows o Linux)</li>
+                  <li>1 instancia de base de datos (SQL Server, Oracle, PostgreSQL)</li>
+                  <li>1 buzón de Microsoft 365 o 1 sitio de SharePoint</li>
+                  <li>1 cuenta cloud completa (AWS, Azure, GCP) en algunos modelos de nicho</li>
+                </ul>
+              </div>
+              <div class="pc-warn">⚠️ Esta es la definición que más confunde a los compradores: "tengo 50 VMs" no es lo mismo que "tengo 50 workloads" si además hay bases de datos, buzones o servidores físicos sueltos que cada vendor de backup cuenta por separado.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="workload definicion finops costo unidad facturacion negocio">
+            <div class="pc-head" onclick="toggleCard('pc-c4')">
+              <div class="pc-head-main">
+                <div class="pc-name">Definición FinOps / de Negocio</div>
+                <span class="pc-name-sub">la más práctica</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-c4">▼</div>
+            </div>
+            <div class="pc-body" id="pc-c4">
+              <div class="pc-desc">Desde la óptica de costos (FinOps), un <strong>workload</strong> es la <strong>unidad mínima a la que se le puede asignar un dueño, un centro de costo y un nivel de criticidad de negocio</strong>. Esta definición es funcional, no técnica: lo que importa es poder responder "¿quién es responsable de esto?" y "¿cuánto cuesta mantenerlo corriendo?". Un mismo workload técnico (ej. un cluster de Kubernetes) puede contener decenas de "workloads de negocio" (cada microservicio con su propio dueño y presupuesto).</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Atributos que un workload de negocio necesita tener</div>
+                <ul class="pc-list">
+                  <li>Un dueño (persona o equipo responsable)</li>
+                  <li>Un tag de centro de costo o proyecto</li>
+                  <li>Un nivel de criticidad (Tier 0/1/2/3, define RPO/RTO esperado)</li>
+                  <li>Un ambiente (producción, staging, desarrollo)</li>
+                </ul>
+              </div>
+              <div class="pc-tip">💡 En preventa, esta es la definición más útil para conversar con el cliente: preguntar "¿cuántos workloads de negocio tenés?" es mejor que preguntar "¿cuántas VMs tenés?", porque revela presupuesto, criticidad y quién decide.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ HYPERSCALERS ══════════════ -->
+  <div class="vert" id="v-hyperscalers">
+    <div class="vert-hd" onclick="toggleVert('hyperscalers')">
+      <div class="vert-icon" style="background:var(--hyp-l);">☁️</div>
+      <div class="vert-title">Hyperscalers — AWS, Azure, GCP</div>
+      <span class="vert-count" style="background:var(--hyp-l);color:var(--hyp-d);">3 frameworks</span>
+      <span class="vert-toggle open" id="vt-hyperscalers">▼</span>
+    </div>
+    <div class="vert-intro">Los tres grandes cloud públicos no "licencian" workloads como tales — cobran por recursos consumidos. Pero cada uno tiene un Well-Architected Framework que define al workload como la unidad de revisión arquitectónica, y eso moldea cómo se diseñan, documentan y optimizan las cargas en cada plataforma.</div>
+    <div class="vert-body open" id="vb-hyperscalers">
+
+      <div class="subcat-group">
+        <div class="subcat-label">AWS</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Consumo" data-search="aws well-architected framework workload pilares sostenibilidad lens">
+            <div class="pc-head" onclick="toggleCard('pc-aws1')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Well-Architected Framework</div>
+                <span class="tipo-badge" style="background:var(--hyp-l);color:var(--hyp-d);">Consumo</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-aws1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-aws1">
+              <div class="pc-desc">AWS fue el primer hyperscaler en publicar un framework formal, y es el más detallado y tool-driven de los tres. Define al <strong>workload</strong> como "una colección de recursos y código que entrega valor de negocio", aplicable tanto a una aplicación completa como a un componente técnico específico. El <strong>AWS Well-Architected Tool</strong>, gratuito en la consola, permite evaluar cada workload contra 6 pilares y registrar mejoras a lo largo del tiempo.</div>
+              <table class="spec-table">
+                <tr><td>Pilares</td><td>Excelencia Operacional, Seguridad, Confiabilidad, Eficiencia de Rendimiento, Optimización de Costos, Sostenibilidad (agregado en 2021)</td></tr>
+                <tr><td>Unidad de revisión</td><td>1 workload = 1 aplicación o componente evaluado independientemente</td></tr>
+                <tr><td>Herramienta</td><td>AWS Well-Architected Tool (gratuita, en la consola)</td></tr>
+                <tr><td>Diferencial</td><td>Biblioteca de "Lenses" especializados por tipo de carga: ML, IoT, SaaS, Serverless, etc.</td></tr>
+              </table>
+              <div class="pc-tip">💡 La fortaleza de AWS es la profundidad técnica: cada Lens agrega preguntas específicas para ese tipo de workload, en lugar de aplicar las mismas 6 preguntas genéricas a todo.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Microsoft Azure</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Consumo" data-search="azure well-architected framework workload pilares gobernanza hibrido">
+            <div class="pc-head" onclick="toggleCard('pc-az1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Azure Well-Architected Framework</div>
+                <span class="tipo-badge" style="background:var(--hyp-l);color:var(--hyp-d);">Consumo</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-az1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-az1">
+              <div class="pc-desc">Azure es explícitamente <strong>workload-centric</strong>: el framework se aplica a una aplicación o plataforma específica, no al tenant completo de la organización. En 2023 Microsoft restructuró su modelo de 6 a 5 pilares, absorbiendo la sostenibilidad dentro de los pilares existentes en lugar de tratarla como un pilar separado (a diferencia de AWS). Los equipos de plataforma suelen correr revisiones de forma rotativa, evaluando siempre al menos un workload del portfolio en cualquier momento dado.</div>
+              <table class="spec-table">
+                <tr><td>Pilares</td><td>Confiabilidad, Seguridad, Optimización de Costos, Excelencia Operacional, Eficiencia de Rendimiento</td></tr>
+                <tr><td>Unidad de revisión</td><td>1 workload = 1 aplicación o plataforma específica (nunca el tenant completo)</td></tr>
+                <tr><td>Diferencial</td><td>Fuerte en gobernanza y soporte de escenarios híbridos (Azure Arc, Azure Local)</td></tr>
+              </table>
+              <div class="pc-note">📌 La definición de Azure es la más explícita en remarcar el límite: revisar "todo Azure" no es una revisión Well-Architected válida — siempre hay que acotar a un workload puntual.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Google Cloud Platform</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Consumo" data-search="gcp google cloud workload data ml egress">
+            <div class="pc-head" onclick="toggleCard('pc-gcp1')">
+              <div class="pc-head-main">
+                <div class="pc-name">GCP — Enfoque de Workload</div>
+                <span class="tipo-badge" style="background:var(--hyp-l);color:var(--hyp-d);">Consumo</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-gcp1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-gcp1">
+              <div class="pc-desc">GCP comparte la misma filosofía general de "workload como unidad de revisión arquitectónica" que sus competidores, con un sesgo natural hacia cargas de datos y Machine Learning (BigQuery, Vertex AI), reflejo de su origen como compañía de datos. GCP no facilita un nombre de marca tan publicitado como "Well-Architected" para su framework equivalente, pero aplica los mismos principios de revisión por pilares.</div>
+              <table class="spec-table">
+                <tr><td>Fortaleza distintiva</td><td>Workloads de datos y ML — BigQuery, Vertex AI, Dataflow</td></tr>
+                <tr><td>Modelo de costos</td><td>Egress reducido significativamente en 2025-2026 frente a AWS/Azure, relevante para workloads con alta transferencia de datos saliente</td></tr>
+                <tr><td>Always Free</td><td>Incluye f1-micro, 5GB de Cloud Storage y 1GB de consultas BigQuery/mes sin vencimiento — útil para workloads chicos que se mantienen chicos</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ HYPERVISORS ══════════════ -->
+  <div class="vert" id="v-hypervisors">
+    <div class="vert-hd" onclick="toggleVert('hypervisors')">
+      <div class="vert-icon" style="background:var(--vrt-l);">🖥</div>
+      <div class="vert-title">Hypervisors — Cómo licencian el workload</div>
+      <span class="vert-count" style="background:var(--vrt-l);color:var(--vrt-d);">3 modelos</span>
+      <span class="vert-toggle open" id="vt-hypervisors">▼</span>
+    </div>
+    <div class="vert-intro">Acá el workload deja de ser un concepto de diseño y se vuelve una unidad de facturación directa. El quiebre de 2024 (Broadcom) cambió completamente las reglas del juego para todo el mercado de virtualización.</div>
+    <div class="vert-body open" id="vb-hypervisors">
+
+      <div class="subcat-group">
+        <div class="subcat-label">VMware / Broadcom</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Per-Core" data-search="vmware broadcom vcf vvf per core licencia 16 cores minimo">
+            <div class="pc-head" onclick="toggleCard('pc-vmw1')">
+              <div class="pc-head-main">
+                <div class="pc-name">VCF / VVF — Licenciamiento Per-Core</div>
+                <span class="pc-name-sub">el gran quiebre de 2024</span>
+                <span class="tipo-badge" style="background:var(--vrt-l);color:var(--vrt-d);">Per-Core</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-vmw1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-vmw1">
+              <div class="pc-desc">Desde la adquisición de Broadcom (completada en diciembre 2023), VMware <strong>dejó de pensar en "workloads" como unidad de licencia</strong>. El modelo nuevo es 100% per-core: se licencian todos los núcleos físicos de CPU de todos los hosts ESXi en el alcance, sin importar cuántas VMs corren arriba, sin licenciamiento por capacidad, sin exclusión para servidores de test/desarrollo. El portfolio de más de 160 productos se redujo a solo 4 bundles de suscripción, y las licencias perpetuas fueron discontinuadas por completo.</div>
+              <table class="spec-table">
+                <tr><td>Mínimo por CPU</td><td>16 cores por CPU física (un CPU de 8 o 12 cores se factura igual a 16)</td></tr>
+                <tr><td>Mínimo por instancia</td><td>72 cores mínimo por licencia, además del mínimo de 16/CPU</td></tr>
+                <tr><td>Modelo</td><td>100% suscripción — sin perpetuas, sin grace period al vencer</td></tr>
+                <tr><td>VCF incluye</td><td>vSphere (cómputo), vCenter (gestión), Aria Suite, Tanzu Kubernetes Grid, NSX (redes)</td></tr>
+                <tr><td>VVF vs VCF</td><td>VVF cuesta 30-40% menos por core, pero sin NSX ni stack de gobernanza completo</td></tr>
+                <tr><td>vSAN incluido</td><td>VVF: 0.25 TiB por core · VCF: 1 TiB por core (licencia separada desde nov. 2024)</td></tr>
+              </table>
+              <div class="pc-warn">⚠️ El mínimo de 16 cores/CPU infla la factura entre 20% y 40% en hosts con CPUs de 8-12 cores reales, que eran comunes hasta hace pocos años. Las primeras cotizaciones de Broadcom suelen abrir en 2x-5x el costo anterior; con negociación bajan a 1.3x-2x.</div>
+              <div class="pc-tip">💡 Defaultear a VCF "porque es el estándar enterprise" sin un análisis de utilización real puede costarle a una empresa grande entre 500K y 2M+ USD anuales innecesarios frente a VVF, si realmente no necesita NSX.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Per-Core" data-search="vmware esxi ahv vsphere hypervisor workload bare metal">
+            <div class="pc-head" onclick="toggleCard('pc-vmw2')">
+              <div class="pc-head-main">
+                <div class="pc-name">ESXi — Definición técnica de Workload</div>
+                <span class="tipo-badge" style="background:var(--vrt-l);color:var(--vrt-d);">Per-Core</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-vmw2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-vmw2">
+              <div class="pc-desc">A nivel técnico (no de licencia), ESXi entiende un workload como <strong>cualquier VM en ejecución sobre un host</strong>, sin distinción entre tipo de carga. El motor de cómputo asigna recursos de CPU/RAM por VM mediante el scheduler, y características como DRS (Distributed Resource Scheduler) y HA mueven VMs entre hosts para balancear carga o recuperarse de fallas — todo a nivel de "workload = VM individual".</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Microsoft Hyper-V</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Per-Core" data-search="hyper-v microsoft windows server azure local licencia workload">
+            <div class="pc-head" onclick="toggleCard('pc-hv1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Hyper-V — Incluido en Windows Server</div>
+                <span class="tipo-badge" style="background:var(--vrt-l);color:var(--vrt-d);">Per-Core</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-hv1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-hv1">
+              <div class="pc-desc">Hyper-V no licencia "workloads" como concepto separado: el hypervisor viene incluido en la licencia de Windows Server (que sí es per-core con mínimo de 8 cores por licencia base). Cada VM que corre dentro no tiene costo de hypervisor adicional — el workload, en este contexto, es simplemente lo que consume recursos del host ya licenciado. <strong>Azure Local</strong> (ex-Azure Stack HCI) extiende esto agregando una suscripción mensual por nodo gestionado desde Azure, independiente del licenciamiento de Windows Server del guest.</div>
+              <table class="spec-table">
+                <tr><td>Licencia base</td><td>Incluida en Windows Server Datacenter/Standard, per-core con mínimo de 8 cores</td></tr>
+                <tr><td>Costo adicional VM</td><td>Ninguno por el hypervisor — el costo está en el licenciamiento del guest OS si es Windows</td></tr>
+                <tr><td>Azure Local</td><td>Suscripción Azure adicional por nodo, sobre hardware certificado por Microsoft</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Open Source — KVM, Proxmox, XCP-ng</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Capacidad" data-search="kvm proxmox xcp-ng open source workload sin licencia gratis">
+            <div class="pc-head" onclick="toggleCard('pc-oss1')">
+              <div class="pc-head-main">
+                <div class="pc-name">KVM / Proxmox VE / XCP-ng</div>
+                <span class="pc-name-sub">el destino del éxodo VMware</span>
+                <span class="tipo-badge" style="background:var(--vrt-l);color:var(--vrt-d);">Capacidad</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-oss1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-oss1">
+              <div class="pc-desc">En el mundo open source, el workload (la VM) no tiene costo de licencia por sí mismo — el hypervisor es gratuito. Proxmox VE cobra una suscripción opcional de soporte por <strong>socket físico</strong> (no por core ni por workload), totalmente desacoplada de cuántas VMs corren en el cluster. Es la razón estructural por la que estas plataformas se volvieron el destino #1 de migración tras el cambio de precios de Broadcom en 2024.</div>
+              <table class="spec-table">
+                <tr><td>Costo del hypervisor</td><td>$0 — KVM, Proxmox VE y XCP-ng son gratuitos en su uso core</td></tr>
+                <tr><td>Modelo de soporte (Proxmox)</td><td>Suscripción opcional por socket físico, no por core ni por VM</td></tr>
+                <tr><td>Workloads ilimitados</td><td>No hay límite de VMs ni cobro adicional por escalar el número de workloads</td></tr>
+              </table>
+              <div class="pc-tip">💡 Para una organización con 200 VMs en hosts de 12 cores reales, el ahorro frente al mínimo de 16 cores de Broadcom puede ser la diferencia entre pagar por núcleos que no existen o no pagar nada por el hypervisor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ BACKUP &amp; DR ══════════════ -->
+  <div class="vert" id="v-backup">
+    <div class="vert-hd" onclick="toggleVert('backup')">
+      <div class="vert-icon" style="background:var(--bak-l);">💾</div>
+      <div class="vert-title">Backup &amp; Disaster Recovery</div>
+      <span class="vert-count" style="background:var(--bak-l);color:var(--bak-d);">5 modelos</span>
+      <span class="vert-toggle open" id="vt-backup">▼</span>
+    </div>
+    <div class="vert-intro">Acá el workload SÍ es la unidad de facturación explícita y declarada — pero qué cuenta como "1 workload" varía enormemente entre vendors, y el concepto de air-gap (aislamiento físico o lógico del backup) se construye de forma distinta en cada plataforma.</div>
+    <div class="vert-body open" id="vb-backup">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Veeam</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Per-Workload" data-search="veeam universal license vul workload instance pack licencia">
+            <div class="pc-head" onclick="toggleCard('pc-vee1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Veeam Universal License (VUL)</div>
+                <span class="pc-name-sub">el estándar de la industria</span>
+                <span class="tipo-badge" style="background:var(--bak-l);color:var(--bak-d);">Per-Workload</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-vee1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-vee1">
+              <div class="pc-desc">Veeam define el workload de la forma más literal de toda la industria: <strong>es la unidad exacta de facturación</strong>, "portable" entre cualquier producto Veeam y cualquier plataforma de origen (VMware, Hyper-V, Nutanix AHV, AWS, Azure, GCP, físicos, Microsoft 365). Las licencias se venden en packs — Foundation/Advanced/Premium en paquetes de 10 instancias, Essentials en paquetes de 5 — no se puede comprar una cantidad arbitraria como 7.</div>
+              <table class="spec-table">
+                <tr><td>Cuenta como 1 workload</td><td>1 VM, 1 servidor físico, 1 base de datos, 1 buzón M365, 1 instancia cloud</td></tr>
+                <tr><td>Empaquetado</td><td>Packs de 10 instancias (Foundation/Advanced/Premium) o 5 (Essentials)</td></tr>
+                <tr><td>Portabilidad</td><td>La misma licencia VUL cubre on-premises y todas las nubes simultáneamente</td></tr>
+                <tr><td>Modelo legacy</td><td>Per-socket discontinuado para ventas nuevas desde el 31/12/2022; conversión obligatoria a VUL al renovar</td></tr>
+                <tr><td>Sweet spot</td><td>100-1.000 VMs es el rango donde el modelo escala mejor en costo predecible</td></tr>
+              </table>
+              <div class="pc-note">📌 La frase repetida por clientes de Veeam es literal: "tenemos workloads en prácticamente cada cloud conocido, y la misma licencia los protege a todos" — esa portabilidad es el argumento de venta central del VUL.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Per-Workload" data-search="veeam air gap immutability hardened repository object lock ransomware">
+            <div class="pc-head" onclick="toggleCard('pc-vee2')">
+              <div class="pc-head-main">
+                <div class="pc-name">Veeam y el Air-Gap</div>
+                <span class="pc-name-sub">cómo lo construyen técnicamente</span>
+                <span class="tipo-badge" style="background:var(--bak-l);color:var(--bak-d);">Per-Workload</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-vee2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-vee2">
+              <div class="pc-desc">Veeam construye el air-gap como una combinación de <strong>tool + repositorio</strong>, nunca solo del software de backup: la inmutabilidad real depende de dónde vive el dato protegido, no solo de qué motor lo respaldó. Hay tres caminos típicos en el portfolio Veeam para lograr un aislamiento efectivo del ransomware.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Mecanismos de Air-Gap / Inmutabilidad en Veeam</div>
+                <ul class="pc-list">
+                  <li><strong>Hardened Repository:</strong> Linux con sistema de archivos inmutable a nivel kernel (XFS con atributo immutable), sin acceso root remoto habilitado por defecto</li>
+                  <li><strong>S3 Object Lock:</strong> cuando el repositorio destino es object storage compatible S3 (AWS S3, Wasabi, MinIO), se aplica retención WORM a nivel de objeto</li>
+                  <li><strong>Cloud Vault administrado:</strong> storage inmutable y air-gapped en Azure, gestionado completamente por Veeam, con egress y API fees incluidos en el precio por TB</li>
+                </ul>
+              </div>
+              <div class="pc-warn">⚠️ Un Hardened Repository mal configurado (con acceso SSH root habilitado, por ejemplo) no es realmente air-gapped aunque el filesystem sea técnicamente inmutable — el aislamiento depende tanto de la configuración como de la tecnología subyacente.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Capacidad" data-search="veeam community edition gratis 10 workloads free">
+            <div class="pc-head" onclick="toggleCard('pc-vee3')">
+              <div class="pc-head-main">
+                <div class="pc-name">Veeam Community Edition</div>
+                <span class="tipo-badge" style="background:var(--bak-l);color:var(--bak-d);">Capacidad</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-vee3">▼</div>
+            </div>
+            <div class="pc-body" id="pc-vee3">
+              <div class="pc-desc">Versión gratuita con el límite de licencia expresado directamente en workloads: hasta 10 workloads protegidos (VMs, servidores físicos o instancias cloud) sin costo, con las funciones completas de backup y restore. Es la puerta de entrada recomendada para validar Veeam en laboratorio antes de comprar, o para organizaciones realmente pequeñas.</div>
+              <table class="spec-table">
+                <tr><td>Límite</td><td>10 workloads (cualquier combinación de VM, físico o cloud)</td></tr>
+                <tr><td>Funciones</td><td>Backup, restore y replicación básica completas — no es una versión recortada en funcionalidad</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Otros vendors de Backup</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Capacidad" data-search="rubrik cohesity commvault rsc workload inmutable arquitectura">
+            <div class="pc-head" onclick="toggleCard('pc-bak1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Rubrik / Cohesity</div>
+                <span class="pc-name-sub">arquitectura inmutable por diseño</span>
+                <span class="tipo-badge" style="background:var(--bak-l);color:var(--bak-d);">Capacidad</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-bak1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-bak1">
+              <div class="pc-desc">Rubrik y Cohesity definen el workload de forma similar a Veeam (la unidad protegible), pero su diferencial es arquitectónico: el <strong>air-gap es inherente al diseño del sistema de archivos</strong>, no una configuración opcional sobre un repositorio Linux genérico. Ningún backup puede ser modificado una vez escrito, sin excepción, ni siquiera por un administrador con credenciales root del sistema de backup.</div>
+              <table class="spec-table">
+                <tr><td>Air-gap</td><td>Inmutabilidad nativa a nivel de filesystem distribuido, no configuración post-hoc</td></tr>
+                <tr><td>Diferencial Rubrik</td><td>Threat Hunting + Ransomware Detection + Sensitive Data Discovery integrados</td></tr>
+                <tr><td>Diferencial Cohesity</td><td>Plataforma secundaria hiperconvergente: backup + DR + archivado + analytics consolidados</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Capacidad" data-search="cloud native backup eon storage consumo sin instancias">
+            <div class="pc-head" onclick="toggleCard('pc-bak2')">
+              <div class="pc-head-main">
+                <div class="pc-name">Backup Cloud-Native (modelo emergente)</div>
+                <span class="pc-name-sub">sin contar instancias</span>
+                <span class="tipo-badge" style="background:var(--bak-l);color:var(--bak-d);">Consumo</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-bak2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-bak2">
+              <div class="pc-desc">Una nueva camada de soluciones cloud-native (como Eon) está empezando a romper con el modelo "per-workload" por completo: sin infraestructura de backup gestionada por el cliente, sin contar instancias individuales, con precio que escala según <strong>storage consumido real</strong> en lugar de cuántos workloads protegidos hay. Es una señal de hacia dónde podría moverse el mercado en organizaciones cloud-first puras.</div>
+              <table class="spec-table">
+                <tr><td>Unidad de facturación</td><td>TB de storage consumido, no cantidad de workloads</td></tr>
+                <tr><td>Foco</td><td>Bases de datos gestionadas, object storage y Kubernetes — nativo de cloud público</td></tr>
+              </table>
+              <div class="pc-note">📌 Este modelo todavía no compite con Veeam en el terreno de VMs y servidores físicos tradicionales — su fuerza está en cargas 100% cloud-native.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ HCI ══════════════ -->
+  <div class="vert" id="v-hci">
+    <div class="vert-hd" onclick="toggleVert('hci')">
+      <div class="vert-icon" style="background:var(--hci-l);">🔷</div>
+      <div class="vert-title">HCI — Hyperconverged Infrastructure</div>
+      <span class="vert-count" style="background:var(--hci-l);color:var(--hci-d);">2 modelos</span>
+      <span class="vert-toggle open" id="vt-hci">▼</span>
+    </div>
+    <div class="vert-intro">En HCI el workload vuelve a ser "la VM", pero la licencia se mide por capacidad de cluster — la diferencia clave frente a VMware/Broadcom es que no importa cuántos cores tiene cada CPU individual, sino la capacidad total contratada del cluster.</div>
+    <div class="vert-body open" id="vb-hci">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Nutanix</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Capacidad" data-search="nutanix nci ahv capacity based licencia core portable">
+            <div class="pc-head" onclick="toggleCard('pc-nut1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Nutanix Cloud Infrastructure (NCI)</div>
+                <span class="pc-name-sub">el destino #1 del éxodo VMware</span>
+                <span class="tipo-badge" style="background:var(--hci-l);color:var(--hci-d);">Capacidad</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-nut1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-nut1">
+              <div class="pc-desc">Nutanix licencia <strong>capacidad de cluster</strong> (cores físicos de CPU totales + SSD), no workloads individuales ni instancias. El workload (la VM) corre libremente dentro de esa capacidad contratada — agregar más VMs no genera costo adicional mientras haya capacidad disponible en el cluster. AHV, el hypervisor propio de Nutanix basado en KVM, viene <strong>incluido sin costo adicional</strong> dentro de la licencia NCI, a diferencia de VMware donde el hypervisor es el centro del costo.</div>
+              <table class="spec-table">
+                <tr><td>Unidad de licencia</td><td>Cores físicos de CPU + capacidad SSD del cluster completo</td></tr>
+                <tr><td>AHV (hypervisor)</td><td>Incluido sin costo adicional dentro de NCI — ventaja estructural vs. licenciar ESXi por separado</td></tr>
+                <tr><td>Portabilidad</td><td>Licencias por término (1-5 años), portables entre appliances Nutanix, OEM y servidores de terceros</td></tr>
+                <tr><td>Edición por cluster</td><td>Clusters con licenciamiento mixto bajan automáticamente al tier más bajo presente</td></tr>
+                <tr><td>Adopción 2026</td><td>AHV ya supera a ESXi en adopción dentro de la base instalada de clientes Nutanix</td></tr>
+              </table>
+              <div class="pc-tip">💡 La arquitectura de Nutanix incluye el CVM (Controller Virtual Machine) en cada nodo, que gestiona el storage local de forma distribuida — el workload del cliente y el CVM coexisten en el mismo host, pero solo el primero cuenta para el negocio del usuario.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Capacidad" data-search="nutanix files objects nus add-on capacidad dedicada">
+            <div class="pc-head" onclick="toggleCard('pc-nut2')">
+              <div class="pc-head-main">
+                <div class="pc-name">Nutanix Files / Objects (add-ons)</div>
+                <span class="tipo-badge" style="background:var(--hci-l);color:var(--hci-d);">Capacidad</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-nut2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-nut2">
+              <div class="pc-desc">Los servicios de archivos y objetos de Nutanix se licencian también por capacidad (no por workload), pero de forma independiente al NCI base, según corran en modo mixto (mismo cluster que las VMs) o en clusters dedicados exclusivamente a ese servicio.</div>
+              <table class="spec-table">
+                <tr><td>Nutanix Files</td><td>Add-on para HCI (mixed mode) o licencia dedicada (cluster exclusivo) — ambas por capacidad</td></tr>
+                <tr><td>Nutanix Objects</td><td>Licencia por capacidad para AOS, en mixed mode o dedicado</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ MATRIZ COMPARATIVA ══════════════ -->
+  <div class="vert" id="v-matriz">
+    <div class="vert-hd" onclick="toggleVert('matriz')">
+      <div class="vert-icon" style="background:var(--con-l);">📊</div>
+      <div class="vert-title">Matriz Comparativa — Resumen Ejecutivo</div>
+      <span class="vert-count" style="background:var(--con-l);color:var(--con-d);">vista rápida</span>
+      <span class="vert-toggle open" id="vt-matriz">▼</span>
+    </div>
+    <div class="vert-intro">Para tener todo de un vistazo, sin desplegar cada card: qué cuenta como "1 workload" y cómo se factura en cada plataforma.</div>
+    <div class="vert-body open" id="vb-matriz">
+
+      <div class="matrix-wrap">
+        <table>
+          <thead>
+            <tr><th>Vendor</th><th>¿Qué es 1 workload?</th><th>Unidad de licencia</th><th>Modelo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>AWS</strong></td><td>App o componente revisado en Well-Architected</td><td>No aplica (consumo de recursos)</td><td>Pago por uso</td></tr>
+            <tr><td><strong>Azure</strong></td><td>App o plataforma específica (nunca el tenant)</td><td>No aplica (consumo de recursos)</td><td>Pago por uso</td></tr>
+            <tr><td><strong>GCP</strong></td><td>App, con foco fuerte en cargas de datos/ML</td><td>No aplica (consumo de recursos)</td><td>Pago por uso</td></tr>
+            <tr><td><strong>VMware / Broadcom</strong></td><td>No factura por workload — solo importa el host</td><td>Cores físicos de CPU (mín. 16/CPU, 72 total)</td><td>Per-Core (suscripción)</td></tr>
+            <tr><td><strong>Hyper-V</strong></td><td>VM dentro de Windows Server ya licenciado</td><td>Cores físicos del host (mín. 8/licencia)</td><td>Per-Core (incluido en WS)</td></tr>
+            <tr><td><strong>Nutanix</strong></td><td>VM dentro de la capacidad del cluster</td><td>Cores físicos + capacidad SSD del cluster</td><td>Capacidad (suscripción)</td></tr>
+            <tr><td><strong>KVM / Proxmox / XCP-ng</strong></td><td>VM sin costo de hypervisor</td><td>Socket físico (soporte opcional, Proxmox)</td><td>Capacidad / Gratuito</td></tr>
+            <tr><td><strong>Veeam</strong></td><td>VM, físico, BD, buzón M365 o instancia cloud</td><td>1 workload = 1 unidad protegida (packs de 5/10)</td><td>Per-Workload (VUL)</td></tr>
+            <tr><td><strong>Rubrik / Cohesity</strong></td><td>VM, físico, BD — similar a Veeam</td><td>Unidad protegida, con air-gap nativo del filesystem</td><td>Per-Workload / Capacidad</td></tr>
+            <tr><td><strong>Backup Cloud-Native (Eon, etc.)</strong></td><td>No cuenta workloads — mide storage</td><td>TB de storage consumido</td><td>Consumo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prod-card" style="margin-top:14px;" data-tipo="Concepto" data-search="conclusion resumen impacto preventa cliente conversacion">
+        <div class="pc-head" onclick="toggleCard('pc-concl')">
+          <div class="pc-head-main">
+            <div class="pc-name">📌 Para la conversación con el cliente</div>
+            <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Conclusión</span>
+          </div>
+          <div class="pc-arrow" id="arr-pc-concl">▼</div>
+        </div>
+        <div class="pc-body" id="pc-concl">
+          <div class="pc-desc">Cuando un cliente dice "tenemos 200 workloads", la primera pregunta de un analista de preventa debería ser <strong>"¿200 workloads según quién?"</strong> — porque esa cifra cambia radicalmente el dimensionamiento y el costo según el contexto:</div>
+          <ul class="pc-list">
+            <li>Si son 200 VMs en VMware: hay que contar cores físicos de los hosts, no las VMs, para cotizar Broadcom</li>
+            <li>Si son 200 VMs a migrar a Nutanix: lo que importa es la capacidad total del cluster destino, no la cantidad de VMs</li>
+            <li>Si son 200 workloads a proteger con Veeam: ahí sí la cifra es directamente la base de la cotización — pero hay que verificar si incluye servidores físicos, bases de datos o buzones que se cuentan aparte</li>
+            <li>Si son 200 aplicaciones a migrar a AWS/Azure/GCP: la conversación es de arquitectura (Well-Architected), no de licenciamiento — el costo sale del consumo real proyectado</li>
+          </ul>
+          <div class="pc-tip">💡 Este documento es exactamente el tipo de contexto que separa una cotización aproximada de una propuesta técnicamente sólida en preventa cloud.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+    <span>Fuentes: documentación oficial de cada vendor — Verificado junio 2026</span>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function toggleVert(id){
+  const b = document.getElementById('vb-'+id);
+  const t = document.getElementById('vt-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open', b.classList.contains('open'));
+}
+
+function toggleCard(id){
+  const body = document.getElementById(id);
+  const arrow = document.getElementById('arr-'+id);
+  body.classList.toggle('open');
+  arrow.classList.toggle('open', body.classList.contains('open'));
+}
+
+function expandAll(){
+  document.querySelectorAll('.pc-body').forEach(b=>b.classList.add('open'));
+  document.querySelectorAll('.pc-arrow').forEach(a=>a.classList.add('open'));
+}
+function collapseAll(){
+  document.querySelectorAll('.pc-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.pc-arrow').forEach(a=>a.classList.remove('open'));
+}
+
+let activeTipo = 'all';
+
+function setTipoFilter(btn, tipo){
+  document.querySelectorAll('.tipo-pill[data-tipo]').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  activeTipo = tipo;
+  filterProducts();
+}
+
+function filterProducts(){
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  let anyVisible = false;
+
+  document.querySelectorAll('.vert').forEach(vert=>{
+    let vertHasVisible = false;
+
+    vert.querySelectorAll('.subcat-group').forEach(group=>{
+      let groupHasVisible = false;
+      group.querySelectorAll('.prod-card').forEach(card=>{
+        const text = card.getAttribute('data-search') || '';
+        const tipo = card.getAttribute('data-tipo') || '';
+        const labelEl = group.querySelector('.subcat-label');
+        const matchesSearch = !q || text.includes(q) || (labelEl && labelEl.textContent.toLowerCase().includes(q));
+        const matchesTipo = activeTipo==='all' || tipo.includes(activeTipo);
+        const visible = matchesSearch && matchesTipo;
+        card.classList.toggle('hidden', !visible);
+        if(visible){ groupHasVisible = true; vertHasVisible = true; anyVisible = true; }
+      });
+      group.style.display = groupHasVisible ? '' : 'none';
+    });
+
+    // cards outside subcat-group (matrix conclusion card)
+    vert.querySelectorAll(':scope > .vert-body > .prod-card').forEach(card=>{
+      const text = card.getAttribute('data-search') || '';
+      const tipo = card.getAttribute('data-tipo') || '';
+      const matchesSearch = !q || text.includes(q);
+      const matchesTipo = activeTipo==='all' || tipo.includes(activeTipo);
+      const visible = matchesSearch && matchesTipo;
+      card.classList.toggle('hidden', !visible);
+      if(visible){ vertHasVisible = true; anyVisible = true; }
+    });
+
+    if(q || activeTipo!=='all'){
+      const body = vert.querySelector('.vert-body');
+      const tog = vert.querySelector('.vert-toggle');
+      if(vertHasVisible){ body.classList.add('open'); tog.classList.add('open'); }
+    }
+  });
+
+  document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+}
+
+// active nav highlight on scroll
+const verts = document.querySelectorAll('.vert');
+const navs = document.querySelectorAll('.tn');
+window.addEventListener('scroll', function(){
+  const sy = window.scrollY + 110;
+  verts.forEach(v=>{
+    if(sy >= v.offsetTop && sy < v.offsetTop + v.offsetHeight){
+      navs.forEach(n=>n.classList.remove('active'));
+      const a = document.querySelector('.tn[href="#'+v.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

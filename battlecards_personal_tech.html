@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battlecards — Por qué Personal Tech | Cloud · Ciberseguridad · IoT · Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pt:#0080FF; --pt-d:#003D80; --pt-l:#E5F2FF;
+  --navy:#0C1F45; --navy-m:#1A3A6B; --navy-l:#E8EDF8;
+  --green:#085041; --green-m:#1D9E75; --green-l:#E1F5EE;
+  --amber:#633806; --amber-m:#BA7517; --amber-l:#FAEEDA;
+  --red:#7B1A1A; --red-m:#C0392B; --red-l:#FDECEC;
+  --purple:#26215C; --purple-m:#7F77DD; --purple-l:#EEEDFE;
+  --teal:#0A4040; --teal-m:#1A9696; --teal-l:#E0F5F5;
+  --coral:#4A1B0C; --coral-m:#D85A30; --coral-l:#FAECE7;
+  --pay:#6C3EBE; --pay-l:#F0EAFF;
+  --gray-l:#F1EFE8; --gray-m:#888780; --gray-d:#2C2C2A;
+  --text:#1a1a18; --text-sec:#5f5e5a; --text-ter:#888780;
+  --border:#e0ded6; --bg:#fff; --bg2:#f7f5f0;
+  --radius:10px; --radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid var(--pt);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:11px;font-weight:700;white-space:nowrap;padding:12px 14px 12px 0;border-right:.5px solid rgba(255,255,255,.12);margin-right:8px;color:rgba(255,255,255,.45);letter-spacing:.04em;}
+.tnav{font-size:10.5px;font-weight:700;padding:13px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,.3);transition:all .18s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--pt);}
+
+/* PAGE */
+.page{max-width:1060px;margin:0 auto;padding:36px 24px 80px;}
+
+/* HERO HEADER */
+.hero{border-radius:var(--radius);overflow:hidden;margin-bottom:32px;background:var(--navy);position:relative;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--navy) 0%,#1A3A80 50%,#0056CC 100%);opacity:.95;}
+.hero-grid-line{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px;}
+.hero-inner{position:relative;z-index:1;padding:44px 44px 36px;}
+.hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.35);margin-bottom:10px;}
+.hero-title{font-size:30px;font-weight:700;color:#fff;line-height:1.15;margin-bottom:10px;}
+.hero-title span{color:var(--pt);}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.6);line-height:1.7;max-width:680px;margin-bottom:28px;}
+.hero-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.hero-pill{font-size:11px;font-weight:700;padding:5px 13px;border-radius:20px;background:rgba(255,255,255,.09);color:rgba(255,255,255,.7);border:.5px solid rgba(255,255,255,.14);}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0;border-top:.5px solid rgba(255,255,255,.1);margin-top:0;}
+.hstat{padding:18px 20px;border-right:.5px solid rgba(255,255,255,.07);}
+.hstat:last-child{border-right:none;}
+.hstat-val{font-size:24px;font-weight:700;color:#fff;line-height:1;margin-bottom:4px;}
+.hstat-val span{color:var(--pt);}
+.hstat-label{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;}
+
+/* INTRO — WHY PT IS UNIQUE */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:32px;}
+.why-card{border-radius:var(--radius-sm);padding:16px 17px;border:.5px solid var(--border);background:var(--bg);}
+.wc-icon{font-size:22px;margin-bottom:7px;}
+.wc-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.wc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.wc-text strong{color:var(--text);}
+
+/* BATTLECARD */
+.bc-section{margin-bottom:44px;scroll-margin-top:52px;}
+.bc-sec-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:1.5px solid var(--text);}
+.bc-sec-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.bc-sec-title{font-size:18px;font-weight:700;flex:1;}
+.bc-sec-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+
+/* BATTLECARD CARDS */
+.bc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-bottom:12px;}
+.bc{border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.bc-head{padding:14px 16px 10px;}
+.bc-head-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.bc-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.bc-title{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.3;}
+.bc-tag{font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;display:inline-block;margin-top:4px;}
+.bc-body{padding:0 16px 14px;}
+.bc-desc{font-size:12.5px;color:var(--text-sec);line-height:1.65;}
+.bc-desc strong{color:var(--text);}
+.bc-proof{font-size:11.5px;color:var(--text-ter);font-style:italic;margin-top:8px;padding:7px 10px;background:var(--bg2);border-radius:var(--radius-sm);border-left:2px solid var(--border);line-height:1.5;}
+.bc-proof strong{color:var(--text-sec);font-style:normal;}
+
+/* PITCH BOX */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:14px 18px;margin:14px 0;}
+.pitch-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:6px;}
+.pitch-text{font-size:13.5px;color:rgba(255,255,255,.85);line-height:1.75;font-style:italic;}
+
+/* OBJECTION TABLE */
+.dtable-wrap{overflow-x:auto;margin:12px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 11px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 11px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);}
+
+/* NOTE */
+.note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid;line-height:1.6;color:var(--text-sec);}
+.note strong{font-weight:700;}
+.note-pt{background:var(--pt-l);border-color:var(--pt);} .note-pt strong{color:var(--pt-d);}
+.note-green{background:var(--green-l);border-color:var(--green-m);} .note-green strong{color:var(--green);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);} .note-amber strong{color:var(--amber);}
+
+/* FEAT LIST */
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:9px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0;}
+.kpi-card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;}
+.kpi-val{font-size:20px;font-weight:700;line-height:1;margin-bottom:3px;}
+.kpi-label{font-size:10.5px;color:var(--text-sec);line-height:1.4;}
+
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+@media(max-width:680px){.bc-grid{grid-template-columns:1fr;}.why-grid{grid-template-columns:1fr 1fr;}.hero-inner{padding:28px 20px 24px;}.hero-title{font-size:22px;}.hstat{padding:12px 14px;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🏆 Battlecards Personal Tech</div>
+  <a class="tnav" href="#bc0">Por qué Personal Tech</a>
+  <a class="tnav" href="#bc1">Cloud Privada &amp; Híbrida</a>
+  <a class="tnav" href="#bc2">Ciberseguridad &amp; DR</a>
+  <a class="tnav" href="#bc3">Gobernanza &amp; Compliance</a>
+  <a class="tnav" href="#bc4">Analytics &amp; Datos</a>
+  <a class="tnav" href="#bc5">IoT &amp; Domótica</a>
+  <a class="tnav" href="#bc6">Personal Pay</a>
+  <a class="tnav" href="#bc7">Objeciones</a>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-line"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Argumentario Comercial · Telecom Argentina S.A.</div>
+    <div class="hero-title">¿Por qué <span>Personal Tech</span>?<br>El único proveedor que lo da todo junto.</div>
+    <div class="hero-sub">La mayoría de los proveedores vende una pieza del rompecabezas. Personal Tech es el único en Argentina que entrega conectividad masiva + cloud soberana + ciberseguridad + IoT + billetera digital + analytics — todo bajo un mismo contrato, en pesos, con soporte 24×7 en español y bajo ley argentina. Eso no tiene precio. Tiene número de cliente.</div>
+    <div class="hero-pills">
+      <span class="hero-pill">☁️ Cloud Privada · Híbrida · Multi-cloud</span>
+      <span class="hero-pill">🔐 Ciberseguridad &amp; DR</span>
+      <span class="hero-pill">📊 Analytics &amp; Datos</span>
+      <span class="hero-pill">📡 IoT &amp; Domótica</span>
+      <span class="hero-pill">💳 Personal Pay</span>
+      <span class="hero-pill">🏛 Regulado por ENACOM &amp; BCRA</span>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-val">+<span>24M</span></div><div class="hstat-label">Líneas móviles activas en Argentina</div></div>
+    <div class="hstat"><div class="hstat-val"><span>5</span></div><div class="hstat-label">Datacenters propios (Pacheco, Hornos, Córdoba, Corrientes)</div></div>
+    <div class="hstat"><div class="hstat-val"><span>24/7</span></div><div class="hstat-label">Infraestructura crítica que no puede parar jamás</div></div>
+    <div class="hstat"><div class="hstat-val"><span>+30</span></div><div class="hstat-label">Años operando infraestructura de misión crítica</div></div>
+    <div class="hstat"><div class="hstat-val"><span>AR$</span></div><div class="hstat-label">Facturación local en pesos · Sin riesgo cambiario</div></div>
+  </div>
+</div>
+
+
+<!-- ══════ BC0: POR QUÉ PERSONAL TECH ══════ -->
+<div class="bc-section" id="bc0">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--pt-l);">🏆</div>
+    <div class="bc-sec-title">El argumento estructural: por qué Personal Tech es diferente a cualquier otro proveedor</div>
+  </div>
+
+  <div class="why-grid">
+    <div class="why-card" style="border-color:var(--pt);border-top:3px solid var(--pt);">
+      <div class="wc-icon">📡</div>
+      <div class="wc-title">Operador de infraestructura crítica nacional</div>
+      <div class="wc-text">Personal Tech no es una consultora ni un reseller. <strong>Opera activamente la infraestructura que mantiene millones de líneas funcionando 24×7×365.</strong> Conoce el uptime a escala real, no en teoría.</div>
+    </div>
+    <div class="why-card" style="border-color:var(--navy);border-top:3px solid var(--navy);">
+      <div class="wc-icon">🏛</div>
+      <div class="wc-title">Empresa regulada con accountability real</div>
+      <div class="wc-text">Regulada por ENACOM, BCRA (Personal Pay) y la CNV. Cotiza en NYSE y Bolsa de Buenos Aires. <strong>En una licitación pública o contrato regulado, AWS LLC no puede dar las mismas garantías bajo ley argentina.</strong></div>
+    </div>
+    <div class="why-card" style="border-color:var(--green-m);border-top:3px solid var(--green-m);">
+      <div class="wc-icon">🇦🇷</div>
+      <div class="wc-title">Dato soberano y factura en pesos</div>
+      <div class="wc-text">Los datacenters en Pacheco y Hornos están en territorio argentino bajo ley argentina. <strong>Ningún hyperscaler puede garantizar esto.</strong> Facturación en pesos con ajuste IPC — sin exposición cambiaria para el CFO.</div>
+    </div>
+    <div class="why-card" style="border-color:var(--amber-m);border-top:3px solid var(--amber-m);">
+      <div class="wc-icon">🔗</div>
+      <div class="wc-title">Un solo proveedor para todo el stack</div>
+      <div class="wc-text">Conectividad (MPLS, 4G, 5G, DIA) + Cloud + Ciberseguridad + IoT + Pago digital. <strong>El cliente no gestiona 4 contratos con 4 proveedores — gestiona uno con Personal Tech.</strong> Un SLA. Una factura. Un número de soporte.</div>
+    </div>
+    <div class="why-card" style="border-color:var(--teal-m);border-top:3px solid var(--teal-m);">
+      <div class="wc-icon">⚡</div>
+      <div class="wc-title">La red es propia — latencia sin competencia</div>
+      <div class="wc-text">El cliente en MPLS de Personal Tech accede al cloud de Pacheco <strong>sin salir a internet</strong>. Latencia 3–5ms. AWS São Paulo: 35ms. Azure Brasil South: 28ms. Para sistemas transaccionales o tiempo real, la diferencia es crítica.</div>
+    </div>
+    <div class="why-card" style="border-color:var(--pay);border-top:3px solid var(--pay);">
+      <div class="wc-icon">💳</div>
+      <div class="wc-title">Ecosistema financiero integrado (Personal Pay)</div>
+      <div class="wc-text">Personal Pay está regulado por el BCRA como proveedor de servicios de pago. <strong>El cliente puede integrar pagos, cobros y billetera digital en su app directamente sobre la infraestructura del mismo proveedor de cloud y conectividad.</strong></div>
+    </div>
+  </div>
+
+  <div class="pitch">
+    <div class="pitch-label">El argumento maestro de diferenciación</div>
+    <div class="pitch-text">"Cuando contratan a AWS, tienen el cloud. Cuando contratan a Cisco, tienen la red. Cuando contratan a Fortinet, tienen la seguridad. Cuando contratan a una telco, tienen conectividad. Cuando contratan a Personal Tech, tienen todo eso junto, integrado, con un solo SLA bajo ley argentina, facturado en pesos, con soporte en español y operado por la misma empresa que lleva 30 años sin apagar la red de comunicaciones del país. Eso no lo da nadie más en Argentina."</div>
+  </div>
+</div><!-- /bc0 -->
+
+
+<!-- ══════ BC1: CLOUD PRIVADA & HÍBRIDA ══════ -->
+<div class="bc-section" id="bc1">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--pt-l);">☁️</div>
+    <div class="bc-sec-title">Cloud Privada, Híbrida y Multi-cloud</div>
+    <span class="bc-sec-badge" style="background:var(--pt-l);color:var(--pt-d);">Dato soberano · OPEX en pesos · SLA end-to-end</span>
+  </div>
+
+  <div class="bc-grid">
+    <div class="bc" style="border-color:var(--pt);">
+      <div class="bc-head" style="background:var(--pt-l);">
+        <div class="bc-head-top"><div class="bc-icon">🏛</div><div class="bc-title">Nube Privada Soberana — el único DC enterprise en Argentina</div></div>
+        <span class="bc-tag" style="background:var(--pt-l);color:var(--pt-d);border:.5px solid var(--pt);">Cloud Privada</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech opera el <strong>datacenter de Pacheco (5.400m²)</strong> y el de Hornos en Barracas. Son los únicos datacenters enterprise Tier III con certificación real bajo operación de una telco argentina. El cliente pone sus VMs ahí y el dato nunca sale del país.<br><br>Para sectores regulados (banca, salud, gobierno), esto no es un diferenciador comercial — <strong>es un requisito no negociable que solo Personal Tech puede cumplir de forma nativa.</strong></div>
+        <div class="bc-proof"><strong>Prueba:</strong> El BCRA exige derecho de inspección directa sobre la infraestructura donde corren los sistemas bancarios. Con un DC en Pacheco bajo jurisdicción argentina, esa inspección es una visita. Con AWS São Paulo, es un proceso legal internacional que puede tardar meses.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--teal-m);">
+      <div class="bc-head" style="background:var(--teal-l);">
+        <div class="bc-head-top"><div class="bc-icon">🔀</div><div class="bc-title">Cloud Híbrida — lo mejor de los dos mundos sin saltar entre proveedores</div></div>
+        <span class="bc-tag" style="background:var(--teal-l);color:var(--teal);border:.5px solid var(--teal-m);">Hybrid Cloud</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Pacheco para los datos regulados y críticos. AWS/Azure para los servicios de IA generativa, analytics masivo o expansión internacional. <strong>Personal Tech es el broker de conectividad que une ambos mundos por circuito privado</strong> (Direct Connect y ExpressRoute partner certificado) sin que el dato cruce internet.<br><br>El cliente no tiene que elegir entre soberanía o modernidad. Tiene las dos.</div>
+        <div class="bc-proof"><strong>Argumento financiero:</strong> Un banco mediano con datos core en Pacheco + servicios de IA en AWS Bedrock paga solo los servicios cloud avanzados en USD. El 70% del stack — los datos más sensibles — corre en pesos en Argentina. Optimiza la exposición cambiaria y cumple regulación BCRA simultáneamente.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--purple-m);">
+      <div class="bc-head" style="background:var(--purple-l);">
+        <div class="bc-head-top"><div class="bc-icon">🌐</div><div class="bc-title">Multi-cloud gestionado — acceso a AWS, Azure, GCP y Huawei desde un solo contrato</div></div>
+        <span class="bc-tag" style="background:var(--purple-l);color:var(--purple);border:.5px solid var(--purple-m);">Multi-cloud</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech tiene alianzas con <strong>AWS, Google Cloud, Microsoft Azure, IBM Cloud y Huawei Cloud</strong>. No obliga al cliente a elegir. Le permite usar el servicio de cada cloud donde mejor funcione — IA en GCP, datos en Personal Tech, aplicaciones Microsoft en Azure — <strong>con Personal Tech como el integrador neutral que conecta todo.</strong></div>
+        <div class="bc-proof"><strong>Ventaja anti-lock-in:</strong> Si AWS sube precios o cambia sus términos (como hizo Broadcom/VMware en 2024), el cliente tiene la portabilidad real. Sus contenedores en Kubernetes pueden moverse. Sus datos no están rehenes de un solo proveedor.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--green-m);">
+      <div class="bc-head" style="background:var(--green-l);">
+        <div class="bc-head-top"><div class="bc-icon">💰</div><div class="bc-title">CAPEX → OPEX pesificado — el argumento que cierra con el CFO</div></div>
+        <span class="bc-tag" style="background:var(--green-l);color:var(--green);border:.5px solid var(--green-m);">FinOps · OPEX</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">La renovación de hardware enterprise en Argentina implica dólares: servidores HP/Dell, storage NetApp, switches Cisco. El CAPEX se aprueba con un tipo de cambio y se ejecuta con otro. <strong>Cloud de Personal Tech transforma ese riesgo en OPEX mensual predecible en pesos con ajuste CPI.</strong><br><br>El CFO argentino prefiere predecibilidad al menor costo nominal. OPEX cloud en pesos versus CAPEX hardware en dólares: no hay debate.</div>
+        <div class="bc-proof"><strong>Números reales:</strong> 20 servidores equivalentes en hardware propio: ~USD 180K de CAPEX + $15K/mes de mantenimiento + $8K/mes de energía = $45K/mes efectivo. Misma capacidad en cloud Personal Tech: ~$22K/mes en pesos equivalente. Ahorro: 51% + sin riesgo cambiario.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--amber-m);">
+      <div class="bc-head" style="background:var(--amber-l);">
+        <div class="bc-head-top"><div class="bc-icon">⚡</div><div class="bc-title">Conectividad + Cloud en un solo SLA — lo que ningún hyperscaler puede dar</div></div>
+        <span class="bc-tag" style="background:var(--amber-l);color:var(--amber);border:.5px solid var(--amber-m);">Diferenciador único</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">AWS vende cloud pero no vende el circuito MPLS que conecta las sedes al cloud. Una telco vende MPLS pero no da cloud. <strong>Personal Tech da los dos — y el SLA cubre ambas capas.</strong> Si el cliente tiene un incidente, llama un número y Personal Tech es responsable de punta a punta.<br><br>Con AWS + otra telco: ¿quién falló? El MPLS dice que el cloud. El cloud dice que el MPLS. El cliente espera mientras los proveedores se apuntan entre sí.</div>
+        <div class="bc-proof"><strong>En la práctica:</strong> Latencia de 3ms entre la sede del cliente y el cloud de Pacheco via MPLS privado. Cualquier opción con internet intermedio tiene variabilidad de 20–80ms. Para sistemas ERP, core bancario o transacciones en tiempo real, esa diferencia se traduce en experiencia de usuario y capacidad transaccional.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--coral-m);">
+      <div class="bc-head" style="background:var(--coral-l);">
+        <div class="bc-head-top"><div class="bc-icon">🔄</div><div class="bc-title">DR en Hornos — continuidad garantizada sin segundo datacenter propio</div></div>
+        <span class="bc-tag" style="background:var(--coral-l);color:var(--coral);border:.5px solid var(--coral-m);">Disaster Recovery</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">El cliente usa Pacheco como datacenter primario. Hornos (Barracas) actúa como site DR. Ambos están en la misma red backbone de Personal Tech — la replicación es interna, sin salir a internet, sin egress fees, con latencia ultra baja. <strong>El cliente tiene DR Tier III a precio de OPEX mensual, sin construir ni mantener nada.</strong></div>
+        <div class="bc-proof"><strong>vs. DR on-premise:</strong> Un site DR propio equivalente cuesta USD 300–500K de inversión + $15K/mes de mantenimiento. DR en Hornos de Personal Tech: desde $2.500/mes. El ahorro en año 1 es superior a $300K. Con SLA documentado y prueba semestral incluida para auditorías BCRA y SSN.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /bc1 -->
+
+
+<!-- ══════ BC2: CIBERSEGURIDAD & DR ══════ -->
+<div class="bc-section" id="bc2">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--red-l);">🔐</div>
+    <div class="bc-sec-title">Ciberseguridad — el proveedor que protege su red desde adentro</div>
+    <span class="bc-sec-badge" style="background:var(--red-l);color:var(--red-m);">SASE · Zero Trust · FortiGate · SOC 24x7</span>
+  </div>
+
+  <div class="note note-amber"><strong>⚡ El argumento de credibilidad más poderoso:</strong> Personal Tech no vende seguridad como un producto externo que instaló la semana pasada. Opera la infraestructura de comunicaciones de Argentina — MPLS, fibra, 4G/5G — y la defiende activamente todos los días contra millones de intentos de ataque. Esa experiencia operativa en ciberseguridad de redes masivas no la compra ningún competidor.</div>
+
+  <div class="bc-grid">
+    <div class="bc" style="border-color:var(--red-m);">
+      <div class="bc-head" style="background:var(--red-l);">
+        <div class="bc-head-top"><div class="bc-icon">🌐</div><div class="bc-title">SASE — seguridad que viaja con el usuario, no con la oficina</div></div>
+        <span class="bc-tag" style="background:var(--red-l);color:var(--red-m);border:.5px solid var(--red-m);">SASE · SD-WAN + Seg.</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">SASE (Secure Access Service Edge) unifica SD-WAN + ZTNA + Firewall + CASB en una sola plataforma en la nube. <strong>Personal Tech entrega SASE aprovechando su propia red como backbone</strong> — no necesita contratar un proveedor de nube externo para hospedar el servicio. El empleado remoto tiene la misma protección que en la oficina, sin VPN lenta.</div>
+        <div class="bc-proof"><strong>vs. VPN tradicional:</strong> La VPN da acceso a toda la red si las credenciales se roban. ZTNA da acceso solo a la aplicación específica que el usuario necesita. El radio de daño de un ataque se reduce de "toda la empresa" a "una aplicación".</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--navy);">
+      <div class="bc-head" style="background:var(--navy-l);">
+        <div class="bc-head-top"><div class="bc-icon">🛡</div><div class="bc-title">FortiGate gestionado — NGFW sin equipo de seguridad propio</div></div>
+        <span class="bc-tag" style="background:var(--navy-l);color:var(--navy);border:.5px solid var(--navy-m);">FWaaS · Managed Security</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech despliega y gestiona <strong>FortiGate (NGFW de Fortinet)</strong> como servicio administrado. El cliente obtiene inspección profunda de paquetes, IPS, filtrado web, control de aplicaciones y detección de malware — sin contratar un equipo de seguridad ni comprar appliances.<br><br>El SOC de Personal Tech monitorea 24×7 y responde a incidentes. <strong>El cliente duerme tranquilo.</strong></div>
+        <div class="bc-proof"><strong>Costo de armar el equivalente internamente:</strong> 2 FortiGate HA + licencias = USD 35K. 2 analistas SOC 24×7 = $180K/año. Total: ~$215K/año. FWaaS gestionado de Personal Tech: desde $3.500/mes = $42K/año. Diferencia: 5× más barato con mayor cobertura horaria.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--purple-m);">
+      <div class="bc-head" style="background:var(--purple-l);">
+        <div class="bc-head-top"><div class="bc-icon">🔒</div><div class="bc-title">Zero Trust Network Access — acceso por identidad, no por red</div></div>
+        <span class="bc-tag" style="background:var(--purple-l);color:var(--purple);border:.5px solid var(--purple-m);">ZTNA · Zero Trust</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Modelo de seguridad que asume que ningún usuario ni dispositivo es confiable por defecto — dentro o fuera de la red. Cada acceso se verifica por identidad, dispositivo y contexto. <strong>Personal Tech implementa ZTNA sobre su red propia</strong>, combinando la capa de seguridad con la capa de conectividad en un solo punto de control.</div>
+        <div class="bc-proof"><strong>El caso del ransomware:</strong> En 2024, el 90% de los ataques de ransomware empezaron con credenciales VPN robadas. Con ZTNA, si roban las credenciales, el atacante accede solo a la app autorizada — no a toda la red. El ransomware que habría cifrado 200 servidores solo puede afectar uno.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--teal-m);">
+      <div class="bc-head" style="background:var(--teal-l);">
+        <div class="bc-head-top"><div class="bc-icon">🌊</div><div class="bc-title">Mitigación DDoS en la red — el ataque muere antes de llegar al cliente</div></div>
+        <span class="bc-tag" style="background:var(--teal-l);color:var(--teal);border:.5px solid var(--teal-m);">Anti-DDoS · Red</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech detecta y mitiga ataques DDoS <strong>en la propia red backbone</strong>, antes de que el tráfico malicioso llegue a la infraestructura del cliente. No se espera a que el servidor del cliente sea afectado — se filtra en la red de tránsito.<br><br><strong>Esta capacidad es exclusiva de un operador de red.</strong> Una consultora de seguridad o un WAF cloud reacciona cuando el ataque ya llegó. Personal Tech lo absorbe antes.</div>
+        <div class="bc-proof"><strong>Relevancia para el cliente:</strong> Un retailer en Hot Sale con un ataque DDoS de 1Tbps. Sin Personal Tech: el servidor se cae, pierden $180K/hora. Con Personal Tech: el ataque se mitiga en la red upstream, el servidor sigue respondiendo, el Hot Sale no se interrumpe.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--amber-m);">
+      <div class="bc-head" style="background:var(--amber-l);">
+        <div class="bc-head-top"><div class="bc-icon">🔑</div><div class="bc-title">Gestión de identidades (IAM) — el directorio que ya tienen integrado</div></div>
+        <span class="bc-tag" style="background:var(--amber-l);color:var(--amber);border:.5px solid var(--amber-m);">IAM · SSO</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Integración del Active Directory on-premise del cliente con la capa de identidades del cloud de Personal Tech mediante AD Connector. <strong>Los empleados usan las mismas credenciales corporativas para acceder al cloud, las aplicaciones SaaS y el portal de Personal Tech.</strong> Un solo login para todo. MFA integrado.</div>
+        <div class="bc-proof"><strong>El problema de la proliferación de credenciales:</strong> El empleado promedio de una empresa mediana tiene 7–12 pares de usuario/contraseña distintos. Cada uno es un vector de ataque. SSO + MFA reduce ese número a 1 login + 1 segundo factor. El 99.9% de los ataques de phishing fallan contra MFA.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--green-m);">
+      <div class="bc-head" style="background:var(--green-l);">
+        <div class="bc-head-top"><div class="bc-icon">💾</div><div class="bc-title">Backup inmutable anti-ransomware — el seguro de vida de los datos</div></div>
+        <span class="bc-tag" style="background:var(--green-l);color:var(--green);border:.5px solid var(--green-m);">Backup · S3 Object Lock</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Backups con <strong>Object Lock (WORM — Write Once Read Many)</strong> almacenados en el DC de Personal Tech con cifrado AES-256. Ningún usuario, ni siquiera el administrador, puede modificar o eliminar el backup durante el período de retención definido.<br><br><strong>El ransomware más sofisticado no puede cifrar lo que no puede escribir.</strong></div>
+        <div class="bc-proof"><strong>La pregunta que cierra el deal:</strong> "¿Cuándo fue la última vez que probaron restaurar el backup y cuánto tardaron?" El 80% de las empresas nunca lo hizo. Personal Tech incluye pruebas de restauración en el SLA y entrega el informe para la auditoría BCRA/SSN.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /bc2 -->
+
+
+<!-- ══════ BC3: GOBERNANZA & COMPLIANCE ══════ -->
+<div class="bc-section" id="bc3">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--navy-l);">⚖️</div>
+    <div class="bc-sec-title">Gobernanza, Compliance y Seguridad de los Datos</div>
+    <span class="bc-sec-badge" style="background:var(--navy-l);color:var(--navy);">BCRA · ENACOM · Ley 25.326 · ISO 27001</span>
+  </div>
+
+  <div class="note note-pt"><strong>La ventaja regulatoria de Personal Tech es estructural, no comercial:</strong> como empresa regulada por ENACOM y con Personal Pay regulado por BCRA, Personal Tech vive bajo los mismos estándares de compliance que le exige a sus clientes. No vende compliance — lo practica.</div>
+
+  <div class="bc-grid">
+    <div class="bc" style="border-color:var(--navy);">
+      <div class="bc-head" style="background:var(--navy-l);">
+        <div class="bc-head-top"><div class="bc-icon">🏦</div><div class="bc-title">Compliance BCRA — facilitador de auditorías, no solo proveedor</div></div>
+        <span class="bc-tag" style="background:var(--navy-l);color:var(--navy);border:.5px solid var(--navy);">Regulación bancaria</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">El BCRA exige a las entidades financieras que sus proveedores cloud permitan auditorías directas, mantengan planes de contingencia (BCP) y documenten la gestión de riesgos IT (Com. A 6375, Com. A 7266, Com. A 8280).<br><br><strong>Personal Tech facilita ese proceso al estar bajo jurisdicción argentina y tener el DC físicamente en el país.</strong> Con un hyperscaler extranjero, el banco debe negociar cláusulas de inspección con una empresa extranjera, con costos legales y tiempos de respuesta impredecibles.</div>
+        <div class="bc-proof"><strong>Nota importante:</strong> El BCRA SÍ permite nubes internacionales bajo condiciones. El argumento ganador no es "los demás son ilegales" — es "con Personal Tech, cumplís más rápido, más simple y con menos costos de auditoría y compliance".</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--purple-m);">
+      <div class="bc-head" style="background:var(--purple-l);">
+        <div class="bc-head-top"><div class="bc-icon">📋</div><div class="bc-title">Ley 25.326 — datos personales que no salen del país</div></div>
+        <span class="bc-tag" style="background:var(--purple-l);color:var(--purple);border:.5px solid var(--purple-m);">Privacidad · Datos personales</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">La Ley 25.326 de Protección de Datos Personales permite transferencias internacionales <strong>solo a países con nivel adecuado de protección o mediante SCCs firmadas.</strong> Para datos sensibles (salud, financieros, biométricos), el proceso de habilitación es complejo y requiere intervención de la AAIP.<br><br>Con Personal Tech, el dato permanece en Argentina — no hay transferencia internacional que habilitar, no hay SCC que firmar, no hay riesgo de incumplimiento.</div>
+        <div class="bc-proof"><strong>Sectores críticos:</strong> Salud (Historia Clínica Electrónica), Obras Sociales (datos médicos), Recursos Humanos (legajos digitales), Financiero (datos bancarios). En todos estos casos, el dato en Argentina de Personal Tech elimina capas de complejidad legal.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--teal-m);">
+      <div class="bc-head" style="background:var(--teal-l);">
+        <div class="bc-head-top"><div class="bc-icon">🗂</div><div class="bc-title">Gobernanza multi-cloud centralizada — visión única de todo el stack</div></div>
+        <span class="bc-tag" style="background:var(--teal-l);color:var(--teal);border:.5px solid var(--teal-m);">Gobernanza · Control</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Cuando el cliente usa múltiples nubes, el mayor riesgo de compliance es la pérdida de visibilidad: ¿quién tiene acceso a qué? ¿Dónde están los datos sensibles? ¿Qué recursos están activos?<br><br>Personal Tech integra herramientas de <strong>CSPM (Cloud Security Posture Management)</strong> que dan una vista única de todos los ambientes — Pacheco, AWS, Azure — con alertas automáticas de desvíos de política. <strong>El CISO ve todo desde un solo panel.</strong></div>
+        <div class="bc-proof"><strong>Cumplimiento automático:</strong> La política "ningún bucket de datos puede ser público" se define una vez en la plataforma de gobernanza y se aplica automáticamente en Personal Tech Cloud, en las cuentas AWS y en Azure. Sin procesos manuales de verificación.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--amber-m);">
+      <div class="bc-head" style="background:var(--amber-l);">
+        <div class="bc-head-top"><div class="bc-icon">📊</div><div class="bc-title">Auditoría y trazabilidad total — el registro que pide el regulador</div></div>
+        <span class="bc-tag" style="background:var(--amber-l);color:var(--amber);border:.5px solid var(--amber-m);">Auditoría · Logs</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Cada acción en la infraestructura cloud de Personal Tech genera un log con timestamp, usuario, acción y resultado. Esos logs se almacenan con <strong>inmutabilidad garantizada y retención configurable.</strong><br><br>Ante una auditoría del BCRA, SSN, AAIP o una investigación forense, el cliente puede demostrar qué ocurrió, cuándo, quién lo hizo y desde dónde — en minutos, no en semanas.</div>
+        <div class="bc-proof"><strong>El requisito de las Com. A 8280 (RRCI BCRA):</strong> Exige que los bancos puedan demostrar la cadena de eventos de un ciberincidente. Sin logs inmutables y centralizados, ese informe puede tardar semanas y dejar al banco en observación regulatoria.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /bc3 -->
+
+
+<!-- ══════ BC4: ANALYTICS & DATOS ══════ -->
+<div class="bc-section" id="bc4">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--green-l);">📊</div>
+    <div class="bc-sec-title">Analytics, Big Data e Inteligencia Artificial</div>
+    <span class="bc-sec-badge" style="background:var(--green-l);color:var(--green);">Data Lake · IA Generativa · BI en tiempo real</span>
+  </div>
+
+  <div class="bc-grid">
+    <div class="bc" style="border-color:var(--green-m);">
+      <div class="bc-head" style="background:var(--green-l);">
+        <div class="bc-head-top"><div class="bc-icon">🌊</div><div class="bc-title">Data Lake soberano — los datos de la empresa no alimentan modelos de terceros</div></div>
+        <span class="bc-tag" style="background:var(--green-l);color:var(--green);border:.5px solid var(--green-m);">Data Lake · Soberanía</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Cuando el cliente usa ChatGPT o Azure OpenAI directamente sin un acuerdo enterprise, sus datos pueden usarse para entrenar modelos futuros. Con un <strong>Data Lake en Personal Tech + servicios de IA bajo acuerdo enterprise</strong>, el cliente tiene la garantía contractual de que sus datos no salen de su entorno ni alimentan modelos de terceros.<br><br>Para una empresa con datos de clientes, transacciones financieras o propiedad intelectual, esta diferencia es crítica.</div>
+        <div class="bc-proof"><strong>El caso de la fuga de datos por IA:</strong> En 2023, Samsung tuvo una fuga de código fuente porque sus ingenieros lo pegaron en ChatGPT público para que lo revisara. El dato salió del perímetro y fue a los servidores de OpenAI. Con IA enterprise sobre el Data Lake en Pacheco, ese riesgo no existe.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--teal-m);">
+      <div class="bc-head" style="background:var(--teal-l);">
+        <div class="bc-head-top"><div class="bc-icon">🤖</div><div class="bc-title">IA Generativa sobre los datos propios — el copiloto del negocio</div></div>
+        <span class="bc-tag" style="background:var(--teal-l);color:var(--teal);border:.5px solid var(--teal-m);">IA Generativa · RAG</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech despliega modelos de IA generativa (Claude, Llama, Granite) sobre el Data Lake del cliente en Pacheco mediante arquitectura RAG. <strong>El modelo "sabe" lo que la empresa sabe</strong> — sin reentrenarlo y sin que los datos salgan del perímetro.<br><br>El asistente de IA responde preguntas de negocio usando los propios documentos, contratos, historiales y datos del cliente. No alucina con datos genéricos de internet — responde con la información real de la empresa.</div>
+        <div class="bc-proof"><strong>Caso típico para banca:</strong> El analista pregunta "¿cuál es la exposición a riesgo de crédito en el sector agropecuario al 31/10?" El modelo accede al Data Lake interno, procesa el portafolio y responde en 8 segundos con el dato exacto. Sin IA: ese análisis tomaba 3 horas de un analista.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--amber-m);">
+      <div class="bc-head" style="background:var(--amber-l);">
+        <div class="bc-head-top"><div class="bc-icon">📈</div><div class="bc-title">BI en tiempo real — el CFO que decide con datos de hoy, no de ayer</div></div>
+        <span class="bc-tag" style="background:var(--amber-l);color:var(--amber);border:.5px solid var(--amber-m);">Business Intelligence</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Dashboards de Business Intelligence conectados al Data Lake en tiempo real. El CFO, el gerente comercial y el director de operaciones ven los KPIs del negocio actualizados, desde cualquier dispositivo, sin esperar el informe del lunes.<br><br><strong>Personal Tech integra la capa de analítica con los datos de conectividad de la empresa</strong> — consumo de red, tráfico, eventos de seguridad — dando una visión integral que ningún otro proveedor puede dar porque ningún otro tiene ambas capas.</div>
+        <div class="bc-proof"><strong>La pregunta de valor:</strong> "¿Hoy sus ejecutivos toman decisiones basadas en datos de la semana pasada? Con nuestro stack de analytics en Pacheco, los datos del sistema de facturación de las 9am están en el dashboard a las 9:05am."</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--purple-m);">
+      <div class="bc-head" style="background:var(--purple-l);">
+        <div class="bc-head-top"><div class="bc-icon">🔮</div><div class="bc-title">Analítica predictiva — anticipar en lugar de reaccionar</div></div>
+        <span class="bc-tag" style="background:var(--purple-l);color:var(--purple);border:.5px solid var(--purple-m);">ML · Predicción</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Modelos de Machine Learning entrenados sobre los datos históricos del cliente predicen: quiebre de stock 72hs antes, falla de equipo 96hs antes, abandono de cliente 30 días antes, fraude en tiempo real.<br><br><strong>La analítica predictiva transforma al operador reactivo en proactivo.</strong> El gerente ya no espera a que el problema ocurra — actúa antes de que ocurra.</div>
+        <div class="bc-proof"><strong>ROI directo:</strong> Un retailer con 180 sucursales que reduce el quiebre de stock del 8% al 5% con predicción de demanda recupera entre $2M–$8M anuales en ventas perdidas. La plataforma de analytics en cloud cuesta $1.500/mes. El ROI se alcanza en el primer trimestre.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /bc4 -->
+
+
+<!-- ══════ BC5: IoT & DOMÓTICA ══════ -->
+<div class="bc-section" id="bc5">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--teal-l);">📡</div>
+    <div class="bc-sec-title">IoT, IIoT y Domótica — la telco que conecta el mundo físico al cloud</div>
+    <span class="bc-sec-badge" style="background:var(--teal-l);color:var(--teal);">4G · 5G · LoRaWAN · Satelital · Edge Computing</span>
+  </div>
+
+  <div class="note note-green"><strong>La ventaja IoT que ningún competidor puede replicar:</strong> Personal Tech provee la SIM del dispositivo IoT + la red que lo transporta (4G/5G/LoRa) + el APN privado + el cloud donde procesa los datos + la seguridad de la transmisión + la factura en pesos. Todo en un contrato. Es el único proveedor en Argentina con todas las piezas del stack IoT completo bajo un mismo techo.</div>
+
+  <div class="bc-grid">
+    <div class="bc" style="border-color:var(--teal-m);">
+      <div class="bc-head" style="background:var(--teal-l);">
+        <div class="bc-head-top"><div class="bc-icon">📟</div><div class="bc-title">APN privado — los datos IoT no tocan internet público</div></div>
+        <span class="bc-tag" style="background:var(--teal-l);color:var(--teal);border:.5px solid var(--teal-m);">APN privado · Seguridad</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Los dispositivos IoT del cliente (sensores, cámaras, GPS, PLCs con SIM) transmiten por la red 4G/5G de Personal Tech sobre un <strong>APN privado dedicado</strong> — un canal de datos exclusivo que va directamente al cloud de Personal Tech sin salir a internet público.<br><br>Esto elimina el riesgo de intercepción, spoofing y ataques man-in-the-middle sobre los dispositivos. <strong>Un sensor industrial con SIM en APN privado es tan seguro como un cable dedicado.</strong></div>
+        <div class="bc-proof"><strong>Caso logística:</strong> 300 camiones frigoríficos transmitiendo temperatura + GPS al APN privado. El dato viaja por la red interna de Personal Tech y llega al cloud en Pacheco. Ningún actor externo puede interceptar ni inyectar datos en ese canal.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--green-m);">
+      <div class="bc-head" style="background:var(--green-l);">
+        <div class="bc-head-top"><div class="bc-icon">📶</div><div class="bc-title">5G privado industrial — la red de la fábrica del futuro</div></div>
+        <span class="bc-tag" style="background:var(--green-l);color:var(--green);border:.5px solid var(--green-m);">5G Privado · Industry 4.0</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech tiene el mayor despliegue 5G de Argentina. Para clientes industriales, despliega <strong>redes 5G privadas dentro de la planta</strong> con latencia sub-10ms — habilitando robots AGV autónomos, brazos robóticos controlados en tiempo real y comunicación máquina-a-máquina de ultra-baja latencia.<br><br>Esta es la infraestructura de Industria 4.0 real — no el concepto, sino la red que lo hace posible.</div>
+        <div class="bc-proof"><strong>Vaca Muerta:</strong> Personal Tech ya despliega redes 5G en campos de producción de gas y petróleo donde no hay fibra. La telemetría de pozos, la automatización de válvulas y el monitoreo de seguridad de la planta corren sobre esa red. Sin Personal Tech, esa conectividad requeriría tender cable en el desierto patagónico.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--amber-m);">
+      <div class="bc-head" style="background:var(--amber-l);">
+        <div class="bc-head-top"><div class="bc-icon">🛰</div><div class="bc-title">Conectividad satelital LEO — donde no llega la fibra ni el 4G</div></div>
+        <span class="bc-tag" style="background:var(--amber-l);color:var(--amber);border:.5px solid var(--amber-m);">Satelital · Campo remoto</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Para activos en zonas rurales o remotas sin cobertura celular — campos agrícolas en el interior, pozos mineros, barcos, equipamiento en ruta — Personal Tech integra conectividad satelital LEO (Starlink) con su plataforma IoT.<br><br><strong>El sensor del silo en el campo de Santiago del Estero, el medidor de caudal en el pozo de Neuquén o el GPS del tractor en Salta transmiten igual que si estuvieran en Buenos Aires.</strong></div>
+        <div class="bc-proof"><strong>La diferencia vs. Starlink directo:</strong> Contratar Starlink directamente da internet residencial. Contratarlo a través de Personal Tech da APN privado + cloud + seguridad + analytics + factura en pesos + soporte local. La diferencia entre conectividad y solución completa.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--pt);">
+      <div class="bc-head" style="background:var(--pt-l);">
+        <div class="bc-head-top"><div class="bc-icon">🏠</div><div class="bc-title">Domótica y Smart Building — el edificio inteligente sobre la red de Personal Tech</div></div>
+        <span class="bc-tag" style="background:var(--pt-l);color:var(--pt-d);border:.5px solid var(--pt);">Domótica · Smart Building</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Tech provee soluciones de <strong>Smart Building y domótica empresarial</strong>: control de acceso inteligente, iluminación automatizada, HVAC conectado, CCTV con IA, sensores de energía y ocupación — todo gestionado desde una plataforma unificada en cloud.<br><br>Para propietarios de edificios corporativos, hoteles, hospitales o centros comerciales, esto transforma la gestión operativa del inmueble y reduce el consumo energético entre 20–35%.</div>
+        <div class="bc-proof"><strong>La integración que nadie más da:</strong> El edificio inteligente de Personal Tech usa la misma red 4G/5G/fibra del cliente para los sensores. No hay una red paralela para el IoT del edificio. La factura de conectividad del edificio y la del IoT de domótica son la misma.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--coral-m);">
+      <div class="bc-head" style="background:var(--coral-l);">
+        <div class="bc-head-top"><div class="bc-icon">⚡</div><div class="bc-title">Edge Computing — decisiones en milisegundos donde el dato se genera</div></div>
+        <span class="bc-tag" style="background:var(--coral-l);color:var(--coral);border:.5px solid var(--coral-m);">Edge Computing · Baja latencia</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Para aplicaciones donde la latencia al cloud central es inaceptable — robots industriales, control de válvulas en tiempo real, reconocimiento de imágenes en línea de producción — Personal Tech despliega <strong>nodos de Edge Computing en la planta o en la infraestructura del cliente.</strong><br><br>El procesamiento ocurre localmente en milisegundos. Solo los resultados y los datos de negocio suben al cloud central. <strong>Inteligencia distribuida donde se necesita.</strong></div>
+        <div class="bc-proof"><strong>Caso visión artificial:</strong> Cámara inspeccionando 200 unidades/minuto en una línea de producción. El modelo de ML corre en el edge node junto a la línea — decisión de "pasa/no pasa" en 5ms. Si tuviera que ir al cloud central, la latencia sería de 50–100ms. La línea ya avanzó. El defecto pasó.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /bc5 -->
+
+
+<!-- ══════ BC6: PERSONAL PAY ══════ -->
+<div class="bc-section" id="bc6">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--pay-l);">💳</div>
+    <div class="bc-sec-title">Personal Pay — la billetera digital regulada integrada al stack tecnológico</div>
+    <span class="bc-sec-badge" style="background:var(--pay-l);color:var(--pay);">BCRA · PSP regulado · Pagos integrados</span>
+  </div>
+
+  <div class="bc-grid">
+    <div class="bc" style="border-color:var(--pay);">
+      <div class="bc-head" style="background:var(--pay-l);">
+        <div class="bc-head-top"><div class="bc-icon">🏦</div><div class="bc-title">PSP regulado por BCRA — pagos con respaldo institucional</div></div>
+        <span class="bc-tag" style="background:var(--pay-l);color:var(--pay);border:.5px solid var(--pay);">Proveedor de Servicios de Pago</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Pay opera como <strong>Proveedor de Servicios de Pago regulado por el BCRA</strong>. No es una billetera informal — tiene la misma supervisión, exigencias de capital y obligaciones de compliance que un banco en materia de pagos.<br><br>Para empresas que quieren integrar pagos en su app o proceso, Personal Pay da acceso a Transferencias 3.0, QR interoperable, débito en cuenta y pagos recurrentes — <strong>sobre la misma infraestructura cloud que ya usan.</strong></div>
+        <div class="bc-proof"><strong>La integración única:</strong> La app del cliente corre en cloud de Personal Tech. Los pagos de la app se procesan via Personal Pay. Los datos de ambas capas están en el mismo Data Lake. El CFO ve el funnel completo: de la visita a la conversión al pago — en un solo dashboard.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--green-m);">
+      <div class="bc-head" style="background:var(--green-l);">
+        <div class="bc-head-top"><div class="bc-icon">🔗</div><div class="bc-title">Pagos integrados en el ecosistema IoT — la máquina que cobra sola</div></div>
+        <span class="bc-tag" style="background:var(--green-l);color:var(--green);border:.5px solid var(--green-m);">IoT + Pagos · Machine payments</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Personal Pay integrado con IoT habilita casos de uso únicos: el cargador de auto eléctrico con SIM de Personal Tech que cobra automáticamente al terminar la carga, el lockers inteligente que cobra el alquiler al abrirlo, la máquina expendedora conectada que reporta stock y cobra sin efectivo.<br><br><strong>La convergencia de IoT + conectividad + pagos es un diferenciador que ningún competidor puede replicar de forma nativa.</strong></div>
+        <div class="bc-proof"><strong>El futuro de la infraestructura de carga eléctrica:</strong> Argentina necesita miles de cargadores de EVs en la próxima década. Cada uno necesita conectividad 4G (Personal Tech), cloud para gestión (Personal Tech) y sistema de cobro (Personal Pay). Personal Tech puede ser el proveedor del ecosistema completo.</div>
+      </div>
+    </div>
+
+    <div class="bc" style="border-color:var(--amber-m);">
+      <div class="bc-head" style="background:var(--amber-l);">
+        <div class="bc-head-top"><div class="bc-icon">📊</div><div class="bc-title">Analytics financiero sobre datos de pago propios</div></div>
+        <span class="bc-tag" style="background:var(--amber-l);color:var(--amber);border:.5px solid var(--amber-m);">FinTech Analytics</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-desc">Los datos de transacciones de Personal Pay pueden alimentar modelos analíticos en el cloud de Personal Tech para detección de fraude en tiempo real, scoring crediticio alternativo, análisis de comportamiento de pago y segmentación de clientes.<br><br><strong>El cliente que integra Personal Pay como medio de cobro obtiene un activo de datos de pagos que tiene valor analítico mucho más allá de los pagos en sí.</strong></div>
+        <div class="bc-proof"><strong>El modelo de datos de pago como ventaja competitiva:</strong> Mercado Pago construyó un negocio de crédito sobre el análisis de los datos de sus pagos. Personal Pay + cloud analytics de Personal Tech da acceso a la misma arquitectura sin depender de un competidor para los pagos.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /bc6 -->
+
+
+<!-- ══════ BC7: TABLA DE OBJECIONES ══════ -->
+<div class="bc-section" id="bc7">
+  <div class="bc-sec-head">
+    <div class="bc-sec-icon" style="background:var(--gray-l);">💬</div>
+    <div class="bc-sec-title">Tabla de objeciones — respuestas listas para la reunión</div>
+    <span class="bc-sec-badge" style="background:var(--gray-l);color:var(--gray-d);">Leer antes de cada reunión</span>
+  </div>
+
+  <div class="dtable-wrap">
+  <table class="dtable">
+    <thead><tr><th>Objeción</th><th>Por qué la dicen</th><th>El pivot ganador</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tn">"Ya tenemos AWS y estamos bien."</td>
+        <td>El CTO tiene inercia con el stack actual y no quiere complicaciones.</td>
+        <td>"Perfecto, AWS es excelente para muchas cosas. Personal Tech no compite con AWS — puede ser su partner de Direct Connect para conectar sus sedes a AWS por circuito privado, y al mismo tiempo darle un cloud soberano en Argentina para los datos que requieren jurisdicción local. Dos mundos, un contrato."</td>
+      </tr>
+      <tr>
+        <td class="tn">"Personal Tech es una telco, no una empresa de cloud."</td>
+        <td>El cliente percibe a Personal como proveedor de SIMs y fibra, no de cloud enterprise.</td>
+        <td>"Telecom opera 5 datacenters Tier III, 24 millones de líneas móviles y la infraestructura que mantiene comunicado al país. Cuando su banco cae un lunes a las 9am, llama a alguien que sabe lo que es operar infraestructura crítica sin parar. Eso es Personal Tech. El cloud es la evolución natural de quien ya opera la red."</td>
+      </tr>
+      <tr>
+        <td class="tn">"Es más caro que montar infraestructura propia."</td>
+        <td>El CFO compara el precio mensual del cloud vs. lo que ya está pagado.</td>
+        <td>"La comparación está incompleta. El hardware que ya está pagado va a necesitar renovación en 3 años en dólares. Más las licencias de VMware que subieron 800%. Más el equipo IT que lo mantiene. Más la energía. Más el DR que no tienen. Podemos armar el TCO completo a 3 años con sus números reales — le llevo los resultados la semana próxima."</td>
+      </tr>
+      <tr>
+        <td class="tn">"Nuestra IT no tiene experiencia en cloud."</td>
+        <td>El Director IT tiene miedo de perder el control o de no poder operar la plataforma.</td>
+        <td>"Esa es exactamente la razón para contratar el servicio gestionado de Personal Tech. Su equipo no opera el cloud — nosotros lo operamos. Su equipo se ocupa de los proyectos de negocio que agregan valor. El parche del hipervisor a las 3am es problema nuestro, no de ellos."</td>
+      </tr>
+      <tr>
+        <td class="tn">"¿Y si Personal Tech quiebra o cambia su estrategia?"</td>
+        <td>El cliente teme el vendor lock-in con una empresa local.</td>
+        <td>"Telecom Argentina cotiza en NYSE y en la Bolsa de Buenos Aires, tiene +24 millones de clientes y opera infraestructura regulada por ENACOM. El riesgo de desaparición es estructuralmente inferior al de una startup de cloud. Y como nuestro stack está basado en estándares abiertos (OpenStack, Kubernetes), sus cargas de trabajo son portables. No hay lock-in."</td>
+      </tr>
+      <tr>
+        <td class="tn">"No necesitamos IoT todavía."</td>
+        <td>El cliente no ve el caso de uso inmediato.</td>
+        <td>"Hoy no parece urgente porque el problema de las paradas de línea o la falta de visibilidad de flota parece manejable. La pregunta es: ¿cuánto les costó el último incidente que no pudieron anticipar? Si el número supera $10.000, el ROI del IoT se paga en el primer evento prevenido."</td>
+      </tr>
+      <tr>
+        <td class="tn">"Preferimos pagar en dólares para tener precios estables."</td>
+        <td>El CFO asocia USD con estabilidad de precio.</td>
+        <td>"Estabilidad en USD significa que si el tipo de cambio se mueve, su presupuesto en pesos explota. Personal Tech en OPEX pesificado con ajuste CPI les da previsibilidad en moneda local. Para el presupuesto anual de IT, eso es más predecible que un contrato en USD con cláusula de ajuste."</td>
+      </tr>
+      <tr>
+        <td class="tn">"La seguridad en cloud es más riesgosa que on-premise."</td>
+        <td>El CISO tiene una percepción legacy de que "en casa es más seguro".</td>
+        <td>"El 95% de los incidentes de seguridad ocurren en infraestructura on-premise, no en cloud. Los hyperscalers invierten miles de millones anuales en seguridad. Su servidor de 2015 tiene el mismo firewall de 2015. La pregunta no es si el cloud es seguro — es si su on-premise es más seguro que lo que Personal Tech le ofrece."</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="pitch">
+    <div class="pitch-label">La frase de cierre universal de Personal Tech</div>
+    <div class="pitch-text">"Cada empresa en Argentina tiene cuatro problemas con su infraestructura tecnológica: hardware que envejece en dólares, regulaciones que exigen más cada año, amenazas de ciberseguridad que crecen cada mes, y la presión del directorio para 'hacer algo con IA'. Personal Tech resuelve los cuatro con un solo proveedor, bajo ley argentina, en pesos, con soporte en español 24 horas. ¿Cuándo empezamos el relevamiento?"</div>
+  </div>
+</div><!-- /bc7 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Battlecards Comerciales · Uso interno · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha2').textContent=hoy;
+var navs=document.querySelectorAll('.tnav');
+var secs=document.querySelectorAll('.bc-section');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  secs.forEach(function(s){
+    if(sy>=s.offsetTop&&sy<s.offsetTop+s.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+s.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

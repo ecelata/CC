@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas Cloud | Hypervisores · Backup/DR · OpenStack</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.6;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--text);padding:0 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:2px solid var(--blue-m);}
+.topbar-brand{font-size:12px;font-weight:700;color:rgba(255,255,255,.4);white-space:nowrap;padding:14px 0;letter-spacing:.06em;}
+.topbar-count{font-size:11px;color:rgba(255,255,255,.25);white-space:nowrap;}
+.search-wrap{flex:1;max-width:600px;position:relative;}
+.search-input{width:100%;padding:10px 16px 10px 42px;font-family:'Roboto',sans-serif;font-size:14px;border:.5px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);background:rgba(255,255,255,.08);color:#fff;outline:none;transition:all .2s;}
+.search-input::placeholder{color:rgba(255,255,255,.3);}
+.search-input:focus{background:rgba(255,255,255,.14);border-color:var(--blue-m);}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;background:none;border:none;padding:3px 6px;border-radius:4px;display:none;}
+.search-clear:hover{background:rgba(255,255,255,.1);}
+
+/* ── PAGE ── */
+.page{max-width:1100px;margin:0 auto;padding:28px 24px 80px;}
+
+/* ── HEADER ── */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:26px;font-weight:700;letter-spacing:-.4px;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:3px;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* ── CATEGORY LEGEND ── */
+.cat-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+.legend-label{font-size:11px;font-weight:700;color:var(--text-ter);text-transform:uppercase;letter-spacing:.07em;margin-right:4px;}
+.legend-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:.5px solid;}
+
+/* ── FILTER ── */
+.filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px;align-items:center;}
+.filter-label{font-size:11px;font-weight:700;color:var(--text-ter);text-transform:uppercase;letter-spacing:.07em;margin-right:4px;}
+.fpill{font-size:11.5px;font-weight:600;padding:5px 13px;border-radius:20px;cursor:pointer;border:.5px solid var(--border);background:var(--bg2);color:var(--text-sec);transition:all .15s;user-select:none;}
+.fpill:hover{border-color:var(--gray-m);}
+.fpill.active{border-color:transparent;}
+.fpill[data-f="all"].active{background:var(--text);color:#fff;}
+.fpill[data-f="hypervisor"].active{background:var(--blue-l);color:var(--blue);border-color:var(--blue-m);}
+.fpill[data-f="backup"].active{background:var(--green-l);color:var(--green);border-color:var(--green-m);}
+.fpill[data-f="openstack"].active{background:var(--coral-l);color:var(--coral);border-color:var(--coral-m);}
+.fpill[data-f="hci"].active{background:var(--purple-l);color:var(--purple);border-color:var(--purple-m);}
+.fpill[data-f="oss"].active{background:var(--amber-l);color:var(--amber);border-color:var(--amber-m);}
+.fpill[data-f="enterprise"].active{background:var(--red-l);color:var(--red);border-color:var(--red-m);}
+
+/* ── RESULTS ── */
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.results-count{font-size:12px;color:var(--text-ter);}
+.results-count span{font-weight:700;color:var(--text);}
+.sort-toggle{font-size:11.5px;color:var(--text-ter);cursor:pointer;background:none;border:.5px solid var(--border);padding:4px 10px;border-radius:var(--radius-sm);font-family:'Roboto',sans-serif;}
+.sort-toggle:hover{background:var(--bg2);}
+
+/* ── GRID ── */
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;}
+
+/* ── CARD ── */
+.term-card{border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .18s;background:var(--bg);}
+.term-card:hover{border-color:var(--gray-m);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.term-card.expanded{border-color:var(--gray-m);}
+.tc-head{padding:12px 15px;display:flex;align-items:flex-start;gap:10px;}
+.tc-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.tc-info{flex:1;min-width:0;}
+.tc-term{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.tc-en{font-size:11px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.tc-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+.tc-cat-pill{font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;}
+.tc-sub-pill{font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;background:var(--gray-l);color:var(--text-sec);}
+.tc-arrow{font-size:11px;color:var(--text-ter);flex-shrink:0;transition:transform .2s;margin-top:4px;}
+.term-card.expanded .tc-arrow{transform:rotate(180deg);}
+
+/* ── BODY ── */
+.tc-body{display:none;border-top:.5px solid var(--border);padding:14px 15px 15px;}
+.term-card.expanded .tc-body{display:block;}
+.tc-specs{margin-bottom:10px;}
+.tc-specs-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-bottom:6px;}
+.spec-row{display:flex;gap:8px;align-items:baseline;padding:4px 0;border-bottom:.5px solid var(--bg2);}
+.spec-row:last-child{border-bottom:none;}
+.spec-key{font-size:12px;color:var(--text-sec);flex:1;}
+.spec-val{font-size:12px;font-weight:700;color:var(--text);text-align:right;max-width:55%;}
+.tc-def{font-size:13px;color:var(--text-sec);line-height:1.65;margin-bottom:8px;}
+.tc-def strong{color:var(--text);}
+.tc-warn{font-size:11.5px;color:var(--red);font-style:italic;padding:7px 10px;background:var(--red-l);border-radius:var(--radius-sm);border-left:2px solid var(--red-m);line-height:1.55;margin-top:8px;}
+.tc-tip{font-size:11.5px;color:var(--green);font-style:italic;padding:7px 10px;background:var(--green-l);border-radius:var(--radius-sm);border-left:2px solid var(--green-m);line-height:1.55;margin-top:8px;}
+.tc-note{font-size:11.5px;color:var(--blue);font-style:italic;padding:7px 10px;background:var(--blue-l);border-radius:var(--radius-sm);border-left:2px solid var(--blue-m);line-height:1.55;margin-top:8px;}
+
+/* ── HIGHLIGHT ── */
+mark{background:#FFF176;color:var(--text);border-radius:2px;padding:0 2px;}
+
+/* ── SECTION DIVIDER ── */
+.section-divider{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:8px 0 2px;}
+.section-divider-line{flex:1;height:.5px;background:var(--border);}
+.section-divider-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);white-space:nowrap;}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-ter);}
+.empty-state-icon{font-size:48px;margin-bottom:16px;}
+
+/* ── FOOTER ── */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;}.doc-meta{text-align:left;}
+  .term-grid{grid-template-columns:1fr;}
+  .topbar{flex-wrap:wrap;padding:10px 16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">🖥 Cloud Infrastructure Tools</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" type="text" placeholder="Buscar herramienta..." autocomplete="off" oninput="doSearch()">
+    <button class="search-clear" id="clearBtn" onclick="clearSearch()">✕</button>
+  </div>
+  <div class="topbar-count" id="topCount">45 herramientas</div>
+</div>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Herramientas Cloud de Infraestructura 2026</div>
+    <div class="doc-sub">Hypervisores · Backup & Disaster Recovery · OpenStack · HCI</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud · Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<!-- LEGEND -->
+<div class="cat-legend">
+  <span class="legend-label">Categoría:</span>
+  <span class="legend-pill" style="background:var(--blue-l);color:var(--blue);border-color:var(--blue-m)">🖥 Hypervisor</span>
+  <span class="legend-pill" style="background:var(--green-l);color:var(--green);border-color:var(--green-m)">💾 Backup / DR</span>
+  <span class="legend-pill" style="background:var(--coral-l);color:var(--coral);border-color:var(--coral-m)">☁️ OpenStack</span>
+  <span class="legend-pill" style="background:var(--purple-l);color:var(--purple);border-color:var(--purple-m)">🔷 HCI</span>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-bar">
+  <span class="filter-label">Filtrar:</span>
+  <span class="fpill active" data-f="all" onclick="setFilter('all',this)">Todos</span>
+  <span class="fpill" data-f="hypervisor" onclick="setFilter('hypervisor',this)">🖥 Hypervisores</span>
+  <span class="fpill" data-f="backup" onclick="setFilter('backup',this)">💾 Backup / DR</span>
+  <span class="fpill" data-f="openstack" onclick="setFilter('openstack',this)">☁️ OpenStack</span>
+  <span class="fpill" data-f="hci" onclick="setFilter('hci',this)">🔷 HCI</span>
+  <span class="fpill" data-f="oss" onclick="setFilter('oss',this)">🟢 Open Source</span>
+  <span class="fpill" data-f="enterprise" onclick="setFilter('enterprise',this)">🏢 Enterprise</span>
+</div>
+
+<!-- RESULTS -->
+<div class="results-header">
+  <div class="results-count" id="resultsCount"><span id="visibleCount">45</span> herramientas</div>
+  <button class="sort-toggle" id="sortBtn" onclick="toggleSort()">A→Z ▾</button>
+</div>
+
+<div class="term-grid" id="termGrid"></div>
+<div class="empty-state" id="emptyState" style="display:none;">
+  <div class="empty-state-icon">🔍</div>
+  <div style="font-size:15px;font-weight:700;color:var(--text-sec);margin-bottom:6px;" id="emptyTitle">Sin resultados</div>
+  <div style="font-size:13px;">Probá con otro nombre o categoría.</div>
+</div>
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Personal Tech · <span id="fecha2"></span></span>
+  <span>Fuentes: Gartner, documentación oficial de cada herramienta — Verificado mayo 2026</span>
+</div>
+
+</div>
+
+<script>
+var CAT = {
+  hypervisor: { label:'Hypervisor',   icon:'🖥',  bg:'var(--blue-l)',   fg:'var(--blue)',   dot:'var(--blue-m)'   },
+  backup:     { label:'Backup / DR',  icon:'💾',  bg:'var(--green-l)',  fg:'var(--green)',  dot:'var(--green-m)'  },
+  openstack:  { label:'OpenStack',    icon:'☁️',  bg:'var(--coral-l)',  fg:'var(--coral)',  dot:'var(--coral-m)'  },
+  hci:        { label:'HCI',          icon:'🔷',  bg:'var(--purple-l)', fg:'var(--purple)', dot:'var(--purple-m)' },
+};
+
+// t=nombre, en=subtítulo, cat=categoría, tags=[], specs=[{k,v}], def, warn, tip, note
+var TOOLS = [
+
+  // ════════════════════════════════════════════
+  //  HYPERVISORES
+  // ════════════════════════════════════════════
+  {t:'VMware ESXi / vSphere',en:'Enterprise Type 1 Hypervisor',cat:'hypervisor',tags:['enterprise'],
+    specs:[{k:'Tipo',v:'Type 1 — bare metal'},{k:'Vendor',v:'Broadcom (ex-VMware)'},{k:'Licencia',v:'Propietaria (cambio modelo 2024)'},{k:'Hipervisor base',v:'ESXi kernel propio'},{k:'Gestión',v:'vCenter Server'},{k:'Almacenamiento',v:'vSAN (HCI integrado)'},{k:'HA/DR',v:'vSphere HA + SRM'}],
+    def:'El hypervisor enterprise de referencia histórica. ESXi es el hipervisor bare-metal; vCenter es el plano de gestión centralizado. <strong>Broadcom adquirió VMware en 2023 y cambió el modelo de licencias a suscripción en 2024</strong>, generando un éxodo masivo de clientes hacia alternativas open source como Proxmox.',
+    warn:'El cambio de modelo de licencias de Broadcom incrementó los costos entre 3x y 10x para muchas organizaciones. Muchos clientes medianos están en proceso de migración a Proxmox VE o Nutanix AHV en 2025-2026.',
+    note:'vSphere sigue siendo el ecosistema más completo: mejor soporte de terceros (backup, seguridad, monitoring), mayor cantidad de drivers de hardware certificados, y la referencia para certificaciones VMware.'},
+
+  {t:'Microsoft Hyper-V',en:'Type 1 Hypervisor — Windows Server',cat:'hypervisor',tags:['enterprise'],
+    specs:[{k:'Tipo',v:'Type 1 — bare metal'},{k:'Vendor',v:'Microsoft'},{k:'Licencia',v:'Incluido en Windows Server'},{k:'Gestión',v:'SCVMM / Windows Admin Center'},{k:'Integración cloud',v:'Azure Arc + Azure Local'},{k:'HA',v:'Failover Clustering'},{k:'DR',v:'Azure Site Recovery'}],
+    def:'Hypervisor integrado en Windows Server desde 2008. Opción natural para organizaciones Microsoft-centric. <strong>Azure Local (ex-Azure Stack HCI) extiende Hyper-V con gestión desde Azure</strong>, convirtiéndolo en la base de la estrategia hybrid cloud de Microsoft.',
+    tip:'Para entornos con licenciamiento Windows Server Enterprise, Hyper-V no tiene costo adicional. La integración nativa con Active Directory, SCOM y Azure es su principal ventaja.'},
+
+  {t:'KVM (Kernel-based Virtual Machine)',en:'Open-source Linux hypervisor',cat:'hypervisor',tags:['oss'],
+    specs:[{k:'Tipo',v:'Type 1 — integrado en kernel Linux'},{k:'Vendor',v:'Red Hat / comunidad'},{k:'Licencia',v:'GPL (open source)'},{k:'Gestión nativa',v:'virsh / virt-manager / libvirt'},{k:'Gestión enterprise',v:'oVirt, RHEV, OpenStack Nova'},{k:'Hipervisor de',v:'AWS (Nitro), GCP, Proxmox, Nutanix AHV'}],
+    def:'Módulo del kernel Linux que convierte cualquier servidor Linux en hypervisor. <strong>Es la base de la mayoría de los clouds públicos (AWS usa KVM/Nitro, GCP usa KVM).</strong> Alta performance por su integración directa con el kernel. Requiere más expertise Linux para gestionar directamente.',
+    tip:'Solo, KVM es un hypervisor de bajo nivel. Combinado con libvirt (API) y una capa de gestión como Proxmox o OpenStack, se convierte en una plataforma enterprise completa y sin costo de licencia.'},
+
+  {t:'Proxmox VE',en:'Open-source virtualization platform',cat:'hypervisor',tags:['oss'],
+    specs:[{k:'Tipo',v:'Type 1 (KVM + LXC)'},{k:'Vendor',v:'Proxmox Server Solutions GmbH'},{k:'Licencia',v:'AGPL-3 (open source) + suscripción soporte'},{k:'Gestión',v:'Web UI, API REST, CLI'},{k:'Almacenamiento',v:'Ceph, ZFS, LVM, NFS'},{k:'Clustering',v:'Proxmox Cluster (hasta 8+ nodos)'},{k:'Backup',v:'Proxmox Backup Server (PBS)'}],
+    def:'Plataforma de virtualización open source que combina KVM (VMs completas) y LXC (contenedores ligeros) en una interfaz web unificada. <strong>La alternativa open source más popular a VMware en 2026</strong>, especialmente para organizaciones que migraron tras el cambio de precios de Broadcom.',
+    tip:'Proxmox VE es gratuito para uso productivo sin suscripción de soporte. La suscripción es opcional y agrega acceso a repositorios enterprise y soporte oficial. Ideal para SMBs y homelabs.'},
+
+  {t:'XCP-ng',en:'Open-source Xen hypervisor',cat:'hypervisor',tags:['oss'],
+    specs:[{k:'Tipo',v:'Type 1 — Xen Project'},{k:'Vendor',v:'Vates (comunidad)'},{k:'Licencia',v:'GPL (fork de XenServer)'},{k:'Gestión',v:'Xen Orchestra (XO)'},{k:'Origen',v:'Fork open source de Citrix XenServer'},{k:'Clustering',v:'Pool de recursos multi-nodo'}],
+    def:'Fork completamente open source de XenServer mantenido por Vates. Elimina las restricciones de licencia de la versión comercial de Citrix. Xen Orchestra (XO) provee la interfaz web de gestión. <strong>Alternativa sólida para quienes conocen el ecosistema Xen</strong> y buscan 100% open source.',
+    note:'El ecosistema Xen tiene menor comunidad que KVM, pero XCP-ng + Xen Orchestra es una solución completa y madura. Históricamente usado por grandes cloud providers como AWS (primeras versiones).'},
+
+  {t:'XenServer (Citrix Hypervisor)',en:'Enterprise Xen hypervisor',cat:'hypervisor',tags:['enterprise'],
+    specs:[{k:'Tipo',v:'Type 1 — Xen Project'},{k:'Vendor',v:'Citrix / Cloud Software Group'},{k:'Licencia',v:'Propietaria (con tier gratuito limitado)'},{k:'Uso típico',v:'Citrix Virtual Apps and Desktops (VDI)'},{k:'Gestión',v:'XenCenter / Citrix Studio'}],
+    def:'Hypervisor enterprise de Citrix basado en Xen. Especialmente relevante en entornos VDI (Virtual Desktop Infrastructure) con Citrix Virtual Apps and Desktops. Fuera de ecosistemas Citrix, su adopción es limitada frente a VMware, Hyper-V y Proxmox.',
+    warn:'El ecosistema XenServer es notablemente más pequeño que sus competidores. Herramientas de backup y monitoring de terceros tienen menor soporte que para VMware o Hyper-V.'},
+
+  {t:'Red Hat OpenShift Virtualization',en:'KVM-based enterprise virtualization',cat:'hypervisor',tags:['enterprise'],
+    specs:[{k:'Tipo',v:'KVM sobre Kubernetes (KubeVirt)'},{k:'Vendor',v:'Red Hat (IBM)'},{k:'Licencia',v:'Propietaria (suscripción RHEL)'},{k:'Base técnica',v:'KVM + KubeVirt + OpenShift'},{k:'Gestión',v:'OpenShift Console + virtctl'},{k:'Integración',v:'OpenShift (Kubernetes enterprise)'}],
+    def:'Plataforma que permite correr VMs junto a contenedores en el mismo clúster Kubernetes/OpenShift usando KubeVirt. <strong>La propuesta de Red Hat para migrar workloads VM legacy a una plataforma cloud-native sin abandonar las VMs.</strong> Ideal para organizaciones Red Hat-centric.',
+    note:'La estrategia es "lift & shift" de VMs a OpenShift: los workloads que no se pueden containerizar siguen como VMs, pero gestionados junto a los contenedores en la misma plataforma.'},
+
+  {t:'Oracle VM VirtualBox',en:'Type 2 desktop hypervisor',cat:'hypervisor',tags:['oss'],
+    specs:[{k:'Tipo',v:'Type 2 — hosted (corre sobre OS host)'},{k:'Vendor',v:'Oracle'},{k:'Licencia',v:'GPL (open source) + Extension Pack propietario'},{k:'Uso',v:'Desarrollo local, testing, homelabs'},{k:'Host OS',v:'Windows, macOS, Linux'},{k:'Guest OS',v:'Cualquier OS'},{k:'Producción',v:'No recomendado'}],
+    def:'Hypervisor tipo 2 de escritorio. Corre sobre un OS host como una aplicación normal. <strong>Uso exclusivo para desarrollo local, testing y aprendizaje — no para producción.</strong> Gratuito y multiplataforma. Alternativa popular: VMware Workstation (propietario) o QEMU.',
+    warn:'VirtualBox no es apto para producción. Por ser Type 2, tiene overhead de performance significativo respecto a hypervisores bare-metal. Para producción siempre usar Type 1 (ESXi, Proxmox, KVM, Hyper-V).'},
+
+  // ════════════════════════════════════════════
+  //  BACKUP & DISASTER RECOVERY
+  // ════════════════════════════════════════════
+  {t:'Veeam Backup & Replication',en:'Enterprise backup & DR platform',cat:'backup',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Veeam Software'},{k:'RPO típico',v:'< 15 minutos'},{k:'RTO típico',v:'< 15 minutos (Instant Recovery)'},{k:'Plataformas',v:'VMware, Hyper-V, Nutanix, AWS, Azure, GCP'},{k:'Modelo',v:'Licencia perpetua + suscripción'},{k:'Deduplicación',v:'Sí (inline)'},{k:'Immutable backup',v:'Sí (S3 Object Lock, hardened repo)'}],
+    def:'La solución de backup más adoptada en el mercado enterprise. <strong>Instant Recovery</strong> permite arrancar una VM directamente desde el backup en segundos, logrando RTOs muy bajos. Arquitectura de repositorios de almacenamiento flexible. Veeam Data Platform unifica backup, monitoreo y análisis.',
+    tip:'Veeam Community Edition es gratuita hasta 10 workloads — perfecta para SMBs y homelabs. Para VMware post-Broadcom, Veeam sigue siendo la opción más integrada.',
+    warn:'El costo crece significativamente con el número de workloads y las suscripciones adicionales (Veeam ONE para monitoreo, etc.).'},
+
+  {t:'Rubrik Security Cloud',en:'Cloud-native data security & backup',cat:'backup',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Rubrik'},{k:'Arquitectura',v:'Inmutable por diseño (no puede modificarse el backup)'},{k:'RPO',v:'Configurable hasta minutos'},{k:'Plataformas',v:'VMware, Hyper-V, Nutanix, AWS, Azure, GCP, SaaS'},{k:'Seguridad',v:'Threat Hunting, Ransomware Detection, Sensitive Data Discovery'},{k:'Modelo',v:'SaaS (cloud-native)'}],
+    def:'Plataforma de backup cloud-native con foco en <strong>ciber resiliencia</strong>. La arquitectura inmutable garantiza que los backups no pueden ser cifrados por ransomware. Incluye detección de amenazas, análisis de datos sensibles y orquestación de recovery. <strong>La elección de referencia en 2026 para organizaciones con alta exigencia de seguridad.</strong>',
+    tip:'Rubrik asume que la brecha va a ocurrir. El valor diferencial es la capacidad de recovery limpio post-ransomware: el sistema identifica el último punto sin infección y orquesta la recuperación.'},
+
+  {t:'Cohesity DataProtect',en:'Hyperconverged backup platform',cat:'backup',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Cohesity'},{k:'Arquitectura',v:'Plataforma secundaria hiperconvergente'},{k:'Plataformas',v:'VMware, Hyper-V, NAS, SQL, Oracle, AWS, Azure'},{k:'Funciones',v:'Backup, replicación, archivado, analytics'},{k:'Deduplicación',v:'Global (cross-workload)'},{k:'DR',v:'Cohesity SiteContinuity'}],
+    def:'Plataforma secundaria hiperconvergente que consolida backup, DR, archivado y analytics en una sola solución. Deduplicación global que puede alcanzar ratios de 55:1. <strong>Compite directamente con Veeam y Rubrik</strong> en el espacio enterprise con una propuesta de consolidación de infraestructura secundaria.',
+    note:'Cohesity se fusionó con Veritas en 2024, ampliando su footprint. La plataforma resultante tiene mayor cobertura pero mayor complejidad.'},
+
+  {t:'Commvault Cloud',en:'Enterprise data protection platform',cat:'backup',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Commvault'},{k:'Cobertura',v:'Más de 60 tipos de datos (VMs, BD, SaaS, containers)'},{k:'RPO/RTO',v:'Configurable; Metallic SaaS ofrece flexibilidad'},{k:'Arquitectura',v:'Agente + CommServe server'},{k:'Modelos',v:'On-prem, SaaS (Metallic), híbrido'},{k:'Automatización',v:'Policy-driven, workflows'}],
+    def:'Una de las plataformas de protección de datos más completas del mercado. Cubre prácticamente cualquier tipo de workload. <strong>Metallic</strong> es la versión SaaS/cloud-native. Muy usado en grandes enterprises por su cobertura multi-plataforma y capacidades de compliance.',
+    warn:'Commvault es conocido por su complejidad de implementación y administración. Requiere expertise dedicado. Para organizaciones sin equipo especializado, Veeam o Rubrik suelen ser más operables.'},
+
+  {t:'Zerto',en:'Continuous data protection & DR',cat:'backup',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'HPE (adquirido 2021)'},{k:'Tecnología',v:'Continuous Data Protection (CDP) — replicación por journal'},{k:'RPO',v:'Segundos (journal-based)'},{k:'RTO',v:'Minutos'},{k:'Plataformas',v:'VMware, Hyper-V, Azure, AWS'},{k:'Caso de uso',v:'DR entre sites y migración a cloud'},{k:'VPG',v:'Virtual Protection Groups'}],
+    def:'Plataforma de DR basada en <strong>Continuous Data Protection (CDP)</strong>. No hace snapshots periódicos: replica cada escritura en tiempo real. Permite recovery a cualquier punto en los últimos días, no solo a momentos de snapshot. Ideal para sistemas con requisitos de RPO de segundos.',
+    tip:'Zerto es la mejor opción técnica cuando el RPO no puede superar los segundos (sistemas financieros, e-commerce de alta transacción). Para backup tradicional, Veeam suele ser más económico.'},
+
+  {t:'Druva Data Security Cloud',en:'SaaS-native backup platform',cat:'backup',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Druva'},{k:'Arquitectura',v:'100% SaaS — sin hardware ni software on-prem'},{k:'Cobertura',v:'VMware, endpoints, Microsoft 365, AWS, Azure, Google Workspace'},{k:'Almacenamiento',v:'AWS S3 (backend)'},{k:'Modelo',v:'Suscripción SaaS por workload'},{k:'Ransomware',v:'Air-gap inmutable por diseño'}],
+    def:'Plataforma de backup 100% SaaS. Sin appliances, sin infraestructura a gestionar. Todo corre en la nube de Druva (backend en AWS). <strong>Air-gap natural:</strong> los backups están completamente aislados del entorno del cliente en infraestructura Druva.',
+    tip:'Ideal para organizaciones que quieren cero infraestructura de backup propia. El modelo SaaS simplifica drásticamente la gestión, especialmente para endpoints y SaaS (Microsoft 365, Salesforce).'},
+
+  {t:'Acronis Cyber Protect',en:'Backup + cybersecurity integrado',cat:'backup',tags:['enterprise','oss'],
+    specs:[{k:'Vendor',v:'Acronis'},{k:'Plataformas',v:'Windows, Linux, macOS, VMware, Hyper-V, AWS, Azure'},{k:'Diferencial',v:'Backup + EDR + antimalware en un solo agente'},{k:'RPO',v:'Minutos (snapshot-based)'},{k:'Modelo',v:'Perpetua + Cloud (MSP-friendly)'},{k:'MSP',v:'Muy usado por proveedores de servicio'}],
+    def:'Plataforma que <strong>unifica backup y ciberseguridad (antimalware, EDR, patch management)</strong> en un solo producto. Muy popular en el mercado de Managed Service Providers (MSPs) por su modelo de gestión multi-tenant y precio accesible.',
+    tip:'Para MSPs o empresas medianas que quieren simplificar el stack (un solo agente para backup + seguridad), Acronis ofrece muy buena relación precio/funcionalidad.'},
+
+  {t:'Nakivo Backup & Replication',en:'Mid-market backup solution',cat:'backup',tags:['oss'],
+    specs:[{k:'Vendor',v:'NAKIVO'},{k:'Plataformas',v:'VMware, Hyper-V, Nutanix, AWS, Azure, Oracle, NAS'},{k:'Despliegue',v:'NAS (QNAP, Synology), Windows, Linux, AMI'},{k:'Precio',v:'Desde $1.95/workload/mes'},{k:'Instant Recovery',v:'Sí'},{k:'Immutable backup',v:'Sí (S3 + local)'}],
+    def:'Solución de backup mid-market con excelente relación precio/funcionalidad. <strong>Se puede instalar directamente en un NAS (QNAP, Synology)</strong> sin infraestructura adicional. Compite directamente con Veeam en SMBs con hasta el 50% menos de costo.',
+    tip:'Para organizaciones con VMware o Hyper-V en un presupuesto ajustado, NAKIVO es la alternativa más completa a Veeam en el segmento medio.'},
+
+  {t:'Bacula Enterprise',en:'Open-source enterprise backup',cat:'backup',tags:['oss'],
+    specs:[{k:'Vendor',v:'Bacula Systems'},{k:'Licencia',v:'AGPL (community) + propietaria (enterprise)'},{k:'Plataformas',v:'Linux, Windows, VMware, KVM, AWS, Azure, GCP, OpenStack'},{k:'Arquitectura',v:'Director + Storage Daemon + File Daemon'},{k:'Escalabilidad',v:'Petabytes — usado por CERN, NASA'}],
+    def:'Solución de backup open source de nivel enterprise. Altamente modular y escalable. <strong>Usado por organizaciones como CERN para gestionar petabytes de datos.</strong> Requiere mayor expertise técnico que soluciones comerciales pero sin costo de licencia en la versión community.',
+    note:'Bacula tiene una curva de aprendizaje pronunciada. La versión enterprise agrega una interfaz web, módulos adicionales y soporte comercial.'},
+
+  {t:'Amanda (Advanced Maryland Automatic Network Disk Archiver)',en:'Open-source network backup',cat:'backup',tags:['oss'],
+    specs:[{k:'Licencia',v:'Open source (LGPL)'},{k:'Uso',v:'Backup de servidores Linux/Unix via red'},{k:'Almacenamiento',v:'Tape, disco, cloud (S3 en Amanda Enterprise)'},{k:'Escala',v:'Decenas/cientos de servidores'},{k:'Gestión',v:'CLI + configuración en texto plano'}],
+    def:'Una de las soluciones de backup open source más antiguas y estables. <strong>Estándar en entornos Linux/Unix tradicionales.</strong> Amplia de red: un servidor Amanda puede respaldar cientos de clientes. Zmanda es la versión enterprise con interfaz web y soporte.',
+    warn:'Amanda muestra su edad en comparación con soluciones modernas. Para nuevos proyectos en 2026, Bacula o Veeam Community Edition suelen ser mejores opciones.'},
+
+  {t:'Veeam Community Edition',en:'Free backup hasta 10 workloads',cat:'backup',tags:['oss'],
+    specs:[{k:'Costo',v:'Gratuito'},{k:'Límite',v:'10 workloads (VMs, servidores físicos o cloud)'},{k:'Funciones',v:'Backup, restore, replicación básica'},{k:'Plataformas',v:'VMware, Hyper-V, Nutanix CE'},{k:'Restricción',v:'Sin SLA de soporte técnico'}],
+    def:'Versión gratuita de Veeam con las funciones core de backup y restore. <strong>Suficiente para organizaciones pequeñas, homelabs y entornos de prueba.</strong> No requiere licencia ni tarjeta de crédito.',
+    tip:'La mejor opción gratuita para backup de VMs en entornos VMware/Hyper-V pequeños. Si se superan los 10 workloads, el upgrade a Veeam Essentials o Foundation es directo.'},
+
+  // ════════════════════════════════════════════
+  //  OPENSTACK — COMPONENTES
+  // ════════════════════════════════════════════
+  {t:'OpenStack (plataforma)',en:'Open-source cloud operating system',cat:'openstack',tags:['oss'],
+    specs:[{k:'Tipo',v:'Cloud privado / público IaaS'},{k:'Origen',v:'Rackspace + NASA (2010)'},{k:'Gobernanza',v:'OpenInfra Foundation'},{k:'Versión 2025',v:'Caracal (2024) / Dalmation (2025)'},{k:'Despliegues',v:'Telefónica, CERN, Deutsche Telekom'},{k:'Instaladores',v:'Kolla-Ansible, OpenStack-Ansible, TripleO'}],
+    def:'Sistema operativo de cloud open source para construir nubes privadas y públicas. <strong>La alternativa open source a AWS/Azure/GCP para quien quiere control total sobre la infraestructura.</strong> Arquitectura modular: cada componente (Nova, Neutron, Cinder, etc.) puede activarse independientemente.',
+    note:'OpenStack tiene una curva de implementación pronunciada. Para organizaciones sin expertise dedicado, soluciones más simples como Proxmox o VMware Cloud Foundation suelen ser más operables.'},
+
+  {t:'Nova (OpenStack Compute)',en:'Servicio de cómputo — instancias VM',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'EC2'},{k:'Equivalente Azure',v:'Azure Virtual Machines'},{k:'Hypervisores soportados',v:'KVM, QEMU, XenServer, Hyper-V, VMware'},{k:'Gestión de instancias',v:'Ciclo de vida completo (create, pause, migrate, delete)'},{k:'Scheduler',v:'Elige el host físico para cada VM'},{k:'Live migration',v:'Sí'}],
+    def:'El motor de cómputo de OpenStack. Gestiona el ciclo de vida de instancias virtuales: provisioning, inicio, pausa, migración en vivo y terminación. <strong>Nova no provee virtualización por sí mismo</strong> — usa libvirt para interactuar con el hypervisor subyacente (usualmente KVM).',
+    note:'Nova depende de otros componentes: Keystone (auth), Glance (imágenes), Neutron (red) y Placement (recursos disponibles). No funciona aislado.'},
+
+  {t:'Neutron (OpenStack Networking)',en:'Networking-as-a-Service',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'VPC + ELB + Route 53'},{k:'Protocolos overlay',v:'VXLAN, GRE, Geneve'},{k:'SDN plugins',v:'Open vSwitch, Linux Bridge, Calico'},{k:'Funciones',v:'Redes virtuales, subredes, routers, floating IPs, security groups'},{k:'LBaaS',v:'Octavia (balanceo de carga)'},{k:'VPNaaS',v:'VPN-as-a-Service integrado'}],
+    def:'Componente de networking de OpenStack. Provee red virtual definida por software (SDN): redes, subredes, routers, grupos de seguridad y IPs flotantes. Soporta NFV (Network Function Virtualization) para desplegar firewalls y balanceadores virtualizados.',
+    note:'La complejidad de Neutron es uno de los puntos más desafiantes en implementaciones OpenStack. Open vSwitch (OVS) es el backend más común.'},
+
+  {t:'Cinder (OpenStack Block Storage)',en:'Block Storage-as-a-Service',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'EBS (Elastic Block Store)'},{k:'Backends soportados',v:'Ceph RBD, NFS, iSCSI, NetApp, Pure Storage, HP 3PAR'},{k:'Funciones',v:'Volúmenes persistentes, snapshots, clones, migraciones'},{k:'Multi-attach',v:'Sí (desde Xena)'},{k:'Cifrado',v:'Volúmenes cifrados con LUKS'}],
+    def:'Proveedor de almacenamiento en bloque persistente para instancias Nova. Los volúmenes Cinder persisten independientemente del ciclo de vida de la instancia (equivalente a un disco duro externo en cloud). Soporta decenas de backends de almacenamiento físico.',
+    tip:'El backend más recomendado para Cinder en despliegues nuevos es Ceph RBD: distribuido, resiliente, open source y sin licencia.'},
+
+  {t:'Swift (OpenStack Object Storage)',en:'Object Storage distribuido',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'S3'},{k:'Tipo',v:'Object storage distribuido, eventualmente consistente'},{k:'Durabilidad',v:'Configurable (3x réplicas por defecto)'},{k:'Protocolos',v:'Swift API + S3 API (compatible)'},{k:'Escala',v:'Billones de objetos, multiple sites'},{k:'Uso típico',v:'Backups, archivos estáticos, objetos grandes'}],
+    def:'Almacenamiento de objetos distribuido y redundante de OpenStack. Almacena objetos de cualquier tamaño con replicación automática entre nodos. <strong>Compatible con S3 API</strong> para facilitar la migración desde/hacia AWS S3.',
+    note:'Para nuevos despliegues OpenStack, muchas organizaciones prefieren Ceph Object Gateway (RGW) sobre Swift por el ecosistema más activo de Ceph.'},
+
+  {t:'Keystone (OpenStack Identity)',en:'Servicio de identidad y autenticación',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'IAM'},{k:'Protocolos',v:'Token-based, LDAP, SAML 2.0, OpenID Connect'},{k:'Funciones',v:'Autenticación, autorización, catálogo de servicios, dominios, proyectos'},{k:'Multi-domain',v:'Sí — múltiples tenants aislados'},{k:'Integración',v:'Active Directory, LDAP, Keycloak'}],
+    def:'El sistema nervioso de autenticación de OpenStack. Todos los servicios OpenStack validan sus peticiones contra Keystone. Gestiona usuarios, proyectos, roles y el catálogo de endpoints de servicios. <strong>Ningún servicio OpenStack funciona sin Keystone.</strong>',
+    note:'Keystone es el primer componente a desplegar en cualquier instalación OpenStack. Su disponibilidad es crítica: si Keystone cae, toda la nube queda inoperativa.'},
+
+  {t:'Glance (OpenStack Image Service)',en:'Catálogo de imágenes de VM',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'AMI (Amazon Machine Images)'},{k:'Formatos',v:'QCOW2, RAW, VMDK, VHD, ISO'},{k:'Storage backends',v:'Swift, Ceph, NFS, S3, filesystem local'},{k:'Funciones',v:'Registro, descubrimiento y recuperación de imágenes'},{k:'Metadata',v:'Propiedades custom por imagen'}],
+    def:'Repositorio de imágenes de máquinas virtuales para OpenStack. Nova consulta Glance para obtener la imagen al lanzar una instancia. Soporta imágenes públicas (disponibles para todos los usuarios) y privadas (por proyecto).',
+    tip:'El formato QCOW2 es el estándar para KVM/OpenStack: soporta thin provisioning y snapshots internos. Para máxima performance en producción, raw sobre Ceph RBD.'},
+
+  {t:'Horizon (OpenStack Dashboard)',en:'Interfaz web de gestión',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'AWS Console'},{k:'Tecnología',v:'Python Django'},{k:'Funciones',v:'Gestión de instancias, redes, storage, identidad, cuotas'},{k:'Multi-tenancy',v:'Vista por proyecto/usuario'},{k:'Personalización',v:'Plugins y paneles custom'},{k:'API',v:'Solo expone lo que ya está disponible vía API REST'}],
+    def:'Portal web de OpenStack. Dashboard que permite a usuarios y administradores gestionar recursos cloud sin CLI. Muestra instancias, redes, volúmenes, imágenes y cuotas en una interfaz unificada.',
+    note:'Horizon es útil para usuarios no técnicos y para visibility. Los administradores y operadores suelen preferir el CLI (OpenStackClient) para operaciones complejas por mayor control y velocidad.'},
+
+  {t:'Heat (OpenStack Orchestration)',en:'Orquestación de infraestructura como código',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'CloudFormation'},{k:'Lenguaje',v:'HOT (Heat Orchestration Templates) en YAML'},{k:'Funciones',v:'Stacks de recursos, autoscaling, rollback automático'},{k:'Integración',v:'Todos los servicios OpenStack'},{k:'Alternativa',v:'Terraform con provider OpenStack'}],
+    def:'Motor de orquestación de OpenStack. Permite desplegar infraestructura completa (instancias, redes, volúmenes, security groups) desde plantillas YAML. <strong>El equivalente a CloudFormation en AWS.</strong> Hoy compite con Terraform, que muchos prefieren por ser multi-cloud.',
+    note:'Terraform con el provider OpenStack es la alternativa más popular a Heat en 2026, especialmente para equipos que ya usan Terraform para otros clouds.'},
+
+  {t:'Ceilometer / Gnocchi (OpenStack Telemetría)',en:'Telemetría y métricas de recursos',cat:'openstack',tags:['oss'],
+    specs:[{k:'Componente métricas',v:'Gnocchi (time-series DB)'},{k:'Componente eventos',v:'Ceilometer (recolección)'},{k:'Uso típico',v:'Billing, chargeback, capacity planning'},{k:'Integración',v:'Aodh (alertas), Panko (eventos)'}],
+    def:'Subsistema de telemetría de OpenStack. Ceilometer recolecta métricas de uso (CPU, RAM, disco, red) de todos los servicios. Gnocchi almacena y sirve esas métricas como series temporales. <strong>Base para sistemas de facturación interna (chargeback) en nubes privadas.</strong>'},
+
+  {t:'Octavia (OpenStack Load Balancer)',en:'Load Balancing-as-a-Service',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'ALB / NLB'},{k:'Implementación',v:'Amphorae (instancias VM con HAProxy)'},{k:'Protocolos',v:'TCP, UDP, HTTP, HTTPS, TERMINATED_HTTPS'},{k:'HA',v:'Active-Standby, Active-Active'},{k:'Integración',v:'Neutron, Nova, Barbican (TLS)'}],
+    def:'Servicio de balanceo de carga de OpenStack. Despliega instancias Amphora (VMs con HAProxy) que actúan como load balancers. Sucesor de LBaaS v2 de Neutron. Soporte para terminación SSL/TLS con certificados gestionados por Barbican.'},
+
+  {t:'Barbican (OpenStack Key Manager)',en:'Gestión de secretos y certificados',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'AWS Secrets Manager + ACM'},{k:'Almacena',v:'Claves criptográficas, certificados TLS, contraseñas, datos binarios'},{k:'Integración',v:'Octavia (TLS), Cinder (cifrado de volúmenes), Nova'}],
+    def:'Servicio de gestión de secretos de OpenStack. Almacena y provee acceso seguro a claves criptográficas, certificados TLS y contraseñas para otros servicios OpenStack. El equivalente a AWS Secrets Manager dentro del stack OpenStack.',
+    tip:'Barbican es necesario para habilitar Cinder Volumes cifrados en tránsito y en reposo, y para Octavia con terminación TLS.'},
+
+  {t:'Magnum (OpenStack Containers)',en:'Container-as-a-Service — Kubernetes en OpenStack',cat:'openstack',tags:['oss'],
+    specs:[{k:'Equivalente AWS',v:'EKS'},{k:'Orquestadores',v:'Kubernetes, Docker Swarm (deprecated), Mesos'},{k:'Dependencias',v:'Glance, Heat, Keystone, Neutron, Nova'},{k:'Modelo',v:'Aprovisiona clusters Kubernetes sobre VMs OpenStack'}],
+    def:'Servicio que permite desplegar y gestionar clusters de contenedores (principalmente Kubernetes) sobre infraestructura OpenStack. <strong>Kubernetes-as-a-Service sobre tu propia nube privada OpenStack.</strong>'},
+
+  {t:'Ironic (OpenStack Bare Metal)',en:'Bare Metal Provisioning',cat:'openstack',tags:['oss'],
+    specs:[{k:'Función',v:'Provisionar servidores físicos como si fueran VMs'},{k:'Protocolos',v:'PXE, iPXE, Redfish, iLO, iDRAC'},{k:'Casos de uso',v:'HPC, ML/AI, bases de datos de alta performance'},{k:'Integración',v:'Nova (trata al bare metal como una instancia más)'}],
+    def:'Permite a OpenStack gestionar servidores físicos (bare metal) además de VMs. Los usuarios pueden "alquilar" un servidor físico real a través de la misma API de Nova. <strong>Usado cuando las VMs no son suficientes</strong>: cargas HPC, ML con GPUs o bases de datos de ultra-alta performance.',
+    note:'Ironic es la base técnica de los servicios de bare metal en clouds públicos como IBM Cloud Bare Metal.'},
+
+  {t:'Ceph',en:'Distributed storage system — open source',cat:'openstack',tags:['oss'],
+    specs:[{k:'Vendor',v:'Red Hat (IBM) + comunidad'},{k:'Licencia',v:'LGPL (open source)'},{k:'Interfaces',v:'RBD (bloque), RGW (objeto/S3), CephFS (filesystem)'},{k:'Replicación',v:'3x por defecto, configurable'},{k:'Escalabilidad',v:'Petabytes — escala horizontal'},{k:'Integración OpenStack',v:'Cinder (RBD), Glance, Swift alternativo'}],
+    def:'Sistema de almacenamiento distribuido open source. El backend de almacenamiento más recomendado para OpenStack. Provee simultáneamente almacenamiento de bloque (Cinder), objeto (alternativa a Swift) y filesystem distribuido. <strong>Sin punto único de falla, escala horizontalmente añadiendo nodos.</strong>',
+    tip:'Ceph + OpenStack + KVM + Proxmox es el stack open source "all-in" más potente para nubes privadas en 2026, sin costo de licencia.'},
+
+  // ════════════════════════════════════════════
+  //  HCI — HYPER-CONVERGED INFRASTRUCTURE
+  // ════════════════════════════════════════════
+  {t:'Nutanix AHV + Prism',en:'HCI enterprise — hypervisor propio',cat:'hci',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Nutanix'},{k:'Hypervisor',v:'AHV (basado en KVM)'},{k:'Storage',v:'Nutanix Distributed Storage (DSF)'},{k:'Gestión',v:'Prism Element (clúster) + Prism Central (multi-clúster)'},{k:'DR',v:'Nutanix DRaaS + Leap'},{k:'Multi-hypervisor',v:'También soporta VMware y Hyper-V sobre su storage'}],
+    def:'Plataforma HCI (Hyper-Converged Infrastructure) que integra cómputo, almacenamiento y virtualización en un único stack. AHV es su hypervisor propio basado en KVM. <strong>La alternativa HCI enterprise más adoptada post-Broadcom</strong>, con migración directa desde VMware vía Move.',
+    tip:'Nutanix Move es la herramienta de migración gratuita de VMware a AHV. Para organizaciones que huyen de los nuevos precios de Broadcom, Nutanix es la opción HCI más directa.'},
+
+  {t:'Azure Local (ex-Azure Stack HCI)',en:'Hiperconvergencia híbrida Microsoft',cat:'hci',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Microsoft'},{k:'Hypervisor',v:'Hyper-V'},{k:'Gestión',v:'Azure Portal + Azure Arc'},{k:'Storage',v:'Storage Spaces Direct (S2D)'},{k:'Modelo',v:'Suscripción Azure por nodo'},{k:'Integración',v:'Azure Backup, Monitor, Defender, Site Recovery'}],
+    def:'Solución HCI de Microsoft que combina Hyper-V con Azure para gestión y servicios cloud. El hardware corre on-premise pero se gestiona 100% desde Azure Portal. <strong>La propuesta de Microsoft para hybrid cloud</strong>: la gestión y los servicios son Azure, el hardware es local.',
+    note:'Azure Local requiere hardware certificado por Microsoft. El costo incluye la suscripción a Azure por nodo más el costo del hardware validado.'},
+
+  {t:'VMware Cloud Foundation (VCF)',en:'Software-Defined Data Center completo',cat:'hci',tags:['enterprise'],
+    specs:[{k:'Vendor',v:'Broadcom (ex-VMware)'},{k:'Componentes',v:'ESXi + vSAN + NSX + vCenter + Aria Suite'},{k:'Modelo',v:'Suscripción (post-adquisición Broadcom 2024)'},{k:'Uso',v:'SDDC privado y VMware Cloud on AWS'},{k:'Certificación',v:'VCF on-prem, VCF on AWS, VCF on Azure'}],
+    def:'Stack completo de software-defined datacenter de VMware/Broadcom. Incluye hypervisor (ESXi), almacenamiento (vSAN), red (NSX) y gestión (vCenter). <strong>Post-Broadcom, VCF es el único modelo de licenciamiento disponible para nuevas adquisiciones</strong>, lo que elevó significativamente los costos.',
+    warn:'El cambio de modelo de Broadcom convierte vSAN, NSX y vCenter en bundles obligatorios. Muchas organizaciones medianas están evaluando migrar a Nutanix o Proxmox para evitar estos costos.'},
+
+];
+
+// ── STATE ──
+var activeFilter = 'all';
+var sortAZ = true;
+var expanded = null;
+
+var CAT_CONFIG = {
+  hypervisor: { label:'Hypervisor',   icon:'🖥',  bg:'var(--blue-l)',   fg:'var(--blue)',   dot:'var(--blue-m)'  },
+  backup:     { label:'Backup / DR',  icon:'💾',  bg:'var(--green-l)',  fg:'var(--green)',  dot:'var(--green-m)' },
+  openstack:  { label:'OpenStack',    icon:'☁️',  bg:'var(--coral-l)',  fg:'var(--coral)',  dot:'var(--coral-m)' },
+  hci:        { label:'HCI',          icon:'🔷',  bg:'var(--purple-l)', fg:'var(--purple)', dot:'var(--purple-m)'},
+};
+
+function render(query) {
+  var q = (query || '').trim().toLowerCase();
+  var grid = document.getElementById('termGrid');
+  var empty = document.getElementById('emptyState');
+  var vc = document.getElementById('visibleCount');
+  var tc = document.getElementById('topCount');
+
+  var filtered = TOOLS.filter(function(s) {
+    var matchFilter = activeFilter === 'all'
+      || s.cat === activeFilter
+      || (s.tags && s.tags.indexOf(activeFilter) > -1);
+    if (!matchFilter) return false;
+    if (!q) return true;
+    return (s.t.toLowerCase().indexOf(q) > -1) ||
+           (s.en && s.en.toLowerCase().indexOf(q) > -1) ||
+           (s.def && s.def.toLowerCase().indexOf(q) > -1);
+  });
+
+  filtered.sort(function(a, b) {
+    return sortAZ ? a.t.localeCompare(b.t, 'es') : b.t.localeCompare(a.t, 'es');
+  });
+
+  var count = filtered.length;
+  vc.textContent = count;
+  tc.textContent = count + ' herramientas' + (q ? ' encontradas' : '');
+
+  if (count === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('emptyTitle').textContent = 'Sin resultados para "' + query + '"';
+    return;
+  }
+  empty.style.display = 'none';
+
+  var html = '';
+  filtered.forEach(function(tool) {
+    var cat = CAT_CONFIG[tool.cat];
+    var defHl = q ? highlight(tool.def, q) : tool.def;
+    var termHl = q ? highlight(tool.t, q) : tool.t;
+    var enHl = tool.en ? (q ? highlight(tool.en, q) : tool.en) : '';
+
+    var specsHtml = '';
+    if (tool.specs && tool.specs.length) {
+      specsHtml = '<div class="tc-specs"><div class="tc-specs-title">Características</div>';
+      tool.specs.forEach(function(s) {
+        specsHtml += '<div class="spec-row"><span class="spec-key">' + s.k + '</span><span class="spec-val">' + s.v + '</span></div>';
+      });
+      specsHtml += '</div>';
+    }
+
+    var tagPills = '';
+    if (tool.tags) {
+      tool.tags.forEach(function(tag) {
+        var labels = { oss:'🟢 Open Source', enterprise:'🏢 Enterprise' };
+        if (labels[tag]) tagPills += '<span class="tc-sub-pill">' + labels[tag] + '</span>';
+      });
+    }
+
+    var extraHtml = '';
+    if (tool.warn) extraHtml += '<div class="tc-warn">⚠️ ' + tool.warn + '</div>';
+    if (tool.tip)  extraHtml += '<div class="tc-tip">💡 ' + tool.tip  + '</div>';
+    if (tool.note) extraHtml += '<div class="tc-note">ℹ️ ' + tool.note + '</div>';
+
+    html += '<div class="term-card" onclick="toggleCard(this)">' +
+      '<div class="tc-head">' +
+        '<div class="tc-cat-dot" style="background:' + cat.dot + '"></div>' +
+        '<div class="tc-info">' +
+          '<div class="tc-term">' + termHl + '</div>' +
+          (tool.en ? '<div class="tc-en">' + enHl + '</div>' : '') +
+          '<div class="tc-badges">' +
+            '<span class="tc-cat-pill" style="background:' + cat.bg + ';color:' + cat.fg + ';border:.5px solid ' + cat.dot + '">' + cat.icon + ' ' + cat.label + '</span>' +
+            tagPills +
+          '</div>' +
+        '</div>' +
+        '<div class="tc-arrow">▼</div>' +
+      '</div>' +
+      '<div class="tc-body">' +
+        specsHtml +
+        '<div class="tc-def">' + defHl + '</div>' +
+        extraHtml +
+      '</div>' +
+    '</div>';
+  });
+
+  grid.innerHTML = html;
+}
+
+function highlight(text, q) {
+  if (!q || !text) return text;
+  var escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<mark>$1</mark>');
+}
+
+function toggleCard(el) {
+  if (expanded && expanded !== el) expanded.classList.remove('expanded');
+  el.classList.toggle('expanded');
+  expanded = el.classList.contains('expanded') ? el : null;
+  if (expanded) setTimeout(function() { expanded.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
+}
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.fpill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  expanded = null;
+  render(document.getElementById('searchInput').value);
+}
+
+function doSearch() {
+  var q = document.getElementById('searchInput').value;
+  document.getElementById('clearBtn').style.display = q ? 'block' : 'none';
+  render(q);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').style.display = 'none';
+  render('');
+}
+
+function toggleSort() {
+  sortAZ = !sortAZ;
+  document.getElementById('sortBtn').textContent = sortAZ ? 'A→Z ▾' : 'Z→A ▾';
+  render(document.getElementById('searchInput').value);
+}
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
+  if (e.key === 'Escape') clearSearch();
+});
+
+var now = new Date().toLocaleDateString('es-AR', {year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent = now;
+document.getElementById('fecha2').textContent = now;
+render('');
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

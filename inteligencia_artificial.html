@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inteligencia Artificial — Guía Completa y Diccionario | Personal Tech</title>
+<style>
+:root {
+  --ai-purple:#7B2FBE;--ai-purple-l:#F3EAFB;--ai-purple-d:#3D0F6B;
+  --ai-blue:#2D6BE4;--ai-blue-l:#EBF1FD;
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* TAXONOMY TREE */
+.tree{padding:16px 0;margin:10px 0;}
+.tree-root{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.tree-branch{margin-left:24px;position:relative;}
+.tree-branch::before{content:'';position:absolute;left:-14px;top:0;bottom:12px;width:1.5px;background:var(--border);}
+.tree-item{display:flex;align-items:flex-start;gap:8px;margin:6px 0;position:relative;}
+.tree-item::before{content:'';position:absolute;left:-14px;top:13px;width:10px;height:1.5px;background:var(--border);}
+.tree-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.tree-label{font-size:12.5px;font-weight:700;color:var(--text);}
+.tree-desc{font-size:12px;color:var(--text-sec);margin-top:2px;line-height:1.5;}
+.tree-sub{margin-left:24px;position:relative;}
+.tree-sub::before{content:'';position:absolute;left:-14px;top:0;bottom:12px;width:1.5px;background:var(--border);opacity:.5;}
+
+/* DICT CARD */
+.dict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin:12px 0;}
+.dict-card{border:.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.dict-head{padding:10px 13px;display:flex;align-items:center;gap:8px;}
+.dict-letter{font-size:18px;font-weight:700;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dict-term{font-size:13.5px;font-weight:700;color:var(--text);flex:1;}
+.dict-en{font-size:10.5px;color:var(--text-ter);font-style:italic;}
+.dict-body{padding:8px 13px 12px;border-top:.5px solid var(--border);}
+.dict-def{font-size:12px;color:var(--text-sec);line-height:1.6;}
+.dict-def strong{color:var(--text);}
+.dict-example{font-size:11.5px;color:var(--text-ter);font-style:italic;margin-top:5px;padding:5px 8px;background:var(--bg2);border-radius:var(--radius-sm);}
+
+/* TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+
+/* NOTES */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+.analogy{background:var(--ai-purple-l);border-left:3px solid var(--ai-purple);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin:10px 0;font-size:13px;color:var(--text-sec);line-height:1.65;}
+.analogy strong{color:var(--ai-purple-d);}
+
+/* SECTION DIVIDER */
+.section-divider{height:2px;background:linear-gradient(90deg,var(--ai-purple),transparent);margin:48px 0 36px;border-radius:1px;}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3{grid-template-columns:1fr;}
+  .dict-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🤖 Inteligencia Artificial</div>
+  <a class="tnav" href="#v1">01 Qué es la IA</a>
+  <a class="tnav" href="#v2">02 Taxonomía completa</a>
+  <a class="tnav" href="#v3">03 Machine Learning</a>
+  <a class="tnav" href="#v4">04 Deep Learning</a>
+  <a class="tnav" href="#v5">05 IA Generativa</a>
+  <a class="tnav" href="#v6">06 LLMs y modelos</a>
+  <a class="tnav" href="#v7">07 IA aplicada al negocio</a>
+  <a class="tnav" href="#v8">08 IA en la nube</a>
+  <a class="tnav" href="#v9">09 Desafíos y ética</a>
+  <a class="tnav" href="#v10">10 Transformación Digital</a>
+  <a class="tnav" href="#v11">11 Diccionario A–Z</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Inteligencia Artificial — Guía Completa y Diccionario</div>
+    <div class="doc-sub">Conceptos · Taxonomía · Familias y subgéneros · IA Generativa · Aplicaciones de negocio · Glosario A–Z</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO -->
+<div class="hero-strip">
+  <div class="hs" style="background:var(--ai-purple-l);border-color:var(--ai-purple);">
+    <div class="hs-icon">🧠</div>
+    <div class="hs-val">3 familias por capacidad</div>
+    <div class="hs-sub">ANI (hoy), AGI (en desarrollo) y ASI (teórico). Solo usamos la primera.</div>
+  </div>
+  <div class="hs" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="hs-icon">⚙️</div>
+    <div class="hs-val">Machine Learning es el motor</div>
+    <div class="hs-sub">Aprendizaje supervisado, no supervisado, por refuerzo y profundo.</div>
+  </div>
+  <div class="hs" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="hs-icon">✨</div>
+    <div class="hs-val">IA Generativa = crear contenido</div>
+    <div class="hs-sub">Texto (GPT, Claude), imágenes (Midjourney), código (Copilot), video (Sora).</div>
+  </div>
+  <div class="hs" style="background:var(--amber-light);border-color:var(--amber-mid);">
+    <div class="hs-icon">🏗</div>
+    <div class="hs-val">Transformer es la arquitectura clave</div>
+    <div class="hs-sub">El invento que hizo posibles los LLMs modernos. GPT, Claude, Gemini son todos Transformers.</div>
+  </div>
+  <div class="hs" style="background:var(--teal-light);border-color:var(--teal-mid);">
+    <div class="hs-icon">💼</div>
+    <div class="hs-val">IA en el negocio = ventaja competitiva</div>
+    <div class="hs-sub">Analítica predictiva, automatización, personalización y gestión de riesgos.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 QUÉ ES LA IA -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--ai-purple-l);">🧠</div>
+    <div>
+      <div class="vert-title">01 — ¿Qué es la Inteligencia Artificial?</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">La definición, el alcance y la diferencia entre lo que parece y lo que realmente hace</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro"><strong>La Inteligencia Artificial (IA)</strong> es la simulación de procesos de inteligencia humana por parte de sistemas informáticos. Incluye el aprendizaje (adquirir información y reglas para usarla), el razonamiento (usar esas reglas para llegar a conclusiones aproximadas o definitivas) y la autocorrección. <strong>La IA no "piensa" — detecta patrones en datos y los aplica a situaciones nuevas.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('q1')">
+        <span class="acc-badge" style="background:var(--ai-purple-l);color:var(--ai-purple-d);">Definición honesta</span>
+        <div class="acc-info"><div class="acc-name">Qué es la IA realmente — sin la hipérbole de los medios</div><div class="acc-tag">La diferencia entre inteligencia real y reconocimiento de patrones</div></div>
+        <span class="acc-chv" id="achv-q1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-q1">
+        <div class="ab-inner">
+          <div class="analogy"><strong>La analogía del reconocimiento:</strong> Si mostrás miles de fotos etiquetadas de perros y gatos a un sistema de IA, aprende a distinguirlos. Pero si le mostrás un dibujo abstracto de un perro que nunca vio, puede fallar. La IA no "entiende" qué es un perro — aprendió que ciertos patrones de píxeles se llaman "perro". Eso es potente pero también tiene límites claros.</div>
+          <div class="block-label">Lo que la IA puede hacer bien hoy</div>
+          <div class="grid3">
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">🔍</div>
+              <div class="mc-title">Reconocer patrones</div>
+              <div class="mc-text">En imágenes, texto, audio, datos financieros, logs de sistema. Donde hay patrones repetibles, la IA supera al humano en velocidad y escala.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">📈</div>
+              <div class="mc-title">Predecir</div>
+              <div class="mc-text">Dado un historial de datos, predice qué viene. Churn de clientes, falla de maquinaria, precio de activos, demanda de productos.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">✍️</div>
+              <div class="mc-title">Generar contenido</div>
+              <div class="mc-text">Texto, imágenes, código, audio y video que parecen generados por humanos. Con calidad y velocidad imposibles para equipos humanos.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">🗣</div>
+              <div class="mc-title">Conversar</div>
+              <div class="mc-text">Chatbots y asistentes con contexto, matices y capacidad de razonamiento. El lenguaje natural como interfaz universal con el software.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">⚙️</div>
+              <div class="mc-title">Automatizar decisiones</div>
+              <div class="mc-text">Decisiones repetibles y basadas en reglas: aprobar un préstamo, enrutar un ticket, detectar fraude, personalizar una oferta.</div>
+            </div>
+            <div class="mini-card" style="background:var(--coral-light);">
+              <div class="mc-icon">🚫</div>
+              <div class="mc-title">Lo que NO puede hacer</div>
+              <div class="mc-text">Razonar con sentido común en situaciones nuevas, sentir emociones, entender el contexto cultural profundo, tomar decisiones morales genuinas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('q2')">
+        <span class="acc-badge" style="background:var(--ai-purple-l);color:var(--ai-purple-d);">Los 3 niveles de IA</span>
+        <div class="acc-info"><div class="acc-name">ANI · AGI · ASI — la clasificación por capacidad que todo profesional debe conocer</div><div class="acc-tag">Solo el primer nivel existe hoy — los otros dos son investigación y especulación</div></div>
+        <span class="acc-chv" id="achv-q2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-q2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Nivel</th><th>Nombre</th><th>Qué puede hacer</th><th>Estado actual</th><th>Ejemplos</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-size:16px;font-weight:700;color:var(--green-dark);">ANI</td>
+                <td class="tn">Inteligencia Artificial Estrecha<br><em style="font-size:10px;font-weight:400;">(Artificial Narrow Intelligence)</em></td>
+                <td>Supera al humano en <strong>una sola tarea específica</strong>. No puede hacer nada fuera de su dominio de entrenamiento.</td>
+                <td style="color:var(--green-dark);font-weight:700;">✅ Existe y usamos hoy</td>
+                <td>ChatGPT (texto), AlphaGo (ajedrez), sistema de recomendaciones de Netflix, reconocimiento facial, spam filter.</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;color:var(--amber-dark);">AGI</td>
+                <td class="tn">Inteligencia Artificial General<br><em style="font-size:10px;font-weight:400;">(Artificial General Intelligence)</em></td>
+                <td>Capacidad de razonar, aprender y realizar <strong>cualquier tarea intelectual humana</strong> con la misma flexibilidad que un ser humano.</td>
+                <td style="color:var(--amber-dark);font-weight:700;">🔬 En investigación activa</td>
+                <td>No existe aún. OpenAI, Google DeepMind y Anthropic trabajan en esta dirección. Estimaciones: 5–30 años.</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;color:var(--coral-dark);">ASI</td>
+                <td class="tn">Superinteligencia Artificial<br><em style="font-size:10px;font-weight:400;">(Artificial Superintelligence)</em></td>
+                <td>Intelecto que supera la suma de <strong>toda la inteligencia humana combinada</strong> en todos los dominios.</td>
+                <td style="color:var(--coral-dark);font-weight:700;">🔭 Teórico/especulativo</td>
+                <td>Solo existe en ciencia ficción. Si se alcanzara, representaría un punto de inflexión (singularidad tecnológica) para la civilización.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="warn-note"><strong>Para contextualizar:</strong> Cuando hablamos de ChatGPT, Claude, Copilot, Midjourney o cualquier herramienta de IA actual, estamos hablando 100% de ANI. Son extraordinariamente buenos en sus dominios pero no tienen conciencia, no pueden razonar fuera de su entrenamiento y no "quieren" nada. La narrativa de "la IA va a dominar el mundo" confunde ANI con ASI.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 TAXONOMÍA COMPLETA -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--purple-light);">🗺</div>
+    <div>
+      <div class="vert-title">02 — Taxonomía completa del ecosistema de la IA</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">El mapa completo de familias, géneros y subgéneros — de la raíz a las puntas de las ramas</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">Para entender la IA hay que entender su jerarquía. <strong>IA es el campo total. Machine Learning es la técnica. Deep Learning es la tecnología de redes. El Transformer es el invento clave. La IA Generativa es el propósito de crear. Los LLMs son el modelo final.</strong> Todo lo demás se organiza alrededor de esta columna vertebral.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tax1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">El árbol completo</span>
+        <div class="acc-info"><div class="acc-name">Jerarquía visual de todo el ecosistema IA — de la raíz a los subgéneros</div><div class="acc-tag">El mapa de referencia para entender cómo se relacionan todos los conceptos</div></div>
+        <span class="acc-chv" id="achv-tax1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tax1">
+        <div class="ab-inner">
+
+          <!-- ÁRBOL VISUAL -->
+          <div class="tree">
+            <div class="tree-root" style="color:var(--ai-purple-d);">🧠 INTELIGENCIA ARTIFICIAL (el campo total)</div>
+
+            <div class="tree-branch">
+
+              <!-- FAMILIA 1: POR CAPACIDAD -->
+              <div class="tree-item">
+                <div class="tree-dot" style="background:var(--ai-purple);"></div>
+                <div>
+                  <div class="tree-label">Familia 1: Por Capacidad (nivel de consciencia)</div>
+                  <div class="tree-desc">Cómo de "inteligente" puede ser el sistema</div>
+                  <div class="tree-sub">
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--green-mid);"></div><div><div class="tree-label">ANI — IA Estrecha</div><div class="tree-desc">Una sola tarea, supera al humano. Lo que existe hoy.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--amber-mid);"></div><div><div class="tree-label">AGI — IA General</div><div class="tree-desc">Cualquier tarea humana. En investigación.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--coral-mid);"></div><div><div class="tree-label">ASI — Superinteligencia</div><div class="tree-desc">Supera toda la inteligencia humana. Teórico.</div></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAMILIA 2: MACHINE LEARNING -->
+              <div class="tree-item">
+                <div class="tree-dot" style="background:var(--blue-mid);"></div>
+                <div>
+                  <div class="tree-label">Familia 2: Machine Learning (el motor)</div>
+                  <div class="tree-desc">La técnica que permite a la IA aprender de datos sin ser programada explícitamente</div>
+                  <div class="tree-sub">
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--green-mid);"></div><div><div class="tree-label">Aprendizaje Supervisado</div><div class="tree-desc">Datos etiquetados → el modelo aprende a clasificar o predecir. Ej: spam filter, reconocimiento facial.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--amber-mid);"></div><div><div class="tree-label">Aprendizaje No Supervisado</div><div class="tree-desc">Datos sin etiquetar → el modelo encuentra patrones y agrupaciones. Ej: segmentación de clientes.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--teal-mid);"></div><div><div class="tree-label">Aprendizaje por Refuerzo (RL)</div><div class="tree-desc">El agente aprende por recompensas y penalizaciones. Ej: AlphaGo, robótica, videojuegos.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--purple-mid);"></div><div>
+                      <div class="tree-label">Deep Learning (Aprendizaje Profundo)</div>
+                      <div class="tree-desc">Redes neuronales multicapa. La base de todo lo moderno.</div>
+                      <div class="tree-sub">
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--coral-mid);"></div><div><div class="tree-label">CNN — Redes Convolucionales</div><div class="tree-desc">Especialistas en imágenes. Reconocimiento facial, visión por computador.</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--coral-mid);"></div><div><div class="tree-label">RNN — Redes Recurrentes</div><div class="tree-desc">Especialistas en secuencias de tiempo. Traducción, predicción de series.</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--coral-mid);"></div><div><div class="tree-label">GAN — Redes Generativas Antagónicas</div><div class="tree-desc">Dos IAs "compitiendo" para generar realismo. Deepfakes, síntesis de imágenes.</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div><div class="tree-label" style="color:var(--ai-purple-d);">Transformer ⭐ El invento clave</div><div class="tree-desc">Arquitectura que permite entender contexto largo. Base de GPT, Claude, Gemini, Llama.</div></div></div>
+                      </div>
+                    </div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAMILIA 3: POR FUNCIÓN -->
+              <div class="tree-item">
+                <div class="tree-dot" style="background:var(--teal-mid);"></div>
+                <div>
+                  <div class="tree-label">Familia 3: Por Función / Salida</div>
+                  <div class="tree-desc">Qué hace el sistema con los datos</div>
+                  <div class="tree-sub">
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--blue-mid);"></div><div><div class="tree-label">IA Discriminativa / Analítica</div><div class="tree-desc">Clasifica y predice. Spam filter, detección de fraude, reconocimiento facial.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--green-mid);"></div><div><div class="tree-label">IA Predictiva</div><div class="tree-desc">Pronostica eventos futuros basados en datos históricos. Churn, falla de maquinaria, demanda.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--amber-mid);"></div><div><div class="tree-label">IA Prescriptiva</div><div class="tree-desc">No solo predice — sugiere la mejor acción a tomar. "El tanque está bajo, enviá el camión ahora."</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div>
+                      <div class="tree-label" style="color:var(--ai-purple-d);">IA Generativa (GenAI) ✨</div>
+                      <div class="tree-desc">Crea contenido nuevo — texto, imágenes, audio, video, código.</div>
+                      <div class="tree-sub">
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div><div class="tree-label">Texto — LLMs</div><div class="tree-desc">GPT-4, Claude, Gemini, Llama, Mistral. El lenguaje natural como interfaz.</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div><div class="tree-label">Imagen — Modelos de Difusión</div><div class="tree-desc">Midjourney, DALL-E, Stable Diffusion, Firefly (Adobe).</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div><div class="tree-label">Audio y Voz</div><div class="tree-desc">ElevenLabs (clonación de voz), Whisper (transcripción), Suno (música).</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div><div class="tree-label">Video</div><div class="tree-desc">Sora (OpenAI), Runway ML, Pika Labs. Generación de video desde texto.</div></div></div>
+                        <div class="tree-item"><div class="tree-dot" style="background:var(--ai-purple);"></div><div><div class="tree-label">Código</div><div class="tree-desc">GitHub Copilot, Cursor, Amazon CodeWhisperer, Claude Code.</div></div></div>
+                      </div>
+                    </div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAMILIA 4: DOMINIOS -->
+              <div class="tree-item">
+                <div class="tree-dot" style="background:var(--green-mid);"></div>
+                <div>
+                  <div class="tree-label">Familia 4: Dominios de Especialización</div>
+                  <div class="tree-desc">Áreas del mundo real donde la IA tiene aplicación directa</div>
+                  <div class="tree-sub">
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--teal-mid);"></div><div><div class="tree-label">NLP — Procesamiento de Lenguaje Natural</div><div class="tree-desc">Traducción, análisis de sentimiento, resúmenes, chatbots, búsqueda semántica.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--blue-mid);"></div><div><div class="tree-label">Computer Vision — Visión Artificial</div><div class="tree-desc">Detección de objetos, reconocimiento facial, OCR, análisis de video, conducción autónoma.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--amber-mid);"></div><div><div class="tree-label">Robótica</div><div class="tree-desc">Navegación autónoma, manipulación de objetos, drones, brazos industriales.</div></div></div>
+                    <div class="tree-item"><div class="tree-dot" style="background:var(--coral-mid);"></div><div><div class="tree-label">Sistemas Expertos</div><div class="tree-desc">Motores de reglas lógicas para medicina (diagnóstico), derecho (análisis de contratos), finanzas.</div></div></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- /tree -->
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 MACHINE LEARNING -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--blue-light);">⚙️</div>
+    <div>
+      <div class="vert-title">03 — Machine Learning: el motor de la IA</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Cómo las máquinas aprenden sin ser programadas explícitamente</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro"><strong>Machine Learning (ML)</strong> es el motor de un sistema de IA. Describe máquinas que aprenden sin instrucciones explícitas acerca de cómo realizar sus tareas. Depende de modelos: artefactos entrenados que guían a las máquinas cuando interpretan nuevos datos. Los modelos representan patrones de datos y ayudan al sistema a hacer predicciones sin que se le indique cómo hacerlo.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ml1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Los 4 tipos de aprendizaje</span>
+        <div class="acc-info"><div class="acc-name">Supervisado · No Supervisado · Por Refuerzo · Profundo — con analogías y ejemplos reales</div><div class="acc-tag">La base para entender cómo se entrena cualquier modelo de IA</div></div>
+        <span class="acc-chv" id="achv-ml1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ml1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Tipo</th><th>Cómo aprende</th><th>Analogía humana</th><th>Casos de uso reales</th><th>Algoritmos típicos</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">Supervisado</td>
+                <td>Se le dan datos etiquetados (ejemplos correctos). Aprende la relación entre entrada y salida correcta.</td>
+                <td>Estudiar con un libro de ejercicios resueltos. Cada pregunta tiene respuesta.</td>
+                <td>Filtro de spam, detección de fraude, predicción de churn, diagnóstico médico, reconocimiento facial.</td>
+                <td>Regresión lineal/logística, SVM, Random Forest, Gradient Boosting (XGBoost), Redes neuronales.</td>
+              </tr>
+              <tr>
+                <td class="tn">No Supervisado</td>
+                <td>Se le dan datos sin etiquetar. El modelo encuentra patrones y estructura por sí solo.</td>
+                <td>Organizar fotos sin que nadie te diga cómo agruparlas — llegás al resultado por similitud visual.</td>
+                <td>Segmentación de clientes, detección de anomalías, compresión de datos, sistemas de recomendación, análisis de temas.</td>
+                <td>K-Means, DBSCAN, PCA, Autoencoders, Modelos de tópicos (LDA).</td>
+              </tr>
+              <tr>
+                <td class="tn">Refuerzo (RL)</td>
+                <td>El agente toma acciones, recibe recompensas o penalizaciones, y ajusta su comportamiento para maximizar la recompensa acumulada.</td>
+                <td>Entrenar a una mascota: se premia el comportamiento correcto, se ignora el incorrecto. El animal aprende sin que nadie le explique las reglas.</td>
+                <td>Robótica, videojuegos (AlphaGo, OpenAI Five), motores de recomendación, trading algorítmico, control de tráfico.</td>
+                <td>Q-Learning, DQN, PPO, SAC, RLHF (el que hace que los LLMs sean "útiles").</td>
+              </tr>
+              <tr>
+                <td class="tn">Profundo (Deep Learning)</td>
+                <td>Redes neuronales con muchas capas que extraen representaciones jerárquicas de los datos. No necesita ingeniería manual de features.</td>
+                <td>El cerebro humano: neuronas interconectadas que aprenden representaciones complejas sin que nadie le explique qué son los bordes, las formas o los conceptos.</td>
+                <td>Todo lo que parece "magia": reconocimiento de voz, traducción automática, generación de texto e imágenes, detección de objetos en tiempo real.</td>
+                <td>CNNs, RNNs, LSTMs, Transformers, Diffusion Models.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ml2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Cómo se entrena un modelo</span>
+        <div class="acc-info"><div class="acc-name">El ciclo de entrenamiento — datos → algoritmo → modelo → predicción</div><div class="acc-tag">El proceso que convierte datos crudos en inteligencia aplicable</div></div>
+        <span class="acc-chv" id="achv-ml2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ml2">
+        <div class="ab-inner">
+          <div class="analogy"><strong>El ciclo de entrenamiento:</strong> Los algoritmos son instrucciones matemáticas escritas por científicos de datos que indican a la máquina cómo debe encontrar soluciones. Cuando se ejecuta una pequeña selección de datos (datos de entrenamiento) a través de un algoritmo repetido, recurrentemente ajustado hasta que su comportamiento sea fiable, el resultado es un modelo que la máquina puede usar para hacer predicciones.</div>
+          <div class="block-label">Los 5 pasos del pipeline de ML</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>1. Recolección de datos:</strong> la calidad y cantidad del dato determina el techo de la IA. Basura entra, basura sale (GIGO: Garbage In, Garbage Out).</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>2. Preprocesamiento:</strong> limpieza, normalización, manejo de valores faltantes, balanceo de clases. El paso más tedioso — consume el 80% del tiempo.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>3. Entrenamiento:</strong> el algoritmo ajusta sus parámetros internos (pesos) iterativamente para minimizar el error de predicción.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>4. Evaluación:</strong> con datos que el modelo no vio durante el entrenamiento (test set). Métricas: accuracy, precision, recall, F1, AUC.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>5. Despliegue e inferencia:</strong> el modelo en producción recibe datos nuevos y genera predicciones. El pipeline no termina aquí — el modelo se degrada con el tiempo (model drift) y necesita reentrenamiento.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 DEEP LEARNING -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--purple-light);">🕸</div>
+    <div>
+      <div class="vert-title">04 — Deep Learning: redes neuronales y arquitecturas</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">CNN · RNN · GAN · Transformer — las arquitecturas que definen la IA moderna</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro"><strong>Las redes neuronales</strong> son grupos de modelos de aprendizaje automático que simulan las células cerebrales del cerebro humano. Pueden aprender cosas, reconocer patrones y tomar decisiones sin necesidad de programarse explícitamente. El Deep Learning es un grupo de redes neuronales (multicapa) capaz de encontrar patrones en estructuras de datos complejas como imágenes, video y sonido.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dl1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Las 4 arquitecturas clave</span>
+        <div class="acc-info"><div class="acc-name">CNN · RNN/LSTM · GAN · Transformer — cuándo se usa cada una y por qué importa</div><div class="acc-tag">El mapa de arquitecturas que toda persona técnica en cloud debería reconocer</div></div>
+        <span class="acc-chv" id="achv-dl1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dl1">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card" style="border-color:var(--blue-mid);">
+              <div class="mc-icon">🖼</div>
+              <div class="mc-title">CNN — Redes Convolucionales</div>
+              <div class="mc-text">Especializadas en datos con estructura espacial (imágenes, video). Detectan bordes → formas → objetos en capas sucesivas. <strong>Base de:</strong> reconocimiento facial, OCR, detección de objetos, diagnóstico por imagen médica, seguridad CCTV inteligente.</div>
+            </div>
+            <div class="mini-card" style="border-color:var(--teal-mid);">
+              <div class="mc-icon">🔄</div>
+              <div class="mc-title">RNN / LSTM — Redes Recurrentes</div>
+              <div class="mc-text">Especializadas en secuencias: texto, audio, series de tiempo. Tienen "memoria" de lo anterior. <strong>Base de:</strong> traducción automática (pre-Transformer), predicción de series temporales, síntesis de voz. Hoy en gran parte reemplazadas por Transformers.</div>
+            </div>
+            <div class="mini-card" style="border-color:var(--coral-mid);">
+              <div class="mc-icon">⚔️</div>
+              <div class="mc-title">GAN — Redes Generativas Antagónicas</div>
+              <div class="mc-text">Dos redes compiten: una genera contenido falso (Generador) y la otra intenta detectarlo (Discriminador). Se entrenan mutuamente hasta que el falso es indistinguible del real. <strong>Base de:</strong> Deepfakes, síntesis de rostros, super-resolución de imágenes, augmentación de datos.</div>
+            </div>
+            <div class="mini-card" style="background:var(--ai-purple-l);border-color:var(--ai-purple);">
+              <div class="mc-icon">⭐</div>
+              <div class="mc-title">Transformer — el invento que lo cambió todo</div>
+              <div class="mc-text">Arquitectura basada en "atención" que entiende el contexto de toda una secuencia simultáneamente. <strong>Base de TODO lo moderno:</strong> GPT-4, Claude, Gemini, Llama, DALL-E, Whisper, Stable Diffusion. Sin Transformer no hay IA generativa moderna.</div>
+            </div>
+          </div>
+          <div class="tip-note"><strong>Por qué el Transformer es revolucionario:</strong> Las arquitecturas anteriores (RNN) procesaban el texto de izquierda a derecha, palabra por palabra. El Transformer procesa todo simultáneamente y puede "atender" a cualquier parte del texto cuando genera la siguiente palabra. Eso permite contextos de 100K+ tokens y comprensión profunda del lenguaje.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 IA GENERATIVA -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--ai-purple-l);">✨</div>
+    <div>
+      <div class="vert-title">05 — IA Generativa: crear contenido nuevo</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Texto · Imagen · Audio · Video · Código — la IA que genera en vez de clasificar</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro"><strong>La IA Generativa (GenAI)</strong> es la rama de la IA que crea contenido nuevo: texto, imágenes, audio, video o código que no existía antes. A diferencia de la IA analítica (que clasifica o predice sobre lo que ya existe), la GenAI sintetiza. <strong>ChatGPT, Claude, Midjourney, GitHub Copilot y Sora son todos IA Generativa.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('gen1')">
+        <span class="acc-badge" style="background:var(--ai-purple-l);color:var(--ai-purple-d);">IA Analítica vs. Generativa</span>
+        <div class="acc-info"><div class="acc-name">La diferencia fundamental entre clasificar y crear</div><div class="acc-tag">La distinción más importante para cualquier gerente de proyecto o cliente</div></div>
+        <span class="acc-chv" id="achv-gen1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-gen1">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">📊</div>
+              <div class="mc-title">IA Analítica / Discriminativa</div>
+              <div class="mc-text"><strong>Clasifica o predice</strong> sobre datos que ya existen. Pregunta: "¿Esto es spam o no spam?" — "¿Este cliente va a churnar?" — "¿Qué producto recomendar?". Trabaja sobre lo conocido.</div>
+            </div>
+            <div class="mini-card" style="background:var(--ai-purple-l);">
+              <div class="mc-icon">✨</div>
+              <div class="mc-title">IA Generativa (GenAI)</div>
+              <div class="mc-text"><strong>Crea contenido nuevo</strong> que no existía. Pregunta: "Escribí un email comercial para este cliente" — "Generá el código de esta función" — "Creá una imagen de un datacenter futurista". Sintetiza lo nuevo.</div>
+            </div>
+          </div>
+          <div class="analogy"><strong>La analogía del crítico vs. el artista:</strong> La IA analítica es el crítico — mira una obra y dice "esto es impresionismo" o "esto tiene calidad baja". La IA generativa es el artista — parte de una descripción y crea una obra nueva. Ambas son valiosas y complementarias.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('gen2')">
+        <span class="acc-badge" style="background:var(--ai-purple-l);color:var(--ai-purple-d);">El mapa de herramientas GenAI</span>
+        <div class="acc-info"><div class="acc-name">Todos los modelos y herramientas organizados por lo que generan</div><div class="acc-tag">La referencia para saber qué herramienta usar en cada proyecto</div></div>
+        <span class="acc-chv" id="achv-gen2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-gen2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Tipo de output</th><th>Modelos / Herramientas principales</th><th>Quién las da</th><th>Caso de uso empresarial</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">📝 Texto</td><td>GPT-4o (OpenAI), Claude 3.5 (Anthropic), Gemini (Google), Llama 3 (Meta), Mistral (Mistral AI)</td><td>OpenAI, Anthropic, Google, Meta, Mistral, AWS Bedrock, Azure OpenAI</td><td>Redacción de propuestas, resúmenes ejecutivos, atención al cliente, generación de código, análisis de contratos.</td></tr>
+              <tr><td class="tn">🖼 Imagen</td><td>DALL-E 3 (OpenAI), Midjourney, Stable Diffusion (Stability AI), Firefly (Adobe), Imagen 3 (Google)</td><td>OpenAI, Midjourney Inc., Stability AI, Adobe</td><td>Marketing y publicidad, diseño de productos, visualización de arquitecturas, prototipado rápido de UI.</td></tr>
+              <tr><td class="tn">🎵 Audio y Voz</td><td>ElevenLabs (clonación de voz), Suno (música), Whisper (transcripción), Chirp (Google TTS)</td><td>ElevenLabs, Suno, OpenAI, Google</td><td>Locución de contenidos, atención al cliente por voz, transcripción de reuniones, accesibilidad.</td></tr>
+              <tr><td class="tn">🎬 Video</td><td>Sora (OpenAI), Runway ML, Pika Labs, Kling (Kuaishou), Veo 2 (Google)</td><td>OpenAI, Runway, Pika, Google</td><td>Creación de contenido de marketing, capacitaciones corporativas, prototipos de producto sin costo de producción.</td></tr>
+              <tr><td class="tn">💻 Código</td><td>GitHub Copilot, Amazon CodeWhisperer, Cursor, Claude Code, Codeium</td><td>Microsoft/GitHub, Amazon, Anthropic</td><td>Autocompletado de código, generación de tests, refactoring, documentación automática, revisión de código.</td></tr>
+              <tr><td class="tn">📋 Documentos estructurados</td><td>Claude (para análisis de PDFs), ChatGPT con plugins, NotebookLM (Google)</td><td>Anthropic, OpenAI, Google</td><td>Análisis de contratos, resúmenes de reuniones, extracción de datos de documentos.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 LLMs -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--amber-light);">💬</div>
+    <div>
+      <div class="vert-title">06 — LLMs: los grandes modelos de lenguaje</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Cómo funcionan · Comparativa de modelos · Tokens · Prompting · RAG · Agentes</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro"><strong>Los Large Language Models (LLMs)</strong> son modelos de IA entrenados sobre cantidades masivas de texto para entender y generar lenguaje humano. No "piensan" — predicen el siguiente token más probable dado el contexto. Esa predicción estadística, a escala de billones de parámetros, produce resultados que parecen inteligencia genuina.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('llm1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Conceptos clave de los LLMs</span>
+        <div class="acc-info"><div class="acc-name">Tokens · Parámetros · Temperatura · Context Window · Hallucination</div><div class="acc-tag">El vocabulario mínimo para hablar con autoridad sobre LLMs ante cualquier cliente técnico</div></div>
+        <span class="acc-chv" id="achv-llm1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-llm1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Concepto</th><th>Qué es</th><th>Por qué importa</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Token</td><td>Unidad básica de texto que procesa el LLM. Aproximadamente 0.75 palabras en español. "Hola" = 1 token, "inteligencia artificial" ≈ 3 tokens.</td><td>Los modelos cobran por tokens (entrada + salida). Un documento de 10 páginas ≈ 3.000 tokens. Controla el costo de uso.</td></tr>
+              <tr><td class="tn">Parámetros (pesos)</td><td>Los "ajustes" internos del modelo que se aprenden durante el entrenamiento. GPT-4 tiene ~1 billón. Llama 3 70B tiene 70.000 millones.</td><td>Más parámetros ≠ siempre mejor. Modelos pequeños bien afinados superan a modelos grandes genéricos en tareas específicas.</td></tr>
+              <tr><td class="tn">Context Window</td><td>Cuánto texto puede "ver" el modelo simultáneamente. Claude tiene 200K tokens (≈150K palabras, un libro completo). GPT-4: 128K.</td><td>Un context window largo permite analizar documentos completos, mantener conversaciones largas y razonar sobre mucho contexto.</td></tr>
+              <tr><td class="tn">Temperatura</td><td>Parámetro (0–1) que controla la aleatoriedad de las respuestas. 0 = siempre la misma respuesta (determinista). 1 = más creativo/impredecible.</td><td>Para tareas de análisis y datos: temperatura baja (0.1–0.3). Para creatividad y brainstorming: temperatura alta (0.7–1.0).</td></tr>
+              <tr><td class="tn">Hallucination</td><td>Cuando el LLM genera información falsa pero con confianza. Inventa fechas, citas, datos estadísticos o hechos que no existen.</td><td>El riesgo más crítico en aplicaciones empresariales. Se mitiga con RAG (Retrieval Augmented Generation) y validación humana.</td></tr>
+              <tr><td class="tn">Fine-tuning</td><td>Reentrenar un modelo base con datos específicos del dominio para especializarlo en una tarea o industria.</td><td>Un LLM especializado en medicina, derecho o finanzas supera a GPT-4 en ese dominio específico con menos tokens de entrada.</td></tr>
+              <tr><td class="tn">RAG</td><td>Retrieval Augmented Generation. El modelo busca información relevante en una base de conocimiento antes de responder.</td><td>Elimina las alucinaciones sobre información propietaria. El modelo responde basado en los documentos de la empresa, no en su entrenamiento.</td></tr>
+              <tr><td class="tn">Agentes IA</td><td>LLM que puede planificar, usar herramientas (búsqueda web, código, APIs) y ejecutar tareas de múltiples pasos de forma autónoma.</td><td>El siguiente nivel: un agente puede recibir "investigá la competencia y preparame un informe" y ejecutarlo sin intervención humana paso a paso.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('llm2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Comparativa de modelos</span>
+        <div class="acc-info"><div class="acc-name">GPT-4 · Claude · Gemini · Llama · Mistral — cuándo usar cada uno</div><div class="acc-tag">La guía práctica para recomendar el modelo correcto según el caso de uso del cliente</div></div>
+        <span class="acc-chv" id="achv-llm2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-llm2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Modelo</th><th>Creador</th><th>Fortaleza principal</th><th>Acceso cloud</th><th>Ideal para</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">GPT-4o</td><td>OpenAI</td><td>Multimodal (texto+imagen+audio). Ecosistema de plugins enorme. El más popular del mundo.</td><td>Azure OpenAI · AWS Bedrock</td><td>Aplicaciones generalistas, integración con Microsoft 365 (Copilot), clientes con stack Microsoft.</td></tr>
+              <tr><td class="tn">Claude 3.5 Sonnet</td><td>Anthropic</td><td>200K context window. Análisis de documentos largos. Menor tasa de alucinaciones. Muy bueno en código.</td><td>AWS Bedrock · Claude.ai</td><td>Análisis de contratos, procesamiento de documentos extensos, tareas de razonamiento complejo, seguridad IA.</td></tr>
+              <tr><td class="tn">Gemini 1.5 Pro</td><td>Google</td><td>1M context window. Integración nativa con Google Workspace. Multimodal nativo.</td><td>Google Cloud Vertex AI</td><td>Clientes con Google Workspace, análisis de video/audio, integración con Sheets/Docs/Gmail.</td></tr>
+              <tr><td class="tn">Llama 3</td><td>Meta</td><td>Open source. Se puede correr on-premise. Sin costo de API. Privacidad total del dato.</td><td>Auto-hosted · AWS Bedrock · Azure</td><td>Empresas que no pueden mandar datos a terceros. IA soberana en Personal Tech. Fine-tuning a medida.</td></tr>
+              <tr><td class="tn">Mistral</td><td>Mistral AI (Francia)</td><td>Eficiente en costo. Datos en Europa (GDPR nativo). Modelos pequeños muy potentes.</td><td>Mistral API · Azure · AWS Bedrock</td><td>Empresas europeas con GDPR estricto, casos de uso de costo-eficiencia, modelos pequeños para edge.</td></tr>
+              <tr><td class="tn">IBM Granite</td><td>IBM</td><td>100% auditable y explicable. Diseñado para IA regulada en finanzas y salud.</td><td>IBM watsonx.ai</td><td>Banca, seguros, salud — donde la explicabilidad del resultado es un requisito legal o regulatorio.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>Conexión con Personal Tech:</strong> AWS Bedrock da acceso a Claude, Llama, Mistral, Titan y otros desde un solo servicio. Azure OpenAI da GPT-4 con datos privados. <strong>Personal Tech puede ofrecer GPU cloud soberana para correr Llama 3 o Mistral localmente</strong> — el dato nunca sale de Argentina. Para empresas que no pueden usar APIs externas por compliance, esto es el único camino.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 IA EN EL NEGOCIO -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--green-light);">💼</div>
+    <div>
+      <div class="vert-title">07 — IA aplicada al negocio</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Toma de decisiones · Analítica predictiva · Personalización · Gestión de riesgos · Automatización</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">La IA se ha convertido en una herramienta cada vez más valiosa para la toma de decisiones en los negocios modernos. <strong>Comprender su rol en el contexto empresarial es crucial para aprovechar todo su potencial — y para vender soluciones cloud que lo habiliten.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('biz1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Los 6 roles de la IA en decisiones de negocio</span>
+        <div class="acc-info"><div class="acc-name">Cómo la IA transforma cada dimensión de la toma de decisiones empresarial</div><div class="acc-tag">Basado en el documento AI Applications · Microcredential 7</div></div>
+        <span class="acc-chv" id="achv-biz1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-biz1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Rol</th><th>Cómo funciona</th><th>Ejemplo concreto de negocio</th><th>Quién lo valora</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Información basada en datos</td><td>Analiza grandes volúmenes identificando patrones que los analistas humanos no detectarían. Base de cualquier decisión informada.</td><td>Una cadena de supermercados analiza 5 años de compras y detecta que los clientes que compran pañales los viernes también compran cerveza. → Rediseño del layout.</td><td>CEO · COO · Marketing</td></tr>
+              <tr><td class="tn">Analítica predictiva</td><td>Usa datos históricos para pronosticar tendencias, comportamientos y riesgos futuros.</td><td>Un banco predice con 85% de accuracy qué clientes van a solicitar un préstamo en los próximos 90 días → campaña proactiva.</td><td>CFO · CMO · Risk</td></tr>
+              <tr><td class="tn">Eficiencia y rapidez</td><td>Automatiza el análisis de datos y tareas rutinarias, liberando capacidad humana para decisiones estratégicas.</td><td>Análisis de un RFP de 400 páginas que tomaría 3 días a un equipo → Claude lo resume en 10 minutos con los puntos clave.</td><td>COO · IT · Operaciones</td></tr>
+              <tr><td class="tn">Personalización</td><td>Analiza comportamiento individual para adaptar productos, mensajes y servicios a cada cliente.</td><td>Netflix predice qué serie preferís con más precisión que tus propios amigos. → Retención de clientes y menor churn.</td><td>CMO · CX · Producto</td></tr>
+              <tr><td class="tn">Gestión de riesgos</td><td>Identifica anomalías, señales de alerta temprana y patrones de riesgo antes de que se materialicen.</td><td>Sistema de detección de fraude que analiza 1 millón de transacciones por hora y bloquea las sospechosas en milisegundos.</td><td>CFO · CISO · Compliance</td></tr>
+              <tr><td class="tn">Toma de decisiones objetiva</td><td>Elimina sesgos humanos en decisiones repetibles y basadas en datos (no en juicios subjetivos).</td><td>Un modelo de IA evalúa CVs sin ver nombre, género o edad → contratación más meritocrática (si el modelo está bien calibrado).</td><td>RRHH · Legal · Compliance</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('biz2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">IA en cadena de suministro</span>
+        <div class="acc-info"><div class="acc-name">Los casos de uso de IA más maduros en operaciones y supply chain</div><div class="acc-tag">Para conversar con COOs y Directores de Operaciones de cualquier industria</div></div>
+        <span class="acc-chv" id="achv-biz2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-biz2">
+        <div class="ab-inner">
+          <div class="grid3">
+            <div class="mini-card">
+              <div class="mc-icon">📦</div>
+              <div class="mc-title">Gestión de inventario</div>
+              <div class="mc-text">Predicción de demanda para optimizar stock. Reducción de over-stock y stockouts. Los sistemas de IA pueden anticipar estacionalidades y eventos externos (clima, eventos) que los humanos no ven.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🚚</div>
+              <div class="mc-title">Optimización de rutas</div>
+              <div class="mc-text">Algoritmos de RL optimizan rutas de entrega en tiempo real considerando tráfico, restricciones horarias y capacidad. DHL, Amazon y Mercado Libre ya ahorran >20% en costos logísticos.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔧</div>
+              <div class="mc-title">Mantenimiento predictivo</div>
+              <div class="mc-text">Sensores IoT + IA detectan que una máquina va a fallar 48hs antes de que ocurra. El mantenimiento se agenda proactivamente. Reduce paradas no planificadas que pueden costar millones por hora.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">✅</div>
+              <div class="mc-title">Control de calidad</div>
+              <div class="mc-text">Computer Vision analiza 100% de los productos en línea de producción a velocidad que ningún humano puede igualar. Detecta defectos visibles a nivel de micrones.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🌡</div>
+              <div class="mc-title">Cadena de frío inteligente</div>
+              <div class="mc-text">IA monitorea temperatura de toda la cadena y alerta o actúa automáticamente si hay desvíos. Crítico en farmacéuticas, alimentos y distribución refrigerada.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🤝</div>
+              <div class="mc-title">Gestión de proveedores</div>
+              <div class="mc-text">Análisis de riesgo de proveedores: probabilidad de quiebra, desastres naturales, problemas geopolíticos. La IA construye resiliencia en la cadena de suministro antes de que ocurran los problemas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 IA EN LA NUBE -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--blue-light);">☁️</div>
+    <div>
+      <div class="vert-title">08 — IA en la nube: servicios cloud de IA</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">AWS Bedrock · Azure OpenAI · Google Vertex AI · Personal Tech GPU soberana</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+    <p class="vert-intro">La IA empresarial se consume principalmente como servicio cloud: sin necesidad de construir ni entrenar modelos, las empresas acceden a las capacidades de los mejores LLMs y modelos de visión a través de APIs. <strong>Personal Tech puede posicionarse en esta conversación con su GPU soberana en Argentina.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cia1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Los 3 modos de consumir IA en el cloud</span>
+        <div class="acc-info"><div class="acc-name">API de terceros · Plataforma MLOps · IA soberana on-premise — cuándo usar cada modelo</div><div class="acc-tag">La guía de arquitectura de IA para el consultor de Personal Tech</div></div>
+        <span class="acc-chv" id="achv-cia1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cia1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Modo</th><th>Cómo funciona</th><th>Ejemplos</th><th>Cuándo elegirlo</th><th>Riesgo</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">API de LLM externo</td>
+                <td>Llamada a una API: el dato viaja al servidor del proveedor, se procesa y vuelve la respuesta.</td>
+                <td>OpenAI API, Claude API, Gemini API, AWS Bedrock, Azure OpenAI</td>
+                <td>Prototipado rápido, datos no sensibles, no hay requisito de soberanía.</td>
+                <td>El dato sale a servidores del exterior. No apto para datos regulados en Argentina (BCRA, salud).</td>
+              </tr>
+              <tr>
+                <td class="tn">Plataforma MLOps cloud</td>
+                <td>Plataforma completa para entrenar, desplegar y monitorear modelos propios. El dato puede estar en la misma región cloud.</td>
+                <td>AWS SageMaker, Azure ML, Google Vertex AI, IBM watsonx.ai</td>
+                <td>Empresas que necesitan modelos propios, fine-tuning con datos privados, MLOps maduro.</td>
+                <td>Complejidad operativa. Requiere equipo de Data Science. El dato sigue en servidores del exterior.</td>
+              </tr>
+              <tr>
+                <td class="tn" style="color:var(--green-dark);">IA soberana en Argentina ⭐</td>
+                <td>Modelo open-source (Llama, Mistral) corriendo en GPU local (on-premise o cloud de Personal Tech en Pacheco).</td>
+                <td>Llama 3 + Personal Tech GPU Cloud · Modelos Hugging Face en servidor propio</td>
+                <td>Datos regulados (BCRA, salud, gobierno), compliance de soberanía de datos, cuando el dato no puede salir de Argentina.</td>
+                <td>Costo de GPU. Requiere gestión del modelo. Personal Tech lo resuelve con GPU-as-a-Service.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">El argumento de Personal Tech para IA soberana</div>
+            <div class="pitch-text">"Un banco argentino quiere implementar un asistente de IA para análisis de contratos. No puede mandar los contratos a OpenAI en EE.UU. por compliance BCRA. Con Personal Tech GPU soberana, corre Claude o Llama localmente en Pacheco — el dato nunca sale de Argentina, el compliance es nativo y tiene el mismo poder de un LLM de primer nivel."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 DESAFÍOS Y ÉTICA -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--amber-light);">⚖️</div>
+    <div>
+      <div class="vert-title">09 — Desafíos, riesgos y ética de la IA</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Sesgo · Privacidad · Explainability · Regulación · El riesgo que los clientes no ven</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('eth1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Los 5 desafíos reales de implementar IA en una empresa</span>
+        <div class="acc-info"><div class="acc-name">Datos · Integración · Ética · Confianza · Costo — los obstáculos que nadie menciona en el pitch</div><div class="acc-tag">Basado en el documento AI Applications · Microcredencial 7</div></div>
+        <span class="acc-chv" id="achv-eth1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-eth1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Desafío</th><th>Por qué ocurre</th><th>Cómo mitigarlo</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Calidad y cantidad de datos</td><td>La IA efectiva requiere grandes volúmenes de datos de alta calidad. Muchas empresas tienen datos silos, inconsistentes o incompletos.</td><td>Data governance como prerequisito. FinOps de datos. Pipeline de calidad antes de entrenar cualquier modelo.</td></tr>
+              <tr><td class="tn">Integración con sistemas legacy</td><td>Los sistemas ERP, CRM y SCADA de años no tienen APIs modernas. Integrarles IA requiere middleware y puede ser costoso.</td><td>Capa de integración (ETL/ELT) + APIs. Empezar con casos de uso donde no se necesita integración profunda.</td></tr>
+              <tr><td class="tn">Sesgos y privacidad</td><td>Si los datos de entrenamiento reflejan sesgos históricos, el modelo los amplifica. Los datos de clientes tienen implicaciones legales y éticas.</td><td>Auditorías de fairness. Datos anonimizados. IBM AI Fairness 360. Cumplimiento con PDPA local.</td></tr>
+              <tr><td class="tn">Falta de confianza interna</td><td>Empleados y directivos no confían en las recomendaciones de la IA. Miedo a la sustitución de empleos. Falta de transparencia del modelo.</td><td>Explicabilidad (explainable AI). Comunicación clara de lo que la IA hace y no hace. Involucrar equipos en el diseño.</td></tr>
+              <tr><td class="tn">Costo y asignación de recursos</td><td>GPU para entrenamiento son costosas. Personal de Data Science es escaso y caro. El ROI no siempre es inmediato.</td><td>Empezar con modelos pre-entrenados (sin costo de entrenamiento). Personal Tech GPU-as-a-Service. Casos de uso con ROI rápido.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('eth2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">IA Responsable</span>
+        <div class="acc-info"><div class="acc-name">Los 5 principios de la IA ética que toda empresa debe conocer</div><div class="acc-tag">Especialmente relevante para sectores regulados: banca, salud, gobierno</div></div>
+        <span class="acc-chv" id="achv-eth2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-eth2">
+        <div class="ab-inner">
+          <div class="grid3">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">🔍</div>
+              <div class="mc-title">Transparencia</div>
+              <div class="mc-text">El sistema debe poder explicar por qué tomó una decisión. Un banco que rechaza un préstamo por IA debe poder explicar la razón al cliente (requisito legal en muchos países).</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">⚖️</div>
+              <div class="mc-title">Fairness / Equidad</div>
+              <div class="mc-text">El modelo no debe discriminar por raza, género, religión u otros atributos protegidos. Requiere auditorías regulares y datasets balanceados.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">🔒</div>
+              <div class="mc-title">Privacidad</div>
+              <div class="mc-text">Los datos personales usados para entrenamiento deben estar anonimizados y cumplir con regulaciones locales (PDPA en Argentina, GDPR en Europa).</div>
+            </div>
+            <div class="mini-card" style="background:var(--coral-light);">
+              <div class="mc-icon">🛡</div>
+              <div class="mc-title">Seguridad</div>
+              <div class="mc-text">Los modelos son vulnerables a prompt injection, adversarial attacks y extracción de datos de entrenamiento. Requieren defensas específicas, no solo las de ciberseguridad tradicional.</div>
+            </div>
+            <div class="mini-card" style="background:var(--purple-light);">
+              <div class="mc-icon">👥</div>
+              <div class="mc-title">Accountability</div>
+              <div class="mc-text">Cuando la IA falla, ¿quién es responsable? El proveedor, la empresa que lo implementó o el modelo mismo. Definir la cadena de responsabilidad antes de desplegar.</div>
+            </div>
+            <div class="mini-card" style="background:var(--teal-light);">
+              <div class="mc-icon">🌱</div>
+              <div class="mc-title">Sustentabilidad</div>
+              <div class="mc-text">Entrenar GPT-4 consumió tanta energía como 500 vuelos transatlánticos. La huella de carbono de la IA es un factor ESG cada vez más relevante.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 TRANSFORMACIÓN DIGITAL -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--teal-light);">🔄</div>
+    <div>
+      <div class="vert-title">10 — IA y Transformación Digital</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Cómo la IA habilita la transformación digital y qué herramientas de modelado apoyan el proceso</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+    <p class="vert-intro"><strong>La Transformación Digital</strong> implica adoptar tecnologías digitales para transformar procesos, modelos de negocio y experiencias del cliente. La IA es el multiplicador que lleva la transformación digital del siguiente nivel — no solo digitaliza los procesos sino que los automatiza, optimiza y predice.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('td1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Las prácticas de TD que la IA potencia</span>
+        <div class="acc-info"><div class="acc-name">BPA · GRC · Process Intelligence · Modernización de apps — cómo la IA transforma cada disciplina</div></div>
+        <span class="acc-chv" id="achv-td1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-td1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Práctica</th><th>Sin IA</th><th>Con IA</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">BPA — Análisis de Procesos</td><td>Mapeo manual de procesos con consultores. Lento y subjetivo.</td><td>Process mining automatizado que extrae el proceso real de los logs del sistema. Descubre ineficiencias que nadie sabía que existían.</td></tr>
+              <tr><td class="tn">GRC — Gobernanza y Compliance</td><td>Revisión manual de documentos y controles. Auditorías periódicas.</td><td>IA analiza continuamente contratos, transacciones y comportamientos en busca de desvíos regulatorios en tiempo real.</td></tr>
+              <tr><td class="tn">Modernización de Aplicaciones</td><td>Análisis manual del código legacy. Reescritura costosa y lenta.</td><td>IA analiza el código legado, sugiere refactoring, genera tests automáticos y acelera la migración a microservicios.</td></tr>
+              <tr><td class="tn">Gestión de Riesgos de Ciberseguridad</td><td>SIEM con reglas manuales. Muchos falsos positivos, detección reactiva.</td><td>IA detecta anomalías de comportamiento que ninguna regla manual puede capturar. Correlación de eventos en tiempo real.</td></tr>
+              <tr><td class="tn">Planificación Estratégica</td><td>Análisis de escenarios manual. Datos históricos con lag.</td><td>IA analiza señales del mercado en tiempo real, simula escenarios y recomienda ajustes estratégicos proactivamente.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="block-label">Herramientas de modelado de procesos complementarias</div>
+          <div class="grid3">
+            <div class="mini-card"><div class="mc-icon">📐</div><div class="mc-title">Bizagi Modeler</div><div class="mc-text">Herramienta gratuita para modelar procesos con BPMN. Genera documentación en PDF/Word/Excel. Punto de entrada para cualquier proyecto de TD.</div></div>
+            <div class="mini-card"><div class="mc-icon">🏗</div><div class="mc-title">Sparx Enterprise Architect</div><div class="mc-text">Solución robusta para modelado de sistemas y arquitectura empresarial. Estándar en proyectos de arquitectura de TI complejos.</div></div>
+            <div class="mini-card"><div class="mc-icon">🗺</div><div class="mc-title">Draw.io</div><div class="mc-text">Herramienta simple y gratuita para crear diagramas de cualquier tipo. Integrada con Google Drive y Confluence.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 DICCIONARIO A–Z -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--gray-light);">📖</div>
+    <div>
+      <div class="vert-title">11 — Diccionario A–Z de Inteligencia Artificial</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Todos los términos clave definidos en lenguaje simple — el glosario de referencia para cualquier reunión</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+    <p class="vert-intro">Este diccionario cubre los términos más usados en conversaciones de IA con clientes, en propuestas técnicas y en presentaciones ejecutivas. <strong>Organizados alfabéticamente con definición, término en inglés y ejemplo concreto.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dict1')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">A – D</span>
+        <div class="acc-info"><div class="acc-name">Alucinación · Algoritmo · Aprendizaje · Chatbot · Clustering · Computer Vision · Dataset · Deep Learning · Diffusion</div></div>
+        <span class="acc-chv" id="achv-dict1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dict1">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--ai-purple-l);">
+                <div class="dict-letter" style="background:var(--ai-purple);color:#fff;">A</div>
+                <div><div class="dict-term">Alucinación</div><div class="dict-en">Hallucination</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Cuando un LLM genera información que parece correcta pero es <strong>completamente falsa</strong>. El modelo "inventa" con total confianza. Es el riesgo más crítico en aplicaciones empresariales.</div>
+                <div class="dict-example">Un LLM afirma que la tasa de inflación de Argentina en 2022 fue 12% cuando fue 95%.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--blue-light);">
+                <div class="dict-letter" style="background:var(--blue-mid);color:#fff;">A</div>
+                <div><div class="dict-term">Algoritmo</div><div class="dict-en">Algorithm</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Instrucciones matemáticas que indican a la máquina cómo encontrar soluciones. El algoritmo se ejecuta sobre datos de entrenamiento repetidamente hasta que el comportamiento sea fiable — el resultado es un modelo.</div>
+                <div class="dict-example">El algoritmo de gradient descent ajusta los pesos de una red neuronal en cada iteración de entrenamiento.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--green-light);">
+                <div class="dict-letter" style="background:var(--green-mid);color:#fff;">C</div>
+                <div><div class="dict-term">Chatbot</div><div class="dict-en">Chatbot</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Programa informático diseñado para simular conversaciones con humanos. Los chatbots modernos usan LLMs y pueden mantener contexto, responder preguntas complejas e integrarse con sistemas empresariales.</div>
+                <div class="dict-example">El asistente virtual de un banco que responde consultas de saldo, transfiere dinero y bloquea tarjetas por WhatsApp.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--teal-light);">
+                <div class="dict-letter" style="background:var(--teal-mid);color:#fff;">C</div>
+                <div><div class="dict-term">Clustering</div><div class="dict-en">Clustering</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Técnica de aprendizaje no supervisado que agrupa datos similares sin etiquetas previas. El modelo descubre la estructura natural de los datos.</div>
+                <div class="dict-example">Segmentar 500.000 clientes en 5 grupos por comportamiento de compra para personalizar campañas.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--blue-light);">
+                <div class="dict-letter" style="background:var(--blue-mid);color:#fff;">C</div>
+                <div><div class="dict-term">Computer Vision</div><div class="dict-en">Computer Vision</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Subcampo de la IA que permite a los sistemas comprender e interpretar imágenes y videos. Aprende a identificar objetos, personas y atributos visuales.</div>
+                <div class="dict-example">Sistema que evalúa daños en un auto tras un accidente, identifica el tipo de vehículo y estima el costo de reparación.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--purple-light);">
+                <div class="dict-letter" style="background:var(--purple-mid);color:#fff;">D</div>
+                <div><div class="dict-term">Deep Learning</div><div class="dict-en">Deep Learning</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Grupo de redes neuronales multicapa que pueden encontrar patrones en estructuras de datos complejas como imágenes, video y sonido. Muchos modelos no necesitan entrenamiento explícito para resolver problemas complejos.</div>
+                <div class="dict-example">Reconocimiento de voz de Siri, traducción de Google Translate, detección de objetos en Tesla Autopilot.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dict2')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">E – L</span>
+        <div class="acc-info"><div class="acc-name">Embeddings · Fine-tuning · GAN · GPU · Inference · LLM · LoRA</div></div>
+        <span class="acc-chv" id="achv-dict2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dict2">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--green-light);">
+                <div class="dict-letter" style="background:var(--green-mid);color:#fff;">E</div>
+                <div><div class="dict-term">Embeddings</div><div class="dict-en">Embeddings</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Representación matemática de texto, imágenes u otros datos como vectores numéricos en un espacio multidimensional. Conceptos similares tienen vectores cercanos. La base de la búsqueda semántica y el RAG.</div>
+                <div class="dict-example">"Rey" - "Hombre" + "Mujer" ≈ "Reina". Los embeddings capturan relaciones semánticas entre conceptos.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--amber-light);">
+                <div class="dict-letter" style="background:var(--amber-mid);color:#fff;">F</div>
+                <div><div class="dict-term">Fine-tuning</div><div class="dict-en">Fine-tuning</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Proceso de reentrenar un modelo pre-entrenado con datos específicos del dominio para especializarlo. Mucho más económico que entrenar desde cero.</div>
+                <div class="dict-example">Tomar Llama 3 (open-source) y fine-tunearlo con contratos de clientes de un estudio jurídico para que responda en lenguaje legal argentino.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--coral-light);">
+                <div class="dict-letter" style="background:var(--coral-mid);color:#fff;">G</div>
+                <div><div class="dict-term">GAN</div><div class="dict-en">Generative Adversarial Network</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Dos redes neuronales compiten: una genera contenido (Generador) y la otra lo evalúa (Discriminador). Se entrenan mutuamente hasta que el contenido generado es indistinguible del real.</div>
+                <div class="dict-example">Deepfakes de celebridades. Síntesis de rostros de personas que no existen. Generación de datos de entrenamiento sintéticos.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--blue-light);">
+                <div class="dict-letter" style="background:var(--blue-mid);color:#fff;">G</div>
+                <div><div class="dict-term">GPU</div><div class="dict-en">Graphics Processing Unit</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Procesador especializado en cálculos paralelos masivos. Originalmente para gráficos, hoy es el hardware fundamental del entrenamiento e inferencia de IA. Sin GPU, la IA moderna no existe.</div>
+                <div class="dict-example">NVIDIA H100 — la GPU de IA más demandada del mundo. Cuesta ~$40.000 USD cada una. OpenAI usa miles de ellas.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--teal-light);">
+                <div class="dict-letter" style="background:var(--teal-mid);color:#fff;">I</div>
+                <div><div class="dict-term">Inferencia</div><div class="dict-en">Inference</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">El proceso de usar un modelo ya entrenado para hacer predicciones sobre datos nuevos. Es la fase de "producción" de la IA. Diferente del entrenamiento (que es caro) — la inferencia puede ser económica.</div>
+                <div class="dict-example">Cuando le preguntás algo a ChatGPT, estás haciendo inferencia sobre el modelo GPT-4 ya entrenado.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--ai-purple-l);">
+                <div class="dict-letter" style="background:var(--ai-purple);color:#fff;">L</div>
+                <div><div class="dict-term">LLM</div><div class="dict-en">Large Language Model</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Modelo de lenguaje entrenado sobre cantidades masivas de texto con miles de millones de parámetros. Capaz de entender y generar lenguaje humano con calidad notable. La categoría que incluye GPT-4, Claude, Gemini.</div>
+                <div class="dict-example">GPT-4 tiene ~1 billón de parámetros. Fue entrenado sobre prácticamente todo el texto de internet hasta 2023.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dict3')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">M – R</span>
+        <div class="acc-info"><div class="acc-name">Machine Learning · MLOps · Modelo · NLP · Overfitting · Parámetros · Prompt · RAG · RLHF</div></div>
+        <span class="acc-chv" id="achv-dict3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dict3">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--blue-light);">
+                <div class="dict-letter" style="background:var(--blue-mid);color:#fff;">M</div>
+                <div><div class="dict-term">Machine Learning</div><div class="dict-en">Machine Learning (ML)</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">El motor de la IA. Técnica que permite a los sistemas aprender de datos sin ser programados explícitamente para cada tarea. Los modelos aprenden patrones y los aplican a datos nuevos.</div>
+                <div class="dict-example">Un sistema ML aprende de millones de transacciones bancarias históricas para detectar fraude en tiempo real — sin reglas manuales.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--green-light);">
+                <div class="dict-letter" style="background:var(--green-mid);color:#fff;">N</div>
+                <div><div class="dict-term">NLP</div><div class="dict-en">Natural Language Processing</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Procesamiento de Lenguaje Natural. Capacidad de los sistemas para comprender y generar lenguaje humano. Incluye traducción, análisis de sentimiento, resúmenes, extracción de entidades y chatbots.</div>
+                <div class="dict-example">Un sistema NLP analiza miles de reseñas de clientes y resume automáticamente los temas de queja más frecuentes.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--amber-light);">
+                <div class="dict-letter" style="background:var(--amber-mid);color:#fff;">O</div>
+                <div><div class="dict-term">Overfitting</div><div class="dict-en">Overfitting</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Cuando un modelo "memoriza" los datos de entrenamiento en lugar de aprender patrones generalizables. Funciona perfectamente con los datos de entrenamiento pero falla con datos nuevos.</div>
+                <div class="dict-example">Un modelo de churn entrenado sobre datos de 2020 predice perfectamente el 2020 pero no sirve para 2024 porque "memorizó" ese año específico.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--ai-purple-l);">
+                <div class="dict-letter" style="background:var(--ai-purple);color:#fff;">P</div>
+                <div><div class="dict-term">Prompt</div><div class="dict-en">Prompt</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">La instrucción o pregunta que se le da a un LLM. La calidad del prompt determina la calidad de la respuesta. "Prompt engineering" es el arte de diseñar prompts efectivos.</div>
+                <div class="dict-example">"Actuá como un experto en contratos argentinos. Resumí este contrato en 5 puntos clave para el CFO, sin jerga legal."</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--green-light);">
+                <div class="dict-letter" style="background:var(--green-mid);color:#fff;">R</div>
+                <div><div class="dict-term">RAG</div><div class="dict-en">Retrieval Augmented Generation</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Técnica que combina búsqueda de información + generación de texto. El LLM busca documentos relevantes antes de responder, basando su respuesta en esos documentos en lugar de su entrenamiento general.</div>
+                <div class="dict-example">Un asistente empresarial que antes de responder sobre políticas de RRHH, busca en el manual de empleados y cita el documento exacto.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--blue-light);">
+                <div class="dict-letter" style="background:var(--blue-mid);color:#fff;">R</div>
+                <div><div class="dict-term">RLHF</div><div class="dict-en">Reinforcement Learning from Human Feedback</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Técnica usada para hacer que los LLMs sean "útiles, honestos e inofensivos". Humanos evalúan respuestas y el modelo aprende a generar respuestas que los humanos prefieren.</div>
+                <div class="dict-example">La razón por la que ChatGPT y Claude responden de forma conversacional y no como texto de internet crudo es RLHF.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dict4')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">S – Z</span>
+        <div class="acc-info"><div class="acc-name">Sesgo · Temperatura · Token · Transfer Learning · Transformer · Vector Database · Zero-shot</div></div>
+        <span class="acc-chv" id="achv-dict4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dict4">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--coral-light);">
+                <div class="dict-letter" style="background:var(--coral-mid);color:#fff;">S</div>
+                <div><div class="dict-term">Sesgo (Bias)</div><div class="dict-en">Bias</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Cuando el modelo refleja y amplifica prejuicios presentes en los datos de entrenamiento. Si los datos históricos muestran discriminación, el modelo discrimina. El sesgo de IA es un problema ético y legal.</div>
+                <div class="dict-example">Un modelo de selección de CVs entrenado con datos históricos rechaza automáticamente candidatos de ciertos géneros porque los datos históricos mostraban ese patrón.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--amber-light);">
+                <div class="dict-letter" style="background:var(--amber-mid);color:#fff;">T</div>
+                <div><div class="dict-term">Temperatura</div><div class="dict-en">Temperature</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Parámetro (0–1) que controla la aleatoriedad de las respuestas de un LLM. 0 = determinista (siempre la misma respuesta). 1 = creativo/impredecible.</div>
+                <div class="dict-example">Para extracción de datos de facturas: temperatura 0. Para generar ideas de campaña de marketing: temperatura 0.9.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--blue-light);">
+                <div class="dict-letter" style="background:var(--blue-mid);color:#fff;">T</div>
+                <div><div class="dict-term">Token</div><div class="dict-en">Token</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Unidad mínima de texto que procesa un LLM. En español, 1 token ≈ 0.6–0.8 palabras. Los modelos cobran por tokens de entrada + tokens de salida.</div>
+                <div class="dict-example">"Inteligencia artificial" ≈ 3 tokens. Un documento Word de 10 páginas ≈ 3.500 tokens. Claude procesa hasta 200.000 tokens de contexto.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--ai-purple-l);">
+                <div class="dict-letter" style="background:var(--ai-purple);color:#fff;">T</div>
+                <div><div class="dict-term">Transformer</div><div class="dict-en">Transformer</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Arquitectura de red neuronal basada en mecanismos de "atención" que entiende el contexto de toda una secuencia simultáneamente. El invento que hizo posibles todos los LLMs modernos (GPT, Claude, Gemini).</div>
+                <div class="dict-example">Propuesto en el paper "Attention Is All You Need" (Google, 2017). El Transformer más influyente de la historia de la IA.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--green-light);">
+                <div class="dict-letter" style="background:var(--green-mid);color:#fff;">V</div>
+                <div><div class="dict-term">Vector Database</div><div class="dict-en">Vector Database</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Base de datos especializada en almacenar y buscar embeddings (vectores numéricos) por similitud semántica, no por coincidencia exacta. La infraestructura fundamental de los sistemas RAG.</div>
+                <div class="dict-example">Pinecone, Weaviate, Chroma, pgvector. Permiten buscar "documentos sobre compliance BCRA" y devuelven los más semánticamente similares aunque no contengan esas palabras exactas.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--teal-light);">
+                <div class="dict-letter" style="background:var(--teal-mid);color:#fff;">Z</div>
+                <div><div class="dict-term">Zero-shot / Few-shot</div><div class="dict-en">Zero-shot / Few-shot Learning</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def"><strong>Zero-shot:</strong> el modelo resuelve una tarea sin ejemplos previos, solo con la instrucción. <strong>Few-shot:</strong> se dan 2–5 ejemplos en el prompt para guiar el formato o estilo de la respuesta.</div>
+                <div class="dict-example">Zero-shot: "Clasificá este ticket como urgente o no urgente." Few-shot: "Ticket 'servidor caído' → urgente. Ticket 'cambiar contraseña' → normal. Clasificá este: 'error en reporte mensual'."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Basado en documentación oficial de IBM, AWS, Anthropic y fuentes académicas · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>
