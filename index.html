@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GGCC · Panel comercial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EEE6; --paper-2:#FBFAF6; --ink:#22261F; --ink-soft:#5A5F52; --ink-faint:#8B8F80;
+    --line:#D3CDBC; --line-strong:#B7AF97;
+    --stamp:#2F6F5E; --stamp-dark:#1F4B3F; --stamp-bg:#DCE7E1;
+    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'Montserrat',var(--sans);
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
+  .suite-nav{
+    background:var(--stamp-dark);display:flex;align-items:center;gap:2px;padding:0 20px;height:42px;
+  }
+  .suite-nav a{
+    color:#CFE0D8;text-decoration:none;font-family:var(--sans);font-size:12.5px;font-weight:500;
+    padding:0 14px;height:42px;display:flex;align-items:center;border-bottom:2px solid transparent;
+  }
+  .suite-nav a:hover{color:#fff;}
+  .suite-nav a.current{color:#fff;border-bottom-color:var(--stamp);font-weight:600;}
+  .suite-nav .suite-brand{
+    color:#fff;font-family:var(--heading);font-weight:600;font-size:12.5px;
+    margin-right:10px;padding-right:14px;border-right:1px solid #2E5A4C;height:20px;display:flex;align-items:center;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:56px 24px 80px;}
+  .eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp);font-weight:600;margin-bottom:8px;}
+  h1{font-family:var(--heading);font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-0.01em;color:var(--stamp-dark);}
+  .lead{font-size:14.5px;color:var(--ink-soft);max-width:560px;line-height:1.6;margin:0 0 40px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:720px){.grid{grid-template-columns:1fr;}}
+  .card{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:12px;
+    padding:24px 26px;text-decoration:none;color:inherit;display:block;transition:.15s ease;
+  }
+  .card:hover{border-color:var(--stamp);box-shadow:0 4px 18px rgba(31,75,63,0.1);transform:translateY(-1px);}
+  .card .icon{
+    width:36px;height:36px;border-radius:9px;background:var(--stamp-bg);color:var(--stamp-dark);
+    display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:14px;
+  }
+  .card h2{font-family:var(--heading);font-size:16px;font-weight:600;margin:0 0 6px;color:var(--ink);}
+  .card p{font-size:12.8px;color:var(--ink-soft);line-height:1.55;margin:0 0 14px;}
+  .card .go{font-size:11px;font-family:var(--mono);color:var(--stamp);font-weight:500;}
+  .card.soon{opacity:.55;cursor:default;}
+  .card.soon:hover{border-color:var(--line);box-shadow:none;transform:none;}
+  .card.soon .icon{background:var(--paper);color:var(--ink-faint);}
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-faint);}
+</style>
+</head>
+<body>
+
+<div class="suite-nav">
+  <span class="suite-brand">GGCC · Grandes Cuentas</span>
+  <a href="index.html" class="current">Portal</a>
+  <a href="dashboard.html">Cartera</a>
+  <a href="Backlog_Preventa.html">Backlog</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Banca · CCEE Servicios · CCEE Industria</div>
+  <h1>Panel comercial GGCC</h1>
+  <p class="lead">Herramientas de cartera y preventa para el seguimiento comercial de Grandes Cuentas. Cada una vive en este mismo repositorio y comparte una sola identidad visual.</p>
+
+  <div class="grid">
+    <a class="card" href="dashboard.html">
+      <div class="icon">◧</div>
+      <h2>Cartera</h2>
+      <p>Cuentas activas de Banca y CCEE, filtradas por gerencia y segmento, con ficha detallada por cuenta.</p>
+      <div class="go">Abrir dashboard →</div>
+    </a>
+
+    <a class="card" href="Backlog_Preventa.html">
+      <div class="icon">◎</div>
+      <h2>Backlog preventa</h2>
+      <p>Pipeline de oportunidades, calificación BANT, montos One Shot y recurrente, y panorama analítico con drill-down.</p>
+      <div class="go">Abrir backlog →</div>
+    </a>
+
+    <div class="card soon">
+      <div class="icon">+</div>
+      <h2>Próxima herramienta</h2>
+      <p>Este espacio queda listo para sumar la siguiente pieza de la suite sin rediseñar nada.</p>
+    </div>
+  </div>
+
+  <footer>ecelata / CC — actualizado manualmente por Edgardo.</footer>
+</div>
+
+</body>
+</html>
