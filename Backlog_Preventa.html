@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Backlog Preventa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EEE6;
+    --paper-2:#E8E4D8;
+    --ink:#22261F;
+    --ink-soft:#5A5F52;
+    --ink-faint:#8B8F80;
+    --line:#D3CDBC;
+    --line-strong:#B7AF97;
+    --stamp:#2F6F5E;
+    --stamp-dark:#1F4B3F;
+    --stamp-bg:#DCE7E1;
+    --mustard:#B5822B;
+    --mustard-bg:#F1E4C6;
+    --green:#3E7D4C;
+    --green-bg:#DCEBDD;
+    --amber:#B5822B;
+    --amber-bg:#F1E4C6;
+    --red:#B23F35;
+    --red-bg:#F3DCD8;
+    --shadow: 0 1px 2px rgba(34,38,31,0.06), 0 4px 14px rgba(34,38,31,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:1320px;margin:0 auto;padding:28px 32px 80px;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0;}
+  .topbar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
+  .topbar h1{font-size:28px;letter-spacing:-0.01em;}
+  .topbar .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
+  .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  button{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    border-radius:3px;
+    border:1px solid var(--line-strong);
+    background:var(--paper);
+    color:var(--ink);
+    padding:8px 14px;
+    cursor:pointer;
+    transition:background .12s, transform .05s;
+  }
+  button:hover{background:var(--paper-2);}
+  button:active{transform:scale(0.98);}
+  button.primary{background:var(--stamp);border-color:var(--stamp-dark);color:#F4F7F5;}
+  button.primary:hover{background:var(--stamp-dark);}
+  button.danger{border-color:var(--red);color:var(--red);}
+  button.danger:hover{background:var(--red-bg);}
+  button.ghost{border-color:transparent;background:transparent;}
+  button.ghost:hover{background:var(--paper-2);}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+  .kpi{
+    background:#FBFAF6;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:14px 16px;
+    position:relative;
+  }
+  .kpi::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--stamp);border-radius:3px 0 0 3px;
+  }
+  .kpi.warn::before{background:var(--amber);}
+  .kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:6px;}
+  .kpi .value{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;color:var(--ink);}
+  .filters{
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    margin-bottom:16px;padding:12px 14px;background:#FBFAF6;
+    border:1px solid var(--line);border-radius:4px;
+  }
+  .filters label{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin-right:4px;}
+  select,input[type=text],input[type=search],input[type=number],input[type=date],textarea{
+    font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);
+    background:#FFFFFB;border:1px solid var(--line-strong);border-radius:3px;
+    padding:7px 9px;
+  }
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--stamp-bg);border-color:var(--stamp);}
+  .filters select, .filters input{min-width:150px;}
+  .spacer{flex:1;}
+  .table-wrap{
+    background:#FBFAF6;border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  }
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-soft);font-weight:500;padding:10px 12px;
+    border-bottom:1px solid var(--line-strong);background:var(--paper-2);
+    white-space:nowrap;
+  }
+  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr{cursor:pointer;}
+  tbody tr:hover{background:var(--stamp-bg);}
+  .idcell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .cliente-cell{font-weight:500;}
+  .cliente-cell .cuit{display:block;font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
+  .seg-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
+  .etapa-track{display:flex;gap:3px;align-items:center;}
+  .etapa-track .dot{width:14px;height:5px;border-radius:2px;background:var(--line-strong);}
+  .etapa-track .dot.done{background:var(--stamp);}
+  .etapa-label{font-size:11px;color:var(--ink-soft);margin-left:6px;white-space:nowrap;}
+  .money{font-family:'IBM Plex Mono',monospace;text-align:right;}
+  .semaforo{display:inline-flex;align-items:center;gap:6px;}
+  .semaforo .dot{width:9px;height:9px;border-radius:50%;}
+  .dot-verde{background:var(--green);}
+  .dot-amarillo{background:var(--amber);}
+  .dot-rojo{background:var(--red);}
+  .dot-gris{background:var(--ink-faint);}
+  .dias-restantes{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .empty-state{padding:60px 20px;text-align:center;color:var(--ink-soft);}
+  .empty-state h3{margin-bottom:8px;color:var(--ink);}
+  .empty-state p{font-size:13px;margin:0 0 16px;}
+  .overlay{
+    position:fixed;inset:0;background:rgba(34,38,31,0.35);
+    display:none;align-items:stretch;justify-content:flex-end;z-index:50;
+  }
+  .overlay.open{display:flex;}
+  .drawer{
+    width:min(560px,92vw);background:var(--paper);height:100%;overflow-y:auto;
+    box-shadow:-8px 0 24px rgba(0,0,0,0.15);
+    padding:26px 30px 100px;
+    animation:slidein .18s ease-out;
+  }
+  @keyframes slidein{from{transform:translateX(24px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+  .drawer-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+  .drawer-head h2{font-size:21px;}
+  .drawer-head .id-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:3px;}
+  .section{margin-bottom:22px;border-top:1px solid var(--line);padding-top:16px;}
+  .section:first-of-type{border-top:none;padding-top:0;}
+  .section h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);margin-bottom:12px;font-family:'Inter',sans-serif;font-weight:600;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+  .field label{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .field .readonly{
+    padding:7px 9px;background:var(--paper-2);border:1px dashed var(--line-strong);
+    border-radius:3px;font-size:13px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;
+  }
+  .field textarea{resize:vertical;min-height:56px;}
+  .field .hint{font-size:10.5px;color:var(--ink-faint);}
+  .drawer-actions{
+    position:sticky;bottom:-100px;margin-top:26px;padding-top:16px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:8px;background:var(--paper);
+  }
+  .badge-computed{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--stamp);border:1px solid var(--stamp-bg);background:var(--stamp-bg);padding:1px 6px;border-radius:8px;margin-left:6px;}
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:4px;
+    font-size:13px;opacity:0;transition:opacity .2s, transform .2s;z-index:99;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .err{font-size:11px;color:var(--red);margin-top:2px;}
+  .field.error input, .field.error select{border-color:var(--red);}
+  .tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--line-strong);}
+  .tab-btn{
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--ink-soft);
+    background:transparent;border:none;border-bottom:2px solid transparent;
+    padding:9px 4px;margin-right:22px;cursor:pointer;border-radius:0;
+  }
+  .tab-btn:hover{background:transparent;color:var(--ink);}
+  .tab-btn.active{color:var(--stamp-dark);border-bottom-color:var(--stamp);}
+  .view{display:none;}
+  .view.active{display:block;}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  @media (max-width:900px){.dash-grid{grid-template-columns:1fr;}}
+  .panel{background:#FBFAF6;border:1px solid var(--line);border-radius:4px;padding:16px 18px;}
+  .panel h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);margin-bottom:14px;font-family:'Inter',sans-serif;font-weight:600;}
+  .panel .panel-hint{font-size:10.5px;color:var(--ink-faint);margin:-10px 0 12px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;cursor:pointer;padding:3px 4px;border-radius:3px;}
+  .bar-row:hover{background:var(--stamp-bg);}
+  .bar-row.active{background:var(--stamp-bg);}
+  .bar-row .bar-label{width:150px;flex-shrink:0;font-size:12px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bar-row .bar-track{flex:1;background:var(--paper-2);border-radius:2px;height:16px;overflow:hidden;}
+  .bar-row .bar-fill{height:100%;background:var(--stamp);border-radius:2px;transition:width .25s;}
+  .bar-row .bar-fill.ganado{background:var(--green);}
+  .bar-row .bar-fill.perdido{background:var(--red);}
+  .bar-row .bar-fill.suspendido{background:var(--ink-faint);}
+  .bar-row .bar-val{width:96px;flex-shrink:0;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);}
+  .funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:pointer;padding:4px;border-radius:3px;}
+  .funnel-row:hover{background:var(--stamp-bg);}
+  .funnel-row.active{background:var(--stamp-bg);}
+  .funnel-stage{width:126px;flex-shrink:0;font-size:11.5px;color:var(--ink-soft);}
+  .funnel-bar-wrap{flex:1;background:var(--paper-2);border-radius:2px;height:22px;position:relative;overflow:hidden;}
+  .funnel-bar{height:100%;background:linear-gradient(90deg,var(--stamp),var(--stamp-dark));border-radius:2px;display:flex;align-items:center;padding-left:8px;color:#F4F7F5;font-size:11px;font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+  .kpi-row-2{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+  @media (max-width:720px){.kpi-row-2{grid-template-columns:1fr 1fr;}}
+  .donut-wrap{display:flex;align-items:center;gap:20px;}
+  .donut-legend{flex:1;}
+  .legend-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;cursor:pointer;padding:2px 4px;border-radius:3px;font-size:12px;}
+  .legend-row:hover{background:var(--stamp-bg);}
+  .legend-row.active{background:var(--stamp-bg);}
+  .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .legend-name{flex:1;color:var(--ink);}
+  .legend-val{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);}
+  .vencer-item{display:flex;justify-content:space-between;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .vencer-item:last-child{border-bottom:none;}
+  .vencer-item .vname{color:var(--ink);}
+  .vencer-item .vdays{font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  .active-filter-bar{
+    display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:8px 12px;
+    background:var(--stamp-bg);border:1px solid var(--stamp);border-radius:4px;font-size:12.5px;color:var(--stamp-dark);
+  }
+  .active-filter-bar button{padding:3px 9px;font-size:11.5px;}
+  .empty-dash{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13px;}
+  @media (max-width:720px){
+    .app{padding:18px 14px 60px;}
+    .kpis{grid-template-columns:1fr 1fr;}
+    .kpi-row-2{grid-template-columns:1fr 1fr;}
+    .grid2{grid-template-columns:1fr;}
+    .table-wrap{overflow-x:auto;}
+    table{min-width:900px;}
+    .bar-row .bar-label{width:100px;}
+    .funnel-stage{width:90px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <h1>Backlog de preventa</h1>
+      <div class="sub" id="subtitle">cargando…</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="ghost" id="btnLinkFolder">🔗 Vincular carpeta</button>
+      <button class="ghost" id="btnExportJson">Exportar JSON</button>
+      <button class="ghost" id="btnExportCsv">Exportar CSV</button>
+      <button class="ghost" id="btnImport">Importar JSON</button>
+      <input type="file" id="fileImport" accept="application/json" style="display:none">
+      <button class="primary" id="btnNew">+ Nueva oportunidad</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla">Tablero</button>
+    <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama">Panorama</button>
+  </div>
+
+  <div class="view active" id="viewTabla">
+    <div class="filters">
+      <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
+      <div><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
+      <div><label>Estado</label><select id="fEstadoFinal"><option value="">Todos</option></select></div>
+      <div><label>Vertical</label><select id="fVertical"><option value="">Todas</option></select></div>
+      <div><label>EECC</label><select id="fEecc"><option value="">Todos</option></select></div>
+      <div><label>Buscar</label><input type="search" id="fBuscar" placeholder="Cliente o CUIT"></div>
+      <div class="spacer"></div>
+      <button class="ghost" id="btnClearFilters">Limpiar filtros</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>N°</th><th>Cliente</th><th>Segmento</th><th>Etapa</th><th>Prob.</th>
+            <th>EECC</th><th>Ingeniero</th><th class="money">Valor total</th><th class="money">Ponderado</th>
+            <th>Estado</th><th>Días</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <h3>Todavía no cargaste oportunidades</h3>
+        <p>Arrancá registrando tu primera oportunidad del funnel.</p>
+        <button class="primary" id="btnNewEmpty">+ Nueva oportunidad</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="viewPanorama">
+    <div id="panoramaContent"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="drawer" id="drawer"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SEGMENTOS = ['Banca','CCEE Industria','CCEE Servicios'];
+
+const EECC_POR_SEGMENTO = {
+  'Banca': ['DE LA PEÑA ETCHEPARE MAXIMILIA','DIAZ HERNAN ARIEL','DIAZ NATACHA','MANCINI JORGE DANIEL','PEREZ PABLO HERNAN','VELIZ VANESA'],
+  'CCEE Servicios': ['BARCIA ROMINA','CARLUCCIO MARIA SOLEDAD','CASELLA MARIA MAGDALENA','DELORENZO CARINA ANDREA','FLORES RAUL','MATEO ALEJANDRO','TRAPES MAURICIO'],
+  'CCEE Industria': ['ALONSO LUCIANA RAQUEL','ARNEDO GUSTAVO JAVIER','BRANDI DANIELA','MONZON ROSINA VANESA','PRONZATI DIEGO FABIAN','VARELA MARIANO']
+};
+
+const INGENIERO_POR_EECC = {
+  'DE LA PEÑA ETCHEPARE MAXIMILIA':'YUDCHAK DAMIAN MARTÍN','DIAZ HERNAN ARIEL':'TOSSI PABLO','DIAZ NATACHA':'LOPEZ DAMIAN',
+  'MANCINI JORGE DANIEL':'QUINTERO CRISTIAN GASTON','PEREZ PABLO HERNAN':'LOPEZ DAMIAN','VELIZ VANESA':'QUINTERO CRISTIAN GASTON',
+  'BARCIA ROMINA':'FERNANDEZ JUAN PABLO','CARLUCCIO MARIA SOLEDAD':'GOMELSKY ERIKA','CASELLA MARIA MAGDALENA':'FERNANDEZ JUAN PABLO',
+  'DELORENZO CARINA ANDREA':'FAMA PABLO GABRIEL','FLORES RAUL':'STAMBOLSKI ELIÁN','MATEO ALEJANDRO':'SERGIO LEVITA',
+  'TRAPES MAURICIO':'ROG DIEGO SEBASTIAN','ALONSO LUCIANA RAQUEL':'RODRIGUEZ LEPPLAID ANLEV JOEL','ARNEDO GUSTAVO JAVIER':'SERGIO LEVITA',
+  'BRANDI DANIELA':'FAMA PABLO GABRIEL','MONZON ROSINA VANESA':'FAMA PABLO GABRIEL','PRONZATI DIEGO FABIAN':'RODRIGUEZ LEPPLAID ANLEV JOEL',
+  'VARELA MARIANO':'RODRIGUEZ LEPPLAID ANLEV JOEL'
+};
+
+const RESPONSABLE_POR_SEGMENTO = {
+  'Banca':'Casil Silvana Paula','CCEE Industria':'Urrutigoity Raul','CCEE Servicios':'Banovaz Gabriela Edith'
+};
+
+const ETAPAS = ['1-Prospección','2-Calificado','3-Análisis Técnico','4-Propuesta','5-Negociación','6-Cierre'];
+const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
+const TIPO_CONTRATO = ['One-time','MRR','ARR','Mixto'];
+const BANT_VALORES = ['✅ Sí','⚠️ Parcial','❌ No','N/A'];
+const INDUSTRIAS = ['Banca','Seguros','Gobierno','Retail','Industria Manufacturera','Energía','Telecomunicaciones','Salud','Educación','Servicios Profesionales'];
+const VERTICALES = ['Cloud Híbrida','Ciberseguridad','IA / ML','Data & Analytics','Modernización de Aplicaciones','Infraestructura','Redes y Conectividad','ERP / CRM','Colaboración y Productividad'];
+const PROVEEDORES = ['AWS','Azure','Google Cloud','Oracle','IBM','VMware','Multi-vendor'];
+const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consultoría','SSPP - Servicios Profesionales','SSAA - Servicios Administrados'];
+const ESTADO_PROPUESTA = ['Ninguno','RFP','Arquitectura','Técnico-Comercial','En revisión cliente','Enviada'];
+const DOCUMENTOS_GENERADOS = ['Ninguno','Propuesta técnica','Propuesta económica','Contrato','NDA','SOW','Presentación ejecutiva'];
+const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado','Sin decisión','Otro'];
+
+let DATA = [];
+let editingId = null;
+const STORAGE_KEY = 'oportunidades';
+
+function fmtMoney(n){
+  n = Number(n)||0;
+  return 'US$ ' + Math.round(n).toLocaleString('es-AR');
+}
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function diasEntre(fechaISO){
+  if(!fechaISO) return null;
+  const d1 = new Date(todayISO()+'T00:00:00');
+  const d2 = new Date(fechaISO+'T00:00:00');
+  return Math.round((d2-d1)/86400000);
+}
+function nextId(){
+  let max = 0;
+  DATA.forEach(o=>{
+    const m = /OPP-(\d+)/.exec(o.id);
+    if(m) max = Math.max(max, parseInt(m[1],10));
+  });
+  return 'OPP-' + String(max+1).padStart(3,'0');
+}
+function allEecc(){
+  return Object.values(EECC_POR_SEGMENTO).flat();
+}
+function bantScore(o){
+  const vals = [o.bantBudget,o.bantAuthority,o.bantNeed,o.bantTimeline];
+  let sum=0, count=0;
+  vals.forEach(v=>{
+    if(v==='✅ Sí'){sum+=1;count++;}
+    else if(v==='⚠️ Parcial'){sum+=0.5;count++;}
+    else if(v==='❌ No'){count++;}
+  });
+  return count ? (sum) : 0;
+}
+function computeFields(o){
+  o.anioRecurrente = (Number(o.mesRecurrente)||0) * 12;
+  o.valorTotal = (Number(o.montoOneShot)||0) + o.anioRecurrente;
+  if(o.tipoContrato==='MRR') o.mrrArrEstimado = Number(o.mesRecurrente)||0;
+  else if(o.tipoContrato==='ARR') o.mrrArrEstimado = o.anioRecurrente;
+  else o.mrrArrEstimado = o.valorTotal;
+  o.montoPonderado = o.valorTotal * (Number(o.probCierre)||0) / 100;
+  o.diasRestantes = diasEntre(o.fechaDeadline);
+  o.ingenieroPreventa = INGENIERO_POR_EECC[o.eecc] || '';
+  o.responsableSegmento = RESPONSABLE_POR_SEGMENTO[o.segmento] || '';
+  return o;
+}
+function estadoSemaforo(o){
+  if(o.estadoFinal && o.estadoFinal!=='Abierto') return 'gris';
+  if(o.diasRestantes===null) return 'gris';
+  if(o.diasRestantes<=3) return 'rojo';
+  if(o.diasRestantes<=14) return 'amarillo';
+  return 'verde';
+}
+
+const STORAGE_AVAILABLE = (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+const FS_ACCESS_SUPPORTED = (typeof window.showDirectoryPicker === 'function');
+const FS_FILENAME = 'backlog_preventa_data.json';
+let dirHandle = null;
+
+function idbOpen(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open('backlog_preventa_fs', 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore('handles'); };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function idbSetHandle(handle){
+  const db = await idbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('handles','readwrite');
+    tx.objectStore('handles').put(handle, 'dirHandle');
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function idbGetHandle(){
+  const db = await idbOpen();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('handles','readonly');
+    const req = tx.objectStore('handles').get('dirHandle');
+    req.onsuccess = ()=>resolve(req.result || null);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+
+function updateFolderStatus(){
+  const btn = document.getElementById('btnLinkFolder');
+  if(!btn) return;
+  if(!FS_ACCESS_SUPPORTED){
+    btn.textContent = '🔗 Vincular carpeta (no soportado en este navegador)';
+    btn.disabled = true;
+    return;
+  }
+  btn.textContent = dirHandle ? ('📁 Carpeta vinculada: ' + dirHandle.name) : '🔗 Vincular carpeta';
+}
+
+async function tryReconnectFolder(){
+  if(!FS_ACCESS_SUPPORTED) return false;
+  try{
+    const saved = await idbGetHandle();
+    if(!saved) return false;
+    const perm = await saved.queryPermission({mode:'readwrite'});
+    if(perm === 'granted'){
+      dirHandle = saved;
+      return true;
+    }
+    dirHandle = null;
+    return false;
+  }catch(e){
+    return false;
+  }
+}
+
+async function linkFolder(){
+  if(!FS_ACCESS_SUPPORTED){
+    showToast('⚠️ Tu navegador no soporta esto. Usá Chrome o Edge de escritorio.');
+    return;
+  }
+  try{
+    const saved = await idbGetHandle();
+    if(saved){
+      const perm = await saved.requestPermission({mode:'readwrite'});
+      if(perm === 'granted'){
+        dirHandle = saved;
+        updateFolderStatus();
+        await loadData();
+        renderAll();
+        showToast('📁 Carpeta reconectada: ' + dirHandle.name);
+        return;
+      }
+    }
+    const handle = await window.showDirectoryPicker({mode:'readwrite'});
+    dirHandle = handle;
+    await idbSetHandle(handle);
+    updateFolderStatus();
+    await loadData();
+    renderAll();
+    await saveData();
+    showToast('📁 Carpeta vinculada: ' + dirHandle.name + '. Guardado automático activado.');
+  }catch(e){
+    if(e.name !== 'AbortError') showToast('⚠️ No se pudo vincular la carpeta.');
+  }
+}
+
+async function getFileHandle(create){
+  if(!dirHandle) return null;
+  try{
+    return await dirHandle.getFileHandle(FS_FILENAME, {create: !!create});
+  }catch(e){
+    return null;
+  }
+}
+
+async function loadData(){
+  if(dirHandle){
+    try{
+      const fh = await getFileHandle(false);
+      if(fh){
+        const file = await fh.getFile();
+        const text = await file.text();
+        DATA = text ? JSON.parse(text) : [];
+        DATA.forEach(computeFields);
+        return;
+      }
+    }catch(e){ }
+  }
+  if(STORAGE_AVAILABLE){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, false);
+      DATA = res && res.value ? JSON.parse(res.value) : [];
+    }catch(e){
+      DATA = [];
+    }
+    DATA.forEach(computeFields);
+    return;
+  }
+  DATA = [];
+  DATA.forEach(computeFields);
+}
+
+async function saveData(){
+  let savedToFolder = false;
+  if(dirHandle){
+    try{
+      const fh = await getFileHandle(true);
+      const writable = await fh.createWritable();
+      await writable.write(JSON.stringify(DATA, null, 2));
+      await writable.close();
+      savedToFolder = true;
+    }catch(e){
+      showToast('⚠️ No se pudo escribir en la carpeta vinculada.');
+    }
+  }
+  if(STORAGE_AVAILABLE){
+    try{ await window.storage.set(STORAGE_KEY, JSON.stringify(DATA), false); }catch(e){}
+  }
+  if(!savedToFolder && !STORAGE_AVAILABLE){
+    showToast('⚠️ Guardado automático no disponible. Vinculá una carpeta o usá "Exportar JSON".');
+    return false;
+  }
+  return true;
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function populateFilterSelects(){
+  const fSeg = document.getElementById('fSegmento');
+  SEGMENTOS.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fSeg.appendChild(o); });
+  const fEt = document.getElementById('fEtapa');
+  ETAPAS.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fEt.appendChild(o); });
+  const fEs = document.getElementById('fEstadoFinal');
+  ESTADO_FINAL.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fEs.appendChild(o); });
+  const fVert = document.getElementById('fVertical');
+  VERTICALES.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fVert.appendChild(o); });
+  const fEecc = document.getElementById('fEecc');
+  allEecc().forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=titleCase(s); fEecc.appendChild(o); });
+}
+
+function getFiltered(){
+  const seg = document.getElementById('fSegmento').value;
+  const et = document.getElementById('fEtapa').value;
+  const es = document.getElementById('fEstadoFinal').value;
+  const vert = document.getElementById('fVertical').value;
+  const eecc = document.getElementById('fEecc').value;
+  const q = document.getElementById('fBuscar').value.trim().toLowerCase();
+  return DATA.filter(o=>{
+    if(seg && o.segmento!==seg) return false;
+    if(et && o.etapa!==et) return false;
+    if(es && o.estadoFinal!==es) return false;
+    if(vert && o.vertical!==vert) return false;
+    if(eecc && o.eecc!==eecc) return false;
+    if(q && !((o.cliente||'').toLowerCase().includes(q) || (o.cuit||'').toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function renderKpis(){
+  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  const pipeline = abiertas.reduce((a,o)=>a+o.valorTotal,0);
+  const ponderado = abiertas.reduce((a,o)=>a+o.montoPonderado,0);
+  const porVencer = abiertas.filter(o=>o.diasRestantes!==null && o.diasRestantes<=7 && o.diasRestantes>=0).length;
+  const el = document.getElementById('kpis');
+  el.innerHTML = `
+    <div class="kpi"><div class="label">Pipeline abierto</div><div class="value">${fmtMoney(pipeline)}</div></div>
+    <div class="kpi"><div class="label">Ponderado</div><div class="value">${fmtMoney(ponderado)}</div></div>
+    <div class="kpi"><div class="label">Oportunidades abiertas</div><div class="value">${abiertas.length}</div></div>
+    <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen en 7 días</div><div class="value">${porVencer}</div></div>
+  `;
+}
+
+function groupSum(list, keyFn, valFn){
+  const map = new Map();
+  list.forEach(o=>{
+    const k = keyFn(o) || '(sin dato)';
+    const cur = map.get(k) || {value:0,count:0};
+    cur.value += valFn(o); cur.count += 1;
+    map.set(k, cur);
+  });
+  return [...map.entries()].map(([k,v])=>({label:k,value:v.value,count:v.count})).sort((a,b)=>b.value-a.value);
+}
+function barListHtml(entries, filterId, activeVal, fillClass){
+  if(!entries.length) return '<div class="empty-dash">Sin datos para mostrar todavía.</div>';
+  const max = Math.max(...entries.map(e=>e.value), 1);
+  return entries.map(e=>`
+    <div class="bar-row ${e.label===activeVal?'active':''}" data-filter="${filterId}" data-val="${escapeHtml(e.label)}">
+      <div class="bar-label" title="${escapeHtml(titleCase(e.label))}">${escapeHtml(titleCase(e.label))}</div>
+      <div class="bar-track"><div class="bar-fill ${fillClass||''}" style="width:${Math.max(2,(e.value/max)*100)}%"></div></div>
+      <div class="bar-val">${fmtMoney(e.value)}</div>
+    </div>`).join('');
+}
+function wireBarClicks(containerEl){
+  containerEl.querySelectorAll('[data-filter]').forEach(row=>{
+    row.addEventListener('click', ()=>drillInto(row.getAttribute('data-filter'), row.getAttribute('data-val')));
+  });
+}
+function renderDashboard(){
+  const el = document.getElementById('panoramaContent');
+  if(DATA.length===0){
+    el.innerHTML = '<div class="empty-dash">Cargá oportunidades para ver el panorama analítico.</div>';
+    return;
+  }
+  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  const ganadas = DATA.filter(o=>o.estadoFinal==='Ganado');
+  const perdidas = DATA.filter(o=>o.estadoFinal==='Perdido');
+  const montoGanado = ganadas.reduce((a,o)=>a+o.valorTotal,0);
+  const montoPerdido = perdidas.reduce((a,o)=>a+o.valorTotal,0);
+  const tasaConv = (ganadas.length+perdidas.length)>0 ? Math.round(ganadas.length/(ganadas.length+perdidas.length)*100) : 0;
+  const bantProm = abiertas.length ? (abiertas.reduce((a,o)=>a+bantScore(o),0)/abiertas.length) : 0;
+
+  const porEtapa = ETAPAS.map(et=>({label:et, count: abiertas.filter(o=>o.etapa===et).length}));
+  const maxEtapa = Math.max(...porEtapa.map(e=>e.count), 1);
+  const fEtapaVal = document.getElementById('fEtapa').value;
+
+  const porSegmento = groupSum(abiertas, o=>o.segmento, o=>o.montoPonderado);
+  const fSegVal = document.getElementById('fSegmento').value;
+  const porVertical = groupSum(abiertas, o=>o.vertical, o=>o.montoPonderado);
+  const fVertVal = document.getElementById('fVertical').value;
+  const porEecc = groupSum(abiertas, o=>o.eecc, o=>o.montoPonderado).slice(0,8);
+  const fEeccVal = document.getElementById('fEecc').value;
+
+  const estadoRows = ESTADO_FINAL.map(es=>{
+    const list = DATA.filter(o=>(o.estadoFinal||'Abierto')===es);
+    return {label:es, value:list.reduce((a,o)=>a+o.valorTotal,0), count:list.length,
+      cls: es==='Ganado'?'ganado':es==='Perdido'?'perdido':es==='Suspendido'?'suspendido':''};
+  });
+  const fEstadoVal = document.getElementById('fEstadoFinal').value;
+  const maxEstado = Math.max(...estadoRows.map(e=>e.value), 1);
+
+  const porVencer = abiertas.filter(o=>o.diasRestantes!==null && o.diasRestantes<=14)
+    .sort((a,b)=>a.diasRestantes-b.diasRestantes).slice(0,8);
+
+  el.innerHTML = `
+    <div class="kpi-row-2">
+      <div class="kpi"><div class="label">Ganado (histórico)</div><div class="value">${fmtMoney(montoGanado)}</div></div>
+      <div class="kpi"><div class="label">Perdido (histórico)</div><div class="value">${fmtMoney(montoPerdido)}</div></div>
+      <div class="kpi"><div class="label">Tasa de conversión</div><div class="value">${tasaConv}%</div></div>
+      <div class="kpi"><div class="label">BANT promedio (abiertas)</div><div class="value">${bantProm.toFixed(1)}/4</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="panel">
+        <h3>Embudo por etapa</h3>
+        <div class="panel-hint">Oportunidades abiertas · click para filtrar el tablero</div>
+        <div id="dashEtapa">
+          ${porEtapa.map(e=>`
+            <div class="funnel-row ${e.label===fEtapaVal?'active':''}" data-filter="fEtapa" data-val="${escapeHtml(e.label)}">
+              <div class="funnel-stage">${escapeHtml(e.label.replace(/^\d-/,''))}</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${Math.max(6,(e.count/maxEtapa)*100)}%">${e.count}</div></div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Estado del negocio</h3>
+        <div class="panel-hint">Todas las oportunidades · monto total · click para filtrar</div>
+        <div id="dashEstado">
+          ${estadoRows.map(e=>`
+            <div class="bar-row ${e.label===fEstadoVal?'active':''}" data-filter="fEstadoFinal" data-val="${escapeHtml(e.label)}">
+              <div class="bar-label">${escapeHtml(e.label)} <span style="color:var(--ink-faint)">(${e.count})</span></div>
+              <div class="bar-track"><div class="bar-fill ${e.cls}" style="width:${Math.max(2,(e.value/maxEstado)*100)}%"></div></div>
+              <div class="bar-val">${fmtMoney(e.value)}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Monto ponderado por segmento</h3>
+        <div class="panel-hint">Oportunidades abiertas · click para filtrar</div>
+        <div id="dashSegmento">${barListHtml(porSegmento,'fSegmento',fSegVal)}</div>
+      </div>
+      <div class="panel">
+        <h3>Monto ponderado por vertical</h3>
+        <div class="panel-hint">Oportunidades abiertas · click para filtrar</div>
+        <div id="dashVertical">${barListHtml(porVertical,'fVertical',fVertVal)}</div>
+      </div>
+      <div class="panel">
+        <h3>Monto ponderado por EECC (top 8)</h3>
+        <div class="panel-hint">Oportunidades abiertas · click para filtrar</div>
+        <div id="dashEecc">${barListHtml(porEecc,'fEecc',fEeccVal)}</div>
+      </div>
+      <div class="panel">
+        <h3>Próximas a vencer</h3>
+        <div class="panel-hint">Deadline en los próximos 14 días · doble click abre la oportunidad</div>
+        <div id="dashVencer">
+          ${porVencer.length===0 ? '<div class="empty-dash">Nada por vencer en los próximos 14 días.</div>' :
+            porVencer.map(o=>`
+            <div class="vencer-item" data-id="${o.id}" style="cursor:pointer;">
+              <span class="vname">${escapeHtml(o.cliente||'—')}</span>
+              <span class="vdays" style="color:${o.diasRestantes<=3?'var(--red)':o.diasRestantes<=7?'var(--amber)':'var(--ink-soft)'}">${o.diasRestantes<0?Math.abs(o.diasRestantes)+'d vencida':o.diasRestantes+'d'}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  wireBarClicks(document.getElementById('dashEtapa'));
+  wireBarClicks(document.getElementById('dashEstado'));
+  wireBarClicks(document.getElementById('dashSegmento'));
+  wireBarClicks(document.getElementById('dashVertical'));
+  wireBarClicks(document.getElementById('dashEecc'));
+  document.querySelectorAll('#dashVencer .vencer-item').forEach(row=>{
+    row.addEventListener('click', ()=>openDrawer(row.getAttribute('data-id')));
+  });
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('emptyState');
+  if(DATA.length===0){
+    tbody.innerHTML='';
+    empty.style.display='block';
+    document.querySelector('.table-wrap table').style.display='none';
+    return;
+  }
+  document.querySelector('.table-wrap table').style.display='table';
+  empty.style.display='none';
+  if(list.length===0){
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(o=>{
+    const stageIdx = ETAPAS.indexOf(o.etapa);
+    const dots = ETAPAS.map((_,i)=>`<span class="dot ${i<=stageIdx?'done':''}"></span>`).join('');
+    const sem = estadoSemaforo(o);
+    const diasTxt = o.diasRestantes===null ? '—' : (o.diasRestantes<0 ? `${Math.abs(o.diasRestantes)}d vencida` : `${o.diasRestantes}d`);
+    return `<tr data-id="${o.id}">
+      <td class="idcell">${o.id}</td>
+      <td class="cliente-cell">${escapeHtml(o.cliente||'—')}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
+      <td><span class="seg-pill">${o.segmento||'—'}</span></td>
+      <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
+      <td>${o.probCierre?o.probCierre+'%':'—'}</td>
+      <td>${o.eecc? titleCase(o.eecc):'—'}</td>
+      <td>${o.ingenieroPreventa? titleCase(o.ingenieroPreventa):'—'}</td>
+      <td class="money">${fmtMoney(o.valorTotal)}</td>
+      <td class="money">${fmtMoney(o.montoPonderado)}</td>
+      <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
+      <td class="dias-restantes">${diasTxt}</td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('tr[data-id]').forEach(tr=>{
+    tr.addEventListener('dblclick', ()=>openDrawer(tr.getAttribute('data-id')));
+  });
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function titleCase(s){ return String(s).toLowerCase().replace(/(^|\s)\S/g, t=>t.toUpperCase()); }
+
+function optionsHtml(list, selected){
+  return '<option value="">—</option>' + list.map(v=>`<option value="${escapeHtml(v)}" ${v===selected?'selected':''}>${escapeHtml(v)}</option>`).join('');
+}
+
+function blankOpp(){
+  return {
+    id: nextId(), cliente:'', cuit:'', industria:'', segmento:'', eecc:'',
+    bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'', bantObs:'',
+    etapa: ETAPAS[0], probCierre:'',
+    competidores:'', vertical:'', proveedor:'', tipoProyecto:'',
+    fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
+    tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
+    estadoPropuesta:'', documentosGenerados:'', notasTecnicas:'',
+    estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
+    ultimaActualizacion: todayISO()
+  };
+}
+
+function openDrawer(id){
+  editingId = id || null;
+  const o = id ? {...DATA.find(x=>x.id===id)} : blankOpp();
+  computeFields(o);
+  const drawer = document.getElementById('drawer');
+  drawer.innerHTML = drawerTemplate(o);
+  document.getElementById('overlay').classList.add('open');
+  wireDrawer(o);
+}
+function closeDrawer(){
+  document.getElementById('overlay').classList.remove('open');
+  editingId = null;
+}
+
+function drawerTemplate(o){
+  return `
+    <div class="drawer-head">
+      <div>
+        <h2>${editingId? 'Editar oportunidad':'Nueva oportunidad'}</h2>
+        <div class="id-tag">${o.id}</div>
+      </div>
+      <button class="ghost" id="btnCloseDrawer" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="section">
+      <h3>Identificación</h3>
+      <div class="field"><label>Cliente *</label><input type="text" id="f_cliente" value="${escapeHtml(o.cliente)}"></div>
+      <div class="grid2">
+        <div class="field"><label>CUIT</label><input type="text" id="f_cuit" value="${escapeHtml(o.cuit)}"></div>
+        <div class="field"><label>Industria</label><select id="f_industria">${optionsHtml(INDUSTRIAS,o.industria)}</select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Segmento *</label><select id="f_segmento">${optionsHtml(SEGMENTOS,o.segmento)}</select></div>
+        <div class="field"><label>EECC</label><select id="f_eecc"></select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Ingeniero preventa <span class="badge-computed">auto</span></label><div class="readonly" id="f_ingeniero_ro">${o.ingenieroPreventa?titleCase(o.ingenieroPreventa):'—'}</div></div>
+        <div class="field"><label>Responsable segmento <span class="badge-computed">auto</span></label><div class="readonly" id="f_responsable_ro">${o.responsableSegmento?titleCase(o.responsableSegmento):'—'}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Calificación BANT</h3>
+      <div class="grid2">
+        <div class="field"><label>Budget</label><select id="f_bantBudget">${optionsHtml(BANT_VALORES,o.bantBudget)}</select></div>
+        <div class="field"><label>Authority</label><select id="f_bantAuthority">${optionsHtml(BANT_VALORES,o.bantAuthority)}</select></div>
+        <div class="field"><label>Need</label><select id="f_bantNeed">${optionsHtml(BANT_VALORES,o.bantNeed)}</select></div>
+        <div class="field"><label>Timeline</label><select id="f_bantTimeline">${optionsHtml(BANT_VALORES,o.bantTimeline)}</select></div>
+      </div>
+      <div class="field"><label>Score <span class="badge-computed">auto</span></label><div class="readonly" id="f_bantScore_ro">${bantScore(o)}/4</div></div>
+      <div class="field"><label>Observaciones BANT</label><textarea id="f_bantObs">${escapeHtml(o.bantObs)}</textarea></div>
+    </div>
+
+    <div class="section">
+      <h3>Comercial</h3>
+      <div class="grid2">
+        <div class="field"><label>Etapa funnel</label><select id="f_etapa">${optionsHtml(ETAPAS,o.etapa)}</select></div>
+        <div class="field"><label>Prob. de cierre %</label><input type="number" min="0" max="100" id="f_probCierre" value="${o.probCierre}"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Vertical solución</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
+        <div class="field"><label>Proveedor principal</label><select id="f_proveedor">${optionsHtml(PROVEEDORES,o.proveedor)}</select></div>
+      </div>
+      <div class="field"><label>Tipo de proyecto</label><select id="f_tipoProyecto">${optionsHtml(TIPO_PROYECTO,o.tipoProyecto)}</select></div>
+      <div class="field"><label>Competidores identificados</label><input type="text" id="f_competidores" value="${escapeHtml(o.competidores)}"></div>
+    </div>
+
+    <div class="section">
+      <h3>Fechas</h3>
+      <div class="grid2">
+        <div class="field"><label>Fecha entrada</label><input type="date" id="f_fechaEntrada" value="${o.fechaEntrada||''}"></div>
+        <div class="field"><label>Fecha deadline</label><input type="date" id="f_fechaDeadline" value="${o.fechaDeadline||''}"></div>
+      </div>
+      <div class="field"><label>Fecha estimada de cierre</label><input type="date" id="f_fechaEstCierre" value="${o.fechaEstCierre||''}"></div>
+      <div class="field"><label>Días restantes <span class="badge-computed">auto</span></label><div class="readonly" id="f_dias_ro">${o.diasRestantes===null?'—':o.diasRestantes+' días'}</div></div>
+    </div>
+
+    <div class="section">
+      <h3>Económico</h3>
+      <div class="grid2">
+        <div class="field"><label>Tipo contrato</label><select id="f_tipoContrato">${optionsHtml(TIPO_CONTRATO,o.tipoContrato)}</select></div>
+        <div class="field"><label>Monto One Shot USD</label><input type="number" min="0" id="f_montoOneShot" value="${o.montoOneShot}"></div>
+      </div>
+      <div class="field"><span class="hint">One Shot: implementación, licencias o venta de producto — pago único.</span></div>
+      <div class="grid2">
+        <div class="field"><label>Mes recurrente USD</label><input type="number" min="0" id="f_mesRecurrente" value="${o.mesRecurrente}"></div>
+        <div class="field"><label>Año recurrente USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_anio_ro">${fmtMoney(o.anioRecurrente)}</div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Valor total USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_valorTotal_ro">${fmtMoney(o.valorTotal)}</div></div>
+        <div class="field"><label>MRR/ARR estimado USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_mrrArr_ro">${fmtMoney(o.mrrArrEstimado)}</div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Monto ponderado USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_ponderado_ro">${fmtMoney(o.montoPonderado)}</div></div>
+        <div class="field"><label>Margen estimado %</label><input type="number" min="0" max="100" id="f_margenEstimado" value="${o.margenEstimado}"></div>
+      </div>
+      <div class="field"><label>Horas invertidas</label><input type="number" min="0" id="f_horasInvertidas" value="${o.horasInvertidas}"></div>
+    </div>
+
+    <div class="section">
+      <h3>Seguimiento</h3>
+      <div class="grid2">
+        <div class="field"><label>Estado propuesta</label><select id="f_estadoPropuesta">${optionsHtml(ESTADO_PROPUESTA,o.estadoPropuesta)}</select></div>
+        <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
+      </div>
+      <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
+    </div>
+
+    <div class="section">
+      <h3>Cierre</h3>
+      <div class="grid2">
+        <div class="field"><label>Estado final</label><select id="f_estadoFinal">${optionsHtml(ESTADO_FINAL,o.estadoFinal)}</select></div>
+        <div class="field"><label>Motivo pérdida</label><select id="f_motivoPerdida">${optionsHtml(MOTIVO_PERDIDA,o.motivoPerdida)}</select></div>
+      </div>
+      <div class="field"><label>Fecha cierre real</label><input type="date" id="f_fechaCierreReal" value="${o.fechaCierreReal||''}"></div>
+    </div>
+
+    <div class="drawer-actions">
+      <div>${editingId?'<button class="danger" id="btnDelete">Eliminar</button>':''}</div>
+      <div style="display:flex;gap:8px;">
+        <button class="ghost" id="btnCancel">Cancelar</button>
+        <button class="primary" id="btnSave">Guardar</button>
+      </div>
+    </div>
+  `;
+}
+
+function refreshEeccOptions(o){
+  const seg = document.getElementById('f_segmento').value;
+  const eeccSel = document.getElementById('f_eecc');
+  const list = EECC_POR_SEGMENTO[seg] || [];
+  eeccSel.innerHTML = optionsHtml(list, list.includes(o.eecc)?o.eecc:'');
+}
+function refreshComputedDisplays(o){
+  computeFields(o);
+  document.getElementById('f_ingeniero_ro').textContent = o.ingenieroPreventa? titleCase(o.ingenieroPreventa):'—';
+  document.getElementById('f_responsable_ro').textContent = o.responsableSegmento? titleCase(o.responsableSegmento):'—';
+  document.getElementById('f_bantScore_ro').textContent = bantScore(o)+'/4';
+  document.getElementById('f_dias_ro').textContent = o.diasRestantes===null?'—':o.diasRestantes+' días';
+  document.getElementById('f_anio_ro').textContent = fmtMoney(o.anioRecurrente);
+  document.getElementById('f_valorTotal_ro').textContent = fmtMoney(o.valorTotal);
+  document.getElementById('f_mrrArr_ro').textContent = fmtMoney(o.mrrArrEstimado);
+  document.getElementById('f_ponderado_ro').textContent = fmtMoney(o.montoPonderado);
+}
+
+function readFormInto(o){
+  o.cliente = document.getElementById('f_cliente').value.trim();
+  o.cuit = document.getElementById('f_cuit').value.trim();
+  o.industria = document.getElementById('f_industria').value;
+  o.segmento = document.getElementById('f_segmento').value;
+  o.eecc = document.getElementById('f_eecc').value;
+  o.bantBudget = document.getElementById('f_bantBudget').value;
+  o.bantAuthority = document.getElementById('f_bantAuthority').value;
+  o.bantNeed = document.getElementById('f_bantNeed').value;
+  o.bantTimeline = document.getElementById('f_bantTimeline').value;
+  o.bantObs = document.getElementById('f_bantObs').value;
+  o.etapa = document.getElementById('f_etapa').value;
+  o.probCierre = document.getElementById('f_probCierre').value;
+  o.vertical = document.getElementById('f_vertical').value;
+  o.proveedor = document.getElementById('f_proveedor').value;
+  o.tipoProyecto = document.getElementById('f_tipoProyecto').value;
+  o.competidores = document.getElementById('f_competidores').value;
+  o.fechaEntrada = document.getElementById('f_fechaEntrada').value;
+  o.fechaDeadline = document.getElementById('f_fechaDeadline').value;
+  o.fechaEstCierre = document.getElementById('f_fechaEstCierre').value;
+  o.tipoContrato = document.getElementById('f_tipoContrato').value;
+  o.montoOneShot = document.getElementById('f_montoOneShot').value;
+  o.mesRecurrente = document.getElementById('f_mesRecurrente').value;
+  o.margenEstimado = document.getElementById('f_margenEstimado').value;
+  o.horasInvertidas = document.getElementById('f_horasInvertidas').value;
+  o.estadoPropuesta = document.getElementById('f_estadoPropuesta').value;
+  o.documentosGenerados = document.getElementById('f_documentosGenerados').value;
+  o.notasTecnicas = document.getElementById('f_notasTecnicas').value;
+  o.estadoFinal = document.getElementById('f_estadoFinal').value;
+  o.motivoPerdida = document.getElementById('f_motivoPerdida').value;
+  o.fechaCierreReal = document.getElementById('f_fechaCierreReal').value;
+  o.ultimaActualizacion = todayISO();
+  return o;
+}
+
+function wireDrawer(o){
+  refreshEeccOptions(o);
+  document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
+  document.getElementById('btnCancel').addEventListener('click', closeDrawer);
+  document.getElementById('f_segmento').addEventListener('change', ()=>{
+    o.eecc='';
+    refreshEeccOptions(o);
+    readFormInto(o);
+    refreshComputedDisplays(o);
+  });
+  ['f_eecc','f_bantBudget','f_bantAuthority','f_bantNeed','f_bantTimeline','f_fechaDeadline',
+   'f_tipoContrato','f_montoOneShot','f_mesRecurrente','f_probCierre'].forEach(id=>{
+    document.getElementById(id).addEventListener('change', ()=>{ readFormInto(o); refreshComputedDisplays(o); });
+    document.getElementById(id).addEventListener('input', ()=>{ readFormInto(o); refreshComputedDisplays(o); });
+  });
+  const delBtn = document.getElementById('btnDelete');
+  if(delBtn){
+    delBtn.addEventListener('click', async ()=>{
+      if(confirm('¿Eliminar esta oportunidad? No se puede deshacer.')){
+        DATA = DATA.filter(x=>x.id!==editingId);
+        await saveData();
+        closeDrawer();
+        renderAll();
+        showToast('Oportunidad eliminada');
+      }
+    });
+  }
+  document.getElementById('btnSave').addEventListener('click', async ()=>{
+    readFormInto(o);
+    const clienteField = document.getElementById('f_cliente').parentElement;
+    const segField = document.getElementById('f_segmento').parentElement;
+    let ok = true;
+    clienteField.classList.remove('error'); segField.classList.remove('error');
+    if(!o.cliente){ clienteField.classList.add('error'); ok=false; }
+    if(!o.segmento){ segField.classList.add('error'); ok=false; }
+    if(!ok){ showToast('Completá cliente y segmento'); return; }
+    computeFields(o);
+    const existingIdx = DATA.findIndex(x=>x.id===o.id);
+    if(existingIdx > -1){
+      DATA[existingIdx] = o;
+    } else {
+      DATA.push(o);
+    }
+    editingId = o.id;
+    const saved = await saveData();
+    closeDrawer();
+    renderAll();
+    if(saved) showToast('Guardado');
+  });
+}
+
+function renderAll(){
+  DATA.forEach(computeFields);
+  renderKpis();
+  renderTable();
+  if(document.getElementById('viewPanorama').classList.contains('active')) renderDashboard();
+  document.getElementById('subtitle').textContent = DATA.length + (DATA.length===1?' oportunidad registrada':' oportunidades registradas');
+}
+
+function toCsv(){
+  const cols = ['id','cliente','cuit','industria','segmento','eecc','ingenieroPreventa','responsableSegmento',
+    'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','etapa','probCierre','vertical','proveedor',
+    'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
+    'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
+    'horasInvertidas','estadoPropuesta','documentosGenerados','notasTecnicas','estadoFinal','motivoPerdida',
+    'fechaCierreReal','ultimaActualizacion'];
+  const rows = [cols.join(',')];
+  DATA.forEach(o=>{
+    computeFields(o);
+    rows.push(cols.map(c=>{
+      let v = o[c]===undefined||o[c]===null?'':String(o[c]);
+      v = v.replace(/"/g,'""');
+      return /[,"\n]/.test(v) ? `"${v}"` : v;
+    }).join(','));
+  });
+  return rows.join('\n');
+}
+function downloadFile(content, filename, mime){
+  const blob = new Blob([content], {type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('btnNew').addEventListener('click', ()=>openDrawer(null));
+document.getElementById('btnNewEmpty').addEventListener('click', ()=>openDrawer(null));
+document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeDrawer(); });
+document.getElementById('fSegmento').addEventListener('change', renderTable);
+document.getElementById('fEtapa').addEventListener('change', renderTable);
+document.getElementById('fEstadoFinal').addEventListener('change', renderTable);
+document.getElementById('fVertical').addEventListener('change', renderTable);
+document.getElementById('fEecc').addEventListener('change', renderTable);
+document.getElementById('fBuscar').addEventListener('input', renderTable);
+document.getElementById('btnClearFilters').addEventListener('click', ()=>{
+  document.getElementById('fSegmento').value='';
+  document.getElementById('fEtapa').value='';
+  document.getElementById('fEstadoFinal').value='';
+  document.getElementById('fVertical').value='';
+  document.getElementById('fEecc').value='';
+  document.getElementById('fBuscar').value='';
+  renderTable();
+});
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>switchTab(btn.getAttribute('data-tab')));
+});
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.getAttribute('data-tab')===tab));
+  document.getElementById('viewTabla').classList.toggle('active', tab==='tabla');
+  document.getElementById('viewPanorama').classList.toggle('active', tab==='panorama');
+  if(tab==='panorama') renderDashboard();
+}
+function drillInto(filterId, value){
+  const el = document.getElementById(filterId);
+  el.value = (el.value===value) ? '' : value;
+  renderTable();
+  switchTab('tabla');
+}
+document.getElementById('btnLinkFolder').addEventListener('click', linkFolder);
+document.getElementById('btnExportJson').addEventListener('click', ()=>{
+  downloadFile(JSON.stringify(DATA,null,2), 'backlog_preventa.json', 'application/json');
+});
+document.getElementById('btnExportCsv').addEventListener('click', ()=>{
+  downloadFile(toCsv(), 'backlog_preventa.csv', 'text/csv');
+});
+document.getElementById('btnImport').addEventListener('click', ()=>{
+  document.getElementById('fileImport').click();
+});
+document.getElementById('fileImport').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const imported = JSON.parse(text);
+    if(!Array.isArray(imported)) throw new Error('formato inválido');
+    DATA = imported;
+    DATA.forEach(computeFields);
+    await saveData();
+    renderAll();
+    showToast('Datos importados: ' + DATA.length + ' oportunidades');
+  }catch(err){
+    showToast('No se pudo importar el archivo');
+  }
+  e.target.value='';
+});
+
+(async function init(){
+  populateFilterSelects();
+  updateFolderStatus();
+  if(FS_ACCESS_SUPPORTED){
+    const reconnected = await tryReconnectFolder();
+    updateFolderStatus();
+    if(!reconnected){
+      const saved = await idbGetHandle().catch(()=>null);
+      if(saved){
+        showToast('📁 Tenés una carpeta vinculada. Tocá "Vincular carpeta" para reconectarla (el navegador pide confirmarlo cada vez que abrís el archivo).');
+      }
+    }
+  }
+  await loadData();
+  renderAll();
+})();
+</script>
+</body>
+</html>
