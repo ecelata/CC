@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Tech · Centro de Recursos Cloud</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-toggle" onclick="toggleSidebar()">☰</div>
+  <div class="topbar-brand">
+    <div class="topbar-logo">PT</div>
+    <div>
+      <div class="topbar-name">Personal Tech</div>
+      <div class="topbar-sub">Centro de Recursos</div>
+    </div>
+  </div>
+  <div class="topbar-breadcrumb">
+    <span class="current" id="breadcrumb-current">Inicio</span>
+  </div>
+  <div class="topbar-actions">
+    <a class="topbar-btn" href="../index.html" style="text-decoration:none;">← Portal GGCC</a>
+    <button class="topbar-btn primary" id="btn-open-new" onclick="openInNew()" style="display:none;">↗ Abrir</button>
+  </div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sb-section">
+    <div class="sb-section-label">Secciones Principales</div>
+    <div id="sidebar-menu"></div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-footer-name">Personal Tech</div>
+    <div class="sb-footer-role">Consultoría Cloud</div>
+    <div class="sb-footer-date" id="sb-date"></div>
+  </div>
+</div>
+
+<div class="main" id="main">
+  <!-- HOME PANEL -->
+  <div class="home-panel" id="home-panel">
+    <div class="home-hero">
+      <div class="home-hero-label">Centro de Recursos</div>
+      <div class="home-hero-title">Personal Tech</div>
+      <div class="home-hero-sub">Material de consulta, argumentario comercial y herramientas para infraestructura, cloud e IA</div>
+      <div class="home-hero-meta">
+        <div class="home-hero-pill">📅 <span id="hero-date"></span></div>
+        <div class="home-hero-pill">41 módulos</div>
+        <div class="home-hero-pill">13 categorías</div>
+      </div>
+    </div>
+
+    <div class="home-body">
+      <div class="home-stats">
+        <div class="hs-card">
+          <div class="hs-val">41</div>
+          <div class="hs-label">Módulos</div>
+        </div>
+        <div class="hs-card">
+          <div class="hs-val">13</div>
+          <div class="hs-label">Categorías</div>
+        </div>
+        <div class="hs-card">
+          <div class="hs-val">100%</div>
+          <div class="hs-label">Navegable</div>
+        </div>
+      </div>
+
+      <div id="search-container"></div>
+      <div id="filter-container"></div>
+      <div id="categories-container"></div>
+
+    </div>
+  </div>
+
+  <!-- IFRAME PANEL -->
+  <div class="iframe-panel" id="iframe-panel">
+    <div class="iframe-topbar">
+      <div class="iframe-back" onclick="goHome()">← Inicio</div>
+      <div class="iframe-title" id="iframe-title">—</div>
+      <a class="iframe-open" id="iframe-open-link" href="#" target="_blank">↗ Abrir en pestaña</a>
+    </div>
+    <iframe class="iframe-el" id="iframe-el" src="about:blank" title="Módulo de contenido"></iframe>
+  </div>
+
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
