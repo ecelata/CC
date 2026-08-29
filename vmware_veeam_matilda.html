@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMware · Veeam · Cargas de Trabajo · Matilda Cloud | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* VMware brand */
+  --vm:#1D6FA4; --vm-d:#0D3D5C; --vm-l:#E8F4FC;
+  /* Veeam brand */
+  --ve:#00B336; --ve-d:#006B20; --ve-l:#E6F9EC;
+  /* Matilda */
+  --mt:#6C3EBE; --mt-d:#3D1F78; --mt-l:#F0EAFF;
+  /* Broadcom */
+  --bc:#CC0000; --bc-d:#7A0000; --bc-l:#FFE8E8;
+  /* Workloads */
+  --w1:#0891B2; --w1-l:#E0F7FB;
+  --w2:#D97706; --w2-l:#FEF3C7;
+  --w3:#059669; --w3-l:#D1FAE5;
+  --w4:#7C3AED; --w4-l:#EDE9FE;
+  --w5:#DC2626; --w5-l:#FEE2E2;
+  /* UI */
+  --ink:#0D1117; --ink2:#1C2333; --ink3:#374151;
+  --muted:#6B7280; --faint:#9CA3AF; --line:#E5E7EB;
+  --bg:#FFFFFF; --bg2:#F8FAFC; --bg3:#F1F5F9;
+  --r:10px; --r-sm:7px;
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04);
+  --sh-m:0 4px 20px rgba(0,0,0,.08),0 10px 40px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;background:rgba(13,17,23,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 24px;overflow-x:auto;gap:0;}
+.nav-logo{font-size:12px;font-weight:800;color:rgba(255,255,255,.5);white-space:nowrap;padding:13px 18px 13px 0;border-right:1px solid rgba(255,255,255,.08);margin-right:8px;letter-spacing:.02em;}
+.nl{font-size:11px;font-weight:600;padding:14px 11px;white-space:nowrap;color:rgba(255,255,255,.25);border-bottom:2px solid transparent;text-decoration:none;transition:all .15s;}
+.nl:hover,.nl.on{color:#fff;border-bottom-color:var(--vm);}
+.nl-ve:hover,.nl-ve.on{border-bottom-color:var(--ve);}
+.nl-mt:hover,.nl-mt.on{border-bottom-color:var(--mt);}
+
+/* PAGE */
+.page{max-width:1080px;margin:0 auto;padding:0 24px 100px;}
+
+/* HERO */
+.hero{padding:68px 0 56px;border-bottom:1px solid var(--line);margin-bottom:64px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--vm);background:var(--vm-l);padding:4px 13px;border-radius:20px;margin-bottom:18px;}
+.hero-h1{font-size:38px;font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-.5px;margin-bottom:14px;}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:700px;margin-bottom:32px;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
+.hero-pill{font-size:12px;font-weight:700;padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--line);}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.hg{border-radius:var(--r);padding:18px 16px;border:1px solid var(--line);}
+.hg-val{font-size:20px;font-weight:800;line-height:1;margin-bottom:5px;}
+.hg-label{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* CHAPTER */
+.chap{margin-bottom:72px;scroll-margin-top:54px;}
+.chap-hd{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:24px;}
+.chap-icon{width:40px;height:40px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.chap-num{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);}
+.chap-title{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.2px;flex:1;}
+.chap-badge{font-size:10.5px;font-weight:700;padding:3px 11px;border-radius:20px;}
+
+/* ACCORDION */
+.acc{border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;overflow:hidden;transition:box-shadow .2s;}
+.acc.open{box-shadow:var(--sh);}
+.acc-h{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg2);transition:background .12s;}
+.acc-h:hover,.acc.open .acc-h{background:var(--bg3);}
+.acc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.acc-meta{flex:1;}
+.acc-title{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px;line-height:1.3;}
+.acc-sub{font-size:11.5px;color:var(--muted);}
+.acc-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;flex-shrink:0;}
+.acc-chv{font-size:11px;color:var(--faint);transition:transform .2s;flex-shrink:0;}
+.acc.open .acc-chv{transform:rotate(180deg);}
+.acc-body{display:none;border-top:1px solid var(--line);padding:22px 20px 24px;}
+.acc.open .acc-body{display:block;}
+
+/* PRODUCT CARDS */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:16px 0;}
+.prod{border-radius:var(--r);border:1px solid var(--line);overflow:hidden;transition:box-shadow .15s;}
+.prod:hover{box-shadow:var(--sh);}
+.prod-head{padding:16px 18px 12px;display:flex;align-items:flex-start;gap:12px;}
+.prod-icon{font-size:24px;flex-shrink:0;}
+.prod-info{flex:1;}
+.prod-name{font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:3px;line-height:1.2;}
+.prod-aka{font-size:10.5px;color:var(--faint);font-weight:500;}
+.prod-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px;}
+.prod-body{border-top:1px solid var(--line);padding:12px 18px 16px;background:var(--bg2);}
+.prod-desc{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:8px;}
+.prod-desc strong{color:var(--ink3);}
+.prod-kv{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.kv{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+
+/* WORKLOAD CARDS */
+.wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:20px 0;}
+.wl{border-radius:var(--r);border:1px solid var(--line);overflow:hidden;}
+.wl-top{padding:16px 18px 12px;border-bottom:1px solid var(--line);}
+.wl-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.wl-icon{font-size:22px;}
+.wl-category{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;}
+.wl-name{font-size:14px;font-weight:800;color:var(--ink);line-height:1.2;}
+.wl-def{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:4px;}
+.wl-def strong{color:var(--ink3);}
+.wl-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:12px 18px;background:var(--bg2);}
+.wm{text-align:center;padding:8px 4px;}
+.wm-val{font-size:14px;font-weight:800;line-height:1;margin-bottom:3px;}
+.wm-label{font-size:9.5px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.07em;}
+.wl-examples{padding:10px 18px 14px;background:var(--bg);}
+.we-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:6px;}
+.we-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.wechip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
+.wl-strategy{padding:8px 18px 14px;font-size:12px;color:var(--muted);}
+.wl-strategy strong{color:var(--ink3);}
+
+/* DATA TABLE */
+.dtw{overflow-x:auto;margin:14px 0;}
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);border-bottom:1.5px solid var(--line);text-align:left;background:var(--bg2);}
+.dt td{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.55;color:var(--muted);}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:var(--bg2);}
+.dt-title{font-weight:700;color:var(--ink);font-size:12.5px;}
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap;margin:1px 2px 0 0;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0;}
+.card{border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 16px;background:var(--bg);}
+.card-icon{font-size:18px;margin-bottom:6px;}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.card-text{font-size:12px;color:var(--muted);line-height:1.6;}
+.card-text strong{color:var(--ink3);}
+
+/* CALLOUT */
+.cl{border-radius:var(--r-sm);padding:12px 16px;margin:14px 0;border-left:3px solid;font-size:13px;line-height:1.65;color:var(--muted);}
+.cl strong{font-weight:700;}
+.cl-vm{background:var(--vm-l);border-color:var(--vm);} .cl-vm strong{color:var(--vm-d);}
+.cl-ve{background:var(--ve-l);border-color:var(--ve);} .cl-ve strong{color:var(--ve-d);}
+.cl-mt{background:var(--mt-l);border-color:var(--mt);} .cl-mt strong{color:var(--mt-d);}
+.cl-red{background:var(--bc-l);border-color:var(--bc);} .cl-red strong{color:var(--bc-d);}
+.cl-amber{background:#FEF3C7;border-color:#D97706;} .cl-amber strong{color:#92400E;}
+.cl-green{background:#D1FAE5;border-color:#059669;} .cl-green strong{color:#065F46;}
+
+/* FEAT */
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--ink3);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* BROADCOM ALERT */
+.broadcom-alert{background:var(--ink);border-radius:var(--r);padding:24px 28px;margin:20px 0;position:relative;overflow:hidden;}
+.broadcom-alert::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#CC0000,#FF6600,#CC0000);}
+.ba-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:8px;}
+.ba-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;}
+.ba-text{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;}
+.ba-text strong{color:rgba(255,255,255,.9);}
+.ba-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
+.ba-stat{padding:12px 14px;background:rgba(255,255,255,.05);border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.07);}
+.ba-stat-val{font-size:20px;font-weight:800;color:#FF6B6B;line-height:1;margin-bottom:4px;}
+.ba-stat-label{font-size:11px;color:rgba(255,255,255,.35);line-height:1.4;}
+
+/* VEEAM 3-2-1 */
+.rule-321{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}
+.r321{border-radius:var(--r);padding:18px;text-align:center;border:1px solid var(--line);}
+.r321-num{font-size:48px;font-weight:800;line-height:1;margin-bottom:6px;}
+.r321-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.r321-desc{font-size:11.5px;color:var(--muted);line-height:1.5;}
+
+/* MATILDA FLOW */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:20px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+.flow-step{padding:20px 16px;border-right:1px solid var(--line);position:relative;}
+.flow-step:last-child{border-right:none;}
+.flow-step::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--faint);z-index:1;}
+.flow-step:last-child::after{display:none;}
+.fs-num{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px;}
+.fs-name{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.fs-desc{font-size:11.5px;color:var(--muted);line-height:1.55;}
+.fs-desc strong{color:var(--ink3);}
+.fs-tools{display:flex;flex-direction:column;gap:3px;margin-top:8px;}
+.fstool{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:var(--r-sm);background:var(--mt-l);color:var(--mt);}
+
+/* PITCH */
+.pitch{background:var(--ink);border-radius:var(--r);padding:28px 32px;margin:24px 0;}
+.pitch-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:8px;}
+.pitch-text{font-size:15px;color:rgba(255,255,255,.87);line-height:1.8;font-style:italic;}
+.pitch-text strong{color:#fff;font-style:normal;}
+
+.footer{border-top:1px solid var(--line);margin-top:64px;padding-top:16px;display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint);flex-wrap:wrap;gap:8px;}
+
+@media(max-width:720px){
+  .page{padding:0 16px 80px;} .hero{padding:44px 0 32px;} .hero-h1{font-size:26px;}
+  .g2,.g3,.prod-grid,.wl-grid,.hero-grid,.flow,.rule-321,.ba-grid{grid-template-columns:1fr;}
+  .flow-step::after{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Personal Tech · Referencia</div>
+  <a class="nl" href="#c1">VMware Universe</a>
+  <a class="nl" href="#c2">Broadcom Impact</a>
+  <a class="nl nl-ve" href="#c3">Veeam</a>
+  <a class="nl nl-ve" href="#c4">Backup 3-2-1</a>
+  <a class="nl" href="#c5">Cargas de Trabajo</a>
+  <a class="nl" href="#c6">Workload Profiles</a>
+  <a class="nl nl-mt" href="#c7">Matilda Cloud</a>
+  <a class="nl nl-mt" href="#c8">Matilda en acción</a>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">🏗 Referencia técnica · VMware · Veeam · Matilda Cloud</div>
+  <div class="hero-h1">El ecosistema que sostiene<br>la infraestructura enterprise</div>
+  <div class="hero-sub">VMware virtualiza el datacenter. Veeam lo protege. Matilda Cloud lo migra. Esta guía cubre el universo completo — desde vSphere y NSX hasta el backup inmutable de Veeam y la discovery con IA de Matilda — con foco en cargas de trabajo reales y el impacto Broadcom.</div>
+  <div class="hero-pills">
+    <span class="hero-pill" style="background:var(--vm-l);color:var(--vm-d);border-color:var(--vm);">⚙️ VMware vSphere · vSAN · NSX · Tanzu · HCX</span>
+    <span class="hero-pill" style="background:var(--ve-l);color:var(--ve-d);border-color:var(--ve);">🛡 Veeam Backup & Replication · 3-2-1-1-0</span>
+    <span class="hero-pill" style="background:var(--mt-l);color:var(--mt-d);border-color:var(--mt);">🤖 Matilda Cloud · AI Discovery · Migration</span>
+    <span class="hero-pill" style="background:var(--bc-l);color:var(--bc-d);border-color:var(--bc);">⚠️ Broadcom · Cambio de licencias · Oportunidad</span>
+  </div>
+  <div class="hero-grid">
+    <div class="hg" style="border-top:3px solid var(--vm);">
+      <div class="hg-val" style="color:var(--vm);">+70%</div>
+      <div class="hg-label">Cuota de mercado VMware en virtualización enterprise</div>
+    </div>
+    <div class="hg" style="border-top:3px solid var(--bc);">
+      <div class="hg-val" style="color:var(--bc);">×8</div>
+      <div class="hg-label">Aumento promedio en el costo de licencias VMware post-Broadcom 2024</div>
+    </div>
+    <div class="hg" style="border-top:3px solid var(--ve);">
+      <div class="hg-val" style="color:var(--ve);">#1</div>
+      <div class="hg-label">Veeam en el Cuadrante Mágico Gartner de backup enterprise</div>
+    </div>
+    <div class="hg" style="border-top:3px solid var(--mt);">
+      <div class="hg-val" style="color:var(--mt);">IA</div>
+      <div class="hg-label">Matilda Cloud: herramienta preferida por AWS y OCI para assessments VMware</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C1: VMWARE UNIVERSE ══════ -->
+<div class="chap" id="c1">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--vm-l);">⚙️</div>
+    <span class="chap-num">01</span>
+    <div class="chap-title">El Universo VMware — el stack completo</div>
+    <span class="chap-badge" style="background:var(--vm-l);color:var(--vm-d);">by Broadcom desde 2023</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">VMware es el estándar de facto de la virtualización enterprise desde 2001. Su stack cubre desde la capa de hypervisor hasta redes definidas por software, almacenamiento, escritorios virtuales, contenedores y migración cloud. <strong>El 70% del fortune 500 corre VMware en producción.</strong> La adquisición por Broadcom en noviembre de 2023 por USD 69 billones cambió radicalmente el modelo de licenciamiento.</p>
+
+  <div class="prod-grid">
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">🖥</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware vSphere</div>
+          <div class="prod-aka">ESXi + vCenter Server</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">Core · Hypervisor</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>El corazón del datacenter VMware.</strong> ESXi es el hypervisor bare-metal que corre directamente sobre el hardware físico y permite crear múltiples VMs. vCenter Server es la consola de gestión centralizada que orquesta múltiples hosts ESXi en un cluster.<br><br>Con vSphere se obtiene: alta disponibilidad (HA), vMotion (migración en vivo de VMs sin downtime), DRS (balanceo automático de carga entre hosts) y FT (Fault Tolerance para VMs críticas).</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">vMotion (live migration)</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">HA / DRS</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Storage vMotion</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Fault Tolerance</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">💾</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware vSAN</div>
+          <div class="prod-aka">Virtual SAN — Software Defined Storage</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">Storage · HCI</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>Almacenamiento definido por software que agrega los discos locales de cada host ESXi</strong> en un pool compartido de storage distribuido. Elimina la necesidad de una SAN física externa. Forma la base de la infraestructura hiperconvergente (HCI) de VMware.<br><br>vSAN ofrece políticas de almacenamiento por VM, deduplicación, compresión, cifrado nativo y stretched cluster para DR entre dos sites.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">HCI</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Dedup &amp; Compression</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Stretched Cluster</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Encryption nativo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">🌐</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware NSX</div>
+          <div class="prod-aka">Network & Security Virtualization</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">SDN · Micro-segmentación</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>Red definida por software</strong> que abstrae el hardware de red (switches, routers, firewalls) en capas virtuales gestionadas centralmente. NSX crea redes overlay sobre la red física existente, permitiendo micro-segmentación (firewalls a nivel de cada VM) y automatización de políticas de red.<br><br>NSX-T (versión actual) soporta ambientes multi-cloud y es la base del networking de VMware Cloud.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Micro-segmentación</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">SDN Overlay</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Distributed Firewall</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Load Balancer</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">☁️</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware Cloud Foundation (VCF)</div>
+          <div class="prod-aka">vSphere + vSAN + NSX + Aria — todo en uno</div>
+          <span class="prod-tag" style="background:var(--bc);color:#fff;">Nuevo SKU Broadcom</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>La nueva forma de licenciar VMware post-Broadcom.</strong> Broadcom eliminó la venta de productos individuales (vSphere, vSAN, NSX por separado) y los empaquetó en VCF. Ahora hay que comprar el bundle completo aunque solo se use el hypervisor.<br><br>VCF incluye: vSphere, vSAN, NSX, Aria (ex-vRealize), y Tanzu Standard. El precio cambió de perpetual por socket a suscripción por core — triplicando o multiplicando el costo para muchas organizaciones.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--bc-l);color:var(--bc-d);">Bundle forzado</span>
+          <span class="kv" style="background:var(--bc-l);color:var(--bc-d);">Suscripción por core</span>
+          <span class="kv" style="background:var(--bc-l);color:var(--bc-d);">Sin perpetual</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">🚀</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware HCX</div>
+          <div class="prod-aka">Hybrid Cloud Extension</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">Migración · L2 Extension</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>La herramienta de migración nativa de VMware.</strong> HCX extiende la red del datacenter on-premise hasta el cloud (AWS VMware, Azure VMware, Personal Tech) y permite migrar VMs con vMotion cross-cloud — sin cambiar IP, sin reconfigurar aplicaciones, con cero downtime.<br><br>HCX también hace replicación continua (bulk migration) para mover grandes volúmenes de VMs en paralelo.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">vMotion cross-cloud</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">L2 Network Extension</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Bulk migration</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Zero downtime</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">🐳</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware Tanzu</div>
+          <div class="prod-aka">Kubernetes Enterprise Platform</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">Containers · K8s</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>La apuesta de VMware al mundo de contenedores.</strong> Tanzu es la plataforma Kubernetes enterprise que corre sobre vSphere, permitiendo gestionar clusters K8s con la misma herramienta con la que se gestionan las VMs. Incluye Tanzu Application Platform (TAP) para developer experience y Tanzu Mission Control para gestión multi-cluster.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">vSphere with Tanzu</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Tanzu App Platform</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Mission Control</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">🖥</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware Horizon</div>
+          <div class="prod-aka">VDI — Virtual Desktop Infrastructure</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">VDI · DaaS</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>Escritorios y aplicaciones virtuales entregados desde el datacenter.</strong> El usuario final accede a su escritorio Windows completo desde cualquier dispositivo (thin client, tablet, PC vieja) sin que nada crítico esté en el endpoint. Los datos viven en el servidor.<br><br>Horizon es especialmente relevante para sectores regulados (banca, salud) donde el dato no puede estar en el endpoint del empleado.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">VDI persistent / non-persistent</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">BLAST Protocol</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">App publishing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">🔄</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware Site Recovery Manager (SRM)</div>
+          <div class="prod-aka">Disaster Recovery Automation</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">DR · Automatización</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>Automatización del proceso de Disaster Recovery.</strong> SRM orquesta el failover de VMs desde el site primario al site de DR con un solo clic — o de forma totalmente automática. Incluye pruebas de DR no disruptivas (sin afectar producción) para documentar el RTO real ante auditorías.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Failover automatizado</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">DR Test no disruptivo</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">RPO/RTO documentado</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--vm-l);">
+        <div class="prod-icon">📊</div>
+        <div class="prod-info">
+          <div class="prod-name">VMware Aria (ex-vRealize)</div>
+          <div class="prod-aka">Operations · Automation · Log Insight · Cost</div>
+          <span class="prod-tag" style="background:var(--vm);color:#fff;">Observability · Ops</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>La suite de operaciones de VMware.</strong> Aria Operations (monitoreo y optimización), Aria Automation (provisioning self-service), Aria Log Intelligence (análisis de logs con ML) y Aria Cost (gestión de costos multi-cloud). Juntos dan visibilidad y control completo del ambiente VMware.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Monitoring &amp; Alerting</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">Self-service IT</span>
+          <span class="kv" style="background:var(--vm-l);color:var(--vm-d);">FinOps multi-cloud</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════ C2: BROADCOM IMPACT ══════ -->
+<div class="chap" id="c2">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bc-l);">⚠️</div>
+    <span class="chap-num">02</span>
+    <div class="chap-title">El impacto Broadcom — la mayor oportunidad comercial de 2024–2026</div>
+    <span class="chap-badge" style="background:var(--bc-l);color:var(--bc-d);">Oportunidad Personal Tech</span>
+  </div>
+
+  <div class="broadcom-alert">
+    <div class="ba-label">⚡ Alerta estratégica — contexto post-adquisición</div>
+    <div class="ba-title">Broadcom adquirió VMware en nov. 2023 por USD 69 billones — y cambió todo</div>
+    <div class="ba-text">Broadcom eliminó las licencias perpetuas, discontinuó la venta de productos individuales y forzó a todos los clientes a migrar a VMware Cloud Foundation (VCF) con suscripción por core. Para la mayoría de las organizaciones esto representó un <strong>aumento del 200–800% en el costo de licenciamiento.</strong> Muchas empresas están buscando alternativas urgentemente — y la migración a la nube es la más popular.</div>
+    <div class="ba-grid">
+      <div class="ba-stat"><div class="ba-stat-val">×8</div><div class="ba-stat-label">Aumento promedio en costo de licencias para clientes medianos</div></div>
+      <div class="ba-stat"><div class="ba-stat-val">90d</div><div class="ba-stat-label">Tiempo que Broadcom da para negociar nuevos contratos</div></div>
+      <div class="ba-stat"><div class="ba-stat-val">70%</div><div class="ba-stat-label">De las empresas evaluando alternativas según Gartner 2024</div></div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_bc1">
+    <div class="acc-h" onclick="T('a_bc1')">
+      <div class="acc-dot" style="background:var(--bc);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Las alternativas que están considerando los clientes VMware</div>
+        <div class="acc-sub">La ventana de conversión más grande de la historia del mercado de infraestructura argentina</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Alternativa</th><th>Para quién es ideal</th><th>Ventaja clave</th><th>Consideración</th><th>Rol Personal Tech</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="dt-title">☁️ Migrar a cloud (AWS/Azure/Personal Tech)</td>
+            <td>Empresas con workloads que toleran modernización o rehost</td>
+            <td>Elimina el costo de VMware completamente. OPEX predecible. Auto-scaling nativo.</td>
+            <td>Requiere planning y testing. Puede necesitar refactor de apps.</td>
+            <td><strong>Principal oportunidad:</strong> Migración al cloud de Pacheco + HCX para mover VMs sin cambiar IPs.</td>
+          </tr>
+          <tr>
+            <td class="dt-title">🔄 VMware Cloud on AWS / Azure VMware Solution</td>
+            <td>Empresas que quieren mantener el stack VMware pero en cloud</td>
+            <td>Zero cambio en operaciones. Mismas herramientas. Dato en el cloud elegido.</td>
+            <td>Sigue pagando licencia VMware — solo se mueve al cloud, no se elimina el costo Broadcom.</td>
+            <td>Conectividad hacia AVS/VMC-AWS via Personal Tech como carrier.</td>
+          </tr>
+          <tr>
+            <td class="dt-title">🐧 Proxmox / KVM / OpenStack</td>
+            <td>Empresas técnicas con equipo capaz de operar open-source</td>
+            <td>Sin costo de licencia. Comunidad activa. Personal Tech usa OpenStack en su cloud privada.</td>
+            <td>Mayor complejidad operativa. Sin el ecosistema de herramientas de VMware.</td>
+            <td>Personal Tech ofrece cloud basada en OpenStack como alternativa soberana.</td>
+          </tr>
+          <tr>
+            <td class="dt-title">🏢 Nutanix AHV</td>
+            <td>Clientes con infraestructura Nutanix ya instalada</td>
+            <td>Hypervisor incluido sin costo adicional en Nutanix. Funcionalidad similar a vSphere.</td>
+            <td>Requiere hardware Nutanix específico o licencia AOS.</td>
+            <td>Conectividad entre Nutanix on-prem y cloud de Personal Tech.</td>
+          </tr>
+        </tbody>
+      </table></div>
+      <div class="pitch">
+        <div class="pitch-eyebrow">El pitch para el cliente con problema Broadcom</div>
+        <div class="pitch-text">"El aumento de licencias Broadcom es una crisis de presupuesto — pero también es la oportunidad de hacer algo que debían haber hecho hace 5 años: <strong>mover esas VMs al cloud.</strong> El costo de migrar con Personal Tech al cloud de Pacheco es menor que el aumento anual de Broadcom. Y una vez migradas, no dependen de ningún fabricante de hypervisor. Eso no tiene precio."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C3: VEEAM UNIVERSE ══════ -->
+<div class="chap" id="c3">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--ve-l);">🛡</div>
+    <span class="chap-num">03</span>
+    <div class="chap-title">El Universo Veeam — backup, replicación y recuperación</div>
+    <span class="chap-badge" style="background:var(--ve-l);color:var(--ve-d);">Líder Gartner · #1 Enterprise Backup</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Veeam es el estándar de facto de backup y replicación para entornos VMware, físicos y cloud. Con más de 450.000 clientes a nivel mundial, su fortaleza está en la profunda integración con VMware y en capacidades únicas como la recuperación instantánea de VMs y los backups verificados automáticamente.</p>
+
+  <div class="prod-grid">
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--ve-l);">
+        <div class="prod-icon">🛡</div>
+        <div class="prod-info">
+          <div class="prod-name">Veeam Backup & Replication</div>
+          <div class="prod-aka">VBR — el producto core</div>
+          <span class="prod-tag" style="background:var(--ve);color:#fff;">Flagship · Enterprise</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>El producto más completo de backup enterprise del mercado.</strong> VBR hace backup de VMs VMware y Hyper-V, servidores físicos Windows/Linux, bases de datos Oracle/SQL/SAP HANA, NAS, y también cloud (AWS EC2, Azure VMs, GCP).<br><br>Características únicas: <strong>Instant VM Recovery</strong> (VM funcionando desde el backup en &lt;2 minutos), <strong>SureBackup</strong> (verificación automática de que el backup es recuperable) y <strong>DataLabs</strong> (entornos aislados para testing sobre el backup).</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Instant VM Recovery</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">SureBackup</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">DataLabs</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Immutable backup</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Cloud Tier (S3)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--ve-l);">
+        <div class="prod-icon">📧</div>
+        <div class="prod-info">
+          <div class="prod-name">Veeam Backup for Microsoft 365</div>
+          <div class="prod-aka">VB365 — protege Exchange, SharePoint, Teams, OneDrive</div>
+          <span class="prod-tag" style="background:var(--ve);color:#fff;">M365 · SaaS Backup</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc"><strong>Microsoft no hace backup de tu M365 — lo dice explícitamente en su SLA.</strong> VB365 cubre ese gap: hace backup del correo (Exchange Online), archivos (OneDrive/SharePoint), equipos (Teams) y listas (Lists). Permite recuperar un mail borrado hace 18 meses o restaurar una conversación de Teams completa.<br><br>Relevante para cualquier empresa con Microsoft 365 — que es prácticamente toda empresa argentina de más de 20 empleados.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Exchange Online</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">SharePoint/OneDrive</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Teams backup</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Búsqueda eDiscovery</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--ve-l);">
+        <div class="prod-icon">📊</div>
+        <div class="prod-info">
+          <div class="prod-name">Veeam ONE</div>
+          <div class="prod-aka">Monitoring & Analytics para ambientes Veeam y VMware</div>
+          <span class="prod-tag" style="background:var(--ve);color:#fff;">Monitoring</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc">Panel centralizado que monitorea el ambiente VMware y los jobs de Veeam en tiempo real. Incluye alertas predictivas (capacidad de backup que se agota, RPO en riesgo), reportes de cumplimiento y recomendaciones de rightsizing de recursos VMware. <strong>El CISO y el CIO ven el estado de toda la protección de datos en una pantalla.</strong></div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">RPO/RTO dashboards</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Capacity forecasting</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Alertas predictivas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod">
+      <div class="prod-head" style="background:var(--ve-l);">
+        <div class="prod-icon">🏢</div>
+        <div class="prod-info">
+          <div class="prod-name">Veeam Data Platform</div>
+          <div class="prod-aka">VBR + ONE + VDAP — la suite completa</div>
+          <span class="prod-tag" style="background:var(--ve);color:#fff;">Enterprise Suite</span>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-desc">La plataforma unificada que combina backup/replicación (VBR), monitoreo (ONE) y protección de datos avanzada (VDAP). Disponible en tres ediciones: Foundation, Advanced y Premium. <strong>La edición Premium incluye backup inmutable, WORM storage y capacidades de ciber-recuperación</strong> para cumplir con regulaciones BCRA y PCI-DSS.</div>
+        <div class="prod-kv">
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">WORM storage</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Cyber recovery</span>
+          <span class="kv" style="background:var(--ve-l);color:var(--ve-d);">Ransomware detection</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="acc" id="a_ve1">
+    <div class="acc-h" onclick="T('a_ve1')">
+      <div class="acc-dot" style="background:var(--ve);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Veeam + Personal Tech — el stack de protección de datos más completo del mercado argentino</div>
+        <div class="acc-sub">Cómo integrar Veeam con el cloud de Pacheco para backup inmutable</div>
+      </div>
+      <span class="acc-badge" style="background:var(--ve-l);color:var(--ve-d);">Argumento comercial</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:10px;">Arquitectura de backup con Veeam + Personal Tech</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--ve);"></span><strong>Primary backup:</strong> VBR hace backup de las VMs on-premise o en el cloud de Pacheco. Los backups primarios van a un repositorio local (servidor Veeam o NAS).</li>
+            <li><span class="fdot" style="background:var(--ve);"></span><strong>Cloud Tier (SOBP):</strong> Veeam replica los backups al Object Storage del cloud de Personal Tech (compatible con API S3). Los datos quedan en Argentina — sin egress al exterior.</li>
+            <li><span class="fdot" style="background:var(--ve);"></span><strong>Backup inmutable:</strong> El Object Storage de Personal Tech se configura con Object Lock (WORM). Ningún ransomware puede eliminar esos backups — ni siquiera el administrador durante el período de retención.</li>
+            <li><span class="fdot" style="background:var(--ve);"></span><strong>DR replication:</strong> Veeam replica las VMs críticas al cloud de Hornos (Barracas). RTO &lt; 15 minutos para las VMs tier-1.</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:10px;">Por qué Personal Tech + Veeam > AWS/Azure + Veeam</div>
+          <div class="dtw"><table class="dt">
+            <thead><tr><th>Dimensión</th><th>AWS/Azure + Veeam</th><th>Personal Tech + Veeam</th></tr></thead>
+            <tbody>
+              <tr><td>Egress de backup</td><td>Se cobra por datos que salen de AWS/Azure</td><td class="dt-title">Sin egress fees — todo en Argentina</td></tr>
+              <tr><td>Datos fuera del país</td><td>Backups en S3 us-east / eu-west</td><td class="dt-title">Backups en Pacheco — bajo ley argentina</td></tr>
+              <tr><td>Auditoría BCRA</td><td>Proceso complejo con entidad extranjera</td><td class="dt-title">DC en Argentina, inspección directa</td></tr>
+              <tr><td>Latencia de recuperación</td><td>Depende del ancho de banda a AWS</td><td class="dt-title">Sub-ms via MPLS interno de Personal</td></tr>
+              <tr><td>Facturación</td><td>USD — riesgo cambiario</td><td class="dt-title">Pesos ARS — predecible</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C4: REGLA 3-2-1-1-0 ══════ -->
+<div class="chap" id="c4">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--ve-l);">🔢</div>
+    <span class="chap-num">04</span>
+    <div class="chap-title">La regla 3-2-1-1-0 de Veeam — el estándar de protección de datos</div>
+    <span class="chap-badge" style="background:var(--ve-l);color:var(--ve-d);">Best Practice · Industria</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">La evolución de la clásica regla 3-2-1 de backup. Veeam actualizó el estándar para incluir defensa contra ransomware e inmutabilidad. <strong>Esta regla es el criterio que el BCRA y las principales certificaciones (ISO 27001, SOC2) utilizan para validar una estrategia de protección de datos.</strong></p>
+
+  <div class="rule-321">
+    <div class="r321" style="border-top:3px solid var(--ve);background:var(--ve-l);">
+      <div class="r321-num" style="color:var(--ve);">3</div>
+      <div class="r321-title">Copias de los datos</div>
+      <div class="r321-desc">Mantener 3 copias de los datos: el dato original en producción + 2 copias de backup. Si una falla, quedan dos.</div>
+    </div>
+    <div class="r321" style="border-top:3px solid var(--w1);background:var(--w1-l);">
+      <div class="r321-num" style="color:var(--w1);">2</div>
+      <div class="r321-title">Tipos de medios distintos</div>
+      <div class="r321-desc">Las copias deben estar en al menos 2 tipos de medios diferentes: disco local + object storage en nube, o disco + cinta. Evita que un solo tipo de falla destruya todo.</div>
+    </div>
+    <div class="r321" style="border-top:3px solid var(--w2);background:var(--w2-l);">
+      <div class="r321-num" style="color:var(--w2);">1</div>
+      <div class="r321-title">Copia fuera del sitio</div>
+      <div class="r321-desc">Al menos 1 copia en una ubicación geográficamente separada. Si hay un incendio, inundación o corte en el DC primario, la copia off-site sobrevive.</div>
+    </div>
+    <div class="r321" style="border-top:3px solid var(--w4);background:var(--w4-l);">
+      <div class="r321-num" style="color:var(--w4);">1</div>
+      <div class="r321-title">Copia offline o inmutable</div>
+      <div class="r321-desc">Al menos 1 copia que el ransomware no pueda cifrar ni borrar: Object Lock (WORM), cinta offline, o repositorio Veeam con Hardened Repository (Linux). Esta es la defensa anti-ransomware.</div>
+    </div>
+    <div class="r321" style="border-top:3px solid var(--ve);background:var(--bg2);">
+      <div class="r321-num" style="color:var(--ve);">0</div>
+      <div class="r321-title">Cero errores en verificación</div>
+      <div class="r321-desc">Veeam SureBackup verifica automáticamente cada backup: arranca la VM en un entorno aislado y valida que responde. 0 backups sin verificar = certeza de que son recuperables.</div>
+    </div>
+  </div>
+
+  <div class="cl cl-ve"><strong>Pregunta de discovery que cierra el deal de backup:</strong> "¿Cuándo fue la última vez que probaron restaurar el backup completo de su sistema ERP y cuánto tardó?" El 80% de las empresas nunca lo hicieron. Con Veeam + Personal Tech, esa prueba se hace automáticamente cada noche y el resultado queda documentado para la auditoría.</div>
+</div>
+
+
+<!-- ══════ C5: CARGAS DE TRABAJO ══════ -->
+<div class="chap" id="c5">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bg3);">💻</div>
+    <span class="chap-num">05</span>
+    <div class="chap-title">Categorías de cargas de trabajo — taxonomía completa</div>
+    <span class="chap-badge" style="background:var(--bg3);color:var(--ink3);">Workload Classification</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Una "carga de trabajo" (workload) es cualquier aplicación, servicio o proceso que consume recursos de cómputo. La clasificación correcta de los workloads es el primer paso para definir la estrategia de migración, el dimensionamiento cloud y la política de backup adecuada.</p>
+
+  <div class="wl-grid">
+
+    <div class="wl">
+      <div class="wl-top" style="border-left:4px solid var(--w1);">
+        <div class="wl-header"><div class="wl-icon">🌐</div><div><div class="wl-category" style="color:var(--w1);">Tier 1 · Web &amp; Application</div></div></div>
+        <div class="wl-name">Servidores web y de aplicación</div>
+        <div class="wl-def">Applicaciones que reciben peticiones de usuarios externos o internos, procesan la lógica de negocio y retornan respuestas. <strong>Alta variabilidad de carga — candidatos naturales al auto-scaling en cloud.</strong></div>
+      </div>
+      <div class="wl-metrics">
+        <div class="wm"><div class="wm-val" style="color:var(--w1);">Medio</div><div class="wm-label">CPU P95</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w1);">Bajo</div><div class="wm-label">RAM P95</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w1);">Alto</div><div class="wm-label">Pico tráfico</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w1);">Baja</div><div class="wm-label">Latencia req.</div></div>
+      </div>
+      <div class="wl-examples">
+        <div class="we-label">Ejemplos</div>
+        <div class="we-chips">
+          <span class="wechip" style="background:var(--w1-l);color:var(--w1);">Apache / Nginx</span>
+          <span class="wechip" style="background:var(--w1-l);color:var(--w1);">Node.js</span>
+          <span class="wechip" style="background:var(--w1-l);color:var(--w1);">Java Spring</span>
+          <span class="wechip" style="background:var(--w1-l);color:var(--w1);">PHP Laravel</span>
+          <span class="wechip" style="background:var(--w1-l);color:var(--w1);">IIS (.NET)</span>
+          <span class="wechip" style="background:var(--w1-l);color:var(--w1);">WordPress</span>
+        </div>
+      </div>
+      <div class="wl-strategy"><strong>Estrategia cloud:</strong> Replatform con auto-scaling group + Load Balancer. Ideal para instancias burstables (t3). Reserved Instances para el baseline, Spot para los picos estacionales.</div>
+    </div>
+
+    <div class="wl">
+      <div class="wl-top" style="border-left:4px solid var(--w2);">
+        <div class="wl-header"><div class="wl-icon">🗄</div><div><div class="wl-category" style="color:var(--w2);">Tier 1 · Bases de datos</div></div></div>
+        <div class="wl-name">Servidores de base de datos</div>
+        <div class="wl-def">Sistemas que almacenan, organizan y sirven datos estructurados. <strong>Alta criticidad, baja tolerancia a latencia, alta demanda de RAM (buffer pool).</strong> Los workloads más complejos de migrar.</div>
+      </div>
+      <div class="wl-metrics">
+        <div class="wm"><div class="wm-val" style="color:var(--w2);">Bajo</div><div class="wm-label">CPU P95</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w2);">Muy alto</div><div class="wm-label">RAM P95</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w2);">Alto</div><div class="wm-label">IOPS</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w2);">Sub-ms</div><div class="wm-label">Latencia req.</div></div>
+      </div>
+      <div class="wl-examples">
+        <div class="we-label">Motores más comunes</div>
+        <div class="we-chips">
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">SQL Server</span>
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">Oracle DB</span>
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">PostgreSQL</span>
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">MySQL / MariaDB</span>
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">SAP HANA</span>
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">MongoDB</span>
+          <span class="wechip" style="background:var(--w2-l);color:var(--w2);">Redis</span>
+        </div>
+      </div>
+      <div class="wl-strategy"><strong>Estrategia cloud:</strong> Replatform a managed RDS para SQL/MySQL/PostgreSQL. Oracle en VM dedicada (bare metal) para máxima performance. RAM ≥ dataset activo × 1.5. Mismo AZ que la app. IOPS: medir con P95 real de 30 días.</div>
+    </div>
+
+    <div class="wl">
+      <div class="wl-top" style="border-left:4px solid var(--w3);">
+        <div class="wl-header"><div class="wl-icon">📦</div><div><div class="wl-category" style="color:var(--w3);">Tier 2 · ERP y sistemas de gestión</div></div></div>
+        <div class="wl-name">ERP, CRM y sistemas de negocio</div>
+        <div class="wl-def">Aplicaciones centrales del negocio que integran finanzas, operaciones, RRHH, ventas y logística. <strong>Alta criticidad, múltiples dependencias internas, baja tolerancia a downtime.</strong></div>
+      </div>
+      <div class="wl-metrics">
+        <div class="wm"><div class="wm-val" style="color:var(--w3);">30–60%</div><div class="wm-label">CPU (diurno)</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w3);">50–80%</div><div class="wm-label">RAM constante</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w3);">Medio</div><div class="wm-label">IOPS</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w3);">Ventana</div><div class="wm-label">Mantenimiento</div></div>
+      </div>
+      <div class="wl-examples">
+        <div class="we-label">Productos más comunes en Argentina</div>
+        <div class="we-chips">
+          <span class="wechip" style="background:var(--w3-l);color:var(--w3);">SAP ECC / S4HANA</span>
+          <span class="wechip" style="background:var(--w3-l);color:var(--w3);">Tango / Bejerman</span>
+          <span class="wechip" style="background:var(--w3-l);color:var(--w3);">Salesforce</span>
+          <span class="wechip" style="background:var(--w3-l);color:var(--w3);">Microsoft Dynamics</span>
+          <span class="wechip" style="background:var(--w3-l);color:var(--w3);">Oracle ERP Cloud</span>
+          <span class="wechip" style="background:var(--w3-l);color:var(--w3);">JD Edwards</span>
+        </div>
+      </div>
+      <div class="wl-strategy"><strong>Estrategia cloud:</strong> Rehost primera fase (sin cambios). Luego evaluar Repurchase a versión SaaS. Migración en la última ola — siempre después de sistemas no críticos. Obligatorio: DR documentado y probado antes del cutover.</div>
+    </div>
+
+    <div class="wl">
+      <div class="wl-top" style="border-left:4px solid var(--w4);">
+        <div class="wl-header"><div class="wl-icon">⚡</div><div><div class="wl-category" style="color:var(--w4);">Batch &amp; ETL</div></div></div>
+        <div class="wl-name">Procesos batch y pipelines de datos</div>
+        <div class="wl-def">Cargas que procesan grandes volúmenes de datos en ventanas horarias específicas (nocturno, semanal). <strong>Alta demanda de CPU/RAM en burst corto, luego inactividad.</strong> Candidatos perfectos a Spot Instances y serverless.</div>
+      </div>
+      <div class="wl-metrics">
+        <div class="wm"><div class="wm-val" style="color:var(--w4);">80–100%</div><div class="wm-label">CPU en burst</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w4);">Alta</div><div class="wm-label">RAM en burst</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w4);">Alto</div><div class="wm-label">Throughput</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w4);">Alta</div><div class="wm-label">Tolerancia</div></div>
+      </div>
+      <div class="wl-examples">
+        <div class="we-label">Casos típicos</div>
+        <div class="we-chips">
+          <span class="wechip" style="background:var(--w4-l);color:var(--w4);">Liquidación de sueldos</span>
+          <span class="wechip" style="background:var(--w4-l);color:var(--w4);">Cierre contable</span>
+          <span class="wechip" style="background:var(--w4-l);color:var(--w4);">ETL nocturno</span>
+          <span class="wechip" style="background:var(--w4-l);color:var(--w4);">Informes AFIP/BCRA</span>
+          <span class="wechip" style="background:var(--w4-l);color:var(--w4);">Backup backup</span>
+          <span class="wechip" style="background:var(--w4-l);color:var(--w4);">ML training</span>
+        </div>
+      </div>
+      <div class="wl-strategy"><strong>Estrategia cloud ideal:</strong> AWS Spot Instances (hasta 90% de ahorro para cargas interrumpibles) + AWS Batch o Azure Batch. Si el job es &lt;15 minutos: Lambda / Azure Functions (serverless). Apagado automático al terminar — no pagan cuando no corren.</div>
+    </div>
+
+    <div class="wl">
+      <div class="wl-top" style="border-left:4px solid var(--w5);">
+        <div class="wl-header"><div class="wl-icon">🔁</div><div><div class="wl-category" style="color:var(--w5);">Tier 1 · Sistemas críticos 24x7</div></div></div>
+        <div class="wl-name">Core banking, pagos, sistemas de misión crítica</div>
+        <div class="wl-def"><strong>Cero tolerancia a downtime.</strong> Cada segundo de indisponibilidad tiene impacto financiero directo y reputacional. Requieren arquitecturas de alta disponibilidad con redundancia en múltiples capas.</div>
+      </div>
+      <div class="wl-metrics">
+        <div class="wm"><div class="wm-val" style="color:var(--w5);">99.99%</div><div class="wm-label">SLA mínimo</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w5);">&lt;5ms</div><div class="wm-label">Latencia app↔DB</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w5);">Multi-AZ</div><div class="wm-label">Redundancia</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--w5);">RPO≈0</div><div class="wm-label">RPO objetivo</div></div>
+      </div>
+      <div class="wl-examples">
+        <div class="we-label">Sistemas en esta categoría</div>
+        <div class="we-chips">
+          <span class="wechip" style="background:var(--w5-l);color:var(--w5);">Core bancario</span>
+          <span class="wechip" style="background:var(--w5-l);color:var(--w5);">Switch de pagos</span>
+          <span class="wechip" style="background:var(--w5-l);color:var(--w5);">ATM / POS</span>
+          <span class="wechip" style="background:var(--w5-l);color:var(--w5);">SCADA industrial</span>
+          <span class="wechip" style="background:var(--w5-l);color:var(--w5);">Sistema de control de vuelos</span>
+          <span class="wechip" style="background:var(--w5-l);color:var(--w5);">E-commerce transaccional</span>
+        </div>
+      </div>
+      <div class="wl-strategy"><strong>Estrategia cloud:</strong> Multi-AZ obligatorio con failover automático &lt;30 segundos. Replicación síncrona de DB (RPO≈0). Prueba de DR semestral documentada. Para banca argentina: nube soberana en Pacheco cumple requisitos BCRA de jurisdicción e inspección.</div>
+    </div>
+
+    <div class="wl">
+      <div class="wl-top" style="border-left:4px solid var(--vm);">
+        <div class="wl-header"><div class="wl-icon">🏗</div><div><div class="wl-category" style="color:var(--vm);">Dev &amp; Test</div></div></div>
+        <div class="wl-name">Entornos de desarrollo, QA y testing</div>
+        <div class="wl-def">Entornos que replican producción para desarrollo y pruebas. <strong>No críticos, alta elasticidad, perfectos para optimización de costos.</strong> Muchas veces sobredimensionados en on-premise porque "se compra para siempre".</div>
+      </div>
+      <div class="wl-metrics">
+        <div class="wm"><div class="wm-val" style="color:var(--vm);">Horario</div><div class="wm-label">Uso: lun-vie</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--vm);">0</div><div class="wm-label">Uso nocturno</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--vm);">Alto</div><div class="wm-label">Elasticidad</div></div>
+        <div class="wm"><div class="wm-val" style="color:var(--vm);">Alto</div><div class="wm-label">ROI del apagado</div></div>
+      </div>
+      <div class="wl-examples">
+        <div class="we-label">Tipos de entorno</div>
+        <div class="we-chips">
+          <span class="wechip" style="background:var(--vm-l);color:var(--vm-d);">Dev local del developer</span>
+          <span class="wechip" style="background:var(--vm-l);color:var(--vm-d);">Shared dev</span>
+          <span class="wechip" style="background:var(--vm-l);color:var(--vm-d);">QA / Staging</span>
+          <span class="wechip" style="background:var(--vm-l);color:var(--vm-d);">Pre-producción</span>
+          <span class="wechip" style="background:var(--vm-l);color:var(--vm-d);">Performance testing</span>
+        </div>
+      </div>
+      <div class="wl-strategy"><strong>Quick win FinOps:</strong> Apagado programado de 18 hs/día (fuera del horario laboral) = ahorro del 75% del costo de esas instancias. Primera ola de migración — sirven para validar el proceso sin riesgo.</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════ C6: WORKLOAD PROFILES — TABLA TÉCNICA ══════ -->
+<div class="chap" id="c6">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bg3);">📐</div>
+    <span class="chap-num">06</span>
+    <div class="chap-title">Perfiles técnicos de workloads — sizing de referencia</div>
+    <span class="chap-badge" style="background:var(--bg3);color:var(--ink3);">Referencia rápida</span>
+  </div>
+
+  <div class="acc" id="a_wlp">
+    <div class="acc-h" onclick="T('a_wlp')">
+      <div class="acc-dot" style="background:var(--ink);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Tabla de perfiles técnicos: on-premise → cloud equivalente</div>
+        <div class="acc-sub">Guía de conversión para propuestas rápidas — siempre validar con 30 días de telemetría real</div>
+      </div>
+      <span class="acc-badge" style="background:var(--bg3);color:var(--ink3);">Pre-sales reference</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Workload</th><th>HW on-premise típico</th><th>CPU P95 real</th><th>RAM P95 real</th><th>AWS target</th><th>Azure target</th><th>Personal Tech</th><th>Estrategia</th></tr></thead>
+        <tbody>
+          <tr><td class="dt-title">Web server (bajo tráfico)</td><td>4C/16GB/200GB SSD</td><td>~10%</td><td>~25%</td><td>t3.medium (2vC/4GB)</td><td>B2s (2vC/4GB)</td><td>Small VM</td><td><span class="pill" style="background:var(--r2-l);color:var(--r2);">Rehost</span></td></tr>
+          <tr><td class="dt-title">Web server (alto tráfico)</td><td>8C/32GB/200GB SSD</td><td>~45%</td><td>~40%</td><td>m5.xlarge (4vC/16GB)</td><td>D4s v5</td><td>Medium VM</td><td><span class="pill" style="background:var(--r3-l);color:var(--r3);">Replatform + ASG</span></td></tr>
+          <tr><td class="dt-title">SQL Server (OLTP mediano)</td><td>16C/64GB/1TB SSD</td><td>~20%</td><td>~70%</td><td>db.r5.xlarge RDS (4vC/32GB)</td><td>SQL DB GP v2 4vC</td><td>DB VM + SQL Server lic.</td><td><span class="pill" style="background:var(--r3-l);color:var(--r3);">Replatform a RDS</span></td></tr>
+          <tr><td class="dt-title">SQL Server (OLTP grande)</td><td>32C/256GB/2TB SAS</td><td>~25%</td><td>~75%</td><td>db.r5.4xlarge RDS (16vC/128GB)</td><td>SQL DB Business Critical</td><td>Bare Metal VM</td><td><span class="pill" style="background:var(--r2-l);color:var(--r2);">Rehost + tune</span></td></tr>
+          <tr><td class="dt-title">Oracle DB (mediano)</td><td>16C/128GB/2TB SAN</td><td>~18%</td><td>~80%</td><td>db.r5.2xlarge RDS Oracle</td><td>Azure DB Oracle</td><td>VM + Oracle lic. BYOL</td><td><span class="pill" style="background:var(--r2-l);color:var(--r2);">Rehost BYOL</span></td></tr>
+          <tr><td class="dt-title">SAP HANA (mediano)</td><td>32C/512GB/4TB SSD</td><td>~30%</td><td>~90%</td><td>x1e.8xlarge (32vC/976GB)</td><td>M128s (128vC/2TB)</td><td>HANA certified VM</td><td><span class="pill" style="background:var(--r2-l);color:var(--r2);">Rehost certificado</span></td></tr>
+          <tr><td class="dt-title">App server Java/Python</td><td>8C/32GB/200GB SSD</td><td>~35%</td><td>~50%</td><td>m5.xlarge (4vC/16GB)</td><td>D4s v5</td><td>Medium VM</td><td><span class="pill" style="background:var(--r3-l);color:var(--r3);">Replatform + containers</span></td></tr>
+          <tr><td class="dt-title">ETL nocturno / Batch</td><td>8C/32GB (solo nocturno)</td><td>~90% (2–4h)</td><td>~60%</td><td>c5.2xlarge Spot (burst)</td><td>F8s v2 Spot</td><td>VM escalada</td><td><span class="pill" style="background:var(--r6-l);color:#4338CA;">Refactor Spot/Serverless</span></td></tr>
+          <tr><td class="dt-title">File server / NAS</td><td>4C/16GB/10TB NFS</td><td>~5%</td><td>~15%</td><td>EFS / S3 (no EC2)</td><td>Azure Files / Blob</td><td>Object Storage</td><td><span class="pill" style="background:var(--r3-l);color:var(--r3);">Replatform a Object Storage</span></td></tr>
+          <tr><td class="dt-title">Dev / Test environment</td><td>4C/16GB/200GB SSD</td><td>~15%</td><td>~30%</td><td>t3.large — apagado 18h/día</td><td>B4ms — auto-shutdown</td><td>Dev VM</td><td><span class="pill" style="background:var(--r2-l);color:var(--r2);">Rehost + auto-shutdown</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-amber"><strong>⚠️ Siempre recordar:</strong> Esta tabla es para primeras estimaciones. Antes de formalizar una propuesta, siempre instalar un agente de discovery y capturar 30 días de telemetría real. El P95 de CPU real suele ser 2–4× menor que lo que el cliente declara como "uso".</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C7: MATILDA CLOUD ══════ -->
+<div class="chap" id="c7">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--mt-l);">🤖</div>
+    <span class="chap-num">07</span>
+    <div class="chap-title">Matilda Cloud — discovery y migración con IA</div>
+    <span class="chap-badge" style="background:var(--mt-l);color:var(--mt-d);">Preferred AWS & OCI VMware Tool</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Matilda Cloud es una plataforma de descubrimiento, assessment y migración cloud acelerada por inteligencia artificial, reconocida por AWS y OCI como la herramienta preferida para assessments de ambientes VMware. <strong>Automatiza el proceso de discovery agentless, genera recomendaciones de migración usando IA y orquesta la ejecución automatizada</strong> reduciendo los tiempos de proyecto en un 60–70%.</p>
+
+  <div class="flow">
+    <div class="flow-step" style="background:var(--mt-l);">
+      <div class="fs-num" style="color:var(--mt);">Paso 1 · Discover</div>
+      <div class="fs-name">Matilda Discover</div>
+      <div class="fs-desc">Discovery agentless automático del ambiente completo: VMs VMware, servidores físicos, bases de datos, dependencias de aplicaciones, perfiles de uso de CPU/RAM/IOPS, volúmenes de storage y proyecciones de crecimiento.</div>
+      <div class="fs-tools">
+        <span class="fstool">Agentless scan</span>
+        <span class="fstool">Dependency mapping</span>
+        <span class="fstool">Storage profiling</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="fs-num" style="color:var(--mt);">Paso 2 · Assess</div>
+      <div class="fs-name">RAPID Assessment</div>
+      <div class="fs-desc">La IA de Matilda analiza los datos del discovery y genera automáticamente el Business Case, el TCO comparativo (on-prem vs. cloud), las recomendaciones 6R por aplicación y el sizing cloud por workload.</div>
+      <div class="fs-tools">
+        <span class="fstool">TCO automático</span>
+        <span class="fstool">6R recommendations</span>
+        <span class="fstool">Cloud sizing AI</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="fs-num" style="color:var(--mt);">Paso 3 · Migrate</div>
+      <div class="fs-name">Matilda Migrate</div>
+      <div class="fs-desc">Migración automatizada con landing zones pre-configuradas, gestión de transferencia de datos, testing de ambientes y orquestación del cutover. Integración nativa con DevOps y CI/CD para IaC.</div>
+      <div class="fs-tools">
+        <span class="fstool">Landing zone IaC</span>
+        <span class="fstool">Automated cutover</span>
+        <span class="fstool">CI/CD integration</span>
+      </div>
+    </div>
+    <div class="flow-step" style="background:var(--mt-l);">
+      <div class="fs-num" style="color:var(--mt);">Paso 4 · Optimize</div>
+      <div class="fs-name">Matilda Optimize</div>
+      <div class="fs-desc">Post-migración: optimización continua de costos, rightsizing automático, compliance monitoring y FinOps. Identifica instancias sub-utilizadas, storage zombie y oportunidades de Reserved Instances.</div>
+      <div class="fs-tools">
+        <span class="fstool">FinOps continuo</span>
+        <span class="fstool">Rightsizing IA</span>
+        <span class="fstool">Compliance check</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_mt1">
+    <div class="acc-h" onclick="T('a_mt1')">
+      <div class="acc-dot" style="background:var(--mt);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Qué genera el RAPID Assessment de Matilda — el output que lleva a la reunión de directorio</div>
+        <div class="acc-sub">En una semana de discovery, Matilda entrega lo que manualmente llevaría 3 meses</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:10px;">Outputs del assessment automático</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--mt);"></span><strong>Inventario completo agentless:</strong> todas las VMs, servidores físicos y DBs del ambiente, con sus métricas reales de uso (CPU/RAM/IOPS/storage) durante el período de scan.</li>
+            <li><span class="fdot" style="background:var(--mt);"></span><strong>Dependency map:</strong> grafo visual de dependencias entre aplicaciones — qué habla con qué, en qué puertos, con qué latencia. Define el orden de migración.</li>
+            <li><span class="fdot" style="background:var(--mt);"></span><strong>Clasificación 6R automática:</strong> la IA asigna una estrategia 6R a cada aplicación basándose en su complejidad técnica, uso, dependencias y perfil de carga.</li>
+            <li><span class="fdot" style="background:var(--mt);"></span><strong>Sizing cloud por workload:</strong> para cada VM, Matilda recomienda la instancia cloud específica (tipo + tamaño) en AWS, Azure, GCP u OCI.</li>
+            <li><span class="fdot" style="background:var(--mt);"></span><strong>Business Case y TCO:</strong> comparativo total del costo a 3 años: on-premise (hardware, licencias, RRHH, energía) vs. cloud. Incluye el ahorro proyectado mes a mes.</li>
+            <li><span class="fdot" style="background:var(--mt);"></span><strong>Perfiles de storage:</strong> volúmenes, IOPS demand profiles, throughput, insights de cómo se usa la capacidad vs. cómo fue provisionada.</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:10px;">Matilda vs. assessment manual</div>
+          <div class="dtw"><table class="dt">
+            <thead><tr><th>Dimensión</th><th>Manual</th><th>Matilda Cloud</th></tr></thead>
+            <tbody>
+              <tr><td>Tiempo de discovery</td><td>4–8 semanas</td><td class="dt-title">1–2 semanas (agentless)</td></tr>
+              <tr><td>Cobertura del inventario</td><td>70–80% (errores humanos)</td><td class="dt-title">95–99% (automatizado)</td></tr>
+              <tr><td>Dependency mapping</td><td>Entrevistas + documentos</td><td class="dt-title">Automático por network traffic</td></tr>
+              <tr><td>Sizing cloud</td><td>Hojas de cálculo manuales</td><td class="dt-title">IA por workload en tiempo real</td></tr>
+              <tr><td>Business Case</td><td>2–3 semanas adicionales</td><td class="dt-title">Generado automáticamente</td></tr>
+              <tr><td>6R classification</td><td>Manual por app</td><td class="dt-title">Automática con justificación</td></tr>
+              <tr><td>Costo de assessment</td><td>RRHH + tiempo</td><td class="dt-title">Plataforma SaaS</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C8: MATILDA EN ACCIÓN ══════ -->
+<div class="chap" id="c8">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--mt-l);">🚀</div>
+    <span class="chap-num">08</span>
+    <div class="chap-title">Matilda Cloud en acción — VMware exit y capacidades clave</div>
+    <span class="chap-badge" style="background:var(--mt-l);color:var(--mt-d);">Casos de uso</span>
+  </div>
+
+  <div class="acc" id="a_mt2">
+    <div class="acc-h" onclick="T('a_mt2')">
+      <div class="acc-dot" style="background:var(--mt);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Matilda para el "VMware exit" — el caso de uso más urgente del mercado en 2024–2026</div>
+        <div class="acc-sub">Matilda es la herramienta recomendada por AWS y OCI para assessments de migración de ambientes VMware</div>
+      </div>
+      <span class="acc-badge" style="background:var(--bc-l);color:var(--bc-d);">Post-Broadcom</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--mt);">
+          <div class="card-icon">🔍</div>
+          <div class="card-title">1. Fotografía completa en días</div>
+          <div class="card-text">Matilda hace un scan agentless de todo el ambiente vSphere: VMs, datastores, clusters, redes, snapshots. <strong>El cliente sabe exactamente qué tiene antes de negociar con Broadcom</strong> — y cuánto le costará moverse.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--mt);">
+          <div class="card-icon">📊</div>
+          <div class="card-title">2. Business Case contra Broadcom</div>
+          <div class="card-text">Matilda genera el TCO comparativo: "si pagás el nuevo precio de Broadcom durante 3 años, gastás X. Si migrás al cloud con Personal Tech en 6 meses, gastás Y total." <strong>Con números reales del ambiente del cliente.</strong></div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--mt);">
+          <div class="card-icon">🗺</div>
+          <div class="card-title">3. Plan de migración priorizado</div>
+          <div class="card-text">La IA clasifica automáticamente qué VMs migrar primero (baja complejidad, alta urgencia) y cuáles requieren más análisis. Genera el roadmap de olas de migración con tiempos estimados.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--mt);">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">4. Migración automatizada</div>
+          <div class="card-text">Matilda Migrate crea las landing zones en AWS/Azure/OCI con IaC, gestiona la transferencia de datos y orquesta el cutover. <strong>Reduce el tiempo de migración 60–70% vs. migración manual.</strong></div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--mt);">
+          <div class="card-icon">🔒</div>
+          <div class="card-title">5. Security assessment integrado</div>
+          <div class="card-text">Las herramientas de seguridad de Matilda mapean los controles necesarios para el ambiente cloud destino, identifican gaps y generan las políticas de compliance antes de la migración.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--mt);">
+          <div class="card-icon">💰</div>
+          <div class="card-title">6. FinOps post-migración</div>
+          <div class="card-text">Matilda Optimize monitorea el ambiente cloud post-migración identificando instancias sobredimensionadas, storage zombie y oportunidades de Reserved Instances. <strong>Hasta 30% de ahorro adicional.</strong></div>
+        </div>
+      </div>
+      <div class="cl cl-mt"><strong>Matilda + Personal Tech para el VMware exit argentino:</strong> Matilda hace el assessment y genera el Business Case. Personal Tech provee el cloud destino en Pacheco (dato en Argentina, factura en pesos) y la conectividad MPLS para la migración. Un solo proyecto con dos actores locales especializados — sin dependencia de consultoras norteamericanas.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_mt3">
+    <div class="acc-h" onclick="T('a_mt3')">
+      <div class="acc-dot" style="background:var(--mt);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Integraciones de Matilda — multi-cloud y ecosistema completo</div>
+        <div class="acc-sub">Matilda es agnóstica al destino — trabaja con todos los clouds principales</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Cloud / Plataforma</th><th>Nivel de partnership</th><th>Capacidades específicas</th><th>Relevancia para Personal Tech</th></tr></thead>
+        <tbody>
+          <tr><td class="dt-title">☁️ AWS</td><td><span class="pill" style="background:#FEF3C7;color:#92400E;">Advanced Technology Partner</span></td><td>Migration + Modernization Competencies. Herramienta preferida para OLAs (Optimization Learning Assessment). Integración con AWS MGN, DMS, FSx.</td><td>Clientes de Personal Tech que quieren solución híbrida con AWS pueden usar Matilda para el assessment y Personal Tech para la conectividad Direct Connect.</td></tr>
+          <tr><td class="dt-title">🔵 Microsoft Azure</td><td><span class="pill" style="background:#EEF2FF;color:#4338CA;">Azure Solutions Partner · Gold Partner</span></td><td>Matilda Discover, Migrate, RAPID Assessment y Optimize disponibles en Azure Marketplace. Integración con Azure Migrate y Site Recovery.</td><td>Para clientes Microsoft-first que migran VMs VMware a Azure, Matilda acelera el assessment y Personal Tech provee ExpressRoute.</td></tr>
+          <tr><td class="dt-title">🟠 Oracle Cloud (OCI)</td><td><span class="pill" style="background:#FEE2E2;color:#991B1B;">Preferred VMware assessment tool</span></td><td>Herramienta oficial de OCI para assessments de migración VMware. Integración con Oracle Autonomous Database migration.</td><td>Para cargas Oracle DB que migran a OCI, Matilda genera el sizing específico y Personal Tech da la conectividad.</td></tr>
+          <tr><td class="dt-title">🟢 Google Cloud</td><td><span class="pill" style="background:#D1FAE5;color:#065F46);">GCP Partner</span></td><td>Discover, Migrate y containerización hacia GKE. Integración con Google Cloud Storage y BigQuery.</td><td>Para clientes analytics-first que quieren BigQuery, Matilda evalúa los workloads de datos candidatos a GCP.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="pitch">
+    <div class="pitch-eyebrow">El argumento integrador — VMware + Veeam + Matilda + Personal Tech</div>
+    <div class="pitch-text">"Broadcom les acaba de dar el mejor argumento para hacer lo que debían haber hecho hace 5 años. <strong>Matilda hace el assessment en dos semanas y les dice exactamente cuánto cuestan sus VMs en el cloud de Personal Tech — con datos reales, no con estimaciones.</strong> Veeam sigue protegiendo sus datos durante y después de la migración con backup inmutable en Argentina. Y Personal Tech provee el cloud donde todo eso corre — en pesos, bajo ley argentina, con soporte en español. El problema de Broadcom se convierte en la modernización que el negocio necesitaba."</div>
+  </div>
+</div>
+
+
+<div class="footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>VMware · Veeam · Cargas de Trabajo · Matilda Cloud · <span id="fecha"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+document.getElementById('fecha').textContent=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function T(id){
+  var el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Nav active
+var navLinks=document.querySelectorAll('.nl');
+var chapters=document.querySelectorAll('.chap');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  var cur=null;
+  chapters.forEach(function(c){if(sy>=c.offsetTop)cur=c;});
+  navLinks.forEach(function(n){n.classList.remove('on');});
+  if(cur){var a=document.querySelector('.nl[href="#'+cur.id+'"]');if(a)a.classList.add('on');}
+});
+
+// Open first acc
+var firstAcc=document.querySelector('.acc');
+if(firstAcc) firstAcc.classList.add('open');
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

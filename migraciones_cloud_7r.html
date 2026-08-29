@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migraciones Cloud — Framework 7R, Dimensionamiento y Metodología | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --navy:#0C1F45;
+  --r1:#E74C3C;--r2:#E67E22;--r3:#F1C40F;--r4:#27AE60;--r5:#2980B9;--r6:#8E44AD;--r7:#16A085;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--text);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid var(--blue-m);display:flex;align-items:center;overflow-x:auto;padding:0 20px;gap:0;}
+.topnav-brand{font-size:11.5px;font-weight:700;white-space:nowrap;padding:12px 14px 12px 0;border-right:.5px solid rgba(255,255,255,.12);margin-right:8px;color:rgba(255,255,255,.45);letter-spacing:.03em;}
+.tnav{font-size:10.5px;font-weight:600;padding:13px 11px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,.3);transition:all .15s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--blue-m);}
+
+/* PAGE */
+.page{max-width:1060px;margin:0 auto;padding:36px 24px 80px;}
+
+/* HEADER */
+.doc-header{border-radius:var(--radius);overflow:hidden;margin-bottom:32px;background:var(--navy);padding:44px 44px 36px;position:relative;}
+.doc-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 70% 50%,rgba(55,138,221,.18),transparent);}
+.dh-inner{position:relative;z-index:1;}
+.dh-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:10px;}
+.dh-title{font-size:28px;font-weight:700;color:#fff;line-height:1.15;margin-bottom:10px;letter-spacing:-.3px;}
+.dh-title span{color:var(--blue-m);}
+.dh-sub{font-size:13.5px;color:rgba(255,255,255,.52);line-height:1.7;max-width:680px;margin-bottom:24px;}
+.dh-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.dh-pill{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:.5px solid rgba(255,255,255,.12);}
+.dh-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;background:rgba(255,255,255,.07);border-radius:var(--radius-sm);margin-top:28px;overflow:hidden;}
+.ds-cell{padding:16px 18px;background:rgba(255,255,255,.03);}
+.ds-val{font-size:20px;font-weight:700;color:#fff;line-height:1;margin-bottom:4px;}
+.ds-label{font-size:10.5px;color:rgba(255,255,255,.35);line-height:1.4;}
+
+/* SECTIONS */
+.sec{margin-bottom:52px;scroll-margin-top:52px;}
+.sec-head{display:flex;align-items:center;gap:12px;border-bottom:1.5px solid var(--text);padding-bottom:11px;margin-bottom:20px;}
+.sec-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);}
+.sec-title{font-size:18px;font-weight:700;flex:1;letter-spacing:-.2px;}
+.sec-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:9px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .14s;}
+.acc-head:hover,.acc.open .acc-head{background:#eeede6;}
+.acc-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;margin-top:3px;min-width:80px;}
+.acc-info{flex:1;}
+.acc-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:11.5px;color:var(--text-ter);margin-top:2px;font-style:italic;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:18px 18px 20px;}
+
+/* CARDS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.mc-icon{font-size:18px;margin-bottom:5px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* 7R CARDS */
+.r-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:11px;margin:14px 0;}
+.r-card{border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.r-head{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:10px;}
+.r-circle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.r-meta{flex:1;}
+.r-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:3px;}
+.r-aka{font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;display:inline-block;}
+.r-body{padding:0 16px 14px;font-size:12px;color:var(--text-sec);line-height:1.6;}
+.r-body strong{color:var(--text);}
+.r-when{margin-top:8px;padding:7px 10px;background:var(--bg2);border-radius:var(--radius-sm);font-size:11.5px;color:var(--text-ter);border-left:2px solid var(--border);}
+.r-when strong{color:var(--text-sec);}
+.r-effort{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:600;}
+.r-effort-bar{height:5px;border-radius:3px;flex:1;background:var(--border);}
+.r-effort-fill{height:100%;border-radius:3px;}
+
+/* SIZING TABLE */
+.dtable-wrap{overflow-x:auto;margin:12px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 11px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 11px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap;margin:1px 2px 0 0;}
+
+/* FORMULA BLOCKS */
+.formula{background:var(--navy);border-radius:var(--radius-sm);padding:14px 18px;margin:12px 0;font-family:'Courier New',monospace;font-size:12.5px;color:rgba(255,255,255,.8);line-height:1.8;}
+.formula .var{color:#7DD3FC;}
+.formula .op{color:#F9A8D4;}
+.formula .comment{color:rgba(255,255,255,.3);font-style:italic;}
+
+/* WAVE TIMELINE */
+.wave-timeline{display:flex;flex-direction:column;gap:0;margin:14px 0;}
+.wave{display:flex;gap:14px;align-items:flex-start;position:relative;}
+.wave:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border);}
+.wave-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+.wave-content{flex:1;padding-bottom:20px;}
+.wave-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.wave-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;}
+.wave-desc strong{color:var(--text);}
+.wave-apps{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.wapp{font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:20px;}
+
+/* FEAT */
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* NOTES */
+.note{font-size:12.5px;padding:11px 15px;border-radius:var(--radius-sm);margin:12px 0;border-left:3px solid;line-height:1.65;color:var(--text-sec);}
+.note strong{font-weight:700;}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);} .note-blue strong{color:var(--blue);}
+.note-green{background:var(--green-l);border-color:var(--green-m);} .note-green strong{color:var(--green);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);} .note-amber strong{color:var(--amber);}
+.note-red{background:var(--red-l);border-color:var(--red-m);} .note-red strong{color:var(--red);}
+
+/* PITCH */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:15px 18px;margin:14px 0;}
+.pitch-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:7px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.85);line-height:1.75;font-style:italic;}
+
+/* RISK MATRIX */
+.risk-matrix{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0;}
+.rm-cell{border-radius:var(--radius-sm);padding:12px 13px;border:.5px solid var(--border);}
+.rm-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.rm-item{font-size:12px;color:var(--text-sec);padding:4px 0;border-bottom:.5px dashed var(--border);line-height:1.45;}
+.rm-item:last-child{border-bottom:none;}
+
+/* TOOL CHIPS */
+.tool-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0;}
+.tool-chip{font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:6px;}
+.tool-chip-dot{width:8px;height:8px;border-radius:50%;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:680px){
+  .doc-header{padding:28px 20px;}
+  .dh-title{font-size:21px;}
+  .grid2,.grid3,.grid4,.r-grid,.risk-matrix{grid-template-columns:1fr;}
+  .dh-stats{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">☁️ Migración Cloud</div>
+  <a class="tnav" href="#s1">¿Qué es migrar?</a>
+  <a class="tnav" href="#s2">Discovery y Assessment</a>
+  <a class="tnav" href="#s3">Las 7 Rs</a>
+  <a class="tnav" href="#s4">Dimensionamiento</a>
+  <a class="tnav" href="#s5">Olas de migración</a>
+  <a class="tnav" href="#s6">Herramientas</a>
+  <a class="tnav" href="#s7">Riesgos y errores</a>
+  <a class="tnav" href="#s8">Personal Tech</a>
+</nav>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="dh-inner">
+    <div class="dh-eyebrow">Guía técnico-comercial · Personal Tech · Referencia pre-sales</div>
+    <div class="dh-title">Migraciones Cloud:<br><span>Framework 7R, Dimensionamiento</span><br>y Metodología Completa</div>
+    <div class="dh-sub">De la evaluación del portfolio on-premise hasta el go-live en cloud — cada decisión, cada métrica y cada herramienta que un arquitecto de soluciones necesita para diseñar una migración exitosa.</div>
+    <div class="dh-pills">
+      <span class="dh-pill">🗺 Framework 7R</span>
+      <span class="dh-pill">📐 Dimensionamiento de cargas</span>
+      <span class="dh-pill">🌊 Olas de migración</span>
+      <span class="dh-pill">🛠 Herramientas de assessment</span>
+      <span class="dh-pill">⚠️ Riesgos y antipatrones</span>
+    </div>
+    <div class="dh-stats">
+      <div class="ds-cell"><div class="ds-val">7</div><div class="ds-label">Estrategias de migración (7R)</div></div>
+      <div class="ds-cell"><div class="ds-val">4</div><div class="ds-label">Dimensiones de sizing: CPU · RAM · Storage · Red</div></div>
+      <div class="ds-cell"><div class="ds-val">6</div><div class="ds-label">Fases del ciclo de migración</div></div>
+      <div class="ds-cell"><div class="ds-val">3×</div><div class="ds-label">Pipeline mínimo recomendado sobre el workload target</div></div>
+      <div class="ds-cell"><div class="ds-val">30%</div><div class="ds-label">Ahorro promedio con rightsizing post-migración</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ S1: QUÉ ES MIGRAR ══════ -->
+<div class="sec" id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <div class="sec-title">¿Qué significa realmente migrar a la nube?</div>
+    <span class="sec-badge" style="background:var(--blue-l);color:var(--blue);">Conceptos base</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('m1')">
+      <span class="acc-num">Definición</span>
+      <div class="acc-info"><div class="acc-name">Migración cloud — mucho más que mover servidores</div><div class="acc-tag">El error de concepto más común que lleva al fracaso de los proyectos</div></div>
+      <span class="acc-chv" id="achv-m1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-m1"><div class="ab-inner">
+      <p style="font-size:13px;color:var(--text-sec);line-height:1.7;margin-bottom:12px;">Migrar a la nube <strong>no es instalar un servidor virtual en lugar de uno físico</strong>. Es el proceso de mover aplicaciones, datos e infraestructura desde un entorno on-premise (o datacenter propio) hacia una plataforma cloud, aprovechando las capacidades nativas de esa plataforma. La estrategia de migración correcta puede significar simplemente "mover tal cual" o puede implicar reescribir la arquitectura completa.</p>
+      <div class="grid3">
+        <div class="mini-card">
+          <div class="mc-icon">🏗</div>
+          <div class="mc-title">Migración técnica</div>
+          <div class="mc-text">Mover VMs, bases de datos, storage y configuraciones de red del entorno físico al cloud. El "cómo" técnico.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">🧠</div>
+          <div class="mc-title">Modernización</div>
+          <div class="mc-text">Aprovechar la migración para mejorar la arquitectura: microservicios, serverless, managed services. El "mejor cómo".</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">💼</div>
+          <div class="mc-title">Transformación</div>
+          <div class="mc-text">Cambiar el modelo operativo, el equipo y los procesos para sacar el máximo provecho al cloud. El "por qué".</div>
+        </div>
+      </div>
+      <div class="note note-amber"><strong>La trampa del "Lift & Shift puro":</strong> Mover una VM on-premise a cloud sin cambiar nada puede costar más que el on-premise. El cloud es más económico cuando se aprovechan sus capacidades: escalado automático, managed services y pago por uso. Un servidor siempre encendido en cloud on-demand puede ser hasta 3× más caro que una Reserved Instance equivalente.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('m2')">
+      <span class="acc-num">Motivadores</span>
+      <div class="acc-info"><div class="acc-name">Por qué las empresas migran — los 6 drivers reales de un proyecto de migración</div><div class="acc-tag">Entender el driver correcto define la estrategia de migración</div></div>
+      <span class="acc-chv" id="achv-m2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-m2"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Driver</th><th>Motivación concreta</th><th>Indicador en el cliente</th><th>Estrategia 7R sugerida</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">🔴 Riesgo EOL / Seguridad</td><td>Hardware sin soporte, SO sin parches, aplicación en EOL. El riesgo crece cada día.</td><td>"Tenemos Windows Server 2012 en producción" / "El fabricante ya no da soporte"</td><td>Rehost rápido → estabilizar → luego modernizar</td></tr>
+          <tr><td class="tn">💸 Reducción de costos</td><td>CAPEX de renovación hardware en dólares insostenible. VMware post-Broadcom.</td><td>"Tenemos que renovar el datacenter en 18 meses" / "VMware triplicó el precio"</td><td>Rehost + Replatform con Reserved Instances</td></tr>
+          <tr><td class="tn">⚡ Escalabilidad</td><td>Picos de tráfico que el hardware actual no absorbe. Crecimiento impredecible.</td><td>"Nos caemos en el Hot Sale" / "Proyectamos crecer 3× en 12 meses"</td><td>Replatform o Refactor para auto-scaling nativo</td></tr>
+          <tr><td class="tn">📋 Compliance</td><td>Regulación exige DR documentado, logs auditables, cifrado. On-premise no lo da fácil.</td><td>"El BCRA nos observó por falta de DR" / "La auditoría pide trazabilidad"</td><td>Rehost con DR en segunda región/AZ</td></tr>
+          <tr><td class="tn">🚀 Velocidad de innovación</td><td>Los deploys tardan meses. La competencia lanza funciones nuevas cada semana.</td><td>"Para hacer un cambio necesitamos 3 meses" / "No tenemos CI/CD"</td><td>Refactor / Rebuild con microservicios y K8s</td></tr>
+          <tr><td class="tn">🤖 IA y analítica</td><td>Quieren implementar IA, ML o analytics avanzado que el on-premise no puede dar.</td><td>"Queremos usar IA generativa" / "Necesitamos analytics en tiempo real"</td><td>Replatform + servicios cloud nativos de IA</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s1 -->
+
+
+<!-- ══════ S2: DISCOVERY & ASSESSMENT ══════ -->
+<div class="sec" id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <div class="sec-title">Discovery y Assessment — conocer antes de mover</div>
+    <span class="sec-badge" style="background:var(--green-l);color:var(--green);">Fase 1 del ciclo</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('d1')">
+      <span class="acc-num">Application Portfolio</span>
+      <div class="acc-info"><div class="acc-name">El inventario de aplicaciones — el mapa que define todo lo demás</div><div class="acc-tag">Sin un inventario completo y preciso, cualquier plan de migración es ficción</div></div>
+      <span class="acc-chv" id="achv-d1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-d1"><div class="ab-inner">
+      <p style="font-size:13px;color:var(--text-sec);line-height:1.7;margin-bottom:14px;">El Application Portfolio es el inventario completo de todas las aplicaciones, sus dependencias, características técnicas y valor de negocio. Es el insumo más crítico de cualquier proyecto de migración — sin él, no hay plan posible.</p>
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Dimensión</th><th>Qué relevamos</th><th>Cómo obtener el dato</th><th>Por qué importa para la migración</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">Inventario técnico</td><td>SO, versión, arquitectura (x86/ARM), RAM, vCPU, storage usado, tipo de disco, red</td><td>Agente de discovery (AWS MGN, Azure Migrate), scripts PowerShell/Bash, CMDB</td><td>Define el tamaño de la instancia cloud equivalente y el método de migración</td></tr>
+          <tr><td class="tn">Dependencias</td><td>Qué aplicaciones se comunican entre sí, en qué puertos, con qué latencia máxima tolerada</td><td>Herramientas de network mapping (AWS Application Discovery Service, Cloudamize)</td><td>Define el orden de migración — no se puede mover la app antes que su base de datos</td></tr>
+          <tr><td class="tn">Criticidad de negocio</td><td>Tier 1 (crítico 24×7), Tier 2 (importante, tolera ventana), Tier 3 (no crítico)</td><td>Entrevistas con los dueños de negocio y de IT</td><td>Define en qué ola migra cada app y cuánto DR necesita</td></tr>
+          <tr><td class="tn">Patrones de uso</td><td>CPU promedio, CPU pico, RAM usada vs. asignada, IOPS de disco, tráfico de red. Mínimo 30 días de datos.</td><td>Monitoreo existente (Zabbix, Nagios, vROps) o agente de 30 días</td><td>Detecta sobredimensionamiento (rightsizing) y picos de carga estacionales</td></tr>
+          <tr><td class="tn">Licenciamiento</td><td>Licencias de Windows Server, SQL Server, Oracle, SAP — BYOL vs. incluida en el cloud</td><td>Inventario de contratos con el área de compras</td><td>Puede representar el 30–50% del costo total de la migración si no se planifica</td></tr>
+          <tr><td class="tn">Compliance y datos</td><td>¿Contiene datos personales (Ley 25.326)? ¿Datos financieros (BCRA)? ¿PCI? ¿Puede salir del país?</td><td>Entrevistas con compliance y legal</td><td>Determina si puede ir a cloud público o debe quedar en Personal Tech (dato soberano)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note note-blue"><strong>La regla de los 30 días de telemetría:</strong> Nunca dimensionar una instancia cloud basándose en la RAM/CPU asignada en el servidor on-premise. El promedio histórico de 30 días de uso real suele revelar que el 60–70% de los servidores están sobredimensionados. Migrar el tamaño asignado en lugar del tamaño real usado es la causa número uno de sobrecostos post-migración.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('d2')">
+      <span class="acc-num">Scoring</span>
+      <div class="acc-info"><div class="acc-name">La matriz de scoring — cómo priorizar qué migra primero</div><div class="acc-tag">No todas las apps se migran en el mismo momento ni con la misma estrategia</div></div>
+      <span class="acc-chv" id="achv-d2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-d2"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:10px;">Ejes de scoring (escala 1–5)</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Complejidad técnica:</strong> ¿Cuánto esfuerzo requiere migrarla? Dependencias, custom drivers, versiones antiguas.</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Riesgo de negocio:</strong> ¿Qué pasa si la migración falla? ¿Cuánto downtime es tolerable?</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Beneficio del cloud:</strong> ¿Cuánto ahorro/mejora genera migrarla? Escalado, costo, latencia.</li>
+            <li><span class="fdot" style="background:var(--red-m);"></span><strong>Urgencia:</strong> ¿Hay un deadline duro? EOL, vencimiento de contrato, regulación.</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:10px;">Cuadrantes de decisión</div>
+          <div class="mini-card" style="margin-bottom:8px;background:var(--green-l);">
+            <div class="mc-title">🟢 Migrar primero (Quick Wins)</div>
+            <div class="mc-text">Baja complejidad + alto beneficio. Construyen confianza interna y casos de éxito. Ej: servidores web, entornos de desarrollo, backup.</div>
+          </div>
+          <div class="mini-card" style="margin-bottom:8px;background:var(--amber-l);">
+            <div class="mc-title">🟡 Planificar con cuidado</div>
+            <div class="mc-text">Alta complejidad pero alto beneficio. Requieren más tiempo de análisis y pruebas. Ej: ERP, bases de datos core.</div>
+          </div>
+          <div class="mini-card" style="background:var(--red-l);">
+            <div class="mc-title">🔴 Evaluar si vale la pena</div>
+            <div class="mc-text">Alta complejidad + bajo beneficio. Candidatas a Retire o Retain. No forzar la migración de estas apps.</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s2 -->
+
+
+<!-- ══════ S3: LAS 7 RS ══════ -->
+<div class="sec" id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <div class="sec-title">El Framework de las 7 Rs — la estrategia correcta para cada sistema</div>
+    <span class="sec-badge" style="background:var(--purple-l);color:var(--purple-m);">Framework central</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--text-sec);line-height:1.7;margin-bottom:20px;">Las 7 Rs (originalmente 6 de Gartner, expandido por AWS) son el framework estándar de la industria para clasificar la estrategia de migración de cada aplicación. No es una elección arbitraria — cada R tiene criterios técnicos, económicos y de negocio que la justifican. <strong>Un portfolio de 50 apps típicamente usa las 7 estrategias en distintas proporciones.</strong></p>
+
+  <div class="r-grid">
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r1);">1</div>
+        <div class="r-meta">
+          <div class="r-name">Retire — Retirar</div>
+          <span class="r-aka" style="background:var(--red-l);color:var(--red-m);">Apagar directamente</span>
+        </div>
+      </div>
+      <div class="r-body">
+        El sistema ya no tiene usuarios activos o su función fue absorbida por otro sistema. <strong>La mejor migración es no migrar.</strong>
+        <div class="r-when"><strong>Cuándo aplicar:</strong> Menos de 5 usuarios activos / mes. Funcionalidad duplicada en otro sistema. Costo de mantenimiento desproporcionado vs. valor generado.</div>
+        <div class="r-effort"><span style="color:var(--r1);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:10%;background:var(--r1);"></div></div><span style="color:var(--r1);font-size:11px;">Mínimo</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--green-l);color:var(--green);">Ahorro: inmediato</span><span class="pill" style="background:var(--red-l);color:var(--red-m);">Riesgo: muy bajo</span></div>
+      </div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r2);">2</div>
+        <div class="r-meta">
+          <div class="r-name">Retain — Retener</div>
+          <span class="r-aka" style="background:var(--amber-l);color:var(--amber);">Mantener por ahora</span>
+        </div>
+      </div>
+      <div class="r-body">
+        El sistema tiene razones para no migrar ahora: auditoría inminente, complejidad extrema, dependencia de hardware específico.
+        <div class="r-when"><strong>Cuándo aplicar:</strong> Auditoría regulatoria en &lt;90 días. Dependencia de hardware físico no virtualizable. Contrato que impide la migración. Decisión pendiente de negocio.</div>
+        <div class="r-effort"><span style="color:var(--r2);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:5%;background:var(--r2);"></div></div><span style="color:var(--r2);font-size:11px;">Nulo ahora</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--amber-l);color:var(--amber);">Requiere fecha límite</span></div>
+      </div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r3);color:var(--text);">3</div>
+        <div class="r-meta">
+          <div class="r-name">Rehost — Lift & Shift</div>
+          <span class="r-aka" style="background:var(--amber-l);color:var(--amber);">Mover tal cual</span>
+        </div>
+      </div>
+      <div class="r-body">
+        Mover la VM on-premise a cloud sin ningún cambio de código ni arquitectura. El método más rápido y el punto de partida más común.
+        <div class="r-when"><strong>Cuándo aplicar:</strong> Deadline urgente (EOL, vencimiento DC). Aplicación compleja sin equipo para refactorizar. Estabilizar primero, modernizar después. 50–60% del portfolio típico.</div>
+        <div class="r-effort"><span style="color:var(--text-sec);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:25%;background:var(--r3);"></div></div><span style="color:var(--text-sec);font-size:11px;">Bajo</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--green-l);color:var(--green);">Tiempo: 2–8 semanas</span><span class="pill" style="background:var(--amber-l);color:var(--amber);">Ahorro limitado inicial</span></div>
+      </div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r4);">4</div>
+        <div class="r-meta">
+          <div class="r-name">Replatform</div>
+          <span class="r-aka" style="background:var(--green-l);color:var(--green);">Lift + optimizaciones menores</span>
+        </div>
+      </div>
+      <div class="r-body">
+        Mover con cambios menores que aprovechan el cloud <strong>sin reescribir la lógica de negocio</strong>. Cambiar MySQL en VM por RDS, o archivos locales por S3.
+        <div class="r-when"><strong>Cuándo aplicar:</strong> App con base de datos que puede pasar a managed service. Aplicación que se beneficia de auto-scaling sin reescribir. 10–20% del portfolio típico.</div>
+        <div class="r-effort"><span style="color:var(--text-sec);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:40%;background:var(--r4);"></div></div><span style="color:var(--text-sec);font-size:11px;">Medio-bajo</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--green-l);color:var(--green);">Tiempo: 4–12 semanas</span><span class="pill" style="background:var(--green-l);color:var(--green);">Ahorro moderado</span></div>
+      </div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r5);">5</div>
+        <div class="r-meta">
+          <div class="r-name">Repurchase — Drop & Shop</div>
+          <span class="r-aka" style="background:var(--blue-l);color:var(--blue);">Reemplazar por SaaS</span>
+        </div>
+      </div>
+      <div class="r-body">
+        Abandonar el sistema legacy y reemplazarlo con un producto SaaS moderno. El CRM hecho a medida se reemplaza por Salesforce. El ERP viejo por SAP SaaS.
+        <div class="r-when"><strong>Cuándo aplicar:</strong> Existe un SaaS maduro que cubre el 80%+ de los requerimientos. El sistema a reemplazar tiene alta deuda técnica. El equipo no quiere seguir manteniendo ese stack.</div>
+        <div class="r-effort"><span style="color:var(--text-sec);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:55%;background:var(--r5);"></div></div><span style="color:var(--text-sec);font-size:11px;">Medio</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--blue-l);color:var(--blue);">Tiempo: 3–9 meses</span><span class="pill" style="background:var(--red-l);color:var(--red-m);">Gestión del cambio</span></div>
+      </div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r6);">6</div>
+        <div class="r-meta">
+          <div class="r-name">Refactor / Re-architect</div>
+          <span class="r-aka" style="background:var(--purple-l);color:var(--purple);">Rediseñar para cloud</span>
+        </div>
+      </div>
+      <div class="r-body">
+        Reestructurar el código para aprovechar capacidades cloud nativas: microservicios, serverless, contenedores. Mayor inversión inicial, <strong>mayor valor a largo plazo.</strong>
+        <div class="r-when"><strong>Cuándo aplicar:</strong> App monolítica que necesita escalar partes independientemente. Sistema con alto tráfico variable donde serverless/K8s generan ahorro significativo. 5–15% del portfolio.</div>
+        <div class="r-effort"><span style="color:var(--text-sec);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:75%;background:var(--r6);"></div></div><span style="color:var(--text-sec);font-size:11px;">Alto</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--purple-l);color:var(--purple);">Tiempo: 6–18 meses</span><span class="pill" style="background:var(--green-l);color:var(--green);">Mayor ROI long-term</span></div>
+      </div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-circle" style="background:var(--r7);">7</div>
+        <div class="r-meta">
+          <div class="r-name">Rebuild — Reescribir</div>
+          <span class="r-aka" style="background:var(--teal-l);color:var(--teal);">Construir desde cero</span>
+        </div>
+      </div>
+      <div class="r-body">
+        El sistema es tan legacy que es más económico y eficiente construirlo nuevo cloud-native. Se reimplementa la lógica de negocio con tecnología moderna.
+        <div class="r-when"><strong>Cuándo aplicar:</strong> Sistema COBOL sin documentación ni tests. Monolito con tantos parches que es imposible tocar. Cuando el costo de Refactor supera el de Rebuild. Menos del 5% del portfolio.</div>
+        <div class="r-effort"><span style="color:var(--text-sec);font-size:11px;">Esfuerzo:</span><div class="r-effort-bar"><div class="r-effort-fill" style="width:95%;background:var(--r7);"></div></div><span style="color:var(--text-sec);font-size:11px;">Máximo</span></div>
+        <div style="margin-top:8px;"><span class="pill" style="background:var(--teal-l);color:var(--teal);">Tiempo: 12–36 meses</span><span class="pill" style="background:var(--red-l);color:var(--red-m);">Riesgo alto</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="acc" style="margin-top:20px;">
+    <div class="acc-head" onclick="toggleAcc('r_dist')">
+      <span class="acc-num">Distribución típica</span>
+      <div class="acc-info"><div class="acc-name">Cómo se distribuyen las 7Rs en un portfolio real de 50+ aplicaciones</div><div class="acc-tag">Los porcentajes varían según la madurez tecnológica del cliente, pero el patrón es consistente</div></div>
+      <span class="acc-chv" id="achv-r_dist">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-r_dist"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Estrategia</th><th>% típico del portfolio</th><th>Perfil de aplicación</th><th>Impacto en el cronograma</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill" style="background:var(--red-l);color:var(--red-m);">Retire</span></td><td>10–20%</td><td>Sistemas legacy sin uso real, funcionalidad duplicada</td><td>Libera capacidad del equipo para las olas siguientes. Hacerlo primero.</td></tr>
+          <tr><td><span class="pill" style="background:var(--amber-l);color:var(--amber);">Retain</span></td><td>5–15%</td><td>Sistemas con bloqueos temporales</td><td>No impacta el cronograma pero requiere fecha de revisión obligatoria cada 90 días.</td></tr>
+          <tr><td><span class="pill" style="background:var(--blue-l);color:var(--blue);">Rehost</span></td><td>40–60%</td><td>Mayoría del portfolio — el volumen</td><td>Define la duración total del proyecto. Automatizar con herramientas de migración masiva.</td></tr>
+          <tr><td><span class="pill" style="background:var(--green-l);color:var(--green);">Replatform</span></td><td>10–20%</td><td>Apps con DB o storage que se benefician de managed services</td><td>2–3× más tiempo que Rehost pero con mejora de disponibilidad inmediata.</td></tr>
+          <tr><td><span class="pill" style="background:var(--teal-l);color:var(--teal);">Repurchase</span></td><td>5–10%</td><td>CRM, HR, colaboración — reemplazables por SaaS</td><td>Paralelo al proyecto de migración pero con gestión del cambio independiente.</td></tr>
+          <tr><td><span class="pill" style="background:var(--purple-l);color:var(--purple-m);">Refactor</span></td><td>5–10%</td><td>Apps estratégicas de alto tráfico variable</td><td>Proyectos independientes de 6–18 meses. No incluir en la migración masiva.</td></tr>
+          <tr><td><span class="pill" style="background:var(--teal-l);color:var(--teal);">Rebuild</span></td><td>1–5%</td><td>Solo cuando no hay otra alternativa viable</td><td>Proyecto separado y con su propio equipo dedicado. No bloquear la migración del resto.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note note-green"><strong>✅ La estrategia ganadora:</strong> Empezar por los Retire (liberar deuda técnica y budget). Luego los Rehost en olas (quick wins, construye confianza). Paralelamente, los Replatform más sencillos. Dejar el Refactor/Rebuild para proyectos estratégicos separados del proyecto de migración masiva.</div>
+    </div></div>
+  </div>
+</div><!-- /s3 -->
+
+
+<!-- ══════ S4: DIMENSIONAMIENTO ══════ -->
+<div class="sec" id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <div class="sec-title">Dimensionamiento de cargas de trabajo</div>
+    <span class="sec-badge" style="background:var(--amber-l);color:var(--amber);">La ciencia del sizing</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('sz1')">
+      <span class="acc-num">CPU y RAM</span>
+      <div class="acc-info"><div class="acc-name">Cómo dimensionar correctamente vCPU y memoria — sin sobredimensionar ni quedarse corto</div><div class="acc-tag">El 65% de las instancias on-premise están sobredimensionadas en un factor de 2× o más</div></div>
+      <span class="acc-chv" id="achv-sz1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-sz1"><div class="ab-inner">
+      <div class="note note-amber"><strong>Regla de oro del sizing:</strong> Nunca usar la RAM/CPU asignada en el servidor físico como referencia. Usar el <strong>percentil 95 de uso real durante 30 días</strong>, más un buffer de seguridad del 20%. El percentil 95 excluye los spikes anómalos pero captura la carga real sostenida.</div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:16px 0 8px;">Fórmula de sizing para CPU</div>
+      <div class="formula">
+<span class="comment"># Paso 1: Obtener el uso real del servidor on-premise</span>
+<span class="var">cpu_pct_p95</span> = percentile_95(<span class="var">cpu_usage_30_dias</span>)
+
+<span class="comment"># Paso 2: Calcular vCPUs necesarios en cloud</span>
+<span class="comment"># Los vCPUs cloud ≠ cores físicos. Factor de conversión típico: 0.5–1x</span>
+<span class="var">vcpus_necesarios</span> = (<span class="var">cores_fisicos</span> × <span class="var">cpu_pct_p95</span> / 100) × <span class="var">factor_overhead</span> (<span class="op">1.2</span>)
+
+<span class="comment"># Paso 3: Elegir la instancia con ese número de vCPUs o el siguiente superior</span>
+<span class="comment"># Ejemplo: 3.6 vCPUs → elegir instancia de 4 vCPUs</span>
+<span class="var">instancia</span> = ceil(<span class="var">vcpus_necesarios</span>)
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:16px 0 8px;">Fórmula de sizing para RAM</div>
+      <div class="formula">
+<span class="comment"># RAM: usar el pico máximo real + 20% buffer</span>
+<span class="comment"># A diferencia de CPU, la RAM no se puede "comprimir" — el pico importa más que el promedio</span>
+<span class="var">ram_necesaria_gb</span> = <span class="var">ram_pico_uso_real_gb</span> × <span class="op">1.2</span>
+
+<span class="comment"># Para bases de datos: agregar buffer para buffer pool / shared_buffers</span>
+<span class="var">ram_db_gb</span> = <span class="var">tamaño_dataset_activo_gb</span> × <span class="op">1.5</span>  <span class="comment"># regla general para PostgreSQL/MySQL</span>
+
+<span class="comment"># Ejemplo práctico:</span>
+<span class="comment"># Servidor on-premise: 32GB asignados, uso real P95: 14GB</span>
+<span class="comment"># RAM necesaria: 14 × 1.2 = 16.8 → elegir instancia de 16GB o 32GB según precio</span>
+      </div>
+
+      <div class="dtable-wrap" style="margin-top:16px;">
+      <table class="dtable">
+        <thead><tr><th>Tipo de workload</th><th>CPU típico (P95 / asignado)</th><th>RAM típica (P95 / asignada)</th><th>Factor de reducción al migrar</th><th>Instancia AWS sugerida</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">Servidor web / Frontend</td><td>15–40% / total</td><td>30–50% / total</td><td>Reducir 40–60% el tamaño</td><td>t3.medium → t3.large</td></tr>
+          <tr><td class="tn">Servidor de aplicaciones (Java/Python)</td><td>20–60% / total</td><td>40–70% / total</td><td>Reducir 20–40%</td><td>m5.large → m5.xlarge</td></tr>
+          <tr><td class="tn">Base de datos relacional (OLTP)</td><td>10–30% / total</td><td>60–85% / total</td><td>Reducir 10–30% CPU; mantener RAM</td><td>db.r5.large → db.r5.xlarge</td></tr>
+          <tr><td class="tn">Base de datos (Analytics/DWH)</td><td>Variable — spikes altos</td><td>70–95% / total</td><td>Considerar managed service (Redshift)</td><td>Redshift Serverless / ra3.xlplus</td></tr>
+          <tr><td class="tn">Servidor de archivos / Backup</td><td>5–15% / total</td><td>15–30% / total</td><td>Considerar S3 + EFS directamente</td><td>Candidato a Replatform a S3</td></tr>
+          <tr><td class="tn">Servidor de correo (Exchange)</td><td>10–25% / total</td><td>30–50% / total</td><td>Candidato a Repurchase (M365)</td><td>Microsoft 365 como SaaS</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('sz2')">
+      <span class="acc-num">Storage y IOPS</span>
+      <div class="acc-info"><div class="acc-name">Dimensionamiento de almacenamiento — capacidad, tipo y rendimiento</div><div class="acc-tag">El storage mal dimensionado es la segunda causa de sobrecostos en cloud después de las instancias</div></div>
+      <span class="acc-chv" id="achv-sz2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-sz2"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Tipos de storage y cuándo usar cada uno</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Block Storage (EBS/Azure Managed Disks):</strong> Para el disco del sistema operativo y bases de datos. Se monta como unidad de disco en la VM. Eligir el tipo según IOPS requeridas.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Object Storage (S3/OBS):</strong> Para archivos, backups, assets estáticos, logs. Sin límite de tamaño. Precio por GB muy bajo. <strong>No apto para bases de datos activas.</strong></li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>File Storage (EFS/Azure Files):</strong> Para compartir archivos entre múltiples instancias (similar a NAS). Útil en migraciones de servidores de archivos.</li>
+            <li><span class="fdot" style="background:var(--purple-m);"></span><strong>Archive (Glacier/S3 IA):</strong> Para datos que se consultan raramente. Precio 5–20× más bajo que Standard. Ideal para backups históricos y compliance.</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Fórmula sizing de storage</div>
+          <div class="formula" style="font-size:11.5px;">
+<span class="comment"># Storage: capacidad + crecimiento proyectado</span>
+<span class="var">gb_necesarios</span> = <span class="var">gb_usados_hoy</span> × <span class="op">1.3</span>  <span class="comment"># +30% headroom</span>
+
+<span class="comment"># IOPS para bases de datos (regla general)</span>
+<span class="var">iops_necesarios</span> = <span class="var">iops_pico_medido</span> × <span class="op">1.2</span>
+
+<span class="comment"># Tipos de EBS por IOPS:</span>
+<span class="comment"># gp3: hasta 16.000 IOPS, $0.08/GB + $0.005/IOPS</span>
+<span class="comment"># io2: hasta 64.000 IOPS, para bases de datos críticas</span>
+<span class="comment"># st1: throughput optimizado, para logs y ETL</span>
+          </div>
+          <div class="note note-blue" style="margin-top:10px;"><strong>El error más caro:</strong> Migrar todo el storage asignado sin revisar el storage real usado. Un servidor con 500GB asignados puede tener solo 80GB usados. El 420GB de diferencia en cloud EBS a $0.10/GB = $42/mes de desperdicio por servidor.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('sz3')">
+      <span class="acc-num">Red y Latencia</span>
+      <div class="acc-info"><div class="acc-name">Dimensionamiento de conectividad y consideraciones de latencia</div><div class="acc-tag">El ancho de banda y la latencia son los grandes olvidados del sizing</div></div>
+      <span class="acc-chv" id="achv-sz3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-sz3"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Consideraciones de red en la migración</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-m);"></span><strong>Latencia interna (app ↔ DB):</strong> En on-premise esta latencia es 0.1–1ms (misma red). En cloud mal diseñado puede ser 5–20ms. <strong>Siempre colocar la DB en la misma AZ que las VMs que la consumen.</strong></li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Egress fees:</strong> AWS y Azure cobran por datos que salen de la nube. Planificar los flujos de tráfico externos para evitar sorpresas en la factura.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Conectividad cliente ↔ cloud:</strong> Si el cliente accede al sistema desde sedes corporativas, necesita MPLS o Direct Connect hacia el DC. El internet público introduce variabilidad inaceptable para sistemas ERP.</li>
+            <li><span class="fdot" style="background:var(--red-m);"></span><strong>Bandwidth para la migración:</strong> El proceso de migración en sí requiere transferir GBs o TBs de datos. Calcular el tiempo de migración según el ancho de banda disponible.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="formula" style="font-size:11.5px;">
+<span class="comment"># Estimación de tiempo de migración por red</span>
+<span class="var">horas_migración</span> = (<span class="var">gb_datos</span> × <span class="op">8</span>) / (<span class="var">mbps_enlace</span> × <span class="op">0.7</span>)
+<span class="comment"># × 0.7 por overhead de protocolo y otras cargas</span>
+
+<span class="comment"># Ejemplo: 2TB sobre enlace de 100 Mbps</span>
+<span class="comment"># (2000 × 8) / (100 × 0.7) = 228 horas = ~9.5 días</span>
+<span class="comment"># → Considerar AWS Snowball para datasets > 10TB</span>
+
+<span class="comment"># Latencia máxima aceptable por tipo de sistema</span>
+<span class="var">erp_transaccional</span>:  <span class="op">&lt; 5ms</span>   <span class="comment"># → MPLS o Direct Connect</span>
+<span class="var">app_web_interna</span>:    <span class="op">&lt; 20ms</span>  <span class="comment"># → VPN o internet dedicado</span>
+<span class="var">app_batch</span>:          <span class="op">&lt; 100ms</span> <span class="comment"># → internet standard</span>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('sz4')">
+      <span class="acc-num">Sizing Reference</span>
+      <div class="acc-info"><div class="acc-name">Tabla de conversión: hardware on-premise → instancia cloud equivalente</div><div class="acc-tag">Referencia rápida para propuestas y primeras estimaciones</div></div>
+      <span class="acc-chv" id="achv-sz4">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-sz4"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Servidor on-premise típico</th><th>Uso real P95</th><th>AWS equivalente</th><th>Azure equivalente</th><th>Personal Tech Cloud</th><th>Costo aprox./mes</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">2 cores, 8GB RAM, 100GB</td><td>CPU 20%, RAM 40%</td><td>t3.small (2vC, 2GB) o t3.medium (2vC, 4GB)</td><td>B2s (2vC, 4GB)</td><td>Small VM (2vC, 4GB)</td><td>~USD 15–30/mes</td></tr>
+          <tr><td class="tn">4 cores, 16GB RAM, 200GB</td><td>CPU 30%, RAM 50%</td><td>m5.large (2vC, 8GB)</td><td>D2s v5 (2vC, 8GB)</td><td>Medium VM (2vC, 8GB)</td><td>~USD 40–70/mes</td></tr>
+          <tr><td class="tn">8 cores, 32GB RAM, 500GB</td><td>CPU 40%, RAM 60%</td><td>m5.xlarge (4vC, 16GB)</td><td>D4s v5 (4vC, 16GB)</td><td>Large VM (4vC, 16GB)</td><td>~USD 120–180/mes</td></tr>
+          <tr><td class="tn">16 cores, 64GB RAM, 1TB</td><td>CPU 30%, RAM 70%</td><td>m5.2xlarge (8vC, 32GB)</td><td>D8s v5 (8vC, 32GB)</td><td>XLarge VM (8vC, 32GB)</td><td>~USD 250–380/mes</td></tr>
+          <tr><td class="tn">DB SQL Server 16C/128GB</td><td>CPU 25%, RAM 80%</td><td>db.r5.2xlarge RDS (8vC, 64GB)</td><td>General Purpose 8vC/40GB</td><td>DB VM + SQL Server</td><td>~USD 500–900/mes</td></tr>
+          <tr><td class="tn">DB Oracle 32C/256GB</td><td>CPU 20%, RAM 85%</td><td>OCI Bare Metal (mejor precio Oracle)</td><td>Azure o RDS Oracle</td><td>Bare Metal VM</td><td>~USD 1.500–3.000/mes</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note note-amber"><strong>⚠️ Esta tabla es orientativa:</strong> Los precios varían según región, tipo de compromiso (on-demand vs. reserved) y licencias incluidas. Siempre construir la propuesta con la calculadora TCO usando los datos reales del cliente, no con este benchmark.</div>
+    </div></div>
+  </div>
+</div><!-- /s4 -->
+
+
+<!-- ══════ S5: OLAS DE MIGRACIÓN ══════ -->
+<div class="sec" id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <div class="sec-title">Olas de migración — el orden importa tanto como la estrategia</div>
+    <span class="sec-badge" style="background:var(--teal-l);color:var(--teal);">Planificación</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('w1')">
+      <span class="acc-num">Diseño de olas</span>
+      <div class="acc-info"><div class="acc-name">Cómo armar las olas de migración — criterios de agrupamiento y secuencia</div><div class="acc-tag">Una ola mal diseñada puede bloquear toda la migración</div></div>
+      <span class="acc-chv" id="achv-w1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-w1"><div class="ab-inner">
+      <div class="wave-timeline">
+        <div class="wave">
+          <div class="wave-dot" style="background:var(--green-l);color:var(--green);border:2px solid var(--green-m);">0</div>
+          <div class="wave-content">
+            <div class="wave-title">Ola 0 — Fundaciones (semanas 1–4)</div>
+            <div class="wave-desc">Antes de mover una sola app, construir la infraestructura cloud destino: VPC/redes, IAM/roles, conectividad (VPN o Direct Connect), herramientas de monitoreo, sistemas de backup, pipeline de CI/CD. <strong>Sin esta base, cada migración posterior tarda el doble.</strong></div>
+            <div class="wave-apps">
+              <span class="wapp" style="background:var(--blue-l);color:var(--blue);">VPC y subredes</span>
+              <span class="wapp" style="background:var(--blue-l);color:var(--blue);">IAM / roles</span>
+              <span class="wapp" style="background:var(--blue-l);color:var(--blue);">VPN / Direct Connect</span>
+              <span class="wapp" style="background:var(--blue-l);color:var(--blue);">Monitoreo (CloudWatch)</span>
+              <span class="wapp" style="background:var(--blue-l);color:var(--blue);">Backup central</span>
+            </div>
+          </div>
+        </div>
+        <div class="wave">
+          <div class="wave-dot" style="background:var(--green-l);color:var(--green);border:2px solid var(--green-m);">1</div>
+          <div class="wave-content">
+            <div class="wave-title">Ola 1 — No críticos (semanas 4–8)</div>
+            <div class="wave-desc">Sistemas de desarrollo, QA, entornos de test y servidores de baja criticidad. Si algo falla en esta ola, el negocio no se ve afectado. <strong>Sirve para validar el proceso de migración, encontrar los problemas antes de que importen y entrenar al equipo.</strong></div>
+            <div class="wave-apps">
+              <span class="wapp" style="background:var(--green-l);color:var(--green);">Dev environments</span>
+              <span class="wapp" style="background:var(--green-l);color:var(--green);">QA / Testing</span>
+              <span class="wapp" style="background:var(--green-l);color:var(--green);">Servidores web staging</span>
+              <span class="wapp" style="background:var(--green-l);color:var(--green);">Herramientas internas</span>
+            </div>
+          </div>
+        </div>
+        <div class="wave">
+          <div class="wave-dot" style="background:var(--amber-l);color:var(--amber);border:2px solid var(--amber-m);">2</div>
+          <div class="wave-content">
+            <div class="wave-title">Ola 2 — Soporte operativo (semanas 8–14)</div>
+            <div class="wave-desc">Sistemas importantes para la operación diaria pero no críticos si tienen una ventana de mantenimiento de 2–4 horas. HR, facturación secundaria, sistemas de reporting, portales internos.</div>
+            <div class="wave-apps">
+              <span class="wapp" style="background:var(--amber-l);color:var(--amber);">HR / Legajos</span>
+              <span class="wapp" style="background:var(--amber-l);color:var(--amber);">Portales internos</span>
+              <span class="wapp" style="background:var(--amber-l);color:var(--amber);">Reporting / BI</span>
+              <span class="wapp" style="background:var(--amber-l);color:var(--amber);">Facturación sec.</span>
+            </div>
+          </div>
+        </div>
+        <div class="wave">
+          <div class="wave-dot" style="background:var(--coral-l);color:var(--coral-m);border:2px solid var(--coral-m);">3</div>
+          <div class="wave-content">
+            <div class="wave-title">Ola 3 — Producción core (semanas 14–22)</div>
+            <div class="wave-desc">Los sistemas más críticos del negocio. Se migran <strong>con el sistema cloud corriendo en paralelo durante 2–4 semanas antes del cutover</strong>. Validar resultados, rendimiento y disponibilidad antes del corte definitivo.</div>
+            <div class="wave-apps">
+              <span class="wapp" style="background:var(--coral-l);color:var(--coral-m);">ERP principal</span>
+              <span class="wapp" style="background:var(--coral-l);color:var(--coral-m);">CRM core</span>
+              <span class="wapp" style="background:var(--coral-l);color:var(--coral-m);">e-commerce</span>
+              <span class="wapp" style="background:var(--coral-l);color:var(--coral-m);">Core bancario</span>
+            </div>
+          </div>
+        </div>
+        <div class="wave">
+          <div class="wave-dot" style="background:var(--green-l);color:var(--green);border:2px solid var(--green-m);">✓</div>
+          <div class="wave-content">
+            <div class="wave-title">Post-migración — Optimización (semanas 22–30)</div>
+            <div class="wave-desc"><strong>El 30% del ahorro total del cloud se captura en esta etapa.</strong> Rightsizing de instancias sobredimensionadas, compra de Reserved Instances para workloads estables, eliminación de zombies, tiering de storage, revisión de arquitectura.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note note-red"><strong>🚨 El error más costoso:</strong> Migrar el sistema crítico en la primera ola para "demostrar resultados rápidos". Si falla, el proyecto se cancela. Siempre construir confianza con las olas no críticas antes de tocar lo que no puede fallar.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('w2')">
+      <span class="acc-num">Cutover</span>
+      <div class="acc-info"><div class="acc-name">El cutover — el momento de mayor riesgo de toda la migración</div><div class="acc-tag">El cutover bien planificado es un evento de 2 horas. El mal planificado es una crisis de 48 horas.</div></div>
+      <span class="acc-chv" id="achv-w2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-w2"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Checklist pre-cutover (72 hs antes)</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-m);"></span>Sistema cloud corrió en paralelo con producción ≥ 2 semanas sin incidentes</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span>Plan de rollback documentado y probado: tiempo estimado &lt; 30 minutos</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span>Todos los stakeholders notificados con la ventana de mantenimiento</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span>Backup completo del sistema on-premise realizado &lt; 4 horas antes</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span>TTL del DNS reducido a 5 minutos (para rollback de DNS rápido)</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span>Runbook del cutover con pasos específicos, responsables y tiempos</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span>War room definida (sala física o canal de chat dedicado)</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Durante el cutover</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Freeze del sistema on-premise:</strong> detener escrituras nuevas, validar que los datos están sincronizados</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Sincronización final:</strong> última réplica de datos al cloud</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Switch del DNS:</strong> apuntar el dominio al IP del cloud</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Validación funcional:</strong> checklist de 20 casos de prueba críticos</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Monitor 30 minutos</strong> antes de declarar éxito</li>
+            <li><span class="fdot" style="background:var(--amber-m);"></span><strong>Período de hipercare:</strong> soporte prioritario por 2 semanas post-cutover</li>
+          </ul>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s5 -->
+
+
+<!-- ══════ S6: HERRAMIENTAS ══════ -->
+<div class="sec" id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <div class="sec-title">Herramientas del ecosistema de migración</div>
+    <span class="sec-badge" style="background:var(--blue-l);color:var(--blue);">Tooling</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('t1')">
+      <span class="acc-num">Assessment</span>
+      <div class="acc-info"><div class="acc-name">Herramientas de discovery y assessment</div><div class="acc-tag">Para inventariar, medir y priorizar antes de migrar</div></div>
+      <span class="acc-chv" id="achv-t1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-t1"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Herramienta</th><th>Vendor</th><th>Para qué sirve</th><th>Output clave</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">AWS Application Discovery Service</td><td>AWS</td><td>Inventario automático de servidores on-premise: SO, versiones, dependencias, patrones de uso</td><td>Lista de servers + dependency maps + utilization data</td></tr>
+          <tr><td class="tn">Azure Migrate</td><td>Microsoft</td><td>Assessment completo para migración a Azure: sizing, costo estimado, compatibilidad</td><td>Readiness report + TCO comparativo on-prem vs. Azure</td></tr>
+          <tr><td class="tn">Cloudamize</td><td>Tercero</td><td>Agente instalado en servidores que captura 30 días de métricas de rendimiento</td><td>Rightsizing recommendations + dependency mapping</td></tr>
+          <tr><td class="tn">Movere (Microsoft)</td><td>Microsoft</td><td>Discovery agentless de infraestructura y base de datos. Genera Business Cases automaticamente</td><td>Business case, cloud readiness, cost estimate</td></tr>
+          <tr><td class="tn">CAST Highlight</td><td>CAST Software</td><td>Análisis de código fuente para evaluar qué tan listo está para cloud (cloud readiness)</td><td>Technical debt score + recommended migration path por app</td></tr>
+          <tr><td class="tn">AWS TCO Calculator / Azure Pricing Calc</td><td>AWS/Azure</td><td>Estimación de costos cloud vs. on-premise para justificación económica</td><td>TCO a 3 años, ahorro proyectado, tiempo de payback</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('t2')">
+      <span class="acc-num">Migración</span>
+      <div class="acc-info"><div class="acc-name">Herramientas de migración — para mover VMs, bases de datos y datos masivos</div></div>
+      <span class="acc-chv" id="achv-t2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-t2"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Migración de VMs (Rehost)</div>
+          <div class="tool-row">
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--r3);"></div>AWS Application Migration Service (MGN)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--blue-m);"></div>Azure Site Recovery</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--teal-m);"></div>VMware HCX (on-prem VMware → cloud)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--amber-m);"></div>Zerto (DR + migración)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--purple-m);"></div>CloudEndure (ahora parte de MGN)</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Migración de Bases de Datos</div>
+          <div class="tool-row">
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--r3);"></div>AWS DMS (Database Migration Service)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--blue-m);"></div>Azure Database Migration Service</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--green-m);"></div>AWS SCT (Schema Conversion Tool)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--teal-m);"></div>pg_dump / mysqldump (para DBs pequeñas)</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">Transferencia de datos masivos</div>
+          <div class="tool-row">
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--r3);"></div>AWS Snowball Edge (&gt;10TB offline)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--r3);"></div>AWS DataSync (sincronización online)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--blue-m);"></div>Azure Data Box</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--amber-m);"></div>rclone (open source, multi-cloud)</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;">IaC y automatización</div>
+          <div class="tool-row">
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--purple-m);"></div>Terraform (multi-cloud IaC)</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--r3);"></div>AWS CloudFormation</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--blue-m);"></div>Azure Bicep / ARM</div>
+            <div class="tool-chip"><div class="tool-chip-dot" style="background:var(--amber-m);"></div>Ansible (config + orchestration)</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div><!-- /s6 -->
+
+
+<!-- ══════ S7: RIESGOS ══════ -->
+<div class="sec" id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <div class="sec-title">Riesgos, antipatrones y errores más comunes</div>
+    <span class="sec-badge" style="background:var(--red-l);color:var(--red-m);">Lo que falla en la práctica</span>
+  </div>
+
+  <div class="risk-matrix">
+    <div class="rm-cell" style="border-top:3px solid var(--red-m);">
+      <div class="rm-header" style="color:var(--red-m);">🔴 Riesgos técnicos</div>
+      <div class="rm-item"><strong>Dependencias ocultas:</strong> app que depende de un servidor que nadie documentó</div>
+      <div class="rm-item"><strong>Latencia inesperada:</strong> DB y app en AZs distintas → 10× más latencia que on-prem</div>
+      <div class="rm-item"><strong>Licencias no portables:</strong> SQL Server con licencia que no admite BYOL en cloud</div>
+      <div class="rm-item"><strong>Custom hardware:</strong> dongles USB, tarjetas de red especiales, GPU física</div>
+      <div class="rm-item"><strong>SO obsoleto no soportado:</strong> Windows 2003, RHEL 5 no tienen imagen en AWS/Azure</div>
+    </div>
+    <div class="rm-cell" style="border-top:3px solid var(--amber-m);">
+      <div class="rm-header" style="color:var(--amber-m);">🟡 Riesgos de proyecto</div>
+      <div class="rm-item"><strong>Scope creep:</strong> el proyecto empieza con 20 apps y termina con 80</div>
+      <div class="rm-item"><strong>Equipo sin skills cloud:</strong> el equipo IT no sabe operar lo que se migró</div>
+      <div class="rm-item"><strong>Sin rollback plan:</strong> el cutover falla y no hay forma de volver atrás</div>
+      <div class="rm-item"><strong>No probar el DR:</strong> el sistema migra pero el failover nunca se testea</div>
+      <div class="rm-item"><strong>Stakeholders no alineados:</strong> el área de negocio no estaba al tanto del downtime</div>
+    </div>
+    <div class="rm-cell" style="border-top:3px solid var(--blue-m);">
+      <div class="rm-header" style="color:var(--blue-m);">💸 Antipatrones de costo</div>
+      <div class="rm-item"><strong>Lift & Shift sin rightsizing:</strong> migrar el tamaño asignado (no el usado) → bill 2× mayor</div>
+      <div class="rm-item"><strong>On-demand sin reservas:</strong> workloads estables pagando precio full on-demand</div>
+      <div class="rm-item"><strong>Storage zombi:</strong> discos EBS huérfanos y snapshots viejos acumulándose</div>
+      <div class="rm-item"><strong>Egress fees ignorados:</strong> mover datos entre regiones/AZs tiene costo</div>
+      <div class="rm-item"><strong>NAT Gateway sin optimizar:</strong> todo el tráfico interno pasando por NAT GW</div>
+    </div>
+  </div>
+
+  <div class="pitch">
+    <div class="pitch-label">La frase que resume los errores de migración</div>
+    <div class="pitch-text">"El 80% de los proyectos de migración que terminan sobre presupuesto o tiempo tienen la misma causa raíz: empezaron sin un inventario completo y sin 30 días de telemetría real. Mover sin medir es como mudar una casa sin saber cuántas cajas necesitás — siempre te quedás corto."</div>
+  </div>
+</div><!-- /s7 -->
+
+
+<!-- ══════ S8: PERSONAL TECH ══════ -->
+<div class="sec" id="s8">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <div class="sec-title">Migración a Personal Tech — la propuesta diferenciada</div>
+    <span class="sec-badge" style="background:var(--green-l);color:var(--green);">Para la reunión</span>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('pt1')">
+      <span class="acc-num">El modelo PT</span>
+      <div class="acc-info"><div class="acc-name">Por qué migrar a Personal Tech vs. migrar a un hyperscaler — lo que la propuesta debe explicar</div></div>
+      <span class="acc-chv" id="achv-pt1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-pt1"><div class="ab-inner">
+      <div class="dtable-wrap">
+      <table class="dtable">
+        <thead><tr><th>Dimensión</th><th>Migración a AWS/Azure</th><th>Migración a Personal Tech</th><th>Ventaja PT</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">Soberanía del dato</td><td>DC en Brasil, EE.UU. o Europa. Dato fuera del país.</td><td>DC en Pacheco y Hornos (Buenos Aires). Dato en Argentina.</td><td>Compliance BCRA, Ley 25.326, auditoría directa.</td></tr>
+          <tr><td class="tn">Moneda de facturación</td><td>USD — expuesto a volatilidad cambiaria</td><td>Pesos argentinos con ajuste IPC</td><td>Predictibilidad presupuestaria para el CFO</td></tr>
+          <tr><td class="tn">Conectividad</td><td>Requiere contratar MPLS o DIA por separado a una telco</td><td>MPLS + cloud + soporte en un solo contrato</td><td>SLA end-to-end, latencia 3ms sede→cloud, sin egress interno</td></tr>
+          <tr><td class="tn">Herramienta de assessment</td><td>AWS MGN / Azure Migrate — externas al DC</td><td>Assessment realizado por el equipo de Personal Tech</td><td>Propuesta técnica incluida, no solo una herramienta</td></tr>
+          <tr><td class="tn">Soporte</td><td>Ticket en inglés, SLA de horas, soporte remoto</td><td>Soporte en castellano, SLA contractual con penalidades, soporte local</td><td>Escalación directa al equipo técnico que opera el DC</td></tr>
+          <tr><td class="tn">DR</td><td>Segunda región del hyperscaler (puede estar fuera del país)</td><td>DR en Hornos (Barracas) — mismo carrier, latencia sub-ms</td><td>DR local en pesos, sin configurar inter-region cloud</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note note-green"><strong>✅ El argumento de cierre para una migración:</strong> "El proceso de migración con Personal Tech es el mismo que con cualquier hyperscaler — usamos las mismas herramientas de assessment, la misma metodología de olas y el mismo framework 7R. La diferencia es que cuando termina, sus datos están en Argentina, su factura está en pesos y su soporte habla español. Y si algo falla, no abre un ticket — llama a la misma empresa que mantiene la conectividad de su sede."</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('pt2')">
+      <span class="acc-num">Preguntas discovery</span>
+      <div class="acc-info"><div class="acc-name">Las 8 preguntas de discovery para abrir una conversación de migración</div><div class="acc-tag">Para usar en la primera reunión con el CTO o Director de Infraestructura</div></div>
+      <span class="acc-chv" id="achv-pt2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-pt2"><div class="ab-inner">
+      <ul class="feat">
+        <li><span class="fdot" style="background:var(--blue-m);"></span><strong>"¿Cuándo fue la última vez que renovaron hardware y cuándo está prevista la próxima renovación?"</strong> → Revela el deadline real. Si la renovación es en 18 meses, hay urgencia concreta.</li>
+        <li><span class="fdot" style="background:var(--red-m);"></span><strong>"¿Tienen sistemas corriendo en versiones de Windows Server o bases de datos que ya no tienen soporte del fabricante?"</strong> → Detecta el riesgo de EOL y la urgencia de seguridad.</li>
+        <li><span class="fdot" style="background:var(--amber-m);"></span><strong>"Si hoy tuvieran que escalar su sistema principal para el doble de usuarios, ¿cuánto tiempo tardarían y cuánto costaría?"</strong> → Cuantifica la limitación de escalabilidad.</li>
+        <li><span class="fdot" style="background:var(--green-m);"></span><strong>"¿Tienen un sitio de Disaster Recovery activo y cuándo fue la última vez que hicieron un simulacro real?"</strong> → Casi siempre revela que no hay DR probado.</li>
+        <li><span class="fdot" style="background:var(--purple-m);"></span><strong>"¿Cuánto porcentaje del budget de IT va a mantener lo que ya tienen vs. a proyectos nuevos?"</strong> → El promedio es 70–80% en mantenimiento. Es la mejor forma de visualizar la deuda técnica.</li>
+        <li><span class="fdot" style="background:var(--teal-m);"></span><strong>"¿Sus aplicaciones críticas tienen alguna restricción sobre dónde puede estar el dato (regulatoria, contractual, de compliance)?"</strong> → Abre la conversación de soberanía y datos locales.</li>
+        <li><span class="fdot" style="background:var(--coral-m);"></span><strong>"¿Cuánto tiempo tarda hoy desde que alguien del negocio pide un servidor nuevo hasta que está disponible para usar?"</strong> → En on-premise típicamente 4–8 semanas. En cloud: 5 minutos. La brecha es el argumento.</li>
+        <li><span class="fdot" style="background:var(--blue-m);"></span><strong>"¿Tienen visibilidad de cuánto CPU y RAM realmente están usando vs. cuánto tienen asignado en sus servidores?"</strong> → La mayoría no lo sabe. Ofrecer el análisis de 30 días como primer paso.</li>
+      </ul>
+    </div></div>
+  </div>
+</div><!-- /s8 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Migraciones Cloud — Framework 7R y Dimensionamiento · <span id="fecha"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+document.getElementById('fecha').textContent=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  var acc=b.parentElement;
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+  acc.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.sec');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+// Open first accordion by default
+toggleAcc('m1');
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

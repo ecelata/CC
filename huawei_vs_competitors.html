@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huawei vs Competitors — Comparativas Detalladas | Personal Tech</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f9fafb; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        h1 { color: #1D1D1D; margin: 40px 0 20px; font-size: 2.2em; }
+        h2 { color: #FF6B35; margin: 35px 0 15px; font-size: 1.7em; border-bottom: 3px solid #0C447C; padding-bottom: 10px; }
+        h3 { color: #0C447C; margin: 20px 0 10px; font-size: 1.3em; }
+        p { margin: 12px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; }
+        th { background: linear-gradient(135deg, #0C447C 0%, #1D5490 100%); color: white; font-weight: 600; }
+        tr:hover { background: #f5f5f5; }
+        tr:nth-child(even) { background: #fafafa; }
+        .winner { background: #d4edda; font-weight: 600; }
+        .section { background: white; border-radius: 8px; padding: 25px; margin: 25px 0; border-left: 5px solid #FF6B35; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .header { background: linear-gradient(135deg, #FF6B35 0%, #f87d2f 100%); color: white; padding: 35px; border-radius: 8px; margin-bottom: 30px; }
+        .header h1 { color: white; margin: 0; }
+        .meta { color: rgba(255,255,255,0.9); margin-top: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .comparison-card { background: white; border: 2px solid #ddd; border-radius: 8px; padding: 15px; }
+        .comparison-card h4 { color: #0C447C; margin: 0 0 10px 0; }
+        .comparison-card p { margin: 8px 0; font-size: 0.95em; }
+        .pros { color: #22863a; background: #f6ffed; padding: 10px; border-radius: 4px; margin: 5px 0; }
+        .cons { color: #cb2431; background: #fff5f5; padding: 10px; border-radius: 4px; margin: 5px 0; }
+        .highlights { background: #fff3cd; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #ffc107; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; color: #666; font-size: 0.9em; }
+        .verdict { background: #e7f3ff; border-left: 4px solid #0C447C; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        ul { margin-left: 20px; }
+        li { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ Huawei vs AWS vs Azure vs GCP</h1>
+            <p class="meta">Comparativas Detalladas • Matriz de Servicios • Cuándo Elegir Cada Uno</p>
+        </div>
+
+        <h2>01. Compute — VMs & Serverless</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Característica</th>
+                    <th>Huawei (ECS)</th>
+                    <th>AWS (EC2)</th>
+                    <th>Azure (VM)</th>
+                    <th>GCP (Compute Engine)</th>
+                </tr>
+                <tr>
+                    <td><strong>Pricing Horario</strong></td>
+                    <td class="winner">✅ Baja (0.08-0.15 $/h)</td>
+                    <td>Medium (0.10-0.20 $/h)</td>
+                    <td>Medium (0.10-0.22 $/h)</td>
+                    <td>Medio-Bajo (0.09-0.17 $/h)</td>
+                </tr>
+                <tr>
+                    <td><strong>Instancias Disponibles</strong></td>
+                    <td>~30 tipos</td>
+                    <td class="winner">✅ 300+ tipos</td>
+                    <td>200+ tipos</td>
+                    <td>100+ tipos</td>
+                </tr>
+                <tr>
+                    <td><strong>Auto-Scaling</strong></td>
+                    <td>✅ Básico (AS service)</td>
+                    <td class="winner">✅ Avanzado (ASG)</td>
+                    <td>✅ Bueno (VMSS)</td>
+                    <td>✅ Excelente (Managed Instance Groups)</td>
+                </tr>
+                <tr>
+                    <td><strong>GPU/ML</strong></td>
+                    <td>🟡 Limitado (P100, V100)</td>
+                    <td class="winner">✅ Masivo (P4, A100, H100)</td>
+                    <td>✅ Bueno (V100, A100)</td>
+                    <td>✅ Muy bueno (T4, A100, H100)</td>
+                </tr>
+                <tr>
+                    <td><strong>Serverless (Functions)</strong></td>
+                    <td>FunctionGraph (básico)</td>
+                    <td class="winner">✅ Lambda (industria estándar)</td>
+                    <td>✅ Azure Functions</td>
+                    <td>✅ Cloud Functions</td>
+                </tr>
+                <tr>
+                    <td><strong>Containers (Kubernetes)</strong></td>
+                    <td>CCE (managed K8s)</td>
+                    <td>EKS (managed K8s)</td>
+                    <td class="winner">✅ AKS (bueno + integración Azure)</td>
+                    <td>✅ GKE (best-in-class)</td>
+                </tr>
+            </table>
+
+            <div class="verdict">
+                <strong>🏆 Veredicto Compute:</strong> AWS lidera en opciones. GCP es más simple. Azure: integración Microsoft. Huawei: solo si soberanía es crítica.
+            </div>
+        </div>
+
+        <h2>02. Storage — Object, Block, File</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Huawei (OBS)</th>
+                    <th>AWS (S3)</th>
+                    <th>Azure (Blob)</th>
+                    <th>GCP (Cloud Storage)</th>
+                </tr>
+                <tr>
+                    <td><strong>API Compatibility</strong></td>
+                    <td>🟡 Mostly S3-compatible (no 100%)</td>
+                    <td class="winner">✅ Standard (AWS SDK)</td>
+                    <td>✅ Proprietary (Microsoft SDK)</td>
+                    <td>✅ Native (Google SDK)</td>
+                </tr>
+                <tr>
+                    <td><strong>Pricing (GB/mes)</strong></td>
+                    <td class="winner">✅ $0.013 (baja)</td>
+                    <td>$0.023</td>
+                    <td>$0.018</td>
+                    <td>$0.020</td>
+                </tr>
+                <tr>
+                    <td><strong>Replicación Global</strong></td>
+                    <td>🟡 Cross-region | No es tan flexible</td>
+                    <td class="winner">✅ S3 Cross-Region Replication (CRR)</td>
+                    <td>✅ Geo-redundancy (automatic)</td>
+                    <td>✅ Cloud Storage Replication</td>
+                </tr>
+                <tr>
+                    <td><strong>Versioning & Lifecycle</strong></td>
+                    <td>✅ Soportado</td>
+                    <td class="winner">✅ Maduro & flexible</td>
+                    <td>✅ Lifecycle management</td>
+                    <td>✅ Object Lifecycle Management</td>
+                </tr>
+                <tr>
+                    <td><strong>Access Control</strong></td>
+                    <td>✅ IAM, bucket policies</td>
+                    <td class="winner">✅ Granular (bucket, object, ACL)</td>
+                    <td>✅ RBAC, Shared Access Signatures</td>
+                    <td>✅ IAM, fine-grained permissions</td>
+                </tr>
+            </table>
+
+            <div class="verdict">
+                <strong>🏆 Veredicto Storage:</strong> AWS S3 es estándar (mejor tooling). Azure si Microsoft stack. GCP competitivo. Huawei: más barato pero menos compatible.
+            </div>
+        </div>
+
+        <h2>03. Database — SQL, NoSQL, Data Warehouse</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Huawei</th>
+                    <th>AWS</th>
+                    <th>Azure</th>
+                    <th>GCP</th>
+                </tr>
+                <tr>
+                    <td><strong>SQL Relacional</strong></td>
+                    <td>RDS (MySQL, PostgreSQL, SQL Server)</td>
+                    <td class="winner">✅ RDS + Aurora (serverless, auto-scaling)</td>
+                    <td>✅ Azure Database for MySQL/PostgreSQL/SQL Server</td>
+                    <td>✅ Cloud SQL</td>
+                </tr>
+                <tr>
+                    <td><strong>NoSQL (Document)</strong></td>
+                    <td>GeminiDB (MongoDB-compatible)</td>
+                    <td class="winner">✅ DocumentDB (MongoDB-compatible)</td>
+                    <td>✅ CosmosDB (multi-model)</td>
+                    <td>✅ Firestore (document + real-time)</td>
+                </tr>
+                <tr>
+                    <td><strong>NoSQL (Key-Value)</strong></td>
+                    <td>DDS (Redis-compatible)</td>
+                    <td class="winner">✅ ElastiCache (Redis, Memcached)</td>
+                    <td>✅ Azure Cache for Redis</td>
+                    <td>✅ Memorystore</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Warehouse</strong></td>
+                    <td>MRS (Hive, Spark, no warehouse nativo)</td>
+                    <td>Redshift</td>
+                    <td class="winner">✅ Azure Synapse</td>
+                    <td class="winner">✅ BigQuery (best-in-class)</td>
+                </tr>
+                <tr>
+                    <td><strong>Time-Series DB</strong></td>
+                    <td>❌ No nativo</td>
+                    <td>Timestream</td>
+                    <td>✅ Time Series Insights</td>
+                    <td class="winner">✅ BigTable, Cloud Monitoring</td>
+                </tr>
+                <tr>
+                    <td><strong>Graph DB</strong></td>
+                    <td>❌ No</td>
+                    <td>Neptune</td>
+                    <td>Gremlin on CosmosDB</td>
+                    <td class="winner">✅ Neo4j on GCP</td>
+                </tr>
+            </table>
+
+            <div class="verdict">
+                <strong>🏆 Veredicto Database:</strong> GCP gana en BigQuery (data warehouse). AWS es versátil. Azure: integración SQL Server. Huawei: básico, falta data warehouse nativo.
+            </div>
+        </div>
+
+        <h2>04. Networking — CDN, Load Balancer, Conectividad</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Huawei</th>
+                    <th>AWS</th>
+                    <th>Azure</th>
+                    <th>GCP</th>
+                </tr>
+                <tr>
+                    <td><strong>CDN</strong></td>
+                    <td>CDN (básico)</td>
+                    <td>CloudFront (global, 200+ POPs)</td>
+                    <td>Azure CDN</td>
+                    <td class="winner">✅ Cloud CDN (integración Cloud Load Balancer)</td>
+                </tr>
+                <tr>
+                    <td><strong>Load Balancer</strong></td>
+                    <td>ELB (basado en OpenStack)</td>
+                    <td class="winner">✅ ALB, NLB (versátil, WebSocket, gRPC)</td>
+                    <td>✅ Load Balancer (capa 4, 7)</td>
+                    <td>✅ Cloud Load Balancing (global, multi-region)</td>
+                </tr>
+                <tr>
+                    <td><strong>DDoS Protection</strong></td>
+                    <td>🟡 Anti-DDoS básico</td>
+                    <td>AWS Shield, AWS WAF (robust)</td>
+                    <td class="winner">✅ Azure DDoS Protection Standard</td>
+                    <td>✅ Cloud Armor</td>
+                </tr>
+                <tr>
+                    <td><strong>Private Connectivity (On-Prem)</strong></td>
+                    <td>Direct Connect (básico)</td>
+                    <td class="winner">✅ AWS Direct Connect (dedicada, 1-100Gbps)</td>
+                    <td>✅ ExpressRoute (premium)</td>
+                    <td>✅ Dedicated Interconnect (Google Premium Network)</td>
+                </tr>
+            </table>
+
+            <div class="verdict">
+                <strong>🏆 Veredicto Networking:</strong> AWS Direct Connect es gold standard. GCP: CDN y LB global. Azure: integración ExpressRoute. Huawei: básico.
+            </div>
+        </div>
+
+        <h2>05. AI & Machine Learning</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Capacidad</th>
+                    <th>Huawei (ModelArts)</th>
+                    <th>AWS (SageMaker)</th>
+                    <th>Azure (ML Services)</th>
+                    <th>GCP (Vertex AI)</th>
+                </tr>
+                <tr>
+                    <td><strong>ML Platform</strong></td>
+                    <td>ModelArts (básico)</td>
+                    <td class="winner">✅ SageMaker (comprehensive)</td>
+                    <td>✅ Azure ML (integración Azure)</td>
+                    <td class="winner">✅ Vertex AI (best-in-class)</td>
+                </tr>
+                <tr>
+                    <td><strong>AutoML</strong></td>
+                    <td>🟡 Limitado</td>
+                    <td>✅ SageMaker Autopilot</td>
+                    <td>✅ Automated ML</td>
+                    <td class="winner">✅ AutoML (industry-leading)</td>
+                </tr>
+                <tr>
+                    <td><strong>LLMs / GenAI</strong></td>
+                    <td>❌ No native | Integración China</td>
+                    <td>✅ Bedrock (Claude, Llama, Mistral)</td>
+                    <td>✅ OpenAI Integration, Copilot</td>
+                    <td class="winner">✅ Vertex AI + Gemini (propio)</td>
+                </tr>
+                <tr>
+                    <td><strong>Vision AI</strong></td>
+                    <td>🟡 Básico</td>
+                    <td>✅ Rekognition, Lookout</td>
+                    <td>✅ Computer Vision</td>
+                    <td class="winner">✅ Vision AI (avanzado)</td>
+                </tr>
+                <tr>
+                    <td><strong>NLP / Text</strong></td>
+                    <td>🟡 Básico</td>
+                    <td>✅ Comprehend, Textract</td>
+                    <td>✅ Text Analytics, Cognitive Services</td>
+                    <td class="winner">✅ Natural Language AI (liderazgo)</td>
+                </tr>
+            </table>
+
+            <div class="verdict">
+                <strong>🏆 Veredicto AI:</strong> GCP es líder en ML (BigQuery ML, Vertex AI). AWS: SageMaker más maduro. Azure: integración OpenAI/Copilot. Huawei: débil en GenAI, aislado.
+            </div>
+        </div>
+
+        <h2>06. Seguridad & Compliance</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Aspecto</th>
+                    <th>Huawei</th>
+                    <th>AWS</th>
+                    <th>Azure</th>
+                    <th>GCP</th>
+                </tr>
+                <tr>
+                    <td><strong>Certifications</strong></td>
+                    <td>ISO 27001, SOC 2 (limitado)</td>
+                    <td class="winner">✅ ISO, SOC 2, HIPAA, PCI-DSS, HITRUST, FedRAMP</td>
+                    <td class="winner">✅ ISO, SOC 2, HIPAA, PCI-DSS, GDPR, HIPAA-BAA</td>
+                    <td>✅ ISO, SOC 2, HIPAA, PCI-DSS</td>
+                </tr>
+                <tr>
+                    <td><strong>Encryption at Rest</strong></td>
+                    <td>✅ KMS nativo</td>
+                    <td class="winner">✅ KMS robusto (customer-managed keys)</td>
+                    <td>✅ Key Vault (Azure-managed, customer-managed)</td>
+                    <td>✅ Cloud KMS (Google-managed, customer-managed)</td>
+                </tr>
+                <tr>
+                    <td><strong>Encryption in Transit</strong></td>
+                    <td>✅ TLS 1.2+</td>
+                    <td class="winner">✅ TLS 1.2+, mTLS, VPC Encryption</td>
+                    <td>✅ TLS 1.2+</td>
+                    <td>✅ TLS 1.2+, mTLS</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Residency (BCRA)</strong></td>
+                    <td class="winner">✅ Data centers Latam (Argentina)</td>
+                    <td>⚠️ USA-centric (restricciones legales)</td>
+                    <td>✅ Data centers Latam (Brasil)</td>
+                    <td>⚠️ Data centers Latam limitados</td>
+                </tr>
+                <tr>
+                    <td><strong>Zero Trust Architecture</strong></td>
+                    <td>🟡 Implementable</td>
+                    <td class="winner">✅ Nativo (Identity Center, STS)</td>
+                    <td class="winner">✅ Condicional Access, Zero Trust</td>
+                    <td>✅ Identity-aware Proxy, VPC Service Controls</td>
+                </tr>
+            </table>
+
+            <div class="verdict">
+                <strong>🏆 Veredicto Seguridad:</strong> AWS/Azure: certificaciones masivas. GCP: también sólido. Huawei: gana si necesitas soberanía BCRA, pero menos certifications.
+            </div>
+        </div>
+
+        <h2>07. Pricing & ROI — Quick Comparison</h2>
+        <div class="section">
+            <div class="grid">
+                <div class="comparison-card">
+                    <h4>🔴 Huawei Cloud</h4>
+                    <p><strong>Compute:</strong> $0.08/h (más barato ~20%)</p>
+                    <p><strong>Storage:</strong> $0.013/GB (muy barato)</p>
+                    <div class="pros">✅ Mejor para presupuesto limitado</div>
+                    <div class="cons">❌ Menos servicios avanzados</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>🟠 AWS</h4>
+                    <p><strong>Compute:</strong> $0.10/h (estándar)</p>
+                    <p><strong>Storage:</strong> $0.023/GB</p>
+                    <div class="pros">✅ Mejor para features/escala</div>
+                    <div class="cons">❌ Más caro</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>🔷 Azure</h4>
+                    <p><strong>Compute:</strong> $0.12/h</p>
+                    <p><strong>Storage:</strong> $0.018/GB</p>
+                    <div class="pros">✅ Mejor si usas Microsoft stack</div>
+                    <div class="cons">❌ Pricing puede ser alto fuera Microsoft</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>🟩 GCP</h4>
+                    <p><strong>Compute:</strong> $0.09/h</p>
+                    <p><strong>Storage:</strong> $0.020/GB</p>
+                    <div class="pros">✅ Mejor para datos/IA</div>
+                    <div class="cons">❌ Menos servicios que AWS</div>
+                </div>
+            </div>
+
+            <div class="highlights">
+                <strong>💰 Resumen Pricing:</strong>
+                <ul>
+                    <li><strong>Huawei:</strong> 20% más barato que AWS (si comparas compute directo)</li>
+                    <li><strong>GCP:</strong> ~10% menos que AWS</li>
+                    <li><strong>Azure:</strong> Similar AWS, mejor si Microsoft</li>
+                    <li><strong>⚠️ Caveat:</strong> Huawei barato pero menos servicios = más trabajo = más costo</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>08. Matriz de Decisión: Cuándo Elegir Cada Uno</h2>
+        <div class="section">
+            <table>
+                <tr>
+                    <th>Requisito</th>
+                    <th>Elige...</th>
+                    <th>Porque...</th>
+                </tr>
+                <tr>
+                    <td><strong>Global + features masivas</strong></td>
+                    <td class="winner">AWS</td>
+                    <td>330+ servicios, 33 regiones, estándar industria</td>
+                </tr>
+                <tr>
+                    <td><strong>Microsoft stack (SQL, Office, .NET)</strong></td>
+                    <td class="winner">Azure</td>
+                    <td>Integración nativa, licensing</td>
+                </tr>
+                <tr>
+                    <td><strong>AI / Data Science / BigData</strong></td>
+                    <td class="winner">GCP</td>
+                    <td>BigQuery, Vertex AI, Pub/Sub, TensorFlow</td>
+                </tr>
+                <tr>
+                    <td><strong>Soberanía BCRA Argentina</strong></td>
+                    <td class="winner">Huawei</td>
+                    <td>Data center local Latam, cumplimiento regulatorio</td>
+                </tr>
+                <tr>
+                    <td><strong>Presupuesto ultra-ajustado</strong></td>
+                    <td class="winner">Huawei o GCP</td>
+                    <td>Huawei 20% barato; GCP 10% barato vs AWS</td>
+                </tr>
+                <tr>
+                    <td><strong>Multi-cloud (hybrid)</strong></td>
+                    <td class="winner">AWS + GCP + Huawei</td>
+                    <td>AWS global, GCP data, Huawei latam</td>
+                </tr>
+                <tr>
+                    <td><strong>CDN & media (streaming)</strong></td>
+                    <td class="winner">AWS o GCP</td>
+                    <td>CloudFront o Cloud CDN (200+ POPs)</td>
+                </tr>
+                <tr>
+                    <td><strong>Legacy on-prem migration</strong></td>
+                    <td class="winner">AWS</td>
+                    <td>Application Migration Service, Database Migration Service</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>09. Conclusión: Huawei en Contexto Multi-Cloud</h2>
+        <div class="section">
+            <div class="highlights">
+                <strong>🎯 Huawei Cloud es:</strong>
+                <ul>
+                    <li>✅ <strong>#1 para BCRA + soberanía Latam</strong> — Data center local, cumplimiento regulatorio</li>
+                    <li>✅ <strong>#2 para presupuesto</strong> — 20% más barato que AWS en compute</li>
+                    <li>🟡 <strong>#3 for "bueno, pero no mejor"</strong> — Servicios básicos, falta profundidad</li>
+                    <li>❌ <strong>No reemplaza AWS como primario</strong> — Menos servicios, menos talento, menos compatible</li>
+                </ul>
+            </div>
+
+            <h3>Recomendación Final: Arquitectura Multi-Cloud Ideal</h3>
+            <div class="grid">
+                <div class="comparison-card">
+                    <h4>Workload Crítico (Latam)</h4>
+                    <p><strong>☁️ Huawei Cloud</strong></p>
+                    <p>BCRA compliance, data residency local</p>
+                </div>
+                <div class="comparison-card">
+                    <h4>Workload Global/General</h4>
+                    <p><strong>☁️ AWS</strong></p>
+                    <p>Services, talent, scale, standard</p>
+                </div>
+                <div class="comparison-card">
+                    <h4>Workload IA/Analytics</h4>
+                    <p><strong>☁️ GCP</strong></p>
+                    <p>BigQuery, ML, Vertex AI</p>
+                </div>
+                <div class="comparison-card">
+                    <h4>Workload Microsoft</h4>
+                    <p><strong>☁️ Azure</strong></p>
+                    <p>SQL Server, Office 365, .NET</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Documento:</strong> Huawei vs Competitors | <strong>Fecha:</strong> 7 julio 2026</p>
+            <p><strong>Cobertura Multi-Cloud:</strong> AWS · Azure · GCP · Huawei Cloud · Cloudflare · IBM Cloud · Oracle Cloud</p>
+            <p><strong>Tags:</strong> comparativa, huawei, aws, azure, gcp, pricing, features, multi-cloud, decisión</p>
+        </div>
+    </div>
+</body>
+</html>

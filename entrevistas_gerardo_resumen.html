@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumen Entrevistas — Lo que dijo Gerardo | Edgardo Celata</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* TOPBAR */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:960px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* SOURCE PILLS */
+.sources{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;padding:12px 14px;background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);}
+.sources-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);width:100%;margin-bottom:4px;}
+.src-pill{font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:20px;border:.5px solid var(--border);background:var(--bg);}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* QUOTE — palabras textuales de Gerardo */
+.gerardo-quote{background:#1a1a18;border-radius:var(--radius-sm);padding:14px 17px;margin:10px 0;position:relative;}
+.gerardo-quote::before{content:'"';position:absolute;top:6px;left:12px;font-size:28px;color:rgba(255,255,255,.15);font-family:Georgia,serif;line-height:1;}
+.gerardo-quote-text{font-size:13px;color:rgba(255,255,255,.75);line-height:1.65;font-style:italic;padding-left:16px;}
+.gerardo-quote-source{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.3);margin-top:6px;padding-left:16px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+
+/* WIN / WARN / TIP */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+
+/* DATA TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+
+/* SEP / FOOTER */
+.sep{border:none;border-top:.5px solid var(--border);margin:14px 0;}
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;}
+
+@media print{
+  .topnav{display:none;}
+  .vert-body,.acc-body{display:block!important;}
+  .vert-toggle,.acc-chv{display:none;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🎙 Entrevistas · Gerardo</div>
+  <a class="tnav" href="#v1">01 La empresa</a>
+  <a class="tnav" href="#v2">02 Equipo y estructura</a>
+  <a class="tnav" href="#v3">03 Cómo venden</a>
+  <a class="tnav" href="#v4">04 Infraestructura cloud propia</a>
+  <a class="tnav" href="#v5">05 El negocio y el desafío</a>
+  <a class="tnav" href="#v6">06 Tu rol y expectativas</a>
+  <a class="tnav" href="#v7">07 Formas de trabajo</a>
+  <a class="tnav" href="#v8">08 Lo que Gerardo valora</a>
+  <a class="tnav" href="#v9">09 Lo que no se dijo pero se leyó</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Lo que dijo Gerardo — Síntesis de entrevistas</div>
+    <div class="doc-sub">Estructura, formas de trabajo, expectativas y lo que no se dijo pero se leyó entre líneas</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<div class="sources">
+  <div class="sources-label">Fuentes analizadas</div>
+  <span class="src-pill" style="background:var(--blue-light);color:var(--blue-dark);">📝 2da entrevista — Germán (Gte Comercial) + Martín (Tincho) — Comercial</span>
+  <span class="src-pill" style="background:var(--green-light);color:var(--green-dark);">📝 Transcripción propuesta — Gerardo + Verónica</span>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 LA EMPRESA -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--blue-light)">🏢</div>
+    <div class="vert-title">01 — Cómo explicó la empresa y el negocio B2B</div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">Gerardo abrió la segunda entrevista explicando el modelo organizativo con un nivel de detalle que claramente no da en todos los procesos — es alguien que realmente conoce y vive la estructura. <strong>Lo que explicó revela cómo piensa el negocio y dónde está apostando.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('e1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Estructura B2B</span>
+        <div class="acc-info"><div class="acc-name">Células de mercado + células de producto — la agilidad empresarial</div><div class="acc-tag">Cómo está organizado el equipo que vas a integrar</div></div>
+        <span class="acc-chv" id="achv-e1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-e1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Nos separamos en células de producto y en células de mercado. Las células de mercado están orientadas a experiencia de cliente, unificando desde la venta: vendedores en la calle, preventa y el customer access. Los productos estamos organizados en células que velan por el entendimiento del producto desde la concepción, la comercialización a través de consultores, el área de arquitectura, la implementación y el crecimiento de esos clientes.</div>
+            <div class="gerardo-quote-source">2da entrevista — Germán · Gerente Comercial</div>
+          </div>
+          <div class="block-label">Lo que esto significa para vos</div>
+          <p class="block-text">Trabajás en la <strong>célula de producto de Multicloud/Cloud Híbrida</strong> — no en la célula de mercado. Tu interlocutor natural son los gerentes comerciales y sus equipos de vendedores (la célula de mercado). El consultor cloud (vos) es el que une los mundos: entiende el producto en profundidad y lo lleva al cliente junto con el ejecutivo de cuenta.</p>
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-title">Célula de Mercado (cliente)</div>
+              <div class="mc-text">200 vendedores de campo, gerentes comerciales, preventa, customer access. Segmentados por tamaño (PyME, GC, Estratégicas) y geografía (AMBA, Interior).</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-title">Célula de Producto Cloud (vos)</div>
+              <div class="mc-text">8 consultores cloud (escalando a 12+). Velan por el entendimiento del producto, la comercialización consultiva, arquitectura, implementación y growth de clientes.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('e2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Escala</span>
+        <div class="acc-info"><div class="acc-name">6.000 clientes caracterizados — y el 70% no tiene cloud todavía</div><div class="acc-tag">El tamaño real del mercado interno que tenés para trabajar</div></div>
+        <span class="acc-chv" id="achv-e2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-e2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Hoy en B2B tenemos cerca de 6.000 clientes principales caracterizados con atención personalizada, que es una muestra de 150.000 clientes a los cuales les damos servicio. El 70% no tiene cloud. Con lo cual hay un crecimiento muy grande con tenedor.</div>
+            <div class="gerardo-quote-source">2da entrevista + Propuesta</div>
+          </div>
+          <div class="block-label">Lo que esto implica estratégicamente</div>
+          <p class="block-text">De 6.000 clientes con atención personalizada, <strong>aproximadamente 4.200 no tienen todavía ningún servicio cloud con Personal Tech</strong>. Todos ellos ya son clientes que pagan algún servicio de telefonía o conectividad — la puerta está abierta. Esta es la base de mercado real con la que vas a trabajar. No es cold calling — es cross-selling sobre cartera existente.</p>
+          <div class="win-note"><strong>El argumento de Gerardo:</strong> "La venta de este tipo de soluciones un ejecutivo de Telco es muy difícil que la pueda hacer." Por eso están escalando el equipo de consultores cloud. El mercado ya existe adentro — lo que falta es la capacidad técnica para abordarlo.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 EQUIPO Y ESTRUCTURA -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--green-light)">👥</div>
+    <div class="vert-title">02 — El equipo al que vas a entrar</div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('eq1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Equipo actual</span>
+        <div class="acc-info"><div class="acc-name">8 consultores cloud hoy, escalando a 12 o más</div><div class="acc-tag">Composición del equipo, distribución geográfica y con quién vas a trabajar directo</div></div>
+        <span class="acc-chv" id="achv-eq1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-eq1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">A nivel consultoría, hoy somos ocho, estamos escalando el equipo a en principio 12 o más porque entendemos que la venta de solución de cloud es venta consultiva. Los consultores están divididos por territorio, entonces la idea es que cada uno sea dueño de su territorio.</div>
+            <div class="gerardo-quote-source">2da entrevista</div>
+          </div>
+          <ul class="feat" style="margin-top:12px;">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Gerardo:</strong> Gerente del equipo. Tu jefe directo. Pragmático, orientado a datos, conoce los números de cada consultor en Salesforce.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Martín Rossi (Tincho):</strong> Referente comercial del equipo. Vas a trabajar muy codo a codo con él. Lo mencionó Verónica como tu primer contacto interno.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>6 consultores más:</strong> Distribuidos por PyMEs, GC del Interior, Paraguay, con personas en Chaco, Rosario (2), uno en Córdoba.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Arquitectos en corporativo:</strong> Hay un equipo de arquitectos en B2B y un centro de excelencia cloud en Masivo. Cuando necesitás un especialista muy específico, lo buscás ahí.</li>
+          </ul>
+          <div class="block-label">Tu posicionamiento en el equipo</div>
+          <p class="block-text">Gerardo dejó muy claro que tu seniority va a ir al segmento alto de la pirámide: <strong>banca, grandes industrias y cuentas estratégicas</strong>. No te van a poner a vender licencias de Microsoft 365 a PyMEs. El objetivo es que vayas a las cuentas más grandes y complejas donde tu background de arquitectura y preventa enterprise marca la diferencia.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('eq2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Ecosistema</span>
+        <div class="acc-info"><div class="acc-name">200 vendedores de campo — el ecosistema que tenés para generar pipeline</div><div class="acc-tag">Lo que Gerardo explicó sobre cómo trabajan con los ejecutivos comerciales</div></div>
+        <span class="acc-chv" id="achv-eq2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-eq2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Tenemos 200 vendedores en la calle que venden más de 80 productos que vienen de un origen de vender celulares y conectividad. Están acostumbrados a una venta más transaccional. La ventaja que tenemos es que tenemos a los ejecutivos que van a abrir la puerta porque a todas estas empresas les cobramos a fin de mes algo.</div>
+            <div class="gerardo-quote-source">2da entrevista</div>
+          </div>
+          <div class="gerardo-quote" style="margin-top:8px;">
+            <div class="gerardo-quote-text">Venta interna: tenemos que agarrar un equipo de ejecutivos que tiene su gerente comercial y hacer el juego de seducirlos. Una vez que detecta dice "acá huele cloud" y ya vamos nosotros. Aprender a detectar simplemente.</div>
+            <div class="gerardo-quote-source">2da entrevista</div>
+          </div>
+          <div class="block-label">Tu rol con los 200 vendedores</div>
+          <p class="block-text">Gerardo lo llamó explícitamente "trabajo interno": seducir a los 200 ejecutivos para que puedan detectar oportunidades cloud y derivarlas. El consultor cloud no hace cold calling — <strong>el ejecutivo abre la puerta y el consultor cierra.</strong> Esto requiere que vos entiendas cómo hablarle al vendedor en su idioma (no con jerga cloud) y que el proceso de derivación sea lo suficientemente simple para que lo adopten.</p>
+          <div class="tip-note"><strong>Oportunidad que Gerardo mencionó:</strong> Hacer desayunos con 10-20 clientes del mismo sector. "En 2 horas de desayuno te llevabas 10 propuestas." Este es el modelo de generación de demanda que ya usan y que podés escalar.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 CÓMO VENDEN -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--amber-light)">💼</div>
+    <div class="vert-title">03 — Cómo venden — el modelo comercial de Gerardo</div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('v1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Modelo de venta</span>
+        <div class="acc-info"><div class="acc-name">El negocio cloud es de facturación, no solo de venta nueva</div><div class="acc-tag">Cómo miden el éxito y qué se espera que generes mes a mes</div></div>
+        <span class="acc-chv" id="achv-v1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-v1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">El negocio de cloud no es te vendo una vez y te llamo al año cuando se acaba el contrato. Hay que velar por hacer crecer esas cargas de trabajo. El objetivo es tanto de venta como de facturación, está partido 50 y 50. El negocio de cloud es un juego más de facturación que de venta.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">Qué significa para tus KPIs</div>
+          <p class="block-text">Tu variable está partido en dos: <strong>50% por venta nueva (ticket nuevo)</strong> y <strong>50% por facturación (crecimiento de cuentas existentes)</strong>. Esto es clave porque implica que tu trabajo no termina cuando se firma el contrato — tenés que seguir haciendo crecer las cargas de trabajo del cliente dentro de la plataforma de Personal Tech.</p>
+          <div class="gerardo-quote" style="margin-top:12px;">
+            <div class="gerardo-quote-text">Es el típico caminito: una empresa mediana que empieza con un backup, un cloud porque don Carlos no quiere mover el servidor de acá. Vamos creciendo. Ver cómo ubicamos más.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="win-note"><strong>El modelo de crecimiento:</strong> Entrada mínima (backup, VPS pequeño) → ganarse la confianza → ir migrando más workloads → crecer la facturación mes a mes. No es un modelo de proyectos puntuales — es un modelo de cuenta.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('v2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Herramientas</span>
+        <div class="acc-info"><div class="acc-name">Salesforce + PowerBI + forecasting propio — cómo Gerardo gestiona el pipeline</div><div class="acc-tag">Lo que Gerardo mostró "de cocina" sobre cómo opera el equipo</div></div>
+        <span class="acc-chv" id="achv-v2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-v2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Hoy tenemos implementado Salesforce. Yo por atrás a Salesforce le pego con Power Query y tengo algunos tableros. Me interesa saber la cantidad de oportunidades en pipe, cuánto en única vez, cuántos ejecutivos, a qué cantidad de clientes, cómo viene el mes a mes de generación. Cuando nos juntamos con los gerentes comerciales elegimos cualquier cuenta: "che, mirá que tenés seis oportunidades con fecha de cierre vencido. Esta plata, este pipeline, ¿cuándo lo cerrás?"</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">Lo que esto te dice sobre Gerardo</div>
+          <p class="block-text">Gerardo no habla de "intuición" — habla de datos. Tiene sus propios tableros de Power Query sobre Salesforce para gestionar el pipeline de los consultores. <strong>Esperá que te pida visibilidad de tu pipeline desde las primeras semanas.</strong> Tener tus oportunidades en Salesforce correctamente actualizadas no es opcional — es la base de su gestión.</p>
+          <div class="block-label">El forecast es un skill explícito que valoró</div>
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">No es lo mismo la venta de un celular que puedo bajar 20% el precio y a los 2 minutos te doy el precio, que es un proyecto donde hay que investigar. Requiere buen forecasting y buen manejo de pipeline o de ciclo de vida de la venta.</div>
+            <div class="gerardo-quote-source">2da entrevista</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('v3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Soluciones</span>
+        <div class="acc-info"><div class="acc-name">Agnósticos, pero priorizando la nube propia — cómo eligen qué vender</div><div class="acc-tag">El criterio real de selección de solución según Gerardo</div></div>
+        <span class="acc-chv" id="achv-v3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-v3">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Somos agnósticos. En base a lo que hablemos con el cliente, vamos a elegir el mejor ambiente que se acomode. Claramente la nube de Personal tiene otra rentabilidad mayor para nosotros porque está basada en un modelo de inversión. Nos basamos en reglas de negocio del cliente, en inversiones que ya haya hecho. La nube es la última herramienta a la que llegamos que nos va a permitir o hacerle ganar más plata o sacarle algo que le aprieta los zapatos o hacerle gastar menos.</div>
+            <div class="gerardo-quote-source">2da entrevista</div>
+          </div>
+          <div class="block-label">La jerarquía de decisión real</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Criterio</th><th>Traducción práctica</th></tr></thead>
+            <tbody>
+              <tr><td>1°</td><td class="tn">Reglas de negocio del cliente</td><td>Qué necesita técnicamente, qué tiene instalado, qué compliance debe cumplir.</td></tr>
+              <tr><td>2°</td><td class="tn">Inversiones ya hechas</td><td>Si ya tienen Azure o AWS, no se lo arrancás — lo integrás. El cliente no tira lo que pagó.</td></tr>
+              <tr><td>3°</td><td class="tn">Rentabilidad de Teco</td><td>A igualdad de condiciones técnicas, se prioriza Personal Cloud porque tiene mayor margen.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="warn-note"><strong>Lo que no dijo pero es evidente:</strong> "Agnósticos" tiene un límite. Si podés justificar técnicamente Personal Cloud, se espera que lo hagas. El argumento de soberanía del dato + latencia + SLA local es la herramienta para justificarlo ante el cliente.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 INFRAESTRUCTURA CLOUD PROPIA -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--teal-light)">🏭</div>
+    <div class="vert-title">04 — La infraestructura cloud propia — lo que Gerardo reveló "de cocina"</div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">Esta es la sección más valiosa del resumen para vos. Gerardo mostró el mapa interno de la infraestructura propia — algo que no se encuentra en el sitio web y que define qué podés vender y por qué.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('i1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Las 2 nubes propias</span>
+        <div class="acc-info"><div class="acc-name">VMware + OpenStack — las dos plataformas de cloud privada de Personal Tech</div><div class="acc-tag">Cómo las describe Gerardo y cuál es la diferencia entre ellas</div></div>
+        <span class="acc-chv" id="achv-i1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-i1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Tenemos dos plataformas de cloud privada. Una basada en VMware — con VMware vRealize y vCloud Director, con lo que vamos VPS al mercado o datacenters virtuales. Después tenemos también una plataforma basada en OpenStack como nube privada. En OpenStack pusimos una modalidad de pago por uso — para cubrir necesidades de VPS tenemos ultra baja latencia, pago en pesos y pago por uso, que es un diferencial en el mercado.</div>
+            <div class="gerardo-quote-source">2da entrevista</div>
+          </div>
+          <div class="grid2" style="margin-top:12px;">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-title">☁️ Nube VMware (vCloud)</div>
+              <div class="mc-text">Basada en vRealize + vCloud Director. Los VPS y datacenters virtuales que se venden a empresas medianas y enterprise. Mayor integración con herramientas de gestión empresarial existentes.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-title">☁️ Nube OpenStack</div>
+              <div class="mc-text">Plataforma open source. Modelo pay-per-use en pesos argentinos. Ultra baja latencia. Son VPS pero con la diferencia de pago por uso — "son VMs, no tiene 250 servicios." Diferencial de costo vs. hyperscalers.</div>
+            </div>
+          </div>
+          <div class="warn-note"><strong>Gerardo fue honesto sobre los límites:</strong> "Si bien las llaman nubes y son privadas, no tenemos 250 servicios. Están basadas en compus — son VPS." Es importante no sobrevenderlas como AWS o Azure. El argumento es latencia, precio en pesos y dato soberano — no el catálogo de servicios.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('i2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Los 5 datacenters</span>
+        <div class="acc-info"><div class="acc-name">Pacheco + Hornos + Córdoba + Corrientes — y el modelo de expansión</div><div class="acc-tag">La infraestructura física que diferencia a Personal Tech de cualquier reseller</div></div>
+        <span class="acc-chv" id="achv-i2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-i2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">En Argentina lo que Telecom tiene son muchos empleados y edificios, porque en cada ciudad había un reparto general cobre. Al cambiar el par cobre por routers se convirtieron en data centers. Tenemos cinco importantes: tres en Buenos Aires (Pacheco es el más grande — 5.400 m² de piso técnico), uno en Hornos que era el ex Fibertel/Cablevisión. Dos en Córdoba y uno en Corrientes. Y estamos haciendo proyectos de datacenter edge: si quieren el datacenter, en Kuruzu Kuá tienen un edificio, lo remodelamos, lo adecuamos — el backbone de Telecom ya está ahí.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">El modelo de expansión edge</div>
+          <p class="block-text">Este es un diferenciador enorme que Gerardo mencionó casi de pasada. Personal Tech puede hacer <strong>datacenter edge a medida</strong> en las ciudades donde ya tiene edificios del backbone. Si un banco del interior necesita un DC local, Telecom ya tiene el edificio, la conectividad y la energía — solo hay que adecuarlo. Ningún hyperscaler puede ofrecer esto en el interior de Argentina.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('i3')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">El próximo paso</span>
+        <div class="acc-info"><div class="acc-name">GPU instalada y cloud soberana de IA — el proyecto que viene</div><div class="acc-tag">Lo que Gerardo reveló sobre hacia dónde va la infraestructura</div></div>
+        <span class="acc-chv" id="achv-i3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-i3">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Ya tenemos GPU instalada, todavía no la desplegamos a través del front, pero el mensaje es la IA soberana. No tenemos fierro acá GPU para correr modelos, con lo cual creo que el paso a donde estamos yendo es a eso. Cualquier empresa que tenga quilombos con la bodega de datos — ¿por qué motivo tiene que ir a correr acá? Soberanía de datos. No puede ir a pedir la inversión a otro proveedor.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">Por qué esto es relevante para vos</div>
+          <p class="block-text">El siguiente producto que va a salir al mercado es <strong>GPU cloud soberana para IA generativa</strong>. Gerardo lo puso como la dirección estratégica clara. Esto significa que muy pronto vas a tener un argumento muy poderoso para sectores que necesitan IA pero no pueden mandar sus datos a AWS Bedrock o Azure OpenAI: el dato queda en Argentina, el modelo corre en la GPU de Personal Tech.</p>
+          <div class="win-note"><strong>Oportunidad de posicionamiento:</strong> Ser el consultor que entiende tanto la infraestructura GPU propia como los modelos de IA generativa de los hyperscalers te pone en una posición única en el equipo. Muy pocos consultores cloud en Argentina combinan esos dos mundos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('i4')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Movistar</span>
+        <div class="acc-info"><div class="acc-name">La fusión pendiente con Movistar — lo que Gerardo insinuó</div><div class="acc-tag">El contexto que puede cambiar radicalmente el escenario</div></div>
+        <span class="acc-chv" id="achv-i4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-i4">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Próximamente Movistar. Estamos todavía esperando el tema de fusión, ya hay algunas charlas internas. Ahí es donde entra la dinámica de las redes que estaban partidas en dos cambia sustancialmente todo. Hay un montón de cosas para hacer. Barrio revuelto.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <p class="block-text" style="margin-top:10px;">Gerardo lo mencionó con entusiasmo ("barrio revuelto") — no como un riesgo sino como una oportunidad. La fusión con Movistar significaría una base de clientes y una red de cobertura sustancialmente mayor. Para el equipo cloud, más clientes enterprise = más pipeline = más trabajo.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 EL NEGOCIO Y EL DESAFÍO -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--coral-light)">📈</div>
+    <div class="vert-title">05 — El desafío de negocio — por qué necesitan reforzar el equipo</div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('d1')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">El desafío B2B 2030</span>
+        <div class="acc-info"><div class="acc-name">El crecimiento no va a venir del ancho de banda — va a venir de soluciones digitales</div><div class="acc-tag">La razón estratégica por la que Gerardo está contratando consultores cloud agresivamente</div></div>
+        <span class="acc-chv" id="achv-d1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-d1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">La realidad es que hay un desafío muy grande a nivel B2B 2030 desafiante. El crecimiento de esos números no va por el ancho de banda — tiene que crecer por soluciones digitales: IoT, Cloud Multicloud Híbrida y Seguridad. El 70% no tiene cloud. Con lo cual hay un crecimiento, la verdad, muy grande, y estamos desafiando ese crecimiento con una curva muy desafiante — por eso la necesidad de ampliar el equipo.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">Lo que esto implica para tu variable</div>
+          <p class="block-text">Gerardo fue honesto: <strong>"Venimos con un desafío enorme, no te voy a mentir."</strong> El objetivo de facturación cloud está alineado con el budget corporativo y es exigente. La buena noticia es que el 70% del mercado interno no tiene cloud todavía — hay mercado real. La mala noticia es que ese 70% requiere venta consultiva de ciclo largo que un ejecutivo de Telco no puede hacer solo.</p>
+          <div class="warn-note"><strong>La expectativa implícita:</strong> Te están contratando para ayudar a resolver ese "desafío enorme". No es un rol donde podés arrancar despacio y encontrar el ritmo en 6 meses. Gerardo dijo "tenemos que hacer de 200 tipos que venden celulares, detectores de cloud." Esa transformación requiere que el consultor sea muy activo desde el principio.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 TU ROL Y EXPECTATIVAS -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--purple-light)">🎯</div>
+    <div class="vert-title">06 — Tu rol específico y lo que esperan de vos</div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('r1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">El rol</span>
+        <div class="acc-info"><div class="acc-name">Consultor de cloud en el segmento alto de la pirámide</div><div class="acc-tag">Cómo lo describió Gerardo en la propuesta</div></div>
+        <span class="acc-chv" id="achv-r1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-r1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">El segmento que tenemos pensado para vos es un segmento alto de la pirámide: banca, grandes industrias. Te podés encontrar con un Hardcorp, con todos los bancos de Argentina, alguna entidad de gobierno. La idea es aprovechar el seniority tuyo para pegar los grandes golpes.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">Las 4 funciones que Gerardo describió explícitamente</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Función</th><th>Qué significa en la práctica</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">1 · Conocimiento técnico sólido</td>
+                <td>"Necesitamos tener una buena pata técnica para poder hablar el mismo idioma de un CTO." No necesitás saber todo — necesitás poder tener la conversación técnica y saber cuándo escalar al arquitecto especialista.</td>
+              </tr>
+              <tr>
+                <td class="tn">2 · Forecasting y pipeline</td>
+                <td>"Requiere otra mirada, fuerte conocimiento, buen forecasting y buen manejo de pipeline." Los ciclos son de 3-6 meses — necesitás gestionar múltiples oportunidades en paralelo con visibilidad clara.</td>
+              </tr>
+              <tr>
+                <td class="tn">3 · Presentaciones efectivas</td>
+                <td>"Otra de las patas que yo busco en un consultor." Podés juntarte con 20 clientes del mismo sector en un desayuno y salir con 10 propuestas. Eso requiere presentar bien ante múltiples stakeholders.</td>
+              </tr>
+              <tr>
+                <td class="tn">4 · Seducción interna de los 200</td>
+                <td>"Venta interna — hacer el juego de seducirlos." Convertir a los ejecutivos en detectores de cloud. Enseñarles cuándo decir "acá huele cloud" y pasarte la pelota.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('r2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">El variable</span>
+        <div class="acc-info"><div class="acc-name">Estructura de incentivos — cómo funciona el variable en la práctica</div><div class="acc-tag">Lo que Gerardo explicó con detalle sobre el plan de incentivos</div></div>
+        <span class="acc-chv" id="achv-r2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-r2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Aparte del sueldo básico hay un plan de incentivos. Hay un objetivo de venta anual con adelantos mensuales. Si llegás al 100% todos los meses, recibirías 900.000 pesos por mes. Hay una cuota de entrada del 50% — por debajo de 50 es cero. Tiene un tope para arriba de 500%, o sea podés multiplicar los 900.000 por 5. Los primeros 3 meses se contempla un asegurado del 50% o real, lo que sea mayor.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">La estructura en números claros</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Concepto</th><th>Detalle</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Fijo bruto</td><td>$4.000.000/mes</td></tr>
+              <tr><td class="tn">Variable al 100%</td><td>+$900.000/mes (adelanto del 80%, resto al cierre del período)</td></tr>
+              <tr><td class="tn">Objetivo anual</td><td>~$10.000 USD/mes de venta (orientativo). El variable se calcula sobre el % de cumplimiento acumulado.</td></tr>
+              <tr><td class="tn">Cuota de entrada</td><td>50% — por debajo no se cobra variable</td></tr>
+              <tr><td class="tn">Techo del variable</td><td>500% — en proyectos muy grandes podés multiplicar x5 la referencia</td></tr>
+              <tr><td class="tn">Período de gracia</td><td>Primeros 3 meses: se garantiza el 50% del variable o lo real, lo que sea mayor</td></tr>
+              <tr><td class="tn">Objetivo</td><td>50% venta nueva / 50% facturación (crecimiento de cuentas)</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 FORMAS DE TRABAJO -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--green-light)">⚙️</div>
+    <div class="vert-title">07 — Formas de trabajo — el día a día según Gerardo</div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Presencialidad</span>
+        <div class="acc-info"><div class="acc-name">Híbrido con propósito — lunes en Óptima, martes en Hornos</div><div class="acc-tag">La dinámica real de días en oficina y en campo</div></div>
+        <span class="acc-chv" id="achv-fw1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw1">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Generalmente los lunes vamos a Óptima Park (frente a Unicenter, zona norte) porque van todos los staff comerciales — ahí es donde aprovechamos. Los martes estamos en Hornos 690, Barracas. A mí que estés todos los días de 9 a 18 en la oficina conectado por Teams no me suma valor. Hay algunos eventos presenciales — muchas veces se resuelve mucho con un café en vez de un mail.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <p class="block-text" style="margin-top:10px;">El modelo es flexible pero tiene estructura: <strong>lunes con los equipos comerciales en zona norte</strong> (ahí es donde se coordina con los 200 vendedores) y <strong>martes en Barracas</strong> (sede técnica). El resto de la semana se maneja según cliente.</p>
+          <div class="tip-note"><strong>Lo que dijo entre líneas:</strong> "Muchas veces se resuelve mucho con un café en vez de un mail." Gerardo valora la presencia cuando sirve — no por cumplir una cuota de días. El criterio es si la presencia agrega valor, no si cumple un porcentaje de asistencia.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Onboarding</span>
+        <div class="acc-info"><div class="acc-name">Cómo Gerardo espera que arranques los primeros meses</div><div class="acc-tag">Lo que dijo sobre el proceso de integración al equipo</div></div>
+        <span class="acc-chv" id="achv-fw2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Me encantaría un proceso de onboarding armado, va a haber mucho de leer los productos. Y después va a haber mucho laburo conmigo y con Martín Rossi de todos los ordenes que hacemos día a día. Vas a estar ahí sentándote con todo el mundo.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <div class="block-label">Lo que esto implica para tus primeras semanas</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Período de lectura:</strong> Gerardo espera que te tomes tiempo para leer la documentación de productos. No hay apuro para generar pipeline desde el día 1 — los primeros 3 meses tienen el variable garantizado al 50%.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Trabajo con Gerardo y Martín:</strong> Van a hacer las rondas del día a día juntos. Gerardo es del tipo que te lleva a las reuniones y te va mostrando cómo trabajan, no del tipo que te manda solo desde el principio.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Centro de excelencia como shadow:</strong> "Cuando necesitamos un especialista de algo en particular, lo vamos a buscar ahí." Tenés acceso a los arquitectos corporativos para cualquier complejidad técnica que supere tu expertise.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Soluciones prediseñadas</span>
+        <div class="acc-info"><div class="acc-name">No arrancás de cero — hay productos prediseñados para acelerar</div><div class="acc-tag">Lo que Gerardo reveló sobre los materiales de venta disponibles</div></div>
+        <span class="acc-chv" id="achv-fw3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw3">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Tenemos productos para que la fuerza de venta pueda llegar a hacer preguntas con soluciones prediseñadas. Tenemos DRS, FinOps, las famosas BDI también. Estamos cerrando acuerdos con terceros para lo que no llegamos en complejidad. El gerente de producto arma materiales con los beneficios, cuál es la competencia, las preguntas que habría que hacerle al cliente.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+          <p class="block-text" style="margin-top:10px;">Hay un <strong>gerente de producto</strong> que ya armó materiales de venta para cada solución — battle cards con competidores, preguntas calificadoras, beneficios. Esto acelera mucho tu rampa de onboarding porque no tenés que construir todos los argumentos desde cero.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 LO QUE GERARDO VALORA -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--amber-light)">⭐</div>
+    <div class="vert-title">08 — Lo que Gerardo valora en un consultor — en sus propias palabras</div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('gv1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Lo que dijo explícitamente</span>
+        <div class="acc-info"><div class="acc-name">Las 4 cosas que Gerardo nombró como diferenciales en un consultor cloud</div><div class="acc-tag">Extraídas textualmente de su discurso — no inferencias</div></div>
+        <span class="acc-chv" id="achv-gv1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-gv1">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-title">1 · "Hablar el mismo idioma de un CTO"</div>
+              <div class="mc-text">"Necesitamos tener una buena pata técnica para poder hablar el mismo idioma de un CTO." No requiere ser el técnico más profundo — requiere poder tener la conversación técnica sin perder credibilidad.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-title">2 · "Buen forecasting"</div>
+              <div class="mc-text">"No es lo mismo la venta de un celular que puedo bajar 20% el precio, que es un proyecto donde hay que investigar 6 meses para cerrar. Requiere buen forecasting y buen manejo de ciclo de vida de la venta."</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-title">3 · "Presentaciones efectivas"</div>
+              <div class="mc-text">"Otra de las patas que yo busco en un consultor también es presentaciones efectivas." Ante CIOs, CFOs y directorios — no solo ante técnicos. El que no puede presentar bien pierde oportunidades.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-title">4 · "Ser dueño de su territorio"</div>
+              <div class="mc-text">"Los consultores están divididos por territorio, la idea es que cada uno sea dueño de su territorio." Autonomía, proactividad y accountability sobre la cartera asignada — sin que Gerardo tenga que empujar.</div>
+            </div>
+          </div>
+          <div class="gerardo-quote" style="margin-top:14px;">
+            <div class="gerardo-quote-text">No es que somos gigantes. Somos gigantes. El que termina vendiendo es el consultor de cloud — por eso estamos agrandando el equipo. El ejecutivo nos sirve a veces para abrir la puerta. Si no tenemos la capacidad técnica para hablar con el CTO, la oportunidad se pierde.</div>
+            <div class="gerardo-quote-source">Propuesta · Gerardo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('gv2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Reacción a tu perfil</span>
+        <div class="acc-info"><div class="acc-name">Cómo respondió Germán cuando vos hablaste de tu experiencia</div><div class="acc-tag">Las señales que dejó durante la segunda entrevista sobre su evaluación de tu candidatura</div></div>
+        <span class="acc-chv" id="achv-gv2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-gv2">
+        <div class="ab-inner">
+          <div class="gerardo-quote">
+            <div class="gerardo-quote-text">Tocaste un poco de cada cosa que te íbamos a consultar. Son todos los temas que te íbamos a consultar. Super interesante todo lo que me contás. Muy buena, de verdad.</div>
+            <div class="gerardo-quote-source">2da entrevista — Germán · cierre</div>
+          </div>
+          <div class="block-label">Lo que valuaron de tu perfil</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-mid)"></span>La capacidad de hablar de <strong>múltiples nubes sin ser exquisito en los 200 servicios de cada una</strong>. Germán dijo: "Las conozco. Puedo sentarme a charlar con cualquier persona." Exactamente lo que buscan.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span>Haber tenido experiencia <strong>comercial + técnica + preventa en el mismo rol</strong>. El consultor que puede hacer las tres cosas es extremadamente raro y valioso.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span>El conocimiento de <strong>IoT, IA generativa y automatización</strong> como diferenciales que van a ser el próximo campo de batalla según Gerardo.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span>La <strong>visión de por qué Personal Tech es estratégicamente relevante</strong> en el contexto de 5G, IoT e hiperconvergencia. Eso conectó directamente con la visión que tiene Gerardo del negocio.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 LO QUE NO SE DIJO -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--gray-light)">🧐</div>
+    <div class="vert-title">09 — Lo que no se dijo pero se leyó entre líneas</div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <p class="vert-intro">Una entrevista no es solo lo que se dice — es también el tono, los silencios, el énfasis y lo que se evitó. Esta sección es la interpretación editorial de las dos entrevistas, con las conclusiones que vale la pena tener en cuenta antes de entrar.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ns1')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Interpretación</span>
+        <div class="acc-info"><div class="acc-name">5 lecturas entre líneas que definen el contexto real</div><div class="acc-tag">Lo que se puede inferir del tono y el contenido de Gerardo</div></div>
+        <span class="acc-chv" id="achv-ns1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ns1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Lo que se dijo</th><th>Lo que implica</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>"Venimos con un desafío enorme, no te voy a mentir."</td>
+                <td class="tn">Los objetivos son altos y la presión existe. No es un rol tranquilo. El equipo está escalando porque necesitan crecer — no para tener más recursos.</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>"La venta de cloud es venta consultiva — un ejecutivo de Telco es muy difícil que la pueda hacer."</td>
+                <td class="tn">Hay una tensión real entre los 200 vendedores y el equipo cloud. Dependés de ellos para abrir puertas pero ellos no siempre van a priorizar cloud. El trabajo interno con los ejecutivos es más difícil de lo que parece.</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>"Claramente la nube de Personal tiene otra rentabilidad mayor para nosotros."</td>
+                <td class="tn">Hay presión implícita para vender Personal Cloud cuando se puede. "Agnósticos" tiene un límite — si podés justificarlo técnicamente, se espera Personal Cloud primero.</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Gerardo mostró los tableros de PowerQuery sobre Salesforce en la reunión de propuesta.</td>
+                <td class="tn">Es un manager orientado a datos y muy encima del pipeline. No tolera oportunidades sin fecha de cierre ni pipeline fantasma. Actualización y visibilidad son no negociables.</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>"A mí que estés todos los días en la oficina no me suma valor" — pero los lunes en Óptima y martes en Hornos son los días de coordinación comercial.</td>
+                <td class="tn">La flexibilidad es real pero los días de equipo son importantes. Faltar a los lunes (coordinación con los 200 vendedores) equivale a desconectarse del pipeline interno.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La conclusión general:</strong> Gerardo es un líder que trabaja con datos, da libertad operativa pero espera resultados medibles desde los primeros 90 días, y valora la proactividad sobre la ejecución de órdenes. El consultor que llega y espera que le asignen cuentas no va a funcionar — el que llega, entiende el portfolio, trabaja los 200 vendedores y genera su propio pipeline va a tener todo el apoyo.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Análisis entrevistas Personal Tech</span>
+  <span>Documento de uso personal — confidencial — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

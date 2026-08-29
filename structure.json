@@ -1,0 +1,560 @@
+{
+  "site": {
+    "title": "Personal Tech · Centro de Recursos Cloud",
+    "description": "Material de consulta, argumentario comercial y herramientas para infraestructura, cloud y IA"
+  },
+  "categories": [
+    {
+      "id": "empresa",
+      "icon": "🏢",
+      "title": "Personal Tech — Empresa, Productos y Servicios",
+      "modules": [
+        {
+          "file": "personal_tech_master.html",
+          "title": "Master Reference — Personal Tech",
+          "description": "Referencia completa. Qué es Personal Tech, historia, ecosistema, servicios, roadmap 2026–2028.",
+          "color": "#378ADD",
+          "tags": [
+            "core",
+            "referencia"
+          ]
+        },
+        {
+          "file": "personal_tech_kit.html",
+          "title": "Kit de Arranque — Primeros 90 días",
+          "description": "Qué leer primero. Estructura recomendada para entender Personal Tech en 90 días.",
+          "color": "#378ADD",
+          "tags": [
+            "core",
+            "inicio"
+          ]
+        },
+        {
+          "file": "personal_tech_portfolio.html",
+          "title": "Portfolio de Productos y Servicios",
+          "description": "Catálogo completo de soluciones de Personal Tech por vertiente y caso de uso.",
+          "color": "#378ADD",
+          "tags": [
+            "core",
+            "servicios"
+          ]
+        },
+        {
+          "file": "porque_personal_tech.html",
+          "title": "Por qué Personal Tech",
+          "description": "Propuesta de valor, diferenciadores, capacidades únicas, por qué somos diferentes.",
+          "color": "#378ADD",
+          "tags": [
+            "core",
+            "estrategia"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cloud-tecnico",
+      "icon": "☁️",
+      "title": "Cloud Técnico — Conceptos, Arquitecturas y Glosarios",
+      "modules": [
+        {
+          "file": "personal_tech_conceptos.html",
+          "title": "Glosario y Diferenciadores Clave",
+          "description": "Términos técnicos, conceptos cloud, diferenciadores de Personal Tech.",
+          "color": "#1D9E75",
+          "tags": [
+            "glosario",
+            "educación"
+          ]
+        },
+        {
+          "file": "cloud_adoption_frameworks.html",
+          "title": "Cloud Adoption Frameworks — CAF, NIST, COBIT",
+          "description": "Marcos de adopción cloud: AWS CAF, Microsoft CAF, NIST, COBIT. Cuándo usar cada uno.",
+          "color": "#1D9E75",
+          "tags": [
+            "frameworks",
+            "educación"
+          ]
+        },
+        {
+          "file": "glosario_unificado_cloud.html",
+          "title": "Glosario Unificado Cloud — Términos A–Z",
+          "description": "Diccionario cloud completo. Todos los términos técnicos explicados en español.",
+          "color": "#1D9E75",
+          "tags": [
+            "glosario",
+            "referencia"
+          ]
+        },
+        {
+          "file": "multicloud_comparativa.html",
+          "title": "Comparativa Multicloud — AWS vs Azure vs GCP",
+          "description": "Análisis detallado: servicios, pricing, casos de uso, fortalezas/debilidades de cada cloud.",
+          "color": "#1D9E75",
+          "tags": [
+            "comparativa",
+            "educación"
+          ]
+        },
+        {
+          "file": "cloud_infra_tools.html",
+          "title": "Cloud Infra Tools — Terraform, CloudFormation, CDK",
+          "description": "Herramientas IaC: Terraform, CloudFormation, CDK, Ansible. Cuándo usar cada una.",
+          "color": "#1D9E75",
+          "tags": [
+            "herramientas",
+            "iac"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clevel",
+      "icon": "👔",
+      "title": "Conversaciones C-Level — Migración, TCO, ROI y Negocio",
+      "modules": [
+        {
+          "file": "migracion_cloud_clevel.html",
+          "title": "Migración Cloud · TCO · ROI · C-Level",
+          "description": "Cómo hablar de migración con ejecutivos. TCO, ROI, business case, riesgos, timeline.",
+          "color": "#0070F3",
+          "tags": [
+            "clevel",
+            "migración",
+            "negocio"
+          ]
+        },
+        {
+          "file": "plan_comercial_cloud.html",
+          "title": "Plan Comercial Cloud — Estructura y Pitch",
+          "description": "Cómo armar el plan comercial. Estructura, propuesta, timeline, inversión, retorno.",
+          "color": "#0070F3",
+          "tags": [
+            "comercial",
+            "negocio"
+          ]
+        },
+        {
+          "file": "calculadora_tco_roi.html",
+          "title": "Calculadora TCO / ROI Cloud",
+          "description": "Herramienta interactiva para calcular costo total de propiedad vs cloud.",
+          "color": "#0070F3",
+          "tags": [
+            "herramienta",
+            "financiero"
+          ]
+        },
+        {
+          "file": "optimizacion_costos_cloud.html",
+          "title": "Optimización de Costos Cloud — FinOps",
+          "description": "Estrategias de optimización de costos. Reserved Instances, Savings Plans, rightsizing.",
+          "color": "#0070F3",
+          "tags": [
+            "finops",
+            "costos"
+          ]
+        },
+        {
+          "file": "calculadora_finops.html",
+          "title": "Calculadora FinOps — Modelo de Optimización",
+          "description": "Modelo interactivo: qué cuesta, cómo optimizar, cuánto ahorras.",
+          "color": "#0070F3",
+          "tags": [
+            "herramienta",
+            "finops"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capacitacion",
+      "icon": "🎓",
+      "title": "Capacitación Comercial — Training y Habilidades",
+      "modules": [
+        {
+          "file": "training_vendedores_cloud.html",
+          "title": "Training — 200 Vendedores de Campo",
+          "description": "Programa de capacitación para team de ventas. Módulos, ejercicios, casos prácticos.",
+          "color": "#BA7517",
+          "tags": [
+            "training",
+            "ventas"
+          ]
+        },
+        {
+          "file": "meddpicc_bant_spin.html",
+          "title": "MEDDPICC · BANT · SPIN — Metodologías de Venta",
+          "description": "Técnicas de venta comprobadas. MEDDPICC, BANT, SPIN. Cuándo usar cada una.",
+          "color": "#BA7517",
+          "tags": [
+            "venta",
+            "metodología"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "argumentario",
+      "icon": "🏆",
+      "title": "Argumentario y Estrategia Comercial",
+      "modules": [
+        {
+          "file": "battlecards_personal_tech.html",
+          "title": "Battlecards Ganadoras — Por qué Personal Tech",
+          "description": "Argumentario completo por servicio. Objeciones, pivots, argumento maestro.",
+          "color": "#0C447C",
+          "tags": [
+            "argumentario",
+            "ventas"
+          ]
+        },
+        {
+          "file": "argumentario_cloud_segmentos.html",
+          "title": "Argumentario Cloud por Segmentos",
+          "description": "Argumentos específicos por segmento: PYME, Corporate, Sector Público.",
+          "color": "#0C447C",
+          "tags": [
+            "argumentario",
+            "segmentación"
+          ]
+        },
+        {
+          "file": "objeciones_avanzadas.html",
+          "title": "Objeciones Avanzadas — Seguridad, Compliance, Legacy",
+          "description": "Objeciones complejas y cómo responder. Security, compliance, migración de legacy.",
+          "color": "#0C447C",
+          "tags": [
+            "argumentario",
+            "objeciones"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "herramientas",
+      "icon": "🧮",
+      "title": "Herramientas de Preventa y Análisis",
+      "modules": [
+        {
+          "file": "template_propuesta_comercial.html",
+          "title": "Template Propuesta Comercial — Estructura Lista",
+          "description": "Template listo para copiar. Estructura de propuesta, secciones, qué incluir.",
+          "color": "#D85A30",
+          "tags": [
+            "herramienta",
+            "comercial"
+          ]
+        },
+        {
+          "file": "casos_exito.html",
+          "title": "Casos de Éxito — Prueba Social y ROI Real",
+          "description": "Casos reales de clientes. Desafío, solución, resultados, números.",
+          "color": "#D85A30",
+          "tags": [
+            "casos",
+            "prueba social"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aws",
+      "icon": "🟠",
+      "title": "AWS Deep Dive — Well-Architected, Pricing, Laboratorio",
+      "modules": [
+        {
+          "file": "aws_deep_dive.html",
+          "title": "Well-Architected · Pricing · Arquitecturas",
+          "description": "AWS en profundidad. Well-Architected Framework, pricing model, arquitecturas de referencia.",
+          "color": "#FF9900",
+          "tags": [
+            "aws",
+            "educación"
+          ]
+        },
+        {
+          "file": "aws_arquitecturas.html",
+          "title": "Arquitecturas AWS — Patrones y Blueprints",
+          "description": "Patrones de arquitectura recomendada. Web, mobile, enterprise, big data.",
+          "color": "#FF9900",
+          "tags": [
+            "aws",
+            "arquitectura"
+          ]
+        },
+        {
+          "file": "aws_free_tier.html",
+          "title": "AWS Free Tier — Aprender sin Gastar",
+          "description": "Servicios gratuitos de AWS. Qué está free, límites, cuánto tiempo.",
+          "color": "#FF9900",
+          "tags": [
+            "aws",
+            "educación",
+            "free"
+          ]
+        },
+        {
+          "file": "aws_laboratorio.html",
+          "title": "Laboratorio AWS — Practicar de Verdad",
+          "description": "Labs prácticos. Cómo montar labs, ejercicios, paso a paso.",
+          "color": "#FF9900",
+          "tags": [
+            "aws",
+            "práctica",
+            "hands-on"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ia",
+      "icon": "🤖",
+      "title": "Inteligencia Artificial — Guía Completa y Aplicaciones",
+      "modules": [
+        {
+          "file": "inteligencia_artificial.html",
+          "title": "IA — Guía Completa y Diccionario A–Z",
+          "description": "Todo sobre IA. Conceptos, machine learning, deep learning, aplicaciones empresariales.",
+          "color": "#7C3AED",
+          "tags": [
+            "ia",
+            "educación",
+            "referencia"
+          ]
+        },
+        {
+          "file": "caf_copilot_poc.html",
+          "title": "CAF Copilot PoC — Piloto de IA en CAF",
+          "description": "Caso de uso: copilot para Cloud Adoption Framework. Cómo implementarlo.",
+          "color": "#7C3AED",
+          "tags": [
+            "ia",
+            "caso uso",
+            "poc"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interno",
+      "icon": "🎙",
+      "title": "Contexto Interno — Entrevistas y Conocimiento Corporativo",
+      "modules": [
+        {
+          "file": "entrevistas_gerardo_resumen.html",
+          "title": "Entrevistas Gerardo — Resumen Ejecutivo",
+          "description": "Notas de entrevistas. Strategy, posicionamiento, roadmap, decisiones clave.",
+          "color": "#888780",
+          "tags": [
+            "interno",
+            "estrategia"
+          ]
+        },
+        {
+          "file": "analisis_estrategico_personal_2026.html",
+          "title": "Análisis Estratégico Personal Tech 2026",
+          "description": "Análisis con datos reales. Convergencias, flywheel, escenarios, mapa de oportunidades.",
+          "color": "#888780",
+          "tags": [
+            "interno",
+            "estrategia"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "iot",
+      "icon": "📡",
+      "title": "IoT y Telemetría — Conectividad y Datos en Tiempo Real",
+      "modules": [
+        {
+          "file": "iot_telemetria.html",
+          "title": "IoT y Telemetría — Arquitectura y Casos de Uso",
+          "description": "IoT desde cero. Sensores, conectividad, telemetría, cloud integration, analytics.",
+          "color": "#1A9696",
+          "tags": [
+            "iot",
+            "educación"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "migraciones",
+      "icon": "🌊",
+      "title": "Migraciones Cloud — Framework 7R y Metodologías",
+      "modules": [
+        {
+          "file": "migraciones_cloud_7r.html",
+          "title": "Las 7 R de la Migración — Estrategias de Movimiento",
+          "description": "Framework 7R: Rehost, Replatform, Refactor, Repurchase, Retire, Retain, Re-architect.",
+          "color": "#085041",
+          "tags": [
+            "migraciones",
+            "frameworks"
+          ]
+        },
+        {
+          "file": "practicas_migracion_cloud.html",
+          "title": "Prácticas Mejores en Migración Cloud — Checklist",
+          "description": "Best practices. Planificación, ejecución, testing, cutover, post-migración.",
+          "color": "#085041",
+          "tags": [
+            "migraciones",
+            "best practices"
+          ]
+        },
+        {
+          "file": "migration_frameworks.html",
+          "title": "Migration Frameworks — AWS MGN, Azure Migrate, GCP",
+          "description": "Herramientas de migración. AWS MGN, Azure Migrate, GCP. Cuándo usar cada una.",
+          "color": "#085041",
+          "tags": [
+            "migraciones",
+            "herramientas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legacy",
+      "icon": "⚙️",
+      "title": "Infraestructura Legacy — VMware, Veeam, Ciberseguridad, DR",
+      "modules": [
+        {
+          "file": "vmware_veeam_matilda.html",
+          "title": "VMware · Veeam · Matilda Cloud — Post-Broadcom",
+          "description": "Infraestructura legacy. VMware post-Broadcom, Veeam, Matilda, evolución post-acquisition.",
+          "color": "#633806",
+          "tags": [
+            "legacy",
+            "infraestructura"
+          ]
+        },
+        {
+          "file": "ciberseguridad.html",
+          "title": "Ciberseguridad y Cumplimiento Normativo",
+          "description": "Seguridad en cloud. Threat model, compliance, BCRA, SOC 2, ISO, PCI-DSS.",
+          "color": "#633806",
+          "tags": [
+            "seguridad",
+            "compliance"
+          ]
+        },
+        {
+          "file": "roles_y_dr.html",
+          "title": "Roles y Responsabilidades · Disaster Recovery",
+          "description": "Matriz RACI, roles en cloud, disaster recovery, continuidad de negocio.",
+          "color": "#633806",
+          "tags": [
+            "dr",
+            "governance"
+          ]
+        },
+        {
+          "file": "legacy_migracion.html",
+          "title": "Legacy Modernization — De On-Prem a Cloud",
+          "description": "Cómo migrar legacy. Aplicaciones monolíticas, bases de datos, testing.",
+          "color": "#633806",
+          "tags": [
+            "migraciones",
+            "legacy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estrategia",
+      "icon": "📈",
+      "title": "Estrategia Personal Tech — Convergencia y Posicionamiento",
+      "modules": [
+        {
+          "file": "cadena_valor_iiot_ia.html",
+          "title": "De la Infraestructura a la Inteligencia — Cadena de Valor",
+          "description": "Las 7 capas: Conectividad → Cloud → Ciberseguridad → IoT → Analytics → IA → Desarrollo.",
+          "color": "#7C3AED",
+          "tags": [
+            "estrategia",
+            "posicionamiento"
+          ]
+        },
+        {
+          "file": "playbook_vertical.html",
+          "title": "Playbook Vertical — Go-to-Market por Industria",
+          "description": "Estrategia por vertical. Manufacturing, Banking, Utilities, Retail, Healthcare.",
+          "color": "#7C3AED",
+          "tags": [
+            "estrategia",
+            "verticals"
+          ]
+        },
+        {
+          "file": "universo_workloads.html",
+          "title": "Universo de Workloads — Mapeo de Casos de Uso",
+          "description": "Catálogo de cargas de trabajo. Cuál se migra, cuál se reemplaza, cuál se transforma.",
+          "color": "#7C3AED",
+          "tags": [
+            "estrategia",
+            "casos uso"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "huawei-cloud",
+      "icon": "🔴",
+      "title": "Huawei Cloud — Deep Dive & Comparativas Multi-Cloud",
+      "modules": [
+        {
+          "file": "huawei_cloud_deep_dive.html",
+          "title": "Huawei Cloud Deep Dive — HEC, Servicios, Casos de Uso",
+          "description": "Análisis completo de Huawei Enterprise Cloud. Servicios, soberanía de datos, BCRA compliance, alternativas vs AWS/Azure/GCP.",
+          "color": "#FF6B35",
+          "tags": [
+            "huawei",
+            "cloud",
+            "comparativa",
+            "multi-cloud"
+          ]
+        },
+        {
+          "file": "huawei_vs_competitors.html",
+          "title": "Huawei vs AWS vs Azure vs GCP — Matriz Completa",
+          "description": "Comparativas detalladas por servicio: Compute, Storage, Database, Networking, IA, Seguridad. Cuándo elegir cada cloud.",
+          "color": "#FF6B35",
+          "tags": [
+            "huawei",
+            "comparativa",
+            "aws",
+            "azure",
+            "gcp",
+            "multi-cloud",
+            "decisión"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ibm-cloud",
+      "icon": "🔵",
+      "title": "IBM Cloud Enterprise — Watson, Legacy, Hybrid",
+      "modules": [
+        {
+          "file": "ibm_cloud_enterprise.html",
+          "title": "IBM Cloud Enterprise — Watson, Legacy Modernization, OpenShift",
+          "description": "IBM Cloud para empresas legacy. Watson AI, Db2 migration, Red Hat OpenShift hybrid cloud, integración SAP/Mainframe.",
+          "color": "#054ADA",
+          "tags": [
+            "ibm",
+            "watson",
+            "enterprise",
+            "legacy",
+            "hybrid",
+            "openshift",
+            "multi-cloud"
+          ]
+        }
+      ]
+    }
+  ]
+}

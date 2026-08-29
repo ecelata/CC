@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estrategia de Training Cloud — 200 Vendedores de Campo | Personal Tech</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --red-light:#FFE8E8;--red-mid:#D63030;--red-dark:#7A0000;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+a{text-decoration:none;color:inherit;}
+
+/* TOP NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1040px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* OVERVIEW CARDS */
+.overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;margin-bottom:32px;}
+.ov-card{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.ov-icon{font-size:22px;margin-bottom:6px;}
+.ov-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:3px;}
+.ov-val{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.ov-sub{font-size:11.5px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-sub{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+
+/* INNER */
+.ab-inner{padding:16px 18px 18px;}
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.quote{background:var(--gray-light);border-left:3px solid var(--gray-dark);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:10px 14px;margin:10px 0;font-size:13px;color:var(--text-sec);font-style:italic;line-height:1.65;}
+.quote strong{color:var(--text);font-style:normal;}
+
+/* FEAT LIST */
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* NUMBERED STEPS */
+.steps{display:flex;flex-direction:column;gap:12px;margin:10px 0;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-content{flex:1;}
+.step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.step-desc{font-size:12.5px;color:var(--text-sec);line-height:1.55;}
+.step-desc strong{color:var(--text);}
+
+/* 2-col grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:18px;margin-bottom:5px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+
+/* PHASE TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin:10px 0;}
+.tl-item{display:flex;gap:16px;position:relative;}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--border);}
+.tl-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+.tl-content{flex:1;padding-bottom:20px;}
+.tl-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.tl-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;}
+.tl-desc strong{color:var(--text);}
+
+/* SIGNAL CARD */
+.signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:10px 0;}
+.signal-card{border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.signal-trigger{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.signal-action{font-size:11.5px;color:var(--text-sec);line-height:1.5;}
+
+/* PILL / TAG */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+.kpill{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:20px;}
+
+/* WIN NOTE */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+
+/* CHEATSHEET */
+.cheat-row{display:flex;gap:0;border:.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin:6px 0;}
+.cheat-q{flex:0 0 38%;padding:10px 13px;background:var(--bg2);font-size:12.5px;font-weight:700;color:var(--text);border-right:.5px solid var(--border);}
+.cheat-a{flex:1;padding:10px 13px;font-size:12.5px;color:var(--text-sec);line-height:1.55;}
+.cheat-a strong{color:var(--text);}
+
+/* SEP */
+.sep{border:none;border-top:.5px solid var(--border);margin:14px 0;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;}
+
+@media print{
+  .topnav{display:none;}
+  .vert-body,.acc-body{display:block!important;}
+  .vert-toggle,.acc-chv{display:none;}
+  .page{padding:16px;max-width:100%;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3{grid-template-columns:1fr;}
+  .cheat-row{flex-direction:column;}
+  .cheat-q{flex:none;border-right:none;border-bottom:.5px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">🎓 Training Cloud · 200 Vendedores</div>
+  <a class="tnav" href="#v1">01 Diagnóstico</a>
+  <a class="tnav" href="#v2">02 Estrategia</a>
+  <a class="tnav" href="#v3">03 Plan de fases</a>
+  <a class="tnav" href="#v4">04 Contenidos</a>
+  <a class="tnav" href="#v5">05 Señales de oportunidad</a>
+  <a class="tnav" href="#v6">06 Preguntas de detección</a>
+  <a class="tnav" href="#v7">07 Guión de conversación</a>
+  <a class="tnav" href="#v8">08 Objeciones del vendedor</a>
+  <a class="tnav" href="#v9">09 Escalada al especialista</a>
+  <a class="tnav" href="#v10">10 Métricas de éxito</a>
+  <a class="tnav" href="#v11">11 Materiales</a>
+</nav>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Estrategia de Training Cloud — 200 Vendedores de Campo</div>
+    <div class="doc-sub">Cómo convertir a la fuerza comercial existente en generadores de oportunidades cloud · Personal Tech</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="overview">
+  <div class="ov-card" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="ov-icon">👥</div>
+    <div class="ov-label">Audiencia</div>
+    <div class="ov-val">200 vendedores de campo</div>
+    <div class="ov-sub">Comercializan flotas móviles, telefonía fija y servicios corporativos.</div>
+  </div>
+  <div class="ov-card" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="ov-icon">🎯</div>
+    <div class="ov-label">Objetivo</div>
+    <div class="ov-val">No que vendan cloud</div>
+    <div class="ov-sub">Que detecten oportunidades y escalen al equipo especialista. Ese es el único objetivo real.</div>
+  </div>
+  <div class="ov-card" style="background:var(--amber-light);border-color:var(--amber-mid);">
+    <div class="ov-icon">⚡</div>
+    <div class="ov-label">Modelo</div>
+    <div class="ov-val">Detector, no cerrador</div>
+    <div class="ov-sub">El vendedor detecta y califica. El especialista cloud cierra. La comisión se comparte.</div>
+  </div>
+  <div class="ov-card" style="background:var(--purple-light);border-color:var(--purple-mid);">
+    <div class="ov-icon">🏆</div>
+    <div class="ov-label">Palanca principal</div>
+    <div class="ov-val">Sus propios clientes ya son prospectos</div>
+    <div class="ov-sub">Cada empresa con flota de celulares ya tiene infraestructura IT. Esa es la puerta de entrada.</div>
+  </div>
+  <div class="ov-card" style="background:var(--teal-light);border-color:var(--teal-mid);">
+    <div class="ov-icon">📅</div>
+    <div class="ov-label">Duración</div>
+    <div class="ov-val">4 semanas de onboarding</div>
+    <div class="ov-sub">+ refuerzo mensual de 30 min. Sin sesiones largas que los vendedores abandonen.</div>
+  </div>
+  <div class="ov-card" style="background:var(--coral-light);border-color:var(--coral-mid);">
+    <div class="ov-icon">💰</div>
+    <div class="ov-label">Motivación clave</div>
+    <div class="ov-val">Comisión adicional por lead calificado</div>
+    <div class="ov-sub">Sin incentivo económico, ningún training funciona. El comisionalamiento define la adopción.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 DIAGNÓSTICO -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--gray-light)">🔍</div>
+    <div>
+      <div class="vert-title">01 — Diagnóstico: con quién trabajamos</div>
+      <div class="vert-sub">Entender al vendedor antes de diseñar el training — o el training no va a funcionar</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">El error más común en trainings técnicos para fuerzas de ventas generalistas es asumir que el vendedor quiere aprender tecnología. No quiere. Quiere vender más y ganar más comisión. <strong>El training tiene que hablarle en ese idioma, no en el idioma de un arquitecto cloud.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('d1')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Perfil del vendedor</span>
+        <div class="acc-info"><div class="acc-name">Quién es el vendedor de campo de Personal Tech</div><div class="acc-tag">Sus fortalezas, sus miedos y lo que necesita para vender más</div></div>
+        <span class="acc-chv" id="achv-d1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-d1">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div>
+              <div class="block-label">Lo que ya tiene y es valioso</div>
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Relación de confianza con el cliente:</strong> el que aprobó la flota de celulares lo conoce hace años. Esa confianza es el activo más caro del mundo.</li>
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Acceso a la empresa:</strong> entra al edificio, tiene reuniones con IT, RRHH y a veces con el gerente general. El arquitecto cloud no tiene ese acceso.</li>
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Conoce el negocio del cliente:</strong> sabe si están creciendo, si tienen problemas de rotación, si están abriendo nuevas sucursales. Esa información es oro para detectar necesidades cloud.</li>
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Capacidad de volver:</strong> tiene excusa legítima para volver a visitar a cada cliente. El vendedor cloud tiene que hacer cold calling.</li>
+              </ul>
+            </div>
+            <div>
+              <div class="block-label">Lo que lo frena para hablar de cloud</div>
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--red-mid)"></span><strong>Miedo a hacer el ridículo:</strong> teme que el cliente le pregunte algo técnico que no sabe responder y perder credibilidad.</li>
+                <li><span class="fdot" style="background:var(--red-mid)"></span><strong>No sabe qué buscar:</strong> nadie le enseñó las señales que indican que un cliente puede necesitar cloud.</li>
+                <li><span class="fdot" style="background:var(--red-mid)"></span><strong>No hay incentivo claro:</strong> si no hay comisión por derivar un lead, ¿para qué arriesgarse?</li>
+                <li><span class="fdot" style="background:var(--red-mid)"></span><strong>El cloud le parece "cosa de técnicos":</strong> su zona de confort es la telefonía. Cloud lo siente ajeno.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="win-note"><strong>La conclusión del diagnóstico:</strong> El vendedor no necesita entender cómo funciona el cloud. Necesita 3 cosas: (1) saber qué preguntar para detectar una oportunidad, (2) saber qué decir para despertar interés sin quedar expuesto, y (3) saber a quién escalar y qué pasa después con su comisión.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('d2')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Contexto del cliente</span>
+        <div class="acc-info"><div class="acc-name">El cliente que compra celulares también tiene servidores</div><div class="acc-tag">La conexión natural entre la flota móvil y las necesidades de cloud</div></div>
+        <span class="acc-chv" id="achv-d2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-d2">
+        <div class="ab-inner">
+          <p class="block-text">Cada empresa que contrata una flota de celulares corporativos tiene, por definición, empleados que necesitan acceder a sistemas de la empresa desde esos celulares. Esos sistemas corren en algún lado — on-premise o en algún cloud. <strong>La pregunta que nadie le hace al cliente de telefonía es: ¿y esos sistemas dónde están y cómo funcionan?</strong></p>
+          <div class="signal-grid" style="margin-top:12px;">
+            <div class="signal-card" style="background:var(--blue-light);border-color:var(--blue-mid);">
+              <div class="signal-trigger">🏢 Empresa con 50+ empleados</div>
+              <div class="signal-action">Casi seguro tiene servidores propios o algún cloud. Tiene un área IT aunque sea de 1 persona. Tiene necesidades de backup, seguridad y DR.</div>
+            </div>
+            <div class="signal-card" style="background:var(--green-light);border-color:var(--green-mid);">
+              <div class="signal-trigger">📱 Flota de celulares corporativos</div>
+              <div class="signal-action">Sus empleados acceden a correo, CRM, ERP o archivos desde el celular. Eso implica infraestructura IT que conecta esos servicios.</div>
+            </div>
+            <div class="signal-card" style="background:var(--amber-light);border-color:var(--amber-mid);">
+              <div class="signal-trigger">🏬 Múltiples sucursales</div>
+              <div class="signal-action">Necesita conectar las sucursales (WAN). SD-WAN o MPLS de Personal Tech puede reemplazar su conectividad actual y mejorarla.</div>
+            </div>
+            <div class="signal-card" style="background:var(--purple-light);border-color:var(--purple-mid);">
+              <div class="signal-trigger">🌾 Campo / Zonas remotas</div>
+              <div class="signal-action">Si el cliente tiene operaciones en zona rural o sin fibra, la conectividad satelital + IoT de Personal Tech resuelve algo que nadie más puede.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 ESTRATEGIA -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--blue-light)">🧭</div>
+    <div>
+      <div class="vert-title">02 — Estrategia: el modelo "Detectar y Escalar"</div>
+      <div class="vert-sub">El vendedor no cierra el cloud — detecta la oportunidad y la pasa. El especialista cierra.</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">La única estrategia que funciona con fuerzas de ventas generalistas es la del modelo de dos velocidades: <strong>el vendedor de campo como radar</strong> (detecta señales y califica brevemente) y <strong>el especialista cloud como sniper</strong> (cierra la oportunidad calificada). Intentar que el vendedor genérico cierre cloud es como pedirle a un médico clínico que haga una cirugía cardíaca.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">El modelo</span>
+        <div class="acc-info"><div class="acc-name">Cómo funciona el modelo Detectar → Calificar → Escalar</div><div class="acc-tag">3 pasos que el vendedor puede ejecutar en cualquier visita sin expertise técnico</div></div>
+        <span class="acc-chv" id="achv-s1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s1">
+        <div class="ab-inner">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:var(--blue-light);color:var(--blue-dark);">1</div>
+              <div class="step-content">
+                <div class="step-title">DETECTAR — Hacer las 3 preguntas clave en cada visita</div>
+                <div class="step-desc">En cualquier visita de renovación de flota, el vendedor incorpora 3 preguntas naturales sobre el negocio del cliente (ver sección 06). No requiere contexto técnico — son preguntas de negocio que cualquier vendedor puede hacer.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--green-light);color:var(--green-dark);">2</div>
+              <div class="step-content">
+                <div class="step-title">CALIFICAR — Identificar si hay una señal de oportunidad</div>
+                <div class="step-desc">Con la respuesta del cliente, el vendedor aplica un checklist simple de 5 señales (ver sección 05). Si hay al menos 1 señal positiva, hay oportunidad de cloud. No necesita entender por qué — solo necesita reconocer la señal.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--amber-light);color:var(--amber-dark);">3</div>
+              <div class="step-content">
+                <div class="step-title">ESCALAR — Completar el formulario de derivación y pasarla</div>
+                <div class="step-desc">El vendedor completa un formulario de 5 campos (CRM o formulario simple) y lo envía al equipo cloud. El especialista toma la oportunidad, agenda reunión técnica y mantiene al vendedor en copia. La comisión se acredita al vendedor por el lead generado, independientemente de si cierra.</div>
+              </div>
+            </div>
+          </div>
+          <div class="win-note"><strong>Por qué funciona este modelo:</strong> El vendedor no sale de su zona de confort. Sigue hablando de su producto (telefonía). Solo agrega 3 preguntas y, si detecta algo, pasa la pelota. Sin riesgo de quedar expuesto. Sin tener que explicar nada técnico. Y con comisión.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s2')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">El incentivo</span>
+        <div class="acc-info"><div class="acc-name">El modelo de incentivos — sin esto, nada de lo demás funciona</div><div class="acc-tag">La comisión por lead calificado es el elemento más importante de toda la estrategia</div></div>
+        <span class="acc-chv" id="achv-s2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s2">
+        <div class="ab-inner">
+          <div class="quote">"Le hicimos el mejor training del mundo a los vendedores. A los 30 días, nadie derivaba leads. El problema era que no había comisión por hacerlo."</div>
+          <p class="block-text">El incentivo económico no es un detalle del programa — es la base. Sin él, el training es un gasto. Con él, el training se autofinancia con el primer lead que cierra.</p>
+          <div class="grid3">
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">💰</div>
+              <div class="mc-title">Comisión por lead calificado</div>
+              <div class="mc-text">Independientemente del cierre. El vendedor gana por detectar y derivar correctamente, no solo si el especialista cierra.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">🏅</div>
+              <div class="mc-title">Comisión por cierre</div>
+              <div class="mc-text">Porcentaje adicional si el lead derivado llega a contrato firmado. El vendedor tiene skin in the game para calificar bien antes de derivar.</div>
+            </div>
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">🏆</div>
+              <div class="mc-title">Ranking y reconocimiento</div>
+              <div class="mc-text">Top 10 generadores de leads cloud. Visible en toda la organización. El reconocimiento público motiva tanto como la comisión en culturas comerciales.</div>
+            </div>
+          </div>
+          <div class="warn-note"><strong>Error a evitar:</strong> Pagar comisión solo por cierre desalienta la derivación temprana. Los ciclos de venta cloud son de 3-6 meses. Si el vendedor no gana nada hasta el cierre, deja de derivar en el mes 1. La comisión por lead calificado (independiente del cierre) es la que mantiene el flujo.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">La propuesta de valor interna</span>
+        <div class="acc-info"><div class="acc-name">Qué gana el vendedor de campo al sumar cloud a su portfolio</div><div class="acc-tag">Más allá de la comisión — por qué es bueno para su carrera y su relación con el cliente</div></div>
+        <span class="acc-chv" id="achv-s3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s3">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Excusa para visitar más seguido:</strong> "Paso a contarte sobre los nuevos servicios cloud de Personal Tech" es una razón legítima para mantener el contacto con el cliente más allá de las renovaciones de flota.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Se vuelve más difícil de reemplazar:</strong> el vendedor que solo vende celulares es fácilmente sustituible. El que además abre conversaciones cloud se posiciona como consultor del cliente.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Protege su cuenta:</strong> si el cliente empieza a hablar con el competidor de telecomunicaciones sobre cloud, el vendedor de Personal Tech que ya trajo la propuesta cloud tiene ventaja defensiva.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Aumenta el ticket promedio por cliente:</strong> un cliente de flota que suma cloud duplica o triplica el valor de cuenta. El vendedor cobra más sobre una cuenta que ya trabajó.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 PLAN DE FASES -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--green-light)">🗓</div>
+    <div>
+      <div class="vert-title">03 — Plan de implementación por fases</div>
+      <div class="vert-sub">Cómo desplegar el training en 200 personas sin saturarlos ni perder el hilo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">200 vendedores no se capacitan en una sola sesión. El plan requiere segmentación, piloto, iteración y despliegue masivo. <strong>La regla de oro: sesiones cortas, frecuentes y con caso práctico. No PowerPoint de 80 slides.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('p1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Fase 0 — Semana 1</span>
+        <div class="acc-info"><div class="acc-name">Armado de materiales y definición del incentivo</div><div class="acc-tag">Antes de hacer un solo training, tener todo listo y el esquema de comisiones aprobado</div></div>
+        <span class="acc-chv" id="achv-p1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-p1">
+        <div class="ab-inner">
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--green-light);color:var(--green-dark);">✓</div>
+              <div class="tl-content">
+                <div class="tl-title">Definir y aprobar el esquema de comisiones con RRHH y Comercial</div>
+                <div class="tl-desc">Sin esto, no se lanza nada. El esquema debe estar escrito, aprobado y comunicado antes del primer training.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--green-light);color:var(--green-dark);">✓</div>
+              <div class="tl-content">
+                <div class="tl-title">Preparar el "Kit del Vendedor Cloud" (Cheat Sheet de 1 página)</div>
+                <div class="tl-desc">Una sola hoja con: 3 preguntas para hacer, 5 señales de oportunidad, 1 frase para despertar interés, y cómo completar el formulario de derivación. Todo en lenguaje de vendedor, sin jerga técnica.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--green-light);color:var(--green-dark);">✓</div>
+              <div class="tl-content">
+                <div class="tl-title">Configurar el formulario de derivación en el CRM</div>
+                <div class="tl-desc">5 campos máximo: nombre del cliente, contacto, señal detectada, mejor horario para llamar, notas adicionales. Más de 5 campos y el vendedor no lo completa.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:var(--green-light);color:var(--green-dark);">✓</div>
+              <div class="tl-content">
+                <div class="tl-title">Identificar 10 vendedores early adopters para el piloto</div>
+                <div class="tl-desc">Los más abiertos a innovar, los más comprometidos o los que tienen cuentas más grandes. El piloto con ellos genera los primeros casos de éxito que convencen al resto.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('p2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Fase 1 — Semanas 2-3</span>
+        <div class="acc-info"><div class="acc-name">Piloto con 10 vendedores seleccionados</div><div class="acc-tag">Testear el modelo, iterar el material y generar los primeros casos de éxito antes del despliegue masivo</div></div>
+        <span class="acc-chv" id="achv-p2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-p2">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Sesión inicial de 90 minutos:</strong> presentación del modelo, entrega del Kit del Vendedor, roleplay de las 3 preguntas con casos reales. Hands-on desde el minuto 1.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>2 semanas de campo:</strong> los 10 vendedores aplican el modelo en sus visitas habituales. El objetivo es conseguir al menos 5 leads derivados del piloto.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Sesión de cierre del piloto (30 min):</strong> qué funcionó, qué no, qué preguntas quedaron sin responder. El feedback del piloto mejora el material para el despliegue masivo.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Documentar 1-2 casos de éxito:</strong> aunque sean leads calificados sin cierre todavía, el caso de éxito del piloto ("Fulano detectó una oportunidad cloud en su cliente de flota y ya está en conversación") es la mejor herramienta para motivar al resto.</li>
+          </ul>
+          <div class="tip-note"><strong>Por qué el piloto importa:</strong> Lanzar el training directamente a 200 personas con materiales no testeados es un riesgo. El piloto permite descubrir que "la pregunta número 2 nadie la entiende" o "el formulario de derivación tiene un campo que confunde" antes de que eso desmotive a 200 personas.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('p3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Fase 2 — Semanas 4-6</span>
+        <div class="acc-info"><div class="acc-name">Despliegue masivo — los 200 vendedores</div><div class="acc-tag">Sesiones por equipo o región · Formato corto · Con los casos del piloto como anzuelo</div></div>
+        <span class="acc-chv" id="achv-p3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-p3">
+        <div class="ab-inner">
+          <div class="block-label">Formato recomendado</div>
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-title">Sesión presencial o virtual de 60 minutos por equipo</div>
+              <div class="mc-text">Grupos de 15-20 personas. 60 min máximo: 15 min contexto + 20 min preguntas y señales + 15 min roleplay + 10 min formulario de derivación. <strong>Nunca más de 60 minutos.</strong></div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-title">Abrir con el caso de éxito del piloto</div>
+              <div class="mc-text">"En las últimas 2 semanas, Juan (colega de ustedes) detectó 3 oportunidades cloud en sus clientes de flota y ya tiene 2 en conversación con el equipo especialista." El par como héroe motiva más que cualquier argumento.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-title">Entregar el Kit del Vendedor impreso o digital</div>
+              <div class="mc-text">La cheat sheet de 1 página que pueden llevar a cada visita. Simple, visual, sin jerga técnica. Si no cabe en una página, está mal diseñado.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-title">Roleplay obligatorio antes de terminar</div>
+              <div class="mc-text">En pares, uno hace de vendedor y otro de cliente. 5 minutos. El que no practicó no retuvo. El roleplay es el paso que más resisten los vendedores y el más importante.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('p4')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Fase 3 — Mensual (ongoing)</span>
+        <div class="acc-info"><div class="acc-name">Refuerzo mensual y actualización de contenidos</div><div class="acc-tag">30 minutos al mes para mantener el momentum y celebrar los éxitos</div></div>
+        <span class="acc-chv" id="achv-p4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-p4">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>30 minutos mensuales por equipo:</strong> casos de éxito del mes anterior + 1 nueva señal o argumento + actualización de productos si hay lanzamientos.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Ranking visible de generadores de leads:</strong> publicado mensualmente. Los vendedores top reciben reconocimiento público. Gamificación sencilla y efectiva.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Canal de WhatsApp del equipo cloud:</strong> donde el especialista cloud publica resultados ("Cerré el contrato del lead que derivó Fulano — gracias!") y responde preguntas rápidas de los vendedores.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>FAQ vivo:</strong> cada pregunta que hace un vendedor en campo que no sabe responder se agrega al FAQ. En 3 meses tenés el banco de preguntas más relevantes resueltas.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 CONTENIDOS DEL TRAINING -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--amber-light)">📚</div>
+    <div>
+      <div class="vert-title">04 — Qué enseñar: contenidos del training</div>
+      <div class="vert-sub">Solo lo que el vendedor necesita para detectar y despertar interés — sin profundizar en lo que no puede ni debe vender</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">El error más frecuente en trainings cloud para fuerzas de ventas generalistas es enseñar demasiado. El vendedor no necesita saber qué es un contenedor ni cómo funciona el peering BGP. <strong>Necesita conocer 4 familias de productos, 5 señales de oportunidad y 3 frases que despiertan interés.</strong> Todo lo demás es ruido.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Nivel 1 — Obligatorio</span>
+        <div class="acc-info"><div class="acc-name">Lo que TODO vendedor debe saber antes de salir a la calle</div><div class="acc-tag">El mínimo viable que permite detectar oportunidades y no quedar expuesto</div></div>
+        <span class="acc-chv" id="achv-c1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c1">
+        <div class="ab-inner">
+          <div class="block-label">Las 4 familias de productos de Personal Tech (versión vendedor de campo)</div>
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">☁️</div>
+              <div class="mc-title">1 · Cloud e Infraestructura</div>
+              <div class="mc-text"><strong>Qué es para el cliente:</strong> "Los servidores de tu empresa, pero en nuestro datacenter en Argentina. Sin comprar hardware, sin preocuparte por mantenimiento. Pagás lo que usás."<br><br><strong>Quién lo necesita:</strong> cualquier empresa con servidores propios o que quiere tener sistemas en la nube pero con el dato en Argentina.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">🔗</div>
+              <div class="mc-title">2 · Conectividad empresarial</div>
+              <div class="mc-text"><strong>Qué es para el cliente:</strong> "La red que conecta todas las sucursales de tu empresa entre sí y con los servidores, de forma privada y segura. No pasa por internet."<br><br><strong>Quién lo necesita:</strong> cualquier empresa con 2 o más ubicaciones que necesita que sus sistemas estén conectados de forma confiable.</div>
+            </div>
+            <div class="mini-card" style="background:var(--coral-light);">
+              <div class="mc-icon">🔒</div>
+              <div class="mc-title">3 · Ciberseguridad</div>
+              <div class="mc-text"><strong>Qué es para el cliente:</strong> "Un equipo que cuida los sistemas de tu empresa 24/7 y te avisa si alguien intenta entrar sin permiso."<br><br><strong>Quién lo necesita:</strong> cualquier empresa que tuvo un problema de seguridad, que maneja datos de clientes o que le preguntaron en alguna auditoría por su postura de seguridad.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">📡</div>
+              <div class="mc-title">4 · IoT y campo remoto</div>
+              <div class="mc-text"><strong>Qué es para el cliente:</strong> "Sensores y dispositivos conectados en campo, planta o vehículos que te mandan datos en tiempo real. Personal Tech provee la conectividad y la plataforma donde ves todo."<br><br><strong>Quién lo necesita:</strong> empresas con operaciones en campo, logística, manufactura o agro que quieren saber qué pasa en tiempo real sin personal físico permanente.</div>
+            </div>
+          </div>
+          <div class="win-note"><strong>La regla para el vendedor:</strong> No necesitás explicar cómo funciona cada servicio. Solo necesitás reconocer cuándo un cliente lo necesita y saber decir: "Tenemos algo que resuelve exactamente eso — te lo cuento brevemente y si te interesa agendamos con el especialista."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Nivel 1 — Obligatorio</span>
+        <div class="acc-info"><div class="acc-name">Las 3 frases que despiertan interés (sin necesitar expertise técnico)</div><div class="acc-tag">Frases simples que abren la conversación sin comprometer al vendedor a explicar nada técnico</div></div>
+        <span class="acc-chv" id="achv-c2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c2">
+        <div class="ab-inner">
+          <div class="cheat-row">
+            <div class="cheat-q">🖥 Cuando el cliente menciona servidores, datacenter o sistemas caídos</div>
+            <div class="cheat-a">"Justo Personal Tech lanzó una solución para eso — mover los servidores a nuestro datacenter en Argentina, con garantía de disponibilidad y sin tener que comprar hardware. ¿Te cuento brevemente o lo dejamos para una reunión con el especialista?"</div>
+          </div>
+          <div class="cheat-row">
+            <div class="cheat-q">🏬 Cuando el cliente menciona nuevas sucursales, expansión o problemas de conectividad</div>
+            <div class="cheat-a">"Eso es exactamente lo que resolvemos con conectividad empresarial — conectar todas las sedes de forma privada y segura, con un SLA garantizado. Lo interesante es que lo podemos dar junto con las líneas corporativas, un solo contrato. ¿Te interesa que profundice?"</div>
+          </div>
+          <div class="cheat-row">
+            <div class="cheat-q">🔒 Cuando el cliente menciona hackeos, ransomware, auditorías o datos de clientes</div>
+            <div class="cheat-a">"Eso me lleva a algo que varias empresas como la tuya nos están pidiendo mucho últimamente — monitoreo de seguridad 24/7 para detectar amenazas antes de que lleguen a los sistemas. ¿Tienen algo así o es algo que evaluaron?"</div>
+          </div>
+          <div class="tip-note"><strong>El patrón de las 3 frases:</strong> Todas siguen el mismo formato: (1) conectar con lo que el cliente mencionó, (2) nombrar la solución en lenguaje simple sin jerga técnica, (3) ofrecer profundizar o derivar. El vendedor no se compromete a explicar nada — ofrece la conversación especializada.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c3')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Nivel 2 — Opcional</span>
+        <div class="acc-info"><div class="acc-name">Para vendedores que quieren profundizar — el "Cloud en 5 minutos"</div><div class="acc-tag">Material de autoestudio para quienes quieren entender un poco más sin convertirse en técnicos</div></div>
+        <span class="acc-chv" id="achv-c3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c3">
+        <div class="ab-inner">
+          <p class="block-text">Para el 20-30% de vendedores que quieren profundizar más, se puede ofrecer un módulo opcional de autoestudio ("Cloud en 5 minutos") que explica cada producto con analogías simples. <strong>No es obligatorio — no alienar al vendedor promedio cargándolo con contenido que no necesita para detectar oportunidades.</strong></p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--gray-mid)"></span>Video de 5 minutos por producto en la intranet o canal de YouTube privado.</li>
+            <li><span class="fdot" style="background:var(--gray-mid)"></span>Analogías sin jerga técnica: "El MPLS es como una autopista privada que solo usa tu empresa."</li>
+            <li><span class="fdot" style="background:var(--gray-mid)"></span>FAQ de las 10 preguntas que más hacen los clientes + respuestas en lenguaje de vendedor.</li>
+            <li><span class="fdot" style="background:var(--gray-mid)"></span>Acceso a los documentos técnicos completos (los HTMLs de esta serie) para quien quiera ir más profundo.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 SEÑALES DE OPORTUNIDAD -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--teal-light)">🚦</div>
+    <div>
+      <div class="vert-title">05 — Las señales de oportunidad cloud</div>
+      <div class="vert-sub">Lo que el cliente dice (o calla) que indica que hay una necesidad cloud latente</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">Las señales de oportunidad son patrones en las conversaciones con el cliente que indican una necesidad de cloud no resuelta. El vendedor no necesita entender la solución técnica — solo necesita reconocer la señal y usar la frase correspondiente para abrir la conversación.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sg1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Señales directas</span>
+        <div class="acc-info"><div class="acc-name">El cliente menciona el problema explícitamente</div><div class="acc-tag">Cuando el cliente dice la palabra clave — la oportunidad está servida</div></div>
+        <span class="acc-chv" id="achv-sg1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sg1">
+        <div class="ab-inner">
+          <div class="signal-grid">
+            <div class="signal-card" style="background:var(--red-light);border-color:var(--red-mid);">
+              <div class="signal-trigger">🔴 "Se nos cayó el sistema / los servidores"</div>
+              <div class="signal-action">→ <strong>Oportunidad: Cloud + DR</strong>. Pregunta: "¿Con qué frecuencia pasa? ¿Cuánto tiempo tardan en volver?" Si es más de 1 vez al año, hay caso.</div>
+            </div>
+            <div class="signal-card" style="background:var(--red-light);border-color:var(--red-mid);">
+              <div class="signal-trigger">🔴 "Nos hackearon / tuvimos un ransomware"</div>
+              <div class="signal-action">→ <strong>Oportunidad: Ciberseguridad + Backup</strong>. Pregunta: "¿Recuperaron todo o perdieron datos?" Un incidente reciente es el mejor disparador de compra.</div>
+            </div>
+            <div class="signal-card" style="background:var(--amber-light);border-color:var(--amber-mid);">
+              <div class="signal-trigger">🟡 "Estamos abriendo una sucursal nueva"</div>
+              <div class="signal-action">→ <strong>Oportunidad: Conectividad (SD-WAN / MPLS) + Cloud</strong>. La sucursal nueva necesita conectarse a los sistemas centrales.</div>
+            </div>
+            <div class="signal-card" style="background:var(--amber-light);border-color:var(--amber-mid);">
+              <div class="signal-trigger">🟡 "Tenemos problemas con la conectividad entre sedes"</div>
+              <div class="signal-action">→ <strong>Oportunidad: MPLS o SD-WAN</strong>. Exactamente lo que Personal Tech resuelve como telco. Además de los celulares.</div>
+            </div>
+            <div class="signal-card" style="background:var(--amber-light);border-color:var(--amber-mid);">
+              <div class="signal-trigger">🟡 "Hay que renovar los servidores"</div>
+              <div class="signal-action">→ <strong>Oportunidad: Cloud (migración evita el CAPEX)</strong>. "¿Ya evaluaron no renovar y migrar a cloud? Cuesta menos y tienen más garantías."</div>
+            </div>
+            <div class="signal-card" style="background:var(--green-light);border-color:var(--green-mid);">
+              <div class="signal-trigger">🟢 "Tenemos operaciones en campo / zona rural"</div>
+              <div class="signal-action">→ <strong>Oportunidad: IoT + Conectividad satelital</strong>. Si ya tienen celulares en campo, los IoT son el siguiente paso natural.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sg2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Señales indirectas</span>
+        <div class="acc-info"><div class="acc-name">Lo que el cliente dice sin saber que está diciendo que necesita cloud</div><div class="acc-tag">Señales contextuales que el vendedor entrenado aprende a reconocer</div></div>
+        <span class="acc-chv" id="achv-sg2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sg2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th style="width:240px">Lo que el cliente dice</th><th>Lo que realmente significa</th><th style="width:180px">Producto de Personal Tech</th></tr></thead>
+            <tbody>
+              <tr><td>"Nuestro IT está muy ocupado, no pueden con todo"</td><td>El equipo IT está en modo bombero. No tienen capacidad para proyectos de valor. Managed Cloud les sacaría el mantenimiento de encima.</td><td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Managed Cloud</span></td></tr>
+              <tr><td>"Los empleados se quejan que el sistema va lento"</td><td>El servidor on-premise no da abasto o la conectividad entre sucursales es insuficiente. Dos oportunidades en una.</td><td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Cloud</span> <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Conectividad</span></td></tr>
+              <tr><td>"Tenemos la misma plataforma de hace 10 años"</td><td>Deuda técnica acumulada. Servidores EOL. Riesgo de seguridad. El momento ideal para proponer migración.</td><td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Migración cloud</span></td></tr>
+              <tr><td>"Nos pidieron una auditoría de seguridad"</td><td>El cliente tiene presión regulatoria o de su cliente para demostrar postura de seguridad. Ciberseguridad como servicio es la respuesta.</td><td><span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Ciberseguridad</span></td></tr>
+              <tr><td>"Estamos creciendo rápido, no damos abasto"</td><td>La infraestructura no escala con el negocio. Cloud es exactamente la solución para crecer sin CAPEX.</td><td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Cloud escalable</span></td></tr>
+              <tr><td>"Nos piden que tengamos backup y DR para renovar el contrato"</td><td>Un cliente o regulador les está exigiendo continuidad operativa. DRaaS y Backup como servicio es la respuesta inmediata.</td><td><span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">DRaaS + Backup</span></td></tr>
+              <tr><td>"Tenemos empleados trabajando desde casa y es un caos"</td><td>VPN insegura, acceso a sistemas inconsistente, problema de identidad y acceso. ZTNA + Cloud resuelve.</td><td><span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Cloud</span> <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Seguridad acceso</span></td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 PREGUNTAS DE DETECCIÓN -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--purple-light)">❓</div>
+    <div>
+      <div class="vert-title">06 — Las preguntas de detección</div>
+      <div class="vert-sub">3 preguntas que abren la conversación cloud en cualquier visita de telefonía</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro">El vendedor no necesita un cuestionario de 20 preguntas. Necesita <strong>3 preguntas de negocio que suenan naturales en cualquier visita</strong> y que abren el tema de infraestructura sin que el cliente sienta que está siendo auditado.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('q1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Las 3 preguntas del Kit</span>
+        <div class="acc-info"><div class="acc-name">El guión de 3 preguntas que todo vendedor debe memorizar</div><div class="acc-tag">Formuladas como interés genuino por el negocio del cliente, no como cuestionario técnico</div></div>
+        <span class="acc-chv" id="achv-q1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-q1">
+        <div class="ab-inner">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:var(--purple-light);color:var(--purple-dark);">P1</div>
+              <div class="step-content">
+                <div class="step-title">"¿Cómo están manejando la infraestructura tecnológica de la empresa — tienen servidores propios o algo en la nube?"</div>
+                <div class="step-desc"><strong>Por qué funciona:</strong> es una pregunta abierta de negocio, no técnica. El cliente no siente que lo están vendiendo — siente que le están preguntando sobre su empresa. La respuesta casi siempre abre el mapa de su situación actual.<br><br>
+                <strong>Si dice "servidores propios" →</strong> "¿Y qué tan seguido tienen que hacer mantenimiento o renovarlos?" → señal de costo y oportunidad de migración.<br>
+                <strong>Si dice "tenemos algo en la nube" →</strong> "¿Con quién? ¿Están conformes?" → señal de posible insatisfacción con el proveedor actual.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--purple-light);color:var(--purple-dark);">P2</div>
+              <div class="step-content">
+                <div class="step-title">"¿Tuvieron algún problema de sistemas o de conectividad en el último año que les haya afectado la operación?"</div>
+                <div class="step-desc"><strong>Por qué funciona:</strong> activa el recuerdo emocional de un problema. Si hubo un incidente (caída de sistemas, hackeo, lentitud), el cliente lo recuerda y lo cuenta. Ese dolor es la motivación de compra más poderosa que existe.<br><br>
+                <strong>Si dice "sí, tuvimos X problema" →</strong> Señal directa. Usar la frase de respuesta correspondiente de la sección anterior.<br>
+                <strong>Si dice "no, todo bien" →</strong> "¿Y tienen backup y DR configurado para cuando pase?" → introduce la necesidad de prevención.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--purple-light);color:var(--purple-dark);">P3</div>
+              <div class="step-content">
+                <div class="step-title">"¿Están pensando en expandirse o abrir nuevas ubicaciones en los próximos 12 meses?"</div>
+                <div class="step-desc"><strong>Por qué funciona:</strong> la expansión es sinónimo de nueva infraestructura. Cada nueva sucursal necesita conectividad, acceso a sistemas, seguridad. El vendedor que detecta la expansión antes de que ocurra puede proponer la solución antes de que el cliente la busque.<br><br>
+                <strong>Si dice "sí" →</strong> Señal de conectividad multi-sede, cloud y posiblemente IoT.<br>
+                <strong>Si dice "no" →</strong> "¿Y la infraestructura actual escala si el negocio crece más rápido de lo esperado?" → introduce la escalabilidad como concepto.</div>
+              </div>
+            </div>
+          </div>
+          <div class="tip-note"><strong>Cuándo hacer estas preguntas:</strong> Naturalmente, después de resolver el tema de la flota. "De paso que estamos, te hago una pregunta sobre el negocio..." No antes de resolver el motivo de la visita — primero el cliente, después la oportunidad cross.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('q2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Preguntas por vertical</span>
+        <div class="acc-info"><div class="acc-name">Preguntas específicas según el tipo de empresa</div><div class="acc-tag">Adaptaciones de las 3 preguntas base para industrias con mayor potencial cloud</div></div>
+        <span class="acc-chv" id="achv-q2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-q2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Tipo de empresa</th><th>Pregunta de detección específica</th><th style="width:180px">Oportunidad cloud</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">🏦 Banco / Aseguradora / Finanzas</td><td>"¿Les preguntaron en alguna auditoría reciente sobre continuidad operativa o recuperación ante desastres?"</td><td>DRaaS + Ciberseguridad + Cloud soberano</td></tr>
+              <tr><td class="tn">🛒 Retail / Cadena de locales</td><td>"En temporada alta (Hot Sale, Navidad), ¿el sistema aguanta o tienen problemas de lentitud o caídas?"</td><td>Cloud escalable + Conectividad multi-sede</td></tr>
+              <tr><td class="tn">🏭 Manufactura / Industria</td><td>"¿Tienen alguna forma de monitorear en tiempo real lo que pasa en la planta o con la maquinaria?"</td><td>IoT industrial + Conectividad 4G/satelital</td></tr>
+              <tr><td class="tn">🌾 Agro / Campo</td><td>"¿Cómo se comunican con el personal en campo o cómo monitorean lo que pasa fuera del casco?"</td><td>IoT agro + Conectividad satelital/4G</td></tr>
+              <tr><td class="tn">🏥 Salud / Clínica</td><td>"¿Tienen la historia clínica digital o siguen con papel? ¿Y dónde están esos datos guardados?"</td><td>Cloud soberano + Backup + DR</td></tr>
+              <tr><td class="tn">🏛 Gobierno / Municipio</td><td>"¿Tienen algún sistema de atención ciudadana digital? ¿Y cómo garantizan que esté siempre disponible?"</td><td>Cloud soberano + Ciberseguridad</td></tr>
+              <tr><td class="tn">🚚 Logística / Transporte</td><td>"¿Cómo rastrean la flota en tiempo real? ¿Tienen alguna plataforma o lo hacen manualmente?"</td><td>IoT + Conectividad + Geoposicionamiento</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 GUIÓN DE CONVERSACIÓN -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--green-light)">💬</div>
+    <div>
+      <div class="vert-title">07 — Guión de conversación completo</div>
+      <div class="vert-sub">De la visita de flota a la derivación cloud — paso a paso con el texto exacto</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">Este es el guión completo de una visita de renovación de flota donde se detecta y se abre una oportunidad cloud. <strong>El vendedor puede memorizarlo o adaptarlo — lo importante es que ensaye en el roleplay hasta que le salga natural.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('g1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Guión modelo</span>
+        <div class="acc-info"><div class="acc-name">Visita de renovación de flota → detección cloud → apertura de oportunidad</div><div class="acc-tag">Duración estimada: 8-12 minutos adicionales sobre la visita habitual</div></div>
+        <span class="acc-chv" id="achv-g1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-g1">
+        <div class="ab-inner">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num" style="background:var(--gray-light);color:var(--gray-dark);">1</div>
+              <div class="step-content">
+                <div class="step-title">Resolver el tema de la visita primero</div>
+                <div class="step-desc">Renovar la flota, resolver el problema que trajo al cliente, lo que sea que generó la visita. <strong>Primero cumplir con el motivo de la reunión — después la exploración cloud.</strong> Si se va de tema antes, el cliente lo percibe.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--blue-light);color:var(--blue-dark);">2</div>
+              <div class="step-content">
+                <div class="step-title">Transición natural a las preguntas</div>
+                <div class="step-desc"><em>"Antes de irme, aprovecho para preguntarte algo del negocio — no es de telefonía pero Personal Tech ahora tiene servicios de infraestructura cloud y me interesa entender si pueden ser relevantes para ustedes. ¿Cómo están manejando toda la parte de sistemas e IT de la empresa — tienen servidores propios o algo en la nube?"</em></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--green-light);color:var(--green-dark);">3</div>
+              <div class="step-content">
+                <div class="step-title">Escuchar activamente y reconocer la señal</div>
+                <div class="step-desc">Dejar que el cliente hable. No interrumpir. Mientras escucha, el vendedor identifica si hay alguna señal del checklist (ver sección 05). Si aparece alguna señal: pasar al paso 4. Si no hay señal: agradecer y cerrar sin forzar.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--amber-light);color:var(--amber-dark);">4</div>
+              <div class="step-content">
+                <div class="step-title">Conectar la señal con la solución (sin explicar nada técnico)</div>
+                <div class="step-desc"><em>"Justamente para eso tenemos una solución — [nombre del producto en lenguaje simple: 'mover los servidores a nuestro datacenter en Argentina' / 'monitoreo de seguridad 24/7' / 'conectar todas las sedes de forma privada']. Muchas empresas como la tuya nos lo están pidiendo bastante. Te propongo que el especialista de ese equipo te cuente en 30 minutos — ¿cuándo tenés un rato para eso?"</em></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--purple-light);color:var(--purple-dark);">5</div>
+              <div class="step-content">
+                <div class="step-title">Completar el formulario de derivación (en el momento o inmediatamente después)</div>
+                <div class="step-desc">5 campos: nombre de la empresa, nombre del contacto, teléfono/mail, señal detectada (dropdown), mejor horario para contactar. El vendedor completa desde el celular o laptop antes de salir del estacionamiento. Cuanto más tiempo pasa, menos detalles recuerda.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num" style="background:var(--teal-light);color:var(--teal-dark);">6</div>
+              <div class="step-content">
+                <div class="step-title">El especialista toma la posta</div>
+                <div class="step-desc">El equipo cloud recibe la derivación, contacta al cliente dentro de las 48 horas, y mantiene al vendedor informado. El vendedor no tiene que hacer nada más — excepto asegurarse de que el cliente espera el contacto.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 OBJECIONES DEL VENDEDOR -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--coral-light)">🛑</div>
+    <div>
+      <div class="vert-title">08 — Las objeciones del propio vendedor</div>
+      <div class="vert-sub">Las resistencias internas que van a aparecer — y cómo desactivarlas desde el training</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+    <p class="vert-intro">El vendedor tiene sus propias objeciones antes de llegarle al cliente. Si no se abordan en el training, aparecen como excusas para no aplicar el modelo. <strong>Sacarlas a la luz en la sesión y responderlas en grupo es más efectivo que ignorarlas.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ov1')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Objeciones internas</span>
+        <div class="acc-info"><div class="acc-name">Lo que el vendedor piensa (y no dice) sobre hablar de cloud con sus clientes</div><div class="acc-tag">Abrir estas resistencias en el training y responderlas con el grupo</div></div>
+        <span class="acc-chv" id="achv-ov1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ov1">
+        <div class="ab-inner">
+          <div class="cheat-row">
+            <div class="cheat-q">😰 "No sé nada de cloud, me van a hacer preguntas que no sé responder"</div>
+            <div class="cheat-a"><strong>Respuesta:</strong> Tu trabajo no es responder preguntas técnicas. Es hacer preguntas, escuchar y derivar. Si el cliente pregunta algo técnico que no sabés, la respuesta es: "Esa pregunta es exactamente para el especialista — por eso quiero que lo llame." No saberte la respuesta técnica es una razón para escalar, no una debilidad.</div>
+          </div>
+          <div class="cheat-row">
+            <div class="cheat-q">🤷 "Mis clientes no necesitan cloud, tienen todo funcionando"</div>
+            <div class="cheat-a"><strong>Respuesta:</strong> El 80% de las necesidades cloud no se expresan explícitamente hasta que alguien pregunta. "Tenemos todo funcionando" es lo que dijo cada empresa antes de su primer ransomware, antes de que los servidores se llenaron o antes de que tardaron 6 meses en conseguir hardware nuevo. Hacé la pregunta — la señal aparece.</div>
+          </div>
+          <div class="cheat-row">
+            <div class="cheat-q">⏰ "No tengo tiempo en la visita para meterme en otro tema"</div>
+            <div class="cheat-a"><strong>Respuesta:</strong> Son 3 preguntas y 5 minutos. No es una reunión aparte — es parte de la visita habitual, después de resolver el tema principal. Si derivás un lead que cierra en $500K de contrato anual, ¿cuántas visitas de flota necesitarías para ganar lo mismo?</div>
+          </div>
+          <div class="cheat-row">
+            <div class="cheat-q">😒 "Lo hice una vez y el cliente no le interesó"</div>
+            <div class="cheat-a"><strong>Respuesta:</strong> No todos los clientes van a responder positivo. La tasa de conversión de detección a lead real es del 10-20%. Si tenés 50 clientes y preguntás en todos, deberías detectar 5-10 señales reales. Si preguntás en 3 y ninguno tiene señal, no es que no funciona — es que la muestra es muy pequeña.</div>
+          </div>
+          <div class="cheat-row">
+            <div class="cheat-q">💰 "¿Y yo qué gano si derivo y no cierro yo?"</div>
+            <div class="cheat-a"><strong>Respuesta:</strong> [Acá va la respuesta concreta con el esquema de comisiones aprobado por la empresa — este es el momento donde tener el incentivo definido es crítico]. El lead calificado genera comisión X independientemente del cierre. Si cierra, comisión adicional Y. En promedio, un lead cloud que cierra vale Z veces más que una renovación de flota estándar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 ESCALADA AL ESPECIALISTA -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--blue-light)">🤝</div>
+    <div>
+      <div class="vert-title">09 — El modelo de escalada al especialista cloud</div>
+      <div class="vert-sub">Cómo funciona el handoff entre el vendedor de campo y el equipo cloud</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <p class="vert-intro">La calidad del handoff determina si el lead se cierra o se pierde. El vendedor tiene que hacer una buena derivación. El especialista tiene que responder rápido y mantener al vendedor en el loop. <strong>Un lead que no tiene respuesta en 48 horas se enfría y el vendedor deja de derivar.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('e1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">El formulario de derivación</span>
+        <div class="acc-info"><div class="acc-name">Los 5 campos que el vendedor debe completar — ni uno más, ni uno menos</div><div class="acc-tag">Simple, rápido, desde el celular. Si es complejo, el vendedor no lo completa.</div></div>
+        <span class="acc-chv" id="achv-e1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-e1">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div>
+              <div class="block-label">Los 5 campos del formulario</div>
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Empresa:</strong> nombre de la empresa cliente.</li>
+                <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Contacto:</strong> nombre + teléfono o mail del interlocutor.</li>
+                <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Señal detectada:</strong> dropdown con las señales del checklist (servidores lentos / hackeo / renovación hardware / nueva sucursal / campo remoto / otro).</li>
+                <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Mejor momento para contactar:</strong> mañana / tarde / indistinto.</li>
+                <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Contexto adicional:</strong> campo libre de 2-3 líneas. "Me dijo que tuvieron un ransomware el año pasado y todavía no tienen backup."</li>
+              </ul>
+            </div>
+            <div>
+              <div class="block-label">SLA del equipo cloud</div>
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Contacto al lead: dentro de 48 horas hábiles.</strong> Cada día que pasa enfría el interés del cliente.</li>
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Notificación al vendedor: en el momento del primer contacto</strong> — "Ya llamé a Juan de tu cliente Empresa X, me pasan para el martes."</li>
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Update de estado mensual</strong> al vendedor sobre todos sus leads activos.</li>
+                <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Notificación de cierre</strong> con el monto del contrato — para que el vendedor calcule su comisión y se motive a derivar más.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="warn-note"><strong>El error más común:</strong> El especialista cloud recibe el lead y no notifica al vendedor por semanas. El vendedor no sabe qué pasó con su cliente, pierde confianza en el proceso y deja de derivar. El loop de comunicación entre vendedor y especialista es tan importante como el contenido del training.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('e2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Roles y responsabilidades</span>
+        <div class="acc-info"><div class="acc-name">Quién hace qué en el proceso Detectar → Escalar → Cerrar</div><div class="acc-tag">Límites claros para que ninguno invada el rol del otro ni se pisen</div></div>
+        <span class="acc-chv" id="achv-e2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-e2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th style="width:140px">Etapa</th><th>Vendedor de campo</th><th>Especialista cloud</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Detección</td><td>✅ Hace las 3 preguntas en cada visita. Reconoce señales.</td><td>❌ No participa aún.</td></tr>
+              <tr><td class="tn">Apertura</td><td>✅ Usa las frases de interés. Propone la reunión con el especialista.</td><td>❌ No participa aún.</td></tr>
+              <tr><td class="tn">Derivación</td><td>✅ Completa el formulario con los 5 campos. Avisa al cliente que lo van a contactar.</td><td>✅ Recibe el formulario y asigna prioridad.</td></tr>
+              <tr><td class="tn">Primer contacto</td><td>✅ Puede hacer la presentación inicial por mail/WhatsApp ("Te escribo para presentarte a [nombre], de nuestro equipo de cloud").</td><td>✅ Contacta al cliente dentro de 48hs. Notifica al vendedor.</td></tr>
+              <tr><td class="tn">Reunión técnica</td><td>✅ Puede asistir como "sponsor" de la relación. No debe hablar de tecnología.</td><td>✅ Lidera la reunión. Hace el diagnóstico y la propuesta.</td></tr>
+              <tr><td class="tn">Propuesta y cierre</td><td>❌ No participa en la negociación técnica.</td><td>✅ Cierra el contrato con el apoyo del área comercial.</td></tr>
+              <tr><td class="tn">Post-venta</td><td>✅ Mantiene la relación. Puede detectar oportunidades adicionales.</td><td>✅ Entrega y satisfacción del cliente cloud.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 MÉTRICAS DE ÉXITO -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--amber-light)">📊</div>
+    <div>
+      <div class="vert-title">10 — Métricas de éxito del programa</div>
+      <div class="vert-sub">Cómo medir si el training está funcionando — y cuándo pivotar si no</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">KPIs del programa</span>
+        <div class="acc-info"><div class="acc-name">Los indicadores que confirman si el programa genera resultados reales</div><div class="acc-tag">Medibles desde el primer mes — sin esperar a los cierres</div></div>
+        <span class="acc-chv" id="achv-m1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>KPI</th><th>Cómo medirlo</th><th style="width:130px">Meta mes 1</th><th style="width:130px">Meta mes 3</th><th style="width:130px">Meta mes 6</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">Cobertura del training</td>
+                <td>% de vendedores que completaron la sesión de 60 min + roleplay</td>
+                <td style="font-weight:700;color:var(--amber-dark);">80% de los 200</td>
+                <td style="font-weight:700;color:var(--amber-dark);">95%</td>
+                <td style="font-weight:700;color:var(--green-dark);">100%</td>
+              </tr>
+              <tr>
+                <td class="tn">Leads derivados / mes</td>
+                <td>Formularios de derivación completados en el CRM</td>
+                <td style="font-weight:700;color:var(--amber-dark);">15 leads</td>
+                <td style="font-weight:700;color:var(--amber-dark);">30 leads</td>
+                <td style="font-weight:700;color:var(--green-dark);">50+ leads</td>
+              </tr>
+              <tr>
+                <td class="tn">% vendedores activos en derivación</td>
+                <td>% de los 200 que derivó al menos 1 lead en el mes</td>
+                <td style="font-weight:700;color:var(--amber-dark);">10%</td>
+                <td style="font-weight:700;color:var(--amber-dark);">25%</td>
+                <td style="font-weight:700;color:var(--green-dark);">40%</td>
+              </tr>
+              <tr>
+                <td class="tn">Tasa de leads calificados</td>
+                <td>% de leads derivados que el especialista considera válidos (con señal real)</td>
+                <td style="font-weight:700;color:var(--amber-dark);">40%</td>
+                <td style="font-weight:700;color:var(--amber-dark);">55%</td>
+                <td style="font-weight:700;color:var(--green-dark);">70%</td>
+              </tr>
+              <tr>
+                <td class="tn">Contratos cloud atribuidos</td>
+                <td>Contratos cerrados cuyo lead fue originado por un vendedor de campo</td>
+                <td style="font-weight:700;color:var(--blue-dark);">0–1 (ciclo largo)</td>
+                <td style="font-weight:700;color:var(--blue-dark);">2–3</td>
+                <td style="font-weight:700;color:var(--green-dark);">5–8</td>
+              </tr>
+              <tr>
+                <td class="tn">NPS del proceso (vendedor)</td>
+                <td>Encuesta mensual de 3 preguntas al vendedor: ¿Vale la pena derivar? ¿El equipo cloud respondió rápido? ¿Recibiste tu comisión?</td>
+                <td style="font-weight:700;color:var(--amber-dark);">NPS positivo</td>
+                <td style="font-weight:700;color:var(--green-dark);">NPS > 30</td>
+                <td style="font-weight:700;color:var(--green-dark);">NPS > 50</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La métrica más importante en el mes 1:</strong> No los contratos cerrados (el ciclo es muy largo para mes 1) sino la tasa de derivación. Si los vendedores están derivando leads después del training, el modelo funciona. Si no derivaron nada después de 30 días, hay un problema — ya sea de incentivo, de comprensión o de confianza en el proceso.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Señales de alarma</span>
+        <div class="acc-info"><div class="acc-name">Cuándo el programa necesita corrección — y qué ajustar</div><div class="acc-tag">Las señales de que algo no está funcionando y la acción correctiva correspondiente</div></div>
+        <span class="acc-chv" id="achv-m2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Síntoma</th><th>Causa probable</th><th>Acción correctiva</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Los vendedores no derivan después del training</td><td>El incentivo no está claro o no existe. O el formulario es muy complejo.</td><td>Revisar y simplificar el esquema de comisiones. Reducir el formulario a 3 campos.</td></tr>
+              <tr><td class="tn">Muchos leads, pocos calificados</td><td>Los vendedores derivan cualquier cosa para cobrar la comisión sin calificar bien.</td><td>Agregar criterio mínimo de calificación. Revisar la definición de "lead calificado" con los vendedores.</td></tr>
+              <tr><td class="tn">Los vendedores dicen que el especialista tarda en responder</td><td>El SLA de 48hs no se está cumpliendo. El equipo cloud está sobrecargado.</td><td>Escalar el problema. Un lead que no tiene respuesta en 48hs destruye la confianza en el proceso.</td></tr>
+              <tr><td class="tn">Los mismos 5 vendedores derivan, el resto no hace nada</td><td>Los early adopters son activos pero el resto no adoptó el modelo.</td><td>Sesiones de refuerzo focalizadas en los no-activos. Identificar la objeción específica de ese grupo.</td></tr>
+              <tr><td class="tn">Los clientes dicen "ya me llamó alguien de Personal Tech y no me interesó"</td><td>El especialista cloud llamó sin el contexto del vendedor y el cliente no entendió la relevancia.</td><td>Mejorar el formulario de derivación para incluir más contexto. El especialista debe referenciar al vendedor al llamar.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 MATERIALES -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--teal-light)">📄</div>
+    <div>
+      <div class="vert-title">11 — Materiales del programa</div>
+      <div class="vert-sub">El Kit del Vendedor Cloud y todos los materiales de soporte del training</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('mat1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Kit del Vendedor Cloud</span>
+        <div class="acc-info"><div class="acc-name">La cheat sheet de 1 página — el único material que el vendedor necesita en campo</div><div class="acc-tag">Todo en una hoja · Lenguaje simple · Sin jerga técnica · Lleva a cada visita</div></div>
+        <span class="acc-chv" id="achv-mat1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-mat1">
+        <div class="ab-inner" style="background:var(--bg2);border-radius:var(--radius-sm);padding:20px;">
+          <!-- CHEAT SHEET VISUAL -->
+          <div style="border:2px solid var(--blue-mid);border-radius:var(--radius);padding:18px;background:white;">
+            <div style="text-align:center;margin-bottom:14px;">
+              <div style="font-size:16px;font-weight:700;color:var(--blue-dark);">KIT DEL VENDEDOR CLOUD · PERSONAL TECH</div>
+              <div style="font-size:11px;color:var(--text-ter);">Llevá esto a cada visita · 3 preguntas · 5 señales · 1 frase · 1 formulario</div>
+            </div>
+            <div class="grid3" style="gap:8px;">
+              <div style="background:var(--blue-light);border-radius:var(--radius-sm);padding:10px 12px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--blue-dark);margin-bottom:6px;">① LAS 3 PREGUNTAS</div>
+                <div style="font-size:11.5px;color:var(--text-sec);line-height:1.5;">
+                  <strong>P1:</strong> "¿Cómo manejan los sistemas — servidores propios o en la nube?"<br><br>
+                  <strong>P2:</strong> "¿Tuvieron algún problema de sistemas en el último año?"<br><br>
+                  <strong>P3:</strong> "¿Están pensando en abrir nuevas sucursales?"
+                </div>
+              </div>
+              <div style="background:var(--teal-light);border-radius:var(--radius-sm);padding:10px 12px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:6px;">② 5 SEÑALES DE OPORTUNIDAD</div>
+                <div style="font-size:11.5px;color:var(--text-sec);line-height:1.6;">
+                  🔴 "Se cayeron los servidores"<br>
+                  🔴 "Tuvimos un hackeo"<br>
+                  🟡 "Vamos a abrir una sucursal"<br>
+                  🟡 "Hay que renovar el hardware"<br>
+                  🟢 "Tenemos campo / zona remota"
+                </div>
+              </div>
+              <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:10px 12px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green-dark);margin-bottom:6px;">③ LA FRASE QUE ABRE</div>
+                <div style="font-size:11.5px;color:var(--text-sec);line-height:1.5;">
+                  <em>"Justamente para eso tenemos una solución — [producto simple]. Te propongo que el especialista te lo cuente en 30 min. ¿Cuándo tenés un rato?"</em>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:10px;padding:10px 12px;background:var(--amber-light);border-radius:var(--radius-sm);">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--amber-dark);margin-bottom:5px;">④ CÓMO DERIVAR (5 campos en el CRM)</div>
+              <div style="font-size:11.5px;color:var(--text-sec);display:flex;flex-wrap:wrap;gap:8px;">
+                <span style="background:white;padding:3px 9px;border-radius:20px;border:.5px solid var(--border);">1 · Empresa</span>
+                <span style="background:white;padding:3px 9px;border-radius:20px;border:.5px solid var(--border);">2 · Contacto</span>
+                <span style="background:white;padding:3px 9px;border-radius:20px;border:.5px solid var(--border);">3 · Señal detectada</span>
+                <span style="background:white;padding:3px 9px;border-radius:20px;border:.5px solid var(--border);">4 · Mejor horario</span>
+                <span style="background:white;padding:3px 9px;border-radius:20px;border:.5px solid var(--border);">5 · Contexto breve</span>
+              </div>
+            </div>
+            <div style="margin-top:10px;text-align:center;font-size:11px;color:var(--text-ter);">El especialista te contacta en &lt;48hs · Vos cobrás comisión por el lead · Sin necesidad de saber más de tecnología</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('mat2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Lista de materiales completa</span>
+        <div class="acc-info"><div class="acc-name">Todo lo que hay que preparar antes del día 1 del training</div><div class="acc-tag">Checklist de producción de materiales — con responsable y fecha sugerida</div></div>
+        <span class="acc-chv" id="achv-mat2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-mat2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Material</th><th>Descripción</th><th style="width:130px">Responsable</th><th style="width:100px">Semana</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="tn">Kit del Vendedor Cloud (1 página)</td><td>Impreso o digital. 3 preguntas + 5 señales + frase de apertura + formulario. En castellano simple.</td><td>Celata</td><td>Semana 1</td></tr>
+              <tr><td>2</td><td class="tn">Presentación de training (30 slides máx)</td><td>Para la sesión de 60 min. Estructura: 15 contexto + 20 señales/preguntas + 15 roleplay + 10 formulario.</td><td>Celata</td><td>Semana 1</td></tr>
+              <tr><td>3</td><td class="tn">Formulario de derivación en CRM</td><td>5 campos máximo. Accesible desde celular. Con dropdown de señales para estandarizar.</td><td>IT/CRM</td><td>Semana 1</td></tr>
+              <tr><td>4</td><td class="tn">Esquema de comisiones documentado</td><td>Quién cobra qué, cuándo y por qué. Firmado y comunicado antes del primer training.</td><td>RRHH/Comercial</td><td>Semana 1</td></tr>
+              <tr><td>5</td><td class="tn">Canal de WhatsApp del equipo cloud</td><td>Grupo donde el especialista publica resultados y responde preguntas rápidas de los vendedores.</td><td>Celata</td><td>Semana 1</td></tr>
+              <tr><td>6</td><td class="tn">Videos "Cloud en 5 min" (4 videos)</td><td>Uno por familia de producto. Opcional, para los vendedores que quieren profundizar.</td><td>Celata + Marketing</td><td>Semana 2-3</td></tr>
+              <tr><td>7</td><td class="tn">FAQ vivo (versión inicial)</td><td>Las 10 preguntas que más hace el cliente + respuestas en lenguaje de vendedor. Se actualiza mensualmente.</td><td>Celata</td><td>Semana 2</td></tr>
+              <tr><td>8</td><td class="tn">Dashboard de ranking</td><td>Top 10 generadores de leads. Actualizable. Para publicar en canales internos mensualmente.</td><td>Comercial/IT</td><td>Semana 3</td></tr>
+              <tr><td>9</td><td class="tn">Casos de éxito del piloto</td><td>1-2 historias de vendedores que detectaron leads reales. Para usar en el despliegue masivo.</td><td>Celata</td><td>Semana 4</td></tr>
+              <tr><td>10</td><td class="tn">Encuesta de NPS del proceso</td><td>3 preguntas mensuales al vendedor. Para medir si el proceso funciona desde su perspectiva.</td><td>Celata</td><td>Mensual</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Documento interno — uso exclusivo del área comercial — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  var open=b.classList.toggle('open');
+  t.classList.toggle('open',open);
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  var open=b.classList.toggle('open');
+  c.classList.toggle('open',open);
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

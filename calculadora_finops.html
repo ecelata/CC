@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora FinOps — Optimización de Costos Cloud | Personal Tech</title>
+<style>
+:root {
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --aws:#FF9900;--aws-l:#FFF4E0;--aws-d:#7A4700;
+  --az:#0078D4;--az-l:#E6F2FF;--az-d:#004578;
+  --gcp:#4285F4;--gcp-l:#E8F0FE;--gcp-d:#1A3A7A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{background:var(--text);padding:0 24px;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:100;border-bottom:2px solid var(--green-m);}
+.topnav-brand{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.5);padding:13px 14px 13px 0;border-right:.5px solid rgba(255,255,255,.1);margin-right:8px;white-space:nowrap;letter-spacing:.04em;}
+.tnav{font-size:11px;font-weight:700;padding:13px 11px;white-space:nowrap;color:rgba(255,255,255,.35);border-bottom:2px solid transparent;transition:all .18s;cursor:pointer;}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--green-m);}
+.topbar-right{margin-left:auto;display:flex;gap:8px;padding:8px 0;}
+.btn-action{font-size:10.5px;font-weight:700;padding:5px 13px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-calc{background:var(--green-m);color:#fff;}
+.btn-calc:hover{background:var(--green);}
+.btn-reset{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);}
+.btn-reset:hover{background:rgba(255,255,255,.15);color:#fff;}
+.btn-print{background:var(--blue-m);color:#fff;}
+.btn-print:hover{background:var(--blue);}
+
+/* PAGE */
+.page{max-width:1060px;margin:0 auto;padding:32px 24px 80px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO STRIP */
+.hero{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:28px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:19px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* SECTION */
+.section{margin-bottom:36px;scroll-margin-top:54px;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1.5px solid var(--text);}
+.section-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);min-width:28px;}
+.section-title{font-size:17px;font-weight:700;flex:1;}
+.section-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+
+/* PROVIDER TABS */
+.provider-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.ptab{font-size:12px;font-weight:700;padding:7px 16px;border-radius:var(--radius-sm);border:.5px solid var(--border);cursor:pointer;transition:all .18s;background:var(--bg2);}
+.ptab:hover{border-color:var(--gray-m);}
+.ptab.active-aws{background:var(--aws-l);border-color:var(--aws);color:var(--aws-d);}
+.ptab.active-az{background:var(--az-l);border-color:var(--az);color:var(--az-d);}
+.ptab.active-gcp{background:var(--gcp-l);border-color:var(--gcp);color:var(--gcp-d);}
+.ptab.active-pt{background:var(--green-l);border-color:var(--green-m);color:var(--green);}
+
+/* INPUT GRID */
+.input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:16px;}
+.input-group{display:flex;flex-direction:column;gap:5px;}
+.input-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);}
+.input-hint{font-size:10px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.input-field{
+  border:.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:9px 12px;font-family:inherit;font-size:13px;color:var(--text);
+  background:var(--bg);outline:none;transition:border-color .18s;width:100%;
+}
+.input-field:focus{border-color:var(--green-m);}
+.input-field.currency{padding-left:22px;}
+.input-wrap{position:relative;}
+.input-prefix{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-ter);pointer-events:none;}
+.input-suffix{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-ter);pointer-events:none;}
+
+/* SLIDER */
+.slider-group{display:flex;flex-direction:column;gap:5px;}
+.slider-row{display:flex;align-items:center;gap:10px;}
+.slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--green-m);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.slider-val{font-size:13px;font-weight:700;color:var(--text);min-width:40px;text-align:right;}
+
+/* ZOMBIE TABLE */
+.zombie-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0;}
+.zombie-table th{padding:8px 11px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.zombie-table td{padding:9px 11px;vertical-align:middle;border-bottom:.5px solid var(--border);color:var(--text-sec);}
+.zombie-table tr:last-child td{border-bottom:none;}
+.zombie-table input[type=number],.zombie-table input[type=text]{
+  border:.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:5px 8px;font-family:inherit;font-size:12px;color:var(--text);
+  background:var(--bg);outline:none;width:100%;transition:border-color .15s;
+}
+.zombie-table input:focus{border-color:var(--green-m);}
+.zombie-table select{
+  border:.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:5px 8px;font-family:inherit;font-size:12px;color:var(--text);
+  background:var(--bg);outline:none;width:100%;
+}
+.add-row-btn{font-size:11px;font-weight:700;color:var(--green-m);background:none;border:.5px dashed var(--green-m);border-radius:var(--radius-sm);padding:5px 12px;cursor:pointer;font-family:inherit;margin-top:6px;transition:all .15s;}
+.add-row-btn:hover{background:var(--green-l);}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--text-ter);font-size:14px;padding:2px 6px;border-radius:4px;transition:all .15s;}
+.del-btn:hover{background:var(--red-l);color:var(--red-m);}
+
+/* RESULTS PANEL */
+.results-panel{position:sticky;top:52px;display:flex;flex-direction:column;gap:0;border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--bg);}
+.rp-header{background:var(--text);padding:16px 18px;}
+.rp-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.4);margin-bottom:6px;}
+.rp-total{font-size:32px;font-weight:700;color:#5ce89a;line-height:1;margin-bottom:4px;}
+.rp-total-label{font-size:11px;color:rgba(255,255,255,.35);}
+.rp-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+.rp-item{display:flex;align-items:center;gap:10px;}
+.rp-item-icon{font-size:16px;flex-shrink:0;}
+.rp-item-info{flex:1;}
+.rp-item-label{font-size:11.5px;color:var(--text-sec);line-height:1.3;}
+.rp-item-name{font-size:12.5px;font-weight:700;color:var(--text);}
+.rp-item-val{font-size:14px;font-weight:700;text-align:right;white-space:nowrap;}
+.rp-divider{height:.5px;background:var(--border);margin:2px 0;}
+.rp-footer{padding:14px 18px;background:var(--bg2);border-top:.5px solid var(--border);}
+.rp-footer-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:6px;}
+.rp-bar{display:flex;gap:4px;margin-bottom:8px;}
+.rp-bar-seg{height:8px;border-radius:4px;transition:width .4s;}
+.rp-legend{display:flex;flex-direction:column;gap:3px;}
+.rp-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-sec);}
+.rp-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.rp-roi{background:var(--green-l);border-radius:var(--radius-sm);padding:11px 14px;margin-top:6px;}
+.rp-roi-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green-d);margin-bottom:5px;}
+.rp-roi-val{font-size:17px;font-weight:700;color:var(--green);}
+.rp-roi-sub{font-size:11px;color:var(--green-m);margin-top:2px;}
+
+/* LAYOUT 2 COLS */
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+
+/* NOTE BOXES */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 14px;border-radius:var(--radius-sm);margin:12px 0;border-left:3px solid;line-height:1.6;}
+.win-note strong{font-weight:700;}
+.note-green{background:var(--green-l);border-color:var(--green-m);}
+.note-green strong{color:var(--green);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);}
+.note-amber strong{color:var(--amber);}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);}
+.note-blue strong{color:var(--blue);}
+.note-red{background:var(--red-l);border-color:var(--red-m);}
+.note-red strong{color:var(--red);}
+
+/* VERTICAL (accordion) */
+.vert{margin-bottom:10px;}
+.vert-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;border:.5px solid var(--border);border-radius:var(--radius);transition:background .15s;}
+.vert-head:hover{background:#eeede6;}
+.vert-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.vert-info{flex:1;}
+.vert-name{font-size:14px;font-weight:700;color:var(--text);}
+.vert-sub{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.vert-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.vert-chv.open{transform:rotate(180deg);}
+.vert-body{display:none;padding:16px 18px 18px;border:.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);background:var(--bg);}
+.vert-body.open{display:block;}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:8px;margin:10px 0;}
+.check-item{display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--text-sec);line-height:1.55;}
+.check-item strong{color:var(--text);}
+.check-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
+
+/* QUICK WINS */
+.qw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:12px 0;}
+.qw-card{border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.qw-icon{font-size:18px;margin-bottom:5px;}
+.qw-name{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.qw-desc{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.qw-saving{font-size:13px;font-weight:700;margin-top:6px;}
+
+/* CHART BARS */
+.bar-chart{display:flex;flex-direction:column;gap:10px;margin:14px 0;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-label{font-size:11.5px;color:var(--text-sec);min-width:150px;text-align:right;}
+.bar-track{flex:1;height:20px;background:var(--bg2);border-radius:20px;overflow:hidden;border:.5px solid var(--border);}
+.bar-fill{height:100%;border-radius:20px;transition:width .5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;}
+.bar-fill-label{font-size:10px;font-weight:700;color:#fff;}
+.bar-pct{font-size:12px;font-weight:700;min-width:40px;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media print{.topnav,.btn-action{display:none!important;} .results-panel{position:static;} @page{margin:12mm;size:A4;}}
+@media(max-width:800px){.two-col{grid-template-columns:1fr;} .results-panel{position:static;} .topbar-right{display:none;}}
+@media(max-width:540px){.input-grid{grid-template-columns:1fr;} .hero{grid-template-columns:1fr 1fr;} .qw-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">💰 FinOps Calculator</div>
+  <a class="tnav active" href="#s1">01 Factura actual</a>
+  <a class="tnav" href="#s2">02 Recursos zombie</a>
+  <a class="tnav" href="#s3">03 Rightsizing</a>
+  <a class="tnav" href="#s4">04 Reservas</a>
+  <a class="tnav" href="#s5">05 Quick wins</a>
+  <a class="tnav" href="#s6">06 Checklist</a>
+  <div class="topbar-right">
+    <button class="btn-action btn-reset" onclick="resetCalc()">🗑 Limpiar</button>
+    <button class="btn-action btn-calc" onclick="calculate()">⚡ Calcular</button>
+    <button class="btn-action btn-print" onclick="window.print()">🖨 PDF</button>
+  </div>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Calculadora FinOps — Optimización de Costos Cloud</div>
+    <div class="doc-sub">Ingresá la factura actual del cliente y calculá el ahorro potencial con rightsizing, eliminación de zombies y reservas</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud · Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hs" style="background:var(--amber-l);border-color:var(--amber-m);">
+    <div class="hs-icon">🗑</div>
+    <div class="hs-val">Recursos zombie</div>
+    <div class="hs-sub">8–15% de la factura cloud promedio se va en recursos encendidos que nadie usa.</div>
+  </div>
+  <div class="hs" style="background:var(--blue-l);border-color:var(--blue-m);">
+    <div class="hs-icon">📐</div>
+    <div class="hs-val">Rightsizing</div>
+    <div class="hs-sub">El 60% de las instancias cloud están sobredimensionadas. Ajustarlas ahorra 8–20%.</div>
+  </div>
+  <div class="hs" style="background:var(--green-l);border-color:var(--green-m);">
+    <div class="hs-icon">📅</div>
+    <div class="hs-val">Reservas / Savings Plans</div>
+    <div class="hs-sub">Comprometerse a 1 año ahorra hasta 40%. A 3 años: hasta 72%.</div>
+  </div>
+  <div class="hs" style="background:var(--purple-l);border-color:var(--purple-m);">
+    <div class="hs-icon">📊</div>
+    <div class="hs-val">Tagging & visibilidad</div>
+    <div class="hs-sub">Sin tags, el 30% del gasto es "misterioso". Etiquetar es el primer paso.</div>
+  </div>
+  <div class="hs" style="background:var(--teal-l);border-color:var(--teal-m);">
+    <div class="hs-icon">💰</div>
+    <div class="hs-val">Ahorro promedio</div>
+    <div class="hs-sub">McKinsey: empresas sin FinOps ahorran un 20–35% al implementarlo el primer año.</div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="two-col">
+<div><!-- LEFT COL -->
+
+<!-- S1: FACTURA ACTUAL -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title">Factura cloud actual del cliente</div>
+    <span class="section-badge" style="background:var(--aws-l);color:var(--aws-d);">Input base</span>
+  </div>
+
+  <div class="provider-tabs">
+    <button class="ptab active-aws" onclick="setProvider('aws',this)">🟠 AWS</button>
+    <button class="ptab" onclick="setProvider('az',this)">🔵 Azure</button>
+    <button class="ptab" onclick="setProvider('gcp',this)">🔷 GCP</button>
+    <button class="ptab" onclick="setProvider('pt',this)">⭐ Multicloud</button>
+  </div>
+
+  <div class="input-grid">
+    <div class="input-group">
+      <div class="input-label">Gasto mensual total</div>
+      <div class="input-wrap">
+        <span class="input-prefix">$</span>
+        <input class="input-field currency" type="number" id="totalBill" value="15000" min="0" onchange="calculate()">
+      </div>
+      <div class="input-hint">USD/mes — suma de todas las líneas de la factura</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% Compute (EC2/VMs)</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctCompute" min="20" max="80" value="45" oninput="updateSlider('pctCompute','sCompute');calculate()">
+          <span class="slider-val" id="sCompute">45%</span>
+        </div>
+      </div>
+      <div class="input-hint">Proporción del gasto en instancias de cómputo</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% Storage (S3/Blob/GCS)</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctStorage" min="5" max="40" value="20" oninput="updateSlider('pctStorage','sStorage');calculate()">
+          <span class="slider-val" id="sStorage">20%</span>
+        </div>
+      </div>
+      <div class="input-hint">Almacenamiento de objetos, bloques y archivos</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% Bases de datos (RDS/CosmosDB)</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctDB" min="0" max="40" value="15" oninput="updateSlider('pctDB','sDB');calculate()">
+          <span class="slider-val" id="sDB">15%</span>
+        </div>
+      </div>
+      <div class="input-hint">Servicios de base de datos gestionados</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% Red / Egress fees</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctNetwork" min="0" max="30" value="10" oninput="updateSlider('pctNetwork','sNetwork');calculate()">
+          <span class="slider-val" id="sNetwork">10%</span>
+        </div>
+      </div>
+      <div class="input-hint">Transferencia de datos salientes (egress), load balancers, IPs</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% Resto (Serverless, IA, etc.)</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctOther" min="0" max="30" value="10" oninput="updateSlider('pctOther','sOther');calculate()">
+          <span class="slider-val" id="sOther">10%</span>
+        </div>
+      </div>
+      <div class="input-hint">Lambda/Functions, AI APIs, soporte, etc.</div>
+    </div>
+  </div>
+
+  <!-- BAR CHART de distribución -->
+  <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-top:4px;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:12px;">Distribución de la factura actual</div>
+    <div class="bar-chart" id="distChart">
+      <div class="bar-row"><div class="bar-label">Compute</div><div class="bar-track"><div class="bar-fill" id="bCompute" style="width:45%;background:var(--blue-m);"><span class="bar-fill-label" id="bComputeAmt">$6.750</span></div></div><span class="bar-pct" id="bComputePct" style="color:var(--blue-m);">45%</span></div>
+      <div class="bar-row"><div class="bar-label">Storage</div><div class="bar-track"><div class="bar-fill" id="bStorage" style="width:20%;background:var(--amber-m);"><span class="bar-fill-label" id="bStorageAmt">$3.000</span></div></div><span class="bar-pct" id="bStoragePct" style="color:var(--amber-m);">20%</span></div>
+      <div class="bar-row"><div class="bar-label">Bases de datos</div><div class="bar-track"><div class="bar-fill" id="bDB" style="width:15%;background:var(--purple-m);"><span class="bar-fill-label" id="bDBAmt">$2.250</span></div></div><span class="bar-pct" id="bDBPct" style="color:var(--purple-m);">15%</span></div>
+      <div class="bar-row"><div class="bar-label">Red / Egress</div><div class="bar-track"><div class="bar-fill" id="bNetwork" style="width:10%;background:var(--teal-m);"><span class="bar-fill-label" id="bNetworkAmt">$1.500</span></div></div><span class="bar-pct" id="bNetworkPct" style="color:var(--teal-m);">10%</span></div>
+      <div class="bar-row"><div class="bar-label">Resto</div><div class="bar-track"><div class="bar-fill" id="bOther" style="width:10%;background:var(--gray-m);"><span class="bar-fill-label" id="bOtherAmt">$1.500</span></div></div><span class="bar-pct" id="bOtherPct" style="color:var(--gray-m);">10%</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- S2: ZOMBIES -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title">Recursos zombie — lo que se paga y no se usa</div>
+    <span class="section-badge" style="background:var(--red-l);color:var(--red-m);">Quick win #1</span>
+  </div>
+
+  <div class="note-blue win-note"><strong>💡 Definición:</strong> Recurso zombie es cualquier servicio cloud por el que se paga pero que no genera valor. Típicamente: instancias detenidas pero no eliminadas, volúmenes de disco sin VM, snapshots de 2 años, IPs elásticas sin asignar, load balancers sin tráfico, bases de datos de entornos de prueba olvidados.</div>
+
+  <table class="zombie-table">
+    <thead>
+      <tr>
+        <th>Tipo de recurso zombie</th>
+        <th style="width:90px;text-align:center;">Cantidad</th>
+        <th style="width:110px;text-align:right;">Costo/mes (USD)</th>
+        <th style="width:80px;text-align:center;">Eliminar</th>
+        <th style="width:40px;"></th>
+      </tr>
+    </thead>
+    <tbody id="zombieBody">
+      <tr>
+        <td><select class="zombie-type"><option>Instancias detenidas (stopped EC2/VMs)</option><option>Volúmenes de disco sin VM adjunta</option><option>Snapshots / AMIs antiguas (+90 días)</option><option>IPs elásticas no asignadas</option><option>Load Balancers sin tráfico</option><option>Bases de datos de entornos dev/test olvidadas</option><option>Buckets S3 / Blob sin accesos hace +6 meses</option><option>Otro recurso zombie</option></select></td>
+        <td style="text-align:center;"><input type="number" min="0" value="5" style="width:70px;text-align:center;" onchange="calculate()"></td>
+        <td style="text-align:right;"><div class="input-wrap"><span class="input-prefix" style="left:6px;">$</span><input type="number" min="0" value="240" style="width:90px;text-align:right;padding-left:16px;" onchange="calculate()"></div></td>
+        <td style="text-align:center;"><input type="checkbox" checked onchange="calculate()" style="width:16px;height:16px;cursor:pointer;"></td>
+        <td><button class="del-btn" onclick="delZombieRow(this)">✕</button></td>
+      </tr>
+      <tr>
+        <td><select class="zombie-type"><option>Instancias detenidas (stopped EC2/VMs)</option><option selected>Volúmenes de disco sin VM adjunta</option><option>Snapshots / AMIs antiguas (+90 días)</option><option>IPs elásticas no asignadas</option><option>Load Balancers sin tráfico</option><option>Bases de datos de entornos dev/test olvidadas</option><option>Buckets S3 / Blob sin accesos hace +6 meses</option><option>Otro recurso zombie</option></select></td>
+        <td style="text-align:center;"><input type="number" min="0" value="12" style="width:70px;text-align:center;" onchange="calculate()"></td>
+        <td style="text-align:right;"><div class="input-wrap"><span class="input-prefix" style="left:6px;">$</span><input type="number" min="0" value="85" style="width:90px;text-align:right;padding-left:16px;" onchange="calculate()"></div></td>
+        <td style="text-align:center;"><input type="checkbox" checked onchange="calculate()" style="width:16px;height:16px;cursor:pointer;"></td>
+        <td><button class="del-btn" onclick="delZombieRow(this)">✕</button></td>
+      </tr>
+      <tr>
+        <td><select class="zombie-type"><option>Instancias detenidas (stopped EC2/VMs)</option><option>Volúmenes de disco sin VM adjunta</option><option selected>Snapshots / AMIs antiguas (+90 días)</option><option>IPs elásticas no asignadas</option><option>Load Balancers sin tráfico</option><option>Bases de datos de entornos dev/test olvidadas</option><option>Buckets S3 / Blob sin accesos hace +6 meses</option><option>Otro recurso zombie</option></select></td>
+        <td style="text-align:center;"><input type="number" min="0" value="47" style="width:70px;text-align:center;" onchange="calculate()"></td>
+        <td style="text-align:right;"><div class="input-wrap"><span class="input-prefix" style="left:6px;">$</span><input type="number" min="0" value="12" style="width:90px;text-align:right;padding-left:16px;" onchange="calculate()"></div></td>
+        <td style="text-align:center;"><input type="checkbox" checked onchange="calculate()" style="width:16px;height:16px;cursor:pointer;"></td>
+        <td><button class="del-btn" onclick="delZombieRow(this)">✕</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="add-row-btn" onclick="addZombieRow()">+ Agregar recurso zombie</button>
+
+  <div class="note-amber win-note" style="margin-top:14px;"><strong>⚠️ Cómo detectar zombies en AWS:</strong> AWS Cost Explorer → filter by "No usage" tag. AWS Trusted Advisor → "Low Utilization Amazon EC2 Instances". En Azure: Azure Advisor → "Cost" recommendations. En GCP: Recommender → "VM rightsizing".</div>
+</div>
+
+
+<!-- S3: RIGHTSIZING -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title">Rightsizing — ajustar el tamaño de las instancias</div>
+    <span class="section-badge" style="background:var(--blue-l);color:var(--blue-d);">Quick win #2</span>
+  </div>
+
+  <div class="note-blue win-note"><strong>💡 Qué es:</strong> El 60% de las instancias cloud están sobredimensionadas — se pidió una instancia grande "por las dudas" y se usa el 20% de la capacidad. Rightsizing es reducirlas al tamaño correcto según el uso real. <strong>No impacta en el rendimiento si se hace bien.</strong></div>
+
+  <div class="input-grid">
+    <div class="input-group">
+      <div class="input-label">% de instancias con CPU &lt;20% promedio</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctOverprovisioned" min="0" max="80" value="40" oninput="updateSlider('pctOverprovisioned','sOverprov');calculate()">
+          <span class="slider-val" id="sOverprov">40%</span>
+        </div>
+      </div>
+      <div class="input-hint">Instancias que usan menos del 20% de CPU — candidatas a downsizing</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% de ahorro esperado por instancia</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctRightSaving" min="20" max="65" value="40" oninput="updateSlider('pctRightSaving','sRightSav');calculate()">
+          <span class="slider-val" id="sRightSav">40%</span>
+        </div>
+      </div>
+      <div class="input-hint">Ahorro al bajar 1 tier (ej: m5.xlarge → m5.large = -50% en EC2)</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% DB con memoria sobredimensionada</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctDBOverprov" min="0" max="60" value="30" oninput="updateSlider('pctDBOverprov','sDBOverprov');calculate()">
+          <span class="slider-val" id="sDBOverprov">30%</span>
+        </div>
+      </div>
+      <div class="input-hint">Instancias de BD con uso de memoria bajo. Ahorro típico: 30–50%.</div>
+    </div>
+  </div>
+
+  <div class="note-green win-note"><strong>✅ Referencia de mercado:</strong> AWS Compute Optimizer reporta ahorros promedio de 25% solo en compute con rightsizing. Azure Advisor en un cliente típico identifica entre 15 y 35% de instancias para downsize. GCP Recommender: promedio 18% de ahorro en el primer mes.</div>
+</div>
+
+
+<!-- S4: RESERVAS -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-title">Reservas y Savings Plans — comprometerse para ahorrar</div>
+    <span class="section-badge" style="background:var(--green-l);color:var(--green-d);">Quick win #3</span>
+  </div>
+
+  <div class="note-blue win-note"><strong>💡 Lógica:</strong> Los cloud providers dan grandes descuentos a quien se compromete a pagar por 1 o 3 años. En EC2 Reserved Instances: hasta 40% a 1 año (sin pago previo) y hasta 72% a 3 años (pago total por adelantado). El cliente que siempre usó on-demand está dejando ese dinero sobre la mesa.</div>
+
+  <div class="input-grid">
+    <div class="input-group">
+      <div class="input-label">% del gasto en compute "estable" (24/7)</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctStableCompute" min="0" max="90" value="60" oninput="updateSlider('pctStableCompute','sStable');calculate()">
+          <span class="slider-val" id="sStable">60%</span>
+        </div>
+      </div>
+      <div class="input-hint">El baseline que siempre corre — candidato ideal para reservar</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">Plazo de reserva a comprometer</div>
+      <div class="input-wrap">
+        <select class="input-field" id="reservationTerm" onchange="calculate()">
+          <option value="0.40">1 año — sin pago previo (ahorro ~40%)</option>
+          <option value="0.52">1 año — pago total previo (ahorro ~52%)</option>
+          <option value="0.60" selected>3 años — sin pago previo (ahorro ~60%)</option>
+          <option value="0.72">3 años — pago total previo (ahorro ~72%)</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% del storage en clase "frecuente"</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctHotStorage" min="0" max="100" value="30" oninput="updateSlider('pctHotStorage','sHotStor');calculate()">
+          <span class="slider-val" id="sHotStor">30%</span>
+        </div>
+      </div>
+      <div class="input-hint">El resto puede moverse a Infrequent Access o Glacier (ahorro 50–80%)</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">Ahorro por tiering de storage</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctStorageSaving" min="30" max="80" value="55" oninput="updateSlider('pctStorageSaving','sStorSav');calculate()">
+          <span class="slider-val" id="sStorSav">55%</span>
+        </div>
+      </div>
+      <div class="input-hint">S3 Standard → Infrequent Access: -42%. → Glacier: -75%.</div>
+    </div>
+  </div>
+
+  <div class="note-amber win-note"><strong>⚠️ Cuidado con las reservas:</strong> Solo reservar lo que realmente se va a usar. Si la empresa está en proceso de migración o el negocio tiene alta variabilidad, Savings Plans (más flexibles) son mejor que Reserved Instances (más rígidas pero más baratas).</div>
+</div>
+
+
+<!-- S5: QUICK WINS ADICIONALES -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-title">Oportunidades adicionales de ahorro</div>
+    <span class="section-badge" style="background:var(--purple-l);color:var(--purple-m);">Extras</span>
+  </div>
+
+  <div class="input-grid">
+    <div class="input-group">
+      <div class="input-label">Tareas batch/dev — usar Spot Instances</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctSpotable" min="0" max="40" value="15" oninput="updateSlider('pctSpotable','sSpotable');calculate()">
+          <span class="slider-val" id="sSpotable">15%</span>
+        </div>
+      </div>
+      <div class="input-hint">Ahorro de hasta 90% usando Spot/Preemptible para cargas interrumpibles</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">% de egress fees evitable</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input class="slider" type="range" id="pctEgressSave" min="0" max="80" value="30" oninput="updateSlider('pctEgressSave','sEgressSave');calculate()">
+          <span class="slider-val" id="sEgressSave">30%</span>
+        </div>
+      </div>
+      <div class="input-hint">Con CDN y optimización de arquitectura, los egress fees caen drásticamente</div>
+    </div>
+  </div>
+
+  <div class="qw-grid">
+    <div class="qw-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+      <div class="qw-icon">⏰</div>
+      <div class="qw-name">Apagado programado</div>
+      <div class="qw-desc">Dev/test que corre las 24hs. Con apagado automático fuera de horario (8pm–8am + fines de semana): solo 40% del tiempo encendido.</div>
+      <div class="qw-saving" style="color:var(--amber);">Ahorro: -60% en esas instancias</div>
+    </div>
+    <div class="qw-card" style="background:var(--blue-l);border-color:var(--blue-m);">
+      <div class="qw-icon">🏷</div>
+      <div class="qw-name">Tagging estricto</div>
+      <div class="qw-desc">Sin tags, nadie sabe qué equipo genera qué gasto. Con tagging por proyecto/equipo/entorno, el ahorro llega solo: cada equipo ve su propio costo.</div>
+      <div class="qw-saving" style="color:var(--blue);">Impacto: reduce gasto no identificado 15–25%</div>
+    </div>
+    <div class="qw-card" style="background:var(--green-l);border-color:var(--green-m);">
+      <div class="qw-icon">📦</div>
+      <div class="qw-name">Contenedores vs. VMs</div>
+      <div class="qw-desc">Migrar workloads stateless a contenedores (ECS Fargate, AKS, Cloud Run) reduce el costo de compute un 30–50% con mejor utilización del recurso.</div>
+      <div class="qw-saving" style="color:var(--green);">Ahorro: -30 a -50% en esos workloads</div>
+    </div>
+    <div class="qw-card" style="background:var(--purple-l);border-color:var(--purple-m);">
+      <div class="qw-icon">🌡</div>
+      <div class="qw-name">Tiering automático de datos</div>
+      <div class="qw-desc">S3 Intelligent-Tiering mueve automáticamente los datos al tier más económico según el patrón de acceso. Sin intervención manual.</div>
+      <div class="qw-saving" style="color:var(--purple);">Ahorro: 23–68% en storage con acceso mixto</div>
+    </div>
+    <div class="qw-card" style="background:var(--teal-l);border-color:var(--teal-m);">
+      <div class="qw-icon">🔄</div>
+      <div class="qw-name">Arquitectura Serverless</div>
+      <div class="qw-desc">Funciones que corren pocas veces al día en VMs dedicadas desperdician el 95% del tiempo. Lambda/Functions cobran solo por ejecución.</div>
+      <div class="qw-saving" style="color:var(--teal);">Ahorro: pagar 0 cuando no hay actividad</div>
+    </div>
+    <div class="qw-card" style="background:var(--red-l);border-color:var(--red-m);">
+      <div class="qw-icon">🌐</div>
+      <div class="qw-name">Optimizar egress con CDN</div>
+      <div class="qw-desc">El contenido estático servido desde el origen consume egress fees. Con CloudFront/Azure CDN el origen solo entrega una vez al edge, que responde a los usuarios.</div>
+      <div class="qw-saving" style="color:var(--red-m);">Reducción de egress: 60–80% para apps web</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- S6: CHECKLIST FinOps -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-title">Checklist FinOps — madurez por fases</div>
+    <span class="section-badge" style="background:var(--gray-l);color:var(--gray-d);">Framework</span>
+  </div>
+
+  <div class="vert">
+    <div class="vert-head" onclick="toggleV('fo1')">
+      <span class="vert-badge" style="background:var(--red-l);color:var(--red-d);">Fase 1</span>
+      <div class="vert-info"><div class="vert-name">Visibilidad — "¿Cuánto gastamos y en qué?"</div><div class="vert-sub">El primer paso obligatorio. Sin visibilidad no hay optimización.</div></div>
+      <span class="vert-chv" id="vchv-fo1">▼</span>
+    </div>
+    <div class="vert-body" id="vbdy-fo1">
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Activar Cost Explorer / Azure Cost Management / GCP Billing Reports.</strong> Ver el gasto por servicio, región y cuenta.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Configurar tags obligatorios:</strong> Proyecto, Entorno (prod/dev/test), Equipo, Owner. Sin tags el 30–40% del gasto es anónimo.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Establecer budget alerts.</strong> Alarma al 80% y 100% del presupuesto mensual. Evita sorpresas de factura.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Crear dashboard de gastos</strong> visible para los equipos técnicos. Cuando los devs ven el costo de lo que despliegan, el comportamiento cambia.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Identificar las 10 líneas de mayor gasto.</strong> El 20% de los servicios genera el 80% del costo (Pareto del cloud).</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vert">
+    <div class="vert-head" onclick="toggleV('fo2')">
+      <span class="vert-badge" style="background:var(--amber-l);color:var(--amber-d);">Fase 2</span>
+      <div class="vert-info"><div class="vert-name">Optimización — "Eliminemos el desperdicio"</div><div class="vert-sub">Acciones concretas con ahorro inmediato.</div></div>
+      <span class="vert-chv" id="vchv-fo2">▼</span>
+    </div>
+    <div class="vert-body" id="vbdy-fo2">
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Audit de instancias stopped.</strong> Listar todas las instancias en estado "stopped" que llevan más de 7 días. Eliminar o justificar.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Eliminar volúmenes de disco sin VM adjunta.</strong> Costo mensual pequeño por unidad pero se acumulan.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Limpiar snapshots antiguos.</strong> Política de retención: 7 diarias, 4 semanales, 12 mensuales. Eliminar el resto.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Rightsizing de instancias con CPU &lt;20%.</strong> Usar AWS Compute Optimizer / Azure Advisor con datos de al menos 14 días.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Configurar apagado automático</strong> de entornos de desarrollo y testing fuera de horario laboral y fines de semana.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Revisar IPs elásticas no asignadas,</strong> load balancers sin tráfico y NAT Gateways sin uso. Cada uno tiene costo por hora aunque no procese nada.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vert">
+    <div class="vert-head" onclick="toggleV('fo3')">
+      <span class="vert-badge" style="background:var(--green-l);color:var(--green-d);">Fase 3</span>
+      <div class="vert-info"><div class="vert-name">Optimización de compra — "Compremos mejor"</div><div class="vert-sub">Reservas, Savings Plans y arquitectura eficiente.</div></div>
+      <span class="vert-chv" id="vchv-fo3">▼</span>
+    </div>
+    <div class="vert-body" id="vbdy-fo3">
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Analizar el baseline de uso de compute de los últimos 30 días.</strong> Lo que siempre está encendido es candidato a Reserved Instances / Savings Plans.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Comprar Savings Plans por el 80% del baseline</strong> (no el 100% — dejar margen para variabilidad). El restante en on-demand.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Implementar Spot/Preemptible Instances</strong> para cargas tolerantes a interrupciones: CI/CD, batch processing, entrenamiento de ML.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Mover datos fríos a tiers económicos.</strong> S3 Intelligent-Tiering o mover manualmente a Glacier/Archive lo que no se accede en 90 días.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Optimizar la arquitectura de egress.</strong> CDN para contenido estático. Comprimir datos antes de transferirlos. Mantener el tráfico dentro de la misma región.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vert">
+    <div class="vert-head" onclick="toggleV('fo4')">
+      <span class="vert-badge" style="background:var(--blue-l);color:var(--blue-d);">Fase 4</span>
+      <div class="vert-info"><div class="vert-name">Gobernanza continua — "Mantengamos lo ganado"</div><div class="vert-sub">FinOps como práctica permanente, no como proyecto puntual.</div></div>
+      <span class="vert-chv" id="vchv-fo4">▼</span>
+    </div>
+    <div class="vert-body" id="vbdy-fo4">
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Reunión mensual de revisión de costos</strong> entre IT, Finanzas y los equipos que usan cloud. Cada equipo defiende su gasto.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Unit Cost tracking:</strong> costo por transacción, por usuario activo, por pipeline ejecutado. El número absoluto de la factura no dice nada sin contexto.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Políticas de aprobación para nuevos recursos:</strong> ningún equipo puede crear instancias grandes sin justificación técnica + presupuesto asignado.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Forecast accuracy:</strong> medir qué tan cerca estuvo el gasto real del presupuestado. Un error &lt;10% es el objetivo FinOps maduro.</div></div>
+        <div class="check-item"><div class="check-icon">☐</div><div><strong>Herramientas FinOps de terceros:</strong> CloudHealth, Spot.io, Apptio Cloudability para análisis más profundo. Personal Tech incluye revisiones FinOps como servicio gestionado.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /LEFT COL -->
+
+
+<!-- RIGHT COL: RESULTS PANEL -->
+<div>
+  <div class="results-panel">
+    <div class="rp-header">
+      <div class="rp-title">Ahorro mensual potencial</div>
+      <div class="rp-total" id="totalSaving">$4.890</div>
+      <div class="rp-total-label" id="totalSavingPct">32.6% de la factura actual</div>
+    </div>
+    <div class="rp-body">
+
+      <div class="rp-item">
+        <div class="rp-item-icon">🗑</div>
+        <div class="rp-item-info">
+          <div class="rp-item-label">Eliminación de zombies</div>
+          <div class="rp-item-name">Recursos inactivos eliminados</div>
+        </div>
+        <div class="rp-item-val" id="saveZombie" style="color:var(--red-m);">$1.564</div>
+      </div>
+
+      <div class="rp-item">
+        <div class="rp-item-icon">📐</div>
+        <div class="rp-item-info">
+          <div class="rp-item-label">Rightsizing compute + BD</div>
+          <div class="rp-item-name">Ajuste de instancias sobredimensionadas</div>
+        </div>
+        <div class="rp-item-val" id="saveRightsize" style="color:var(--blue-m);">$1.080</div>
+      </div>
+
+      <div class="rp-item">
+        <div class="rp-item-icon">📅</div>
+        <div class="rp-item-info">
+          <div class="rp-item-label">Reservas / Savings Plans</div>
+          <div class="rp-item-name">Descuento por compromiso de uso</div>
+        </div>
+        <div class="rp-item-val" id="saveReservations" style="color:var(--green-m);">$1.620</div>
+      </div>
+
+      <div class="rp-item">
+        <div class="rp-item-icon">💾</div>
+        <div class="rp-item-info">
+          <div class="rp-item-label">Tiering de storage</div>
+          <div class="rp-item-name">Datos fríos a tiers económicos</div>
+        </div>
+        <div class="rp-item-val" id="saveStorage" style="color:var(--amber-m);">$330</div>
+      </div>
+
+      <div class="rp-item">
+        <div class="rp-item-icon">⚡</div>
+        <div class="rp-item-info">
+          <div class="rp-item-label">Spot + Egress + Otros</div>
+          <div class="rp-item-name">Workloads batch + CDN</div>
+        </div>
+        <div class="rp-item-val" id="saveSpotEgress" style="color:var(--purple-m);">$296</div>
+      </div>
+
+      <div class="rp-divider"></div>
+
+      <div class="rp-footer">
+        <div class="rp-footer-label">Distribución del ahorro</div>
+        <div class="rp-bar" id="savingBar">
+          <div class="rp-bar-seg" id="bZombie" style="background:var(--red-m);width:32%;"></div>
+          <div class="rp-bar-seg" id="bRight" style="background:var(--blue-m);width:22%;"></div>
+          <div class="rp-bar-seg" id="bReserv" style="background:var(--green-m);width:33%;"></div>
+          <div class="rp-bar-seg" id="bStor" style="background:var(--amber-m);width:7%;"></div>
+          <div class="rp-bar-seg" id="bSpot" style="background:var(--purple-m);width:6%;"></div>
+        </div>
+        <div class="rp-legend">
+          <div class="rp-legend-item"><div class="rp-legend-dot" style="background:var(--red-m);"></div><span>Zombies</span></div>
+          <div class="rp-legend-item"><div class="rp-legend-dot" style="background:var(--blue-m);"></div><span>Rightsizing</span></div>
+          <div class="rp-legend-item"><div class="rp-legend-dot" style="background:var(--green-m);"></div><span>Reservas</span></div>
+          <div class="rp-legend-item"><div class="rp-legend-dot" style="background:var(--amber-m);"></div><span>Storage tiering</span></div>
+          <div class="rp-legend-item"><div class="rp-legend-dot" style="background:var(--purple-m);"></div><span>Spot + Egress</span></div>
+        </div>
+        <div class="rp-roi">
+          <div class="rp-roi-label">Proyección anual</div>
+          <div class="rp-roi-val" id="annualSaving">$58.680</div>
+          <div class="rp-roi-sub" id="annualSavingLabel">ahorro acumulado en 12 meses</div>
+        </div>
+        <div style="margin-top:10px;">
+          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:6px;">Factura optimizada estimada</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <span style="font-size:11px;color:var(--text-ter);">Antes:</span>
+            <span style="font-size:13px;font-weight:700;color:var(--text);" id="billBefore">$15.000/mes</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:3px;">
+            <span style="font-size:11px;color:var(--text-ter);">Después:</span>
+            <span style="font-size:16px;font-weight:700;color:var(--green);" id="billAfter">$10.110/mes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nota Personal Tech -->
+  <div class="win-note note-green" style="margin-top:12px;">
+    <strong>✅ Personal Tech Cloud</strong> no cobra egress fees. Para clientes que migran de AWS/Azure, el ahorro en egress solo puede representar el 10–15% de la factura actual.
+  </div>
+</div><!-- /RIGHT COL -->
+
+</div><!-- /two-col -->
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Calculadora FinOps · Valores estimativos — reemplazar con datos reales del cliente · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// INIT
+var hoy = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent = hoy;
+document.getElementById('fecha2').textContent = hoy;
+
+var activeProvider = 'aws';
+
+function setProvider(p, el){
+  activeProvider = p;
+  document.querySelectorAll('.ptab').forEach(function(b){ b.className='ptab'; });
+  el.classList.add('active-'+p);
+  calculate();
+}
+
+function updateSlider(id, labelId){
+  var v = document.getElementById(id).value;
+  document.getElementById(labelId).textContent = v + '%';
+}
+
+function fmt(n){ return '$' + Math.round(n).toLocaleString('es-AR'); }
+function fmtPct(n){ return Math.round(n*10)/10 + '%'; }
+
+function getZombieTotal(){
+  var total = 0;
+  var rows = document.querySelectorAll('#zombieBody tr');
+  rows.forEach(function(row){
+    var cb = row.querySelector('input[type=checkbox]');
+    if(!cb || !cb.checked) return;
+    var inputs = row.querySelectorAll('input[type=number]');
+    if(inputs.length >= 2){
+      var qty = parseFloat(inputs[0].value) || 0;
+      var cost = parseFloat(inputs[1].value) || 0;
+      total += qty * cost;
+    }
+  });
+  return total;
+}
+
+function calculate(){
+  var bill = parseFloat(document.getElementById('totalBill').value) || 0;
+
+  // Distribution
+  var pC = parseFloat(document.getElementById('pctCompute').value)/100;
+  var pS = parseFloat(document.getElementById('pctStorage').value)/100;
+  var pDB = parseFloat(document.getElementById('pctDB').value)/100;
+  var pN = parseFloat(document.getElementById('pctNetwork').value)/100;
+  var pO = parseFloat(document.getElementById('pctOther').value)/100;
+
+  var computeAmt = bill * pC;
+  var storageAmt = bill * pS;
+  var dbAmt = bill * pDB;
+  var networkAmt = bill * pN;
+  var otherAmt = bill * pO;
+
+  // Update bars
+  document.getElementById('bCompute').style.width = (pC*100)+'%';
+  document.getElementById('bComputeAmt').textContent = fmt(computeAmt);
+  document.getElementById('bComputePct').textContent = Math.round(pC*100)+'%';
+  document.getElementById('bStorage').style.width = (pS*100)+'%';
+  document.getElementById('bStorageAmt').textContent = fmt(storageAmt);
+  document.getElementById('bStoragePct').textContent = Math.round(pS*100)+'%';
+  document.getElementById('bDB').style.width = (pDB*100)+'%';
+  document.getElementById('bDBAmt').textContent = fmt(dbAmt);
+  document.getElementById('bDBPct').textContent = Math.round(pDB*100)+'%';
+  document.getElementById('bNetwork').style.width = (pN*100)+'%';
+  document.getElementById('bNetworkAmt').textContent = fmt(networkAmt);
+  document.getElementById('bNetworkPct').textContent = Math.round(pN*100)+'%';
+  document.getElementById('bOther').style.width = (pO*100)+'%';
+  document.getElementById('bOtherAmt').textContent = fmt(otherAmt);
+  document.getElementById('bOtherPct').textContent = Math.round(pO*100)+'%';
+
+  // 1. ZOMBIES
+  var zombieSave = getZombieTotal();
+
+  // 2. RIGHTSIZING
+  var pctOver = parseFloat(document.getElementById('pctOverprovisioned').value)/100;
+  var pctRS = parseFloat(document.getElementById('pctRightSaving').value)/100;
+  var pctDBOver = parseFloat(document.getElementById('pctDBOverprov').value)/100;
+  var rightSave = (computeAmt * pctOver * pctRS) + (dbAmt * pctDBOver * 0.35);
+
+  // 3. RESERVATIONS
+  var pctStable = parseFloat(document.getElementById('pctStableCompute').value)/100;
+  var reservFactor = parseFloat(document.getElementById('reservationTerm').value);
+  var reservSave = (computeAmt - zombieSave * 0.3 - rightSave * 0.5) * pctStable * reservFactor;
+  if(reservSave < 0) reservSave = 0;
+
+  // 4. STORAGE TIERING
+  var pctHot = parseFloat(document.getElementById('pctHotStorage').value)/100;
+  var pctStorSav = parseFloat(document.getElementById('pctStorageSaving').value)/100;
+  var storageSave = storageAmt * (1 - pctHot) * pctStorSav;
+
+  // 5. SPOT + EGRESS
+  var pctSpot = parseFloat(document.getElementById('pctSpotable').value)/100;
+  var spotSave = computeAmt * pctSpot * 0.70; // 70% saving on spot portion
+  var pctEgress = parseFloat(document.getElementById('pctEgressSave').value)/100;
+  var egressSave = networkAmt * pctEgress;
+
+  var total = zombieSave + rightSave + reservSave + storageSave + spotSave + egressSave;
+  var totalPct = bill > 0 ? (total/bill*100) : 0;
+
+  // Update results
+  document.getElementById('totalSaving').textContent = fmt(total);
+  document.getElementById('totalSavingPct').textContent = fmtPct(totalPct) + ' de la factura actual';
+  document.getElementById('saveZombie').textContent = fmt(zombieSave);
+  document.getElementById('saveRightsize').textContent = fmt(rightSave);
+  document.getElementById('saveReservations').textContent = fmt(reservSave);
+  document.getElementById('saveStorage').textContent = fmt(storageSave);
+  document.getElementById('saveSpotEgress').textContent = fmt(spotSave + egressSave);
+  document.getElementById('annualSaving').textContent = fmt(total * 12);
+  document.getElementById('annualSavingLabel').textContent = 'ahorro acumulado en 12 meses';
+  document.getElementById('billBefore').textContent = fmt(bill) + '/mes';
+  document.getElementById('billAfter').textContent = fmt(Math.max(0, bill - total)) + '/mes';
+
+  // Bar segments
+  if(total > 0){
+    document.getElementById('bZombie').style.width = (zombieSave/total*100)+'%';
+    document.getElementById('bRight').style.width = (rightSave/total*100)+'%';
+    document.getElementById('bReserv').style.width = (reservSave/total*100)+'%';
+    document.getElementById('bStor').style.width = (storageSave/total*100)+'%';
+    document.getElementById('bSpot').style.width = ((spotSave+egressSave)/total*100)+'%';
+  }
+}
+
+// ZOMBIE ROWS
+function addZombieRow(){
+  var tbody = document.getElementById('zombieBody');
+  var row = document.createElement('tr');
+  row.innerHTML = '<td><select class="zombie-type"><option>Instancias detenidas (stopped EC2/VMs)</option><option>Volúmenes de disco sin VM adjunta</option><option>Snapshots / AMIs antiguas (+90 días)</option><option>IPs elásticas no asignadas</option><option>Load Balancers sin tráfico</option><option>Bases de datos de entornos dev/test olvidadas</option><option>Buckets S3 / Blob sin accesos hace +6 meses</option><option>Otro recurso zombie</option></select></td>' +
+    '<td style="text-align:center;"><input type="number" min="0" value="1" style="width:70px;text-align:center;" onchange="calculate()"></td>' +
+    '<td style="text-align:right;"><div class="input-wrap"><span class="input-prefix" style="left:6px;">$</span><input type="number" min="0" value="100" style="width:90px;text-align:right;padding-left:16px;" onchange="calculate()"></div></td>' +
+    '<td style="text-align:center;"><input type="checkbox" checked onchange="calculate()" style="width:16px;height:16px;cursor:pointer;"></td>' +
+    '<td><button class="del-btn" onclick="delZombieRow(this)">✕</button></td>';
+  tbody.appendChild(row);
+  calculate();
+}
+
+function delZombieRow(btn){
+  btn.closest('tr').remove();
+  calculate();
+}
+
+function toggleV(id){
+  var b = document.getElementById('vbdy-'+id);
+  var c = document.getElementById('vchv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open', b.classList.contains('open'));
+}
+
+function resetCalc(){
+  if(!confirm('¿Limpiar todos los valores y volver a los defaults?')) return;
+  document.getElementById('totalBill').value = 15000;
+  ['pctCompute','pctStorage','pctDB','pctNetwork','pctOther',
+   'pctOverprovisioned','pctRightSaving','pctDBOverprov',
+   'pctStableCompute','pctHotStorage','pctStorageSaving',
+   'pctSpotable','pctEgressSave'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.value = el.defaultValue;
+  });
+  ['pctCompute→sCompute','pctStorage→sStorage','pctDB→sDB',
+   'pctNetwork→sNetwork','pctOther→sOther',
+   'pctOverprovisioned→sOverprov','pctRightSaving→sRightSav',
+   'pctDBOverprov→sDBOverprov','pctStableCompute→sStable',
+   'pctHotStorage→sHotStor','pctStorageSaving→sStorSav',
+   'pctSpotable→sSpotable','pctEgressSave→sEgressSave'].forEach(function(pair){
+    var p = pair.split('→');
+    var el = document.getElementById(p[0]);
+    if(el) document.getElementById(p[1]).textContent = el.value + '%';
+  });
+  calculate();
+}
+
+// Nav active
+var sections = document.querySelectorAll('.section');
+var navLinks = document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy = window.scrollY + 70;
+  sections.forEach(function(s){
+    if(sy >= s.offsetTop && sy < s.offsetTop + s.offsetHeight){
+      navLinks.forEach(function(n){ n.classList.remove('active'); });
+      var a = document.querySelector('.tnav[href="#'+s.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+});
+
+// Init
+window.onload = calculate;
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+</body>
+</html>

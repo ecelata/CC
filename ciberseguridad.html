@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciberseguridad — Guía Técnica Completa | Personal Tech</title>
+<style>
+:root {
+  --sec-red:#C0392B;--sec-red-l:#FDECEC;--sec-red-d:#7B1A1A;
+  --sec-blue:#1A3A7A;--sec-blue-l:#E8F0FE;--sec-blue-m:#2D6BE4;
+  --sec-green:#085041;--sec-green-l:#E1F5EE;--sec-green-m:#1D9E75;
+  --sec-amber:#633806;--sec-amber-l:#FAEEDA;--sec-amber-m:#BA7517;
+  --sec-purple:#26215C;--sec-purple-l:#EEEDFE;--sec-purple-m:#7F77DD;
+  --sec-teal:#0A4040;--sec-teal-l:#E0F5F5;--sec-teal-m:#1A9696;
+  --sec-dark:#1a1a18;--sec-orange:#D85A30;--sec-orange-l:#FAECE7;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICALS */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT ELEMENTS */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:18px;margin-bottom:5px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* THREAT CARD */
+.threat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:12px 0;}
+.threat-card{border-radius:var(--radius-sm);border:.5px solid var(--border);overflow:hidden;}
+.threat-head{padding:12px 15px;display:flex;align-items:center;gap:10px;}
+.threat-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+.threat-name{font-size:13.5px;font-weight:700;flex:1;}
+.threat-severity{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.threat-body{padding:9px 15px 13px;border-top:.5px solid var(--border);}
+.threat-desc{font-size:12px;color:var(--text-sec);line-height:1.6;margin-bottom:6px;}
+.threat-example{font-size:11.5px;color:var(--text-ter);font-style:italic;padding:5px 8px;background:var(--bg2);border-radius:var(--radius-sm);}
+
+/* FRAMEWORK CARD — big cards */
+.fw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:12px 0;}
+.fw-card{border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.fw-head{padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.fw-icon{font-size:24px;flex-shrink:0;}
+.fw-meta{flex:1;}
+.fw-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.fw-type{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:2px;}
+.fw-body{padding:0 18px 16px;}
+.fw-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;margin-bottom:8px;}
+.fw-cases{font-size:11.5px;color:var(--text-ter);line-height:1.55;}
+.fw-cases strong{color:var(--text-sec);}
+
+/* DATA TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.check{color:var(--sec-green);font-weight:700;}
+.cross{color:var(--sec-red);font-weight:700;}
+.partial{color:var(--sec-amber);font-weight:700;}
+
+/* TUPLA VISUAL */
+.tupla-row{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0;}
+.tupla-box{background:var(--sec-blue-l);border:1.5px solid var(--sec-blue-m);border-radius:var(--radius-sm);padding:10px 14px;flex:1;min-width:120px;text-align:center;}
+.tupla-num{font-size:20px;font-weight:700;color:var(--sec-blue);margin-bottom:3px;}
+.tupla-label{font-size:11px;font-weight:700;color:var(--sec-blue);}
+.tupla-ex{font-size:10.5px;color:var(--text-ter);margin-top:3px;}
+
+/* GENERATION TIMELINE */
+.gen-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+.gen-box{border-radius:var(--radius-sm);border:.5px solid var(--border);overflow:hidden;}
+.gen-head{padding:10px 13px;font-size:12px;font-weight:700;}
+.gen-body{padding:8px 13px 12px;font-size:12px;color:var(--text-sec);line-height:1.55;}
+.gen-body ul{padding-left:14px;}
+.gen-body li{margin-bottom:3px;}
+
+/* FORTINET BADGE */
+.forti-badge{display:inline-flex;align-items:center;gap:6px;background:var(--sec-red-l);border:1px solid var(--sec-red);border-radius:var(--radius-sm);padding:6px 12px;font-size:11.5px;font-weight:700;color:var(--sec-red-d);}
+
+/* NOTES */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--sec-green-l);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--sec-green-m);line-height:1.6;}
+.win-note strong{color:var(--sec-green);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--sec-blue-l);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--sec-blue-m);line-height:1.6;}
+.tip-note strong{color:var(--sec-blue);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--sec-red-l);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--sec-red);line-height:1.6;}
+.warn-note strong{color:var(--sec-red-d);}
+.analogy{background:var(--bg2);border-left:3px solid var(--sec-blue-m);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin:10px 0;font-size:13px;color:var(--text-sec);line-height:1.65;}
+.analogy strong{color:var(--sec-blue);}
+
+/* DICT */
+.dict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin:12px 0;}
+.dict-card{border:.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.dict-head{padding:10px 13px;display:flex;align-items:center;gap:8px;}
+.dict-letter{font-size:16px;font-weight:700;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dict-term{font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.dict-en{font-size:10.5px;color:var(--text-ter);font-style:italic;}
+.dict-body{padding:7px 13px 11px;border-top:.5px solid var(--border);}
+.dict-def{font-size:12px;color:var(--text-sec);line-height:1.6;}
+.dict-example{font-size:11px;color:var(--text-ter);font-style:italic;margin-top:5px;padding:4px 7px;background:var(--bg2);border-radius:var(--radius-sm);}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3,.gen-timeline{grid-template-columns:1fr;}
+  .dict-grid,.fw-grid,.threat-grid{grid-template-columns:1fr;}
+  .tupla-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🔐 Ciberseguridad</div>
+  <a class="tnav" href="#v1">01 Landscape de amenazas</a>
+  <a class="tnav" href="#v2">02 Tipos de ataques</a>
+  <a class="tnav" href="#v3">03 Marcos modernos</a>
+  <a class="tnav" href="#v4">04 Zero Trust</a>
+  <a class="tnav" href="#v5">05 Firewalls — Evolución</a>
+  <a class="tnav" href="#v6">06 Fortinet / FortiGate</a>
+  <a class="tnav" href="#v7">07 Cloud Security</a>
+  <a class="tnav" href="#v8">08 Comparativas</a>
+  <a class="tnav" href="#v9">09 Personal Tech en ciber</a>
+  <a class="tnav" href="#v10">10 Diccionario A–Z</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Ciberseguridad — Guía Técnica Completa</div>
+    <div class="doc-sub">Threat Landscape · Frameworks modernos · Zero Trust · SASE · Fortinet/FortiGate · Cloud Security · Diccionario A–Z</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO -->
+<div class="hero-strip">
+  <div class="hs" style="background:var(--sec-red-l);border-color:var(--sec-red);">
+    <div class="hs-icon">⚠️</div>
+    <div class="hs-val">El 95% de los ataques explotan error humano</div>
+    <div class="hs-sub">Phishing, ingeniería social y contraseñas débiles siguen siendo el vector #1.</div>
+  </div>
+  <div class="hs" style="background:var(--sec-blue-l);border-color:var(--sec-blue-m);">
+    <div class="hs-icon">🛡</div>
+    <div class="hs-val">Zero Trust = nunca confiar, siempre verificar</div>
+    <div class="hs-sub">El perímetro murió. La identidad es el nuevo perímetro.</div>
+  </div>
+  <div class="hs" style="background:var(--sec-green-l);border-color:var(--sec-green-m);">
+    <div class="hs-icon">☁️</div>
+    <div class="hs-val">SASE converge red + seguridad</div>
+    <div class="hs-sub">SD-WAN + ZTNA + CASB + SWG + FWaaS en una sola plataforma cloud.</div>
+  </div>
+  <div class="hs" style="background:var(--sec-amber-l);border-color:var(--sec-amber-m);">
+    <div class="hs-icon">🔥</div>
+    <div class="hs-val">NGFW = inspección profunda de paquetes</div>
+    <div class="hs-sub">Los firewalls modernos ven aplicaciones, usuarios y contenido. No solo puertos.</div>
+  </div>
+  <div class="hs" style="background:var(--sec-purple-l);border-color:var(--sec-purple-m);">
+    <div class="hs-icon">💰</div>
+    <div class="hs-val">Ransomware cuesta $4.4M promedio por incidente</div>
+    <div class="hs-sub">Costo incluye rescate + downtime + recuperación + reputación.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 THREAT LANDSCAPE -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--sec-red-l);">🌐</div>
+    <div>
+      <div class="vert-title">01 — El panorama de amenazas (Threat Landscape)</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">El mapa del adversario — actores, motivaciones y vectores de ataque</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro"><strong>El Threat Landscape</strong> es el mapa completo de amenazas que enfrenta una organización: quiénes atacan, por qué, cómo y con qué herramientas. Entenderlo es el prerequisito de cualquier estrategia de seguridad. <strong>No se puede defender lo que no se conoce.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tl1')">
+        <span class="acc-badge" style="background:var(--sec-red-l);color:var(--sec-red-d);">Actores de amenaza</span>
+        <div class="acc-info"><div class="acc-name">Quiénes atacan — motivaciones y capacidades por tipo de adversario</div><div class="acc-tag">De script kiddies a actores de Estado — el espectro completo</div></div>
+        <span class="acc-chv" id="achv-tl1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tl1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Actor</th><th>Motivación</th><th>Capacidad técnica</th><th>Objetivos típicos</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">🎓 Script Kiddies</td><td>Reconocimiento, diversión</td><td>Baja — usan herramientas de terceros</td><td>Sitios web visibles, desfiguración</td><td>Defacer un sitio municipal con herramientas automáticas descargadas</td></tr>
+              <tr><td class="tn">💰 Cibercriminales</td><td>Ganancia económica</td><td>Media-alta — organizaciones profesionales</td><td>Banca, retail, salud — cualquier dato monetizable</td><td>Grupos de ransomware como LockBit o BlackCat</td></tr>
+              <tr><td class="tn">🏛 Actores de Estado (APT)</td><td>Espionaje, sabotaje, geopolítica</td><td>Muy alta — recursos ilimitados</td><td>Infraestructura crítica, defensa, gobierno, energía</td><td>APT28 (Rusia), APT41 (China)</td></tr>
+              <tr><td class="tn">😤 Hacktivistas</td><td>Ideología, protesta</td><td>Variable</td><td>Organizaciones con posiciones públicas controversiales</td><td>Anonymous, Killnet</td></tr>
+              <tr><td class="tn">😠 Insider malicioso</td><td>Venganza, dinero, coerción</td><td>Alta — conocimiento interno privilegiado</td><td>Datos confidenciales, sabotaje de sistemas</td><td>Empleado despedido que roba la base de clientes antes de irse</td></tr>
+              <tr><td class="tn">😅 Insider accidental</td><td>Ninguna — error humano</td><td>No aplica</td><td>Cualquier sistema al que tenga acceso</td><td>Empleado que abre un adjunto malicioso o hace click en un link de phishing</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tl2')">
+        <span class="acc-badge" style="background:var(--sec-red-l);color:var(--sec-red-d);">Vectores de ataque</span>
+        <div class="acc-info"><div class="acc-name">Por dónde entran los atacantes — los caminos de ataque más frecuentes</div><div class="acc-tag">Basado en Fortinet Threat Landscape Introduction</div></div>
+        <span class="acc-chv" id="achv-tl2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tl2">
+        <div class="ab-inner">
+          <div class="grid3">
+            <div class="mini-card" style="border-color:var(--sec-red);background:var(--sec-red-l);">
+              <div class="mc-icon">📧</div>
+              <div class="mc-title">Email / Phishing</div>
+              <div class="mc-text">Vector #1. El atacante envía un correo que simula ser de una entidad confiable. El usuario hace click o ingresa credenciales. <strong>El 90% de los incidentes empiezan con un email.</strong></div>
+            </div>
+            <div class="mini-card" style="border-color:var(--sec-amber-m);background:var(--sec-amber-l);">
+              <div class="mc-icon">🌐</div>
+              <div class="mc-title">Web / Drive-by Download</div>
+              <div class="mc-text">Sitio legítimo comprometido que sirve malware al visitarlo. El usuario no necesita hacer nada — el exploit se ejecuta al cargar la página.</div>
+            </div>
+            <div class="mini-card" style="border-color:var(--sec-purple-m);background:var(--sec-purple-l);">
+              <div class="mc-icon">🔌</div>
+              <div class="mc-title">Dispositivos físicos (USB)</div>
+              <div class="mc-text">USB con malware dejado en el estacionamiento o sala de espera. La curiosidad humana hace el resto. Vector de APTs para atacar redes air-gapped.</div>
+            </div>
+            <div class="mini-card" style="border-color:var(--sec-blue-m);background:var(--sec-blue-l);">
+              <div class="mc-icon">🔓</div>
+              <div class="mc-title">Vulnerabilidades sin parchear</div>
+              <div class="mc-text">Software con vulnerabilidades conocidas y sin actualizar. Los atacantes escanean internet continuamente buscando versiones vulnerables. Time-to-exploit promedio: 15 días.</div>
+            </div>
+            <div class="mini-card" style="border-color:var(--sec-teal-m);background:var(--sec-teal-l);">
+              <div class="mc-icon">🤝</div>
+              <div class="mc-title">Supply Chain (Cadena de suministro)</div>
+              <div class="mc-text">Comprometer a un proveedor de software o servicio para llegar a sus clientes. SolarWinds (2020): atacaron la cadena de suministro para llegar a 18.000 organizaciones.</div>
+            </div>
+            <div class="mini-card" style="border-color:var(--sec-orange);background:var(--sec-orange-l);">
+              <div class="mc-icon">📶</div>
+              <div class="mc-title">WiFi no seguro / MitM</div>
+              <div class="mc-text">Redes WiFi abiertas permiten ataques de "man in the middle". El atacante intercepta el tráfico entre el usuario y el servidor sin que ninguno se entere.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tl3')">
+        <span class="acc-badge" style="background:var(--sec-red-l);color:var(--sec-red-d);">Kill Chain</span>
+        <div class="acc-info"><div class="acc-name">Las 7 fases de un ataque cibernético — el modelo Cyber Kill Chain de Lockheed Martin</div><div class="acc-tag">Entender la cadena permite interrumpirla en cualquier fase</div></div>
+        <span class="acc-chv" id="achv-tl3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tl3">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Fase</th><th>Qué hace el atacante</th><th>Cómo defenderlo</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">1</td><td class="tn">Reconocimiento</td><td>Recopila información: emails, tecnologías usadas, empleados (LinkedIn), IPs públicas, vulnerabilidades conocidas.</td><td>Reducir superficie pública. Monitorear lo que se expone en internet sobre la organización.</td></tr>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">2</td><td class="tn">Weaponization</td><td>Crea el payload: un documento Word con macro maliciosa, un PDF con exploit, un exe disfrazado.</td><td>Seguridad en endpoints (EDR). Sandboxing de archivos adjuntos.</td></tr>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">3</td><td class="tn">Delivery (Entrega)</td><td>Entrega el payload: email de phishing, USB, sitio web comprometido, descarga maliciosa.</td><td>Filtrado de email (SEG), SWG, concienciación de usuarios, MFA.</td></tr>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">4</td><td class="tn">Exploitation (Explotación)</td><td>El payload explota una vulnerabilidad en el sistema de la víctima para ejecutar código.</td><td>Parches al día. Hardening de sistemas. NGFW con IPS.</td></tr>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">5</td><td class="tn">Installation (Instalación)</td><td>Instala malware persistente (backdoor, RAT, rootkit) para mantener acceso.</td><td>EDR/XDR que detecta comportamiento anómalo. Whitelisting de aplicaciones.</td></tr>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">6</td><td class="tn">Command & Control (C2)</td><td>Establece canal de comunicación con su servidor para recibir instrucciones.</td><td>Filtrado de DNS. Monitoreo de tráfico saliente. SIEM con reglas de detección C2.</td></tr>
+              <tr><td style="font-weight:700;color:var(--sec-blue);">7</td><td class="tn">Actions on Objectives</td><td>Ejecuta el objetivo: robar datos, cifrar archivos (ransomware), destruir, moverse lateralmente.</td><td>DLP, segmentación de red, backups offline, privilegios mínimos (Zero Trust).</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La regla de oro:</strong> Interrumpir la Kill Chain en la fase 1, 2 o 3 es exponencialmente más barato que en la fase 6 o 7. Un filtro de email que bloquea el phishing (fase 3) puede evitar un incidente de ransomware de $4.4M.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 TIPOS DE ATAQUES -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--sec-amber-l);">💣</div>
+    <div>
+      <div class="vert-title">02 — Tipos de ataques y malware</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Ransomware · Phishing · DDoS · APT · SQL Injection · Zero-day — el catálogo del adversario</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('at1')">
+        <span class="acc-badge" style="background:var(--sec-amber-l);color:var(--sec-amber);">Ataques más frecuentes en empresas</span>
+        <div class="acc-info"><div class="acc-name">Los 10 ataques que un consultor cloud debe conocer — con impacto empresarial real</div></div>
+        <span class="acc-chv" id="achv-at1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-at1">
+        <div class="ab-inner">
+          <div class="threat-grid">
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-red-l);">
+                <div class="threat-badge" style="background:var(--sec-red);color:#fff;">Malware</div>
+                <div class="threat-name">Ransomware</div>
+                <div class="threat-severity" style="background:#7B1A1A;color:#fff;">CRÍTICO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Cifra todos los archivos de la organización y exige rescate para recuperarlos. Hoy también roba los datos antes de cifrarlos (doble extorsión). El impacto promedio supera los $4.4M incluyendo downtime.</div>
+                <div class="threat-example">LockBit, BlackCat, Cl0p — grupos con modelos de negocio RaaS (Ransomware as a Service).</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-amber-l);">
+                <div class="threat-badge" style="background:var(--sec-amber-m);color:#fff;">Ingeniería Social</div>
+                <div class="threat-name">Phishing / Spear Phishing</div>
+                <div class="threat-severity" style="background:var(--sec-amber);color:#fff;">ALTO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Email que simula ser de una entidad confiable para robar credenciales o ejecutar malware. Spear Phishing: personalizado para una persona específica usando información de LinkedIn/redes.</div>
+                <div class="threat-example">Email del "CEO" pidiendo transferencia urgente. Notificación falsa de banco con link a sitio idéntico.</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-blue-l);">
+                <div class="threat-badge" style="background:var(--sec-blue-m);color:#fff;">Red</div>
+                <div class="threat-name">DDoS — Denegación de Servicio</div>
+                <div class="threat-severity" style="background:var(--sec-amber);color:#fff;">ALTO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Inundación masiva de tráfico que colapsa los servidores, dejando el servicio inaccesible para los usuarios legítimos. Cada minuto de caída en ecommerce puede costar miles de dólares.</div>
+                <div class="threat-example">Ataques de 1 Tbps+ contra bancos argentinos. Amplificación DNS/NTP para multiplicar el volumen.</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-purple-l);">
+                <div class="threat-badge" style="background:var(--sec-purple-m);color:#fff;">APT</div>
+                <div class="threat-name">Advanced Persistent Threat</div>
+                <div class="threat-severity" style="background:#3D0F6B;color:#fff;">CRÍTICO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Ataque silencioso de largo plazo por actores sofisticados (estados, grupos organizados). Se instalan en la red y permanecen sin ser detectados durante meses o años, extrayendo información continuamente.</div>
+                <div class="threat-example">Permanencia promedio antes de detección: 197 días. El atacante "vive" en la red mientras opera normalmente.</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-teal-l);">
+                <div class="threat-badge" style="background:var(--sec-teal-m);color:#fff;">Web App</div>
+                <div class="threat-name">SQL Injection / XSS</div>
+                <div class="threat-severity" style="background:var(--sec-amber);color:#fff;">ALTO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">SQL Injection: inserta comandos SQL en formularios web para extraer o modificar la base de datos. XSS (Cross-Site Scripting): inyecta código malicioso en páginas web que se ejecuta en el navegador del visitante.</div>
+                <div class="threat-example">Filtración masiva de datos de clientes de una base de datos no sanitizada.</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-orange-l);">
+                <div class="threat-badge" style="background:var(--sec-orange);color:#fff;">Credenciales</div>
+                <div class="threat-name">Credential Stuffing / BFA</div>
+                <div class="threat-severity" style="background:var(--sec-amber);color:#fff;">ALTO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Uso automatizado de listas de credenciales filtradas (compradas en la dark web) para intentar acceder a múltiples servicios. El 65% de los usuarios reutiliza contraseñas entre servicios.</div>
+                <div class="threat-example">Compran lista de 500M credenciales de un breach anterior y las prueban automáticamente en portales corporativos.</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-red-l);">
+                <div class="threat-badge" style="background:var(--sec-red);color:#fff;">Vulnerabilidad</div>
+                <div class="threat-name">Zero-Day Exploit</div>
+                <div class="threat-severity" style="background:#7B1A1A;color:#fff;">CRÍTICO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Vulnerabilidad desconocida por el fabricante del software — no existe parche disponible. Los actores de Estado y grupos sofisticados pagan millones por estos exploits.</div>
+                <div class="threat-example">Log4Shell (2021): vulnerabilidad zero-day en una librería Java usada en millones de aplicaciones. Explotada masivamente en 48hs.</div>
+              </div>
+            </div>
+
+            <div class="threat-card">
+              <div class="threat-head" style="background:var(--sec-blue-l);">
+                <div class="threat-badge" style="background:var(--sec-blue-m);color:#fff;">Movimiento lateral</div>
+                <div class="threat-name">Pass the Hash / Kerberoasting</div>
+                <div class="threat-severity" style="background:var(--sec-amber);color:#fff;">ALTO</div>
+              </div>
+              <div class="threat-body">
+                <div class="threat-desc">Una vez dentro de la red, el atacante se mueve entre sistemas usando credenciales robadas o tickets de autenticación comprometidos en Active Directory para escalar privilegios.</div>
+                <div class="threat-example">Atacante entra por un PC de empleado → roba ticket Kerberos → accede al servidor de dominio → controla toda la red.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 MARCOS MODERNOS -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--sec-blue-l);">🏗</div>
+    <div>
+      <div class="vert-title">03 — Marcos y arquitecturas de seguridad modernas</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">SASE · SSE · Zero Trust · Hub-and-Spoke (obsoleto) — el mapa de la evolución</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">La ciberseguridad moderna no es un producto — es una arquitectura. <strong>SASE, SSE y Zero Trust no son tecnologías que se compran, son modelos arquitectónicos que guían cómo se diseña y opera la seguridad.</strong> El modelo perimetral antiguo (Hub-and-Spoke) no alcanza para el mundo cloud y trabajo híbrido.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw1')">
+        <span class="acc-badge" style="background:var(--sec-blue-l);color:var(--sec-blue);">Los 4 marcos en detalle</span>
+        <div class="acc-info"><div class="acc-name">SASE · SSE · Zero Trust · Modelo Perimetral — definiciones, diferencias y cuándo aplica cada uno</div><div class="acc-tag">Basado en el documento Cloud Security adjunto</div></div>
+        <span class="acc-chv" id="achv-fw1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw1">
+        <div class="ab-inner">
+          <div class="fw-grid">
+
+            <div class="fw-card" style="border-color:var(--sec-blue-m);">
+              <div class="fw-head" style="background:var(--sec-blue-l);">
+                <div class="fw-icon">🌐</div>
+                <div class="fw-meta">
+                  <div class="fw-name">SASE</div>
+                  <span class="fw-type" style="background:var(--sec-blue-m);color:#fff;">Secure Access Service Edge</span>
+                  <div style="font-size:11px;color:var(--sec-blue);margin-top:2px;">Convergencia total: red + seguridad</div>
+                </div>
+              </div>
+              <div class="fw-body">
+                <div class="fw-desc">Modelo arquitectónico alojado en la nube que <strong>unifica servicios de red (SD-WAN) con funciones de seguridad avanzadas</strong> (ZTNA, CASB, SWG, FWaaS) en una sola plataforma nativa. El usuario se conecta al punto de presencia SASE más cercano y desde allí accede de forma segura a cualquier aplicación.</div>
+                <div class="fw-cases"><strong>Casos de uso:</strong> Empresas con alta dispersión geográfica, sucursales físicas y personal remoto que requieren acceso ágil y seguro a aplicaciones cloud, eliminando la latencia del tráfico centralizado hacia un datacenter.</div>
+              </div>
+            </div>
+
+            <div class="fw-card" style="border-color:var(--sec-teal-m);">
+              <div class="fw-head" style="background:var(--sec-teal-l);">
+                <div class="fw-icon">🔒</div>
+                <div class="fw-meta">
+                  <div class="fw-name">SSE</div>
+                  <span class="fw-type" style="background:var(--sec-teal-m);color:#fff;">Security Service Edge</span>
+                  <div style="font-size:11px;color:var(--sec-teal);margin-top:2px;">SASE sin la parte de red</div>
+                </div>
+              </div>
+              <div class="fw-body">
+                <div class="fw-desc">Subconjunto directo de SASE que <strong>agrupa exclusivamente las capacidades de seguridad</strong> (ZTNA, CASB, SWG, FWaaS), omitiendo la gestión de la red física (SD-WAN). Ideal cuando la red ya está gestionada.</div>
+                <div class="fw-cases"><strong>Casos de uso:</strong> Organizaciones que ya cuentan con infraestructura de conectividad estable (MPLS, SD-WAN propia) y solo necesitan desplegar una capa de protección cloud sobre lo que ya tienen.</div>
+              </div>
+            </div>
+
+            <div class="fw-card" style="border-color:var(--sec-purple-m);">
+              <div class="fw-head" style="background:var(--sec-purple-l);">
+                <div class="fw-icon">🚫</div>
+                <div class="fw-meta">
+                  <div class="fw-name">Zero Trust Architecture (ZTA)</div>
+                  <span class="fw-type" style="background:var(--sec-purple-m);color:#fff;">Filosofía de identidad y contexto</span>
+                  <div style="font-size:11px;color:var(--sec-purple);margin-top:2px;">"Nunca confiar. Siempre verificar."</div>
+                </div>
+              </div>
+              <div class="fw-body">
+                <div class="fw-desc">Marco estratégico guiado por la premisa de <strong>"nunca confiar, siempre verificar"</strong>. Ningún usuario o dispositivo es seguro por defecto, ni siquiera dentro del perímetro. Exige autenticación continua y el principio de mínimo privilegio.</div>
+                <div class="fw-cases"><strong>Casos de uso:</strong> Base fundamental para mitigar movimientos laterales de atacantes y proteger entornos de trabajo híbridos frente a credenciales comprometidas. No es un producto — es una filosofía que impregna toda la arquitectura.</div>
+              </div>
+            </div>
+
+            <div class="fw-card" style="border-color:var(--gray-mid);opacity:.85;">
+              <div class="fw-head" style="background:var(--gray-light);">
+                <div class="fw-icon">🏚</div>
+                <div class="fw-meta">
+                  <div class="fw-name">Modelo Perimetral (Hub-and-Spoke)</div>
+                  <span class="fw-type" style="background:var(--gray-mid);color:#fff;">⚠️ OBSOLETO</span>
+                  <div style="font-size:11px;color:var(--gray-mid);margin-top:2px;">Seguridad basada en ubicación física</div>
+                </div>
+              </div>
+              <div class="fw-body">
+                <div class="fw-desc">Metodología heredada que asume que todo lo que está "dentro" de la red es confiable. Centraliza el tráfico de sucursales mediante MPLS/VPN hacia el datacenter principal para su inspección.</div>
+                <div class="fw-cases"><strong>Por qué falla hoy:</strong> El 70% de las aplicaciones ya están en SaaS o cloud. El tráfico tiene que salir a internet igual. Centralizar sólo agrega latencia sin agregar seguridad. El modelo asume que el atacante está "afuera" — y ya vimos que no es así.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw2')">
+        <span class="acc-badge" style="background:var(--sec-blue-l);color:var(--sec-blue);">Los componentes de SASE/SSE</span>
+        <div class="acc-info"><div class="acc-name">ZTNA · CASB · SWG · FWaaS · SD-WAN — cada pieza explicada</div><div class="acc-tag">Las 5 tecnologías que componen la arquitectura de seguridad cloud moderna</div></div>
+        <span class="acc-chv" id="achv-fw2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Componente</th><th>Nombre completo</th><th>Qué hace</th><th>Reemplaza a</th><th>Valor clave</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">ZTNA</td><td>Zero Trust Network Access</td><td>Crea límites de acceso seguros alrededor de las aplicaciones basándose en la identidad del usuario y el contexto del dispositivo. El usuario accede solo a lo que necesita, no a toda la red.</td><td>VPN tradicional</td><td>Oculta las apps de internet público. Si las credenciales se comprometen, el atacante no accede a toda la red.</td></tr>
+              <tr><td class="tn">CASB</td><td>Cloud Access Security Broker</td><td>Punto de control entre los usuarios y los servicios SaaS/IaaS/PaaS. Supervisa la actividad, aplica políticas de seguridad y protege datos confidenciales contra fugas en Office 365, Salesforce, AWS, etc.</td><td>No tenía equivalente en el modelo antiguo</td><td>Visibilidad y control sobre el SaaS que los usuarios ya usan. Previene la Shadow IT y el data leakage.</td></tr>
+              <tr><td class="tn">SWG</td><td>Secure Web Gateway</td><td>Filtra el tráfico de internet: bloquea malware, previene descargas maliciosas y garantiza que la navegación corporativa cumpla las políticas. Inspecciona incluso tráfico HTTPS cifrado.</td><td>Proxy web on-premise</td><td>El empleado remoto tiene la misma protección que en la oficina, sin importar desde dónde navega.</td></tr>
+              <tr><td class="tn">FWaaS</td><td>Firewall as a Service</td><td>NGFW en la nube. Inspecciona el tráfico a escala global sin hardware físico en las sedes. Incluye DPI, IPS, control de aplicaciones y filtrado de URLs.</td><td>Firewall físico (NGFW on-premise)</td><td>Escala elásticamente. Sin hardware que gestionar. Actualización automática de firmas de amenazas.</td></tr>
+              <tr><td class="tn">SD-WAN</td><td>Software-Defined WAN</td><td>Abstrae la conectividad WAN y selecciona dinámicamente la mejor ruta para cada tipo de tráfico (MPLS, broadband, LTE) según latencia, pérdida de paquetes y políticas.</td><td>MPLS dedicado</td><td>Reduce costos WAN 30–60%. Envía el tráfico SaaS directo a internet y el tráfico sensible por el canal más seguro.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip-note"><strong>SASE en una frase para el cliente:</strong> "En vez de traer todo el tráfico al datacenter para inspeccionarlo (caro y lento), la seguridad se mueve a la nube y sigue al usuario dondequiera que esté — casa, oficina, café, sucursal."</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 ZERO TRUST -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--sec-purple-l);">🚫</div>
+    <div>
+      <div class="vert-title">04 — Zero Trust: la filosofía que reemplazó al perímetro</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">"Nunca confiar. Siempre verificar." — los 5 pilares y cómo implementarlos</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro"><strong>Zero Trust no es un producto que se compra</strong> — es una filosofía que redefine cómo se piensa la seguridad. El modelo antiguo asumía que todo lo "interno" era confiable. Zero Trust asume que <strong>cualquier usuario, dispositivo o conexión puede estar comprometido</strong> — incluso si están dentro de la red corporativa.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('zt1')">
+        <span class="acc-badge" style="background:var(--sec-purple-l);color:var(--sec-purple);">Los 5 pilares de Zero Trust</span>
+        <div class="acc-info"><div class="acc-name">Identidad · Dispositivo · Red · Aplicación · Dato — los 5 planos que ZT protege</div></div>
+        <span class="acc-chv" id="achv-zt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-zt1">
+        <div class="ab-inner">
+          <div class="grid3">
+            <div class="mini-card" style="background:var(--sec-purple-l);border-color:var(--sec-purple-m);">
+              <div class="mc-icon">👤</div>
+              <div class="mc-title">Pilar 1: Identidad</div>
+              <div class="mc-text">Verificar siempre quién está accediendo. MFA obligatorio. Acceso condicional (¿desde qué dispositivo? ¿en qué hora? ¿desde qué lugar?). Las credenciales nunca son suficientes por sí solas.</div>
+            </div>
+            <div class="mini-card" style="background:var(--sec-blue-l);border-color:var(--sec-blue-m);">
+              <div class="mc-icon">💻</div>
+              <div class="mc-title">Pilar 2: Dispositivo</div>
+              <div class="mc-text">Verificar el estado del dispositivo antes de permitir acceso: ¿está actualizado? ¿tiene antivirus activo? ¿es un dispositivo corporativo o personal? Un celular sin parches no puede acceder a datos críticos.</div>
+            </div>
+            <div class="mini-card" style="background:var(--sec-teal-l);border-color:var(--sec-teal-m);">
+              <div class="mc-icon">🌐</div>
+              <div class="mc-title">Pilar 3: Red</div>
+              <div class="mc-text">Segmentar la red en microsegmentos. Un atacante que entra por un punto no puede moverse libremente. ZTNA reemplaza la VPN tradicional que daba acceso a toda la red.</div>
+            </div>
+            <div class="mini-card" style="background:var(--sec-green-l);border-color:var(--sec-green-m);">
+              <div class="mc-icon">🖥</div>
+              <div class="mc-title">Pilar 4: Aplicación</div>
+              <div class="mc-text">Las aplicaciones no son accesibles desde internet. Solo los usuarios autorizados con dispositivos verificados pueden acceder a cada aplicación específica (no a toda la red).</div>
+            </div>
+            <div class="mini-card" style="background:var(--sec-amber-l);border-color:var(--sec-amber-m);">
+              <div class="mc-icon">🗄</div>
+              <div class="mc-title">Pilar 5: Dato</div>
+              <div class="mc-text">Clasificar y proteger el dato en sí mismo. Cifrado en tránsito y en reposo. DLP para evitar que datos sensibles salgan de la organización. El dato protegido es la última línea de defensa.</div>
+            </div>
+          </div>
+          <div class="analogy"><strong>La analogía del hospital:</strong> En el modelo antiguo, si tenías credencial de empleado entrás a todo el hospital. En Zero Trust, el médico de cardiología solo puede entrar a la sala de cardiología. La enfermera solo ve los registros de sus pacientes asignados. El técnico de limpieza solo puede estar en las áreas asignadas en su turno. Mismo edificio, acceso mínimo y necesario para cada rol.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('zt2')">
+        <span class="acc-badge" style="background:var(--sec-purple-l);color:var(--sec-purple);">Perimetral vs Zero Trust</span>
+        <div class="acc-info"><div class="acc-name">El cuadro comparativo definitivo — por qué el modelo antiguo ya no funciona</div></div>
+        <span class="acc-chv" id="achv-zt2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-zt2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Aspecto</th><th style="background:var(--gray-light);color:var(--gray-dark);">🏚 Modelo Perimetral</th><th style="background:var(--sec-purple-l);color:var(--sec-purple);">🛡 Zero Trust</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Premisa base</td><td>Todo lo "dentro" de la red es confiable</td><td>Nada es confiable por defecto — ni interno ni externo</td></tr>
+              <tr><td class="tn">Control de acceso</td><td>Basado en la ubicación de red (¿está dentro del firewall?)</td><td>Basado en identidad + dispositivo + contexto + datos</td></tr>
+              <tr><td class="tn">VPN</td><td>Da acceso completo a la red interna</td><td>Reemplazada por ZTNA — acceso solo a la app específica</td></tr>
+              <tr><td class="tn">Movimiento lateral</td><td class="cross">Una vez dentro, el atacante puede moverse libremente</td><td class="check">Microsegmentación limita el movimiento. Cada salto requiere nueva verificación.</td></tr>
+              <tr><td class="tn">Trabajo remoto</td><td class="cross">Seguridad degradada. VPN como solución parcial.</td><td class="check">Mismo nivel de seguridad desde cualquier lugar</td></tr>
+              <tr><td class="tn">Aplicaciones SaaS</td><td class="cross">No contemplado — el tráfico SaaS evita el perímetro</td><td class="check">CASB y ZTNA protegen el acceso a SaaS</td></tr>
+              <tr><td class="tn">Cuando las credenciales se roban</td><td class="cross">El atacante tiene acceso pleno a toda la red</td><td class="check">MFA bloquea. Si pasa MFA, microsegmentación limita el daño</td></tr>
+              <tr><td class="tn">Escalabilidad</td><td class="cross">Hub centralizado = cuello de botella a medida que crece</td><td class="check">Nativo cloud — escala sin límite con el crecimiento</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 FIREWALLS -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--sec-amber-l);">🔥</div>
+    <div>
+      <div class="vert-title">05 — Firewalls: evolución de 3 generaciones</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">5 tuplas → Stateful → NGFW — de filtrar puertos a inspeccionar aplicaciones y comportamientos</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">El firewall evolucionó de un simple filtro de puertos (1ª gen) a un sistema de inspección de estado (2ª gen) y finalmente a un motor de análisis de aplicaciones, usuarios y contenido (NGFW, 3ª gen). <strong>Entender las 5 tuplas es entender la base de todo lo que vino después.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw3')">
+        <span class="acc-badge" style="background:var(--sec-amber-l);color:var(--sec-amber);">Las 5 Tuplas — la "matrícula" del paquete</span>
+        <div class="acc-info"><div class="acc-name">IP origen · IP destino · Puerto origen · Puerto destino · Protocolo — la base de la inspección de red</div><div class="acc-tag">Basado en el documento Fortinet Getting Started in Cybersecurity</div></div>
+        <span class="acc-chv" id="achv-fw3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw3">
+        <div class="ab-inner">
+          <p class="block-text" style="margin-bottom:12px;">Cada paquete de red lleva 5 campos fundamentales que los firewalls tradicionales usaban para decidir si lo permitían o bloqueaban:</p>
+          <div class="tupla-row">
+            <div class="tupla-box">
+              <div class="tupla-num">①</div>
+              <div class="tupla-label">IP de origen</div>
+              <div class="tupla-ex">¿Quién envía?<br>192.168.1.10</div>
+            </div>
+            <div class="tupla-box">
+              <div class="tupla-num">②</div>
+              <div class="tupla-label">IP de destino</div>
+              <div class="tupla-ex">¿A quién va?<br>203.0.113.5</div>
+            </div>
+            <div class="tupla-box">
+              <div class="tupla-num">③</div>
+              <div class="tupla-label">Puerto origen</div>
+              <div class="tupla-ex">App emisora<br>Puerto 54321</div>
+            </div>
+            <div class="tupla-box">
+              <div class="tupla-num">④</div>
+              <div class="tupla-label">Puerto destino</div>
+              <div class="tupla-ex">Servicio receptor<br>443 (HTTPS)</div>
+            </div>
+            <div class="tupla-box">
+              <div class="tupla-num">⑤</div>
+              <div class="tupla-label">Protocolo</div>
+              <div class="tupla-ex">Cómo viaja<br>TCP / UDP / ICMP</div>
+            </div>
+          </div>
+          <div class="warn-note"><strong>Límite del enfoque de 5 tuplas:</strong> Un atacante puede enviar tráfico malicioso desde una IP "permitida" al puerto 443 usando TCP — el firewall de 1ª gen lo deja pasar porque "parece" tráfico HTTPS legítimo. Por eso se necesita inspección más profunda (DPI / NGFW).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fw4')">
+        <span class="acc-badge" style="background:var(--sec-amber-l);color:var(--sec-amber);">Las 3 generaciones</span>
+        <div class="acc-info"><div class="acc-name">Evolución histórica y capacidades — de filtro de paquetes a NGFW</div><div class="acc-tag">Basado en el documento Fortinet Getting Started in Cybersecurity</div></div>
+        <span class="acc-chv" id="achv-fw4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fw4">
+        <div class="ab-inner">
+          <div class="gen-timeline">
+            <div class="gen-box">
+              <div class="gen-head" style="background:var(--gray-light);color:var(--gray-dark);">
+                1ª Generación<br><span style="font-size:10px;font-weight:400;">(1988 – ~1995)</span>
+              </div>
+              <div class="gen-body">
+                <strong>Packet Filter</strong>
+                <ul style="margin-top:6px;">
+                  <li>Solo analiza las 5 tuplas</li>
+                  <li>Sin estado — cada paquete evaluado individualmente</li>
+                  <li>No entiende si es parte de una sesión legítima</li>
+                  <li>Fácil de evadir con IP spoofing</li>
+                </ul>
+              </div>
+            </div>
+            <div class="gen-box">
+              <div class="gen-head" style="background:var(--sec-blue-l);color:var(--sec-blue);">
+                2ª Generación<br><span style="font-size:10px;font-weight:400;">(~1995 – ~2009)</span>
+              </div>
+              <div class="gen-body">
+                <strong>Stateful Inspection</strong>
+                <ul style="margin-top:6px;">
+                  <li>Mantiene tabla de conexiones activas</li>
+                  <li>Sabe si el paquete es parte de una sesión establecida</li>
+                  <li>Bloquea paquetes fuera de contexto</li>
+                  <li>Aún no entiende qué <em>aplicación</em> es</li>
+                </ul>
+              </div>
+            </div>
+            <div class="gen-box">
+              <div class="gen-head" style="background:var(--sec-amber-l);color:var(--sec-amber-d);">
+                3ª Generación — NGFW<br><span style="font-size:10px;font-weight:400;">(~2009 – presente)</span>
+              </div>
+              <div class="gen-body">
+                <strong>Next-Generation Firewall</strong>
+                <ul style="margin-top:6px;">
+                  <li>Deep Packet Inspection (DPI)</li>
+                  <li>Identifica la <em>aplicación</em> (Layer 7)</li>
+                  <li>Identifica al <em>usuario</em> (integra con AD)</li>
+                  <li>IPS integrado (prevención de intrusiones)</li>
+                  <li>Inspección SSL/TLS descifrado</li>
+                  <li>Sandboxing de archivos sospechosos</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="dtable-wrap" style="margin-top:16px;">
+          <table class="dtable">
+            <thead><tr><th>Capacidad</th><th>Firewall tradicional</th><th>NGFW</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Filtro por IP/puerto</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td class="tn">Inspección de estado (sesión)</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td class="tn">Identificación de aplicación (L7)</td><td class="cross">✗</td><td class="check">✓ — sabe si es Netflix, Zoom o BitTorrent</td></tr>
+              <tr><td class="tn">Identidad del usuario</td><td class="cross">✗</td><td class="check">✓ — integra con Active Directory</td></tr>
+              <tr><td class="tn">IPS (Intrusion Prevention)</td><td class="cross">✗</td><td class="check">✓ — bloquea exploits conocidos en tiempo real</td></tr>
+              <tr><td class="tn">Inspección de tráfico cifrado SSL/TLS</td><td class="cross">✗</td><td class="check">✓ — descifra, inspecciona y vuelve a cifrar</td></tr>
+              <tr><td class="tn">Sandboxing de archivos</td><td class="cross">✗</td><td class="check">✓ — ejecuta archivos sospechosos en entorno aislado</td></tr>
+              <tr><td class="tn">Control de URLs / categorías web</td><td class="cross">✗</td><td class="check">✓ — bloquea categorías completas (juegos, redes sociales, adultos)</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 FORTINET / FORTIGATE -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--sec-red-l);">🛡</div>
+    <div>
+      <div class="vert-title">06 — Fortinet y FortiGate</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">El ecosistema de seguridad Fortinet — FortiGate, FortiOS, Security Fabric</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro"><span class="forti-badge">🔴 Fortinet</span> es uno de los proveedores de ciberseguridad más grandes del mundo. Su producto estrella <strong>FortiGate</strong> es un NGFW (Next-Generation Firewall) con el sistema operativo <strong>FortiOS</strong>. El ecosistema Fortinet (Security Fabric) integra más de 40 productos que comparten inteligencia de amenazas en tiempo real.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ft1')">
+        <span class="acc-badge" style="background:var(--sec-red-l);color:var(--sec-red-d);">Ecosistema Fortinet</span>
+        <div class="acc-info"><div class="acc-name">FortiGate · FortiManager · FortiAnalyzer · FortiEDR · FortiSIEM — los productos clave</div><div class="acc-tag">Basado en FortiGate 7.6 Operator</div></div>
+        <span class="acc-chv" id="achv-ft1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ft1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Producto</th><th>Qué hace</th><th>Analogía</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">🔴 FortiGate</td><td>NGFW + SD-WAN + IPS + SSL Inspection + Application Control + Antivirus + Web Filtering en una sola appliance física o virtual. El corazón del ecosistema.</td><td>El guardia de seguridad que inspecciona todo lo que entra y sale, entiende los idiomas de todas las aplicaciones y puede tomar decisiones basadas en quién eres.</td></tr>
+              <tr><td class="tn">🔴 FortiOS</td><td>Sistema operativo de FortiGate. Versión 7.6 trae mejoras en SD-WAN Zero Trust Tagging, AISecOps y gestión de políticas simplificada.</td><td>El "cerebro" de FortiGate — todos los módulos (IPS, antivirus, VPN, SD-WAN) corren sobre FortiOS.</td></tr>
+              <tr><td class="tn">FortiManager</td><td>Gestión centralizada de múltiples FortiGates desde una sola consola. Permite desplegar políticas a cientos de dispositivos simultáneamente.</td><td>El panel de control central para quien tiene 50+ firewalls en distintas sedes.</td></tr>
+              <tr><td class="tn">FortiAnalyzer</td><td>Log management, análisis de seguridad y reportes de cumplimiento. Correlaciona eventos de múltiples FortiGates para detectar patrones de ataque.</td><td>El "analista forense" que lee todos los registros y detecta comportamientos sospechosos.</td></tr>
+              <tr><td class="tn">FortiEDR</td><td>Endpoint Detection and Response. Protección avanzada en los dispositivos finales (PCs, servidores). Detecta malware que evadió el perímetro.</td><td>El guardia de seguridad dentro de cada computadora.</td></tr>
+              <tr><td class="tn">FortiSIEM</td><td>Security Information and Event Management. Agrega logs de toda la infraestructura (no solo Fortinet) para correlacionar eventos y detectar amenazas complejas.</td><td>La torre de control que ve todo lo que pasa en la organización y conecta los puntos entre eventos aparentemente no relacionados.</td></tr>
+              <tr><td class="tn">FortiCloud</td><td>Plataforma cloud de Fortinet para gestión, análisis y SASE. Permite operar el ecosistema Fortinet sin infraestructura on-premise.</td><td>El Fortinet Security Fabric en modalidad cloud — sin racks ni hardware propio.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ft2')">
+        <span class="acc-badge" style="background:var(--sec-red-l);color:var(--sec-red-d);">FortiGate — conceptos operativos</span>
+        <div class="acc-info"><div class="acc-name">Políticas · Interfaces · Zonas · NAT · VPN · SD-WAN en FortiGate 7.6</div><div class="acc-tag">Lo que un operador de FortiGate necesita entender</div></div>
+        <span class="acc-chv" id="achv-ft2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ft2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Concepto</th><th>Qué es en FortiGate</th><th>Cómo se configura</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Políticas de Firewall</td><td>Reglas que definen qué tráfico se permite o bloquea. Se definen por: interfaz origen/destino, dirección IP, usuario, aplicación, servicio y acción (ALLOW/DENY).</td><td>Policy &amp; Objects → Firewall Policy. Orden importa — se aplica la primera regla que coincide.</td></tr>
+              <tr><td class="tn">Interfaces y Zonas</td><td>FortiGate divide la red en interfaces (física, VLAN, loopback) agrupadas en zonas (LAN, WAN, DMZ). El tráfico entre zonas requiere una política explícita.</td><td>Network → Interfaces. Cada interfaz tiene IP, modo (access/trunk), VLAN ID.</td></tr>
+              <tr><td class="tn">Security Profiles</td><td>Módulos de inspección que se adjuntan a una política: Antivirus, Web Filter, Application Control, IPS, Email Filter, DNS Filter. Si la política lo permite pero el perfil bloquea → bloqueado.</td><td>Security Profiles → crear perfiles → asignar a políticas de firewall.</td></tr>
+              <tr><td class="tn">NAT</td><td>Network Address Translation. Convierte IPs privadas a la IP pública al salir a internet. FortiGate soporta Source NAT (enmascaramiento) y Destination NAT (para servidores publicados).</td><td>Se activa en la política de firewall → Enable NAT. VIPs para DNAT.</td></tr>
+              <tr><td class="tn">SSL-VPN / IPSec VPN</td><td>SSL-VPN: acceso remoto de usuarios por portal web o cliente. IPSec: túneles site-to-site entre sedes o entre FortiGates.</td><td>VPN → SSL-VPN Settings / IPSec Wizard.</td></tr>
+              <tr><td class="tn">SD-WAN en FortiOS 7.6</td><td>Permite definir reglas de enrutamiento dinámico según la calidad del enlace (latencia, jitter, pérdida de paquetes). El tráfico de Teams va por el mejor enlace disponible.</td><td>Network → SD-WAN → Reglas de SD-WAN con performance SLA.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip-note"><strong>La arquitectura típica con FortiGate en una empresa argentina:</strong> Internet → FortiGate (inspecciona todo el tráfico) → Core Switch → VLANs por área (VLAN 10 Administración, VLAN 20 Operaciones, VLAN 30 Servidores, VLAN 40 WiFi Invitados). Cada VLAN requiere una política explícita para comunicarse con otra. Zona DMZ para servidores publicados.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 CLOUD SECURITY -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--sec-blue-l);">☁️</div>
+    <div>
+      <div class="vert-title">07 — Seguridad en la nube</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Responsabilidad compartida · Virtualización segura · IAM cloud · Postura de seguridad (CSPM)</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">La seguridad en la nube es una <strong>responsabilidad compartida</strong>: el proveedor cloud (AWS, Azure, GCP, Personal Tech) asegura la infraestructura subyacente, pero el cliente es responsable de lo que corre encima. <strong>El 99% de los incidentes en la nube son por errores del cliente, no del proveedor.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cs1')">
+        <span class="acc-badge" style="background:var(--sec-blue-l);color:var(--sec-blue);">Modelo de responsabilidad compartida</span>
+        <div class="acc-info"><div class="acc-name">Qué asegura el proveedor y qué es responsabilidad del cliente en IaaS · PaaS · SaaS</div></div>
+        <span class="acc-chv" id="achv-cs1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cs1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Capa</th><th>IaaS (EC2, VM)</th><th>PaaS (App Service)</th><th>SaaS (Microsoft 365)</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Datacenter físico</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td></tr>
+              <tr><td class="tn">Hipervisor / Virtualización</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td></tr>
+              <tr><td class="tn">Sistema operativo</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td></tr>
+              <tr><td class="tn">Runtime / Middleware</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td></tr>
+              <tr><td class="tn">Aplicación</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td></tr>
+              <tr><td class="tn">Datos</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td></tr>
+              <tr><td class="tn">Identidad y acceso (IAM)</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td></tr>
+              <tr><td class="tn">Configuración de red (SGs, NACLs)</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-orange);font-weight:700;">Cliente</td><td style="color:var(--sec-blue);font-weight:700;">Proveedor</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="warn-note"><strong>Los errores de cliente más comunes que causan brechas en cloud:</strong> S3 bucket público accidentalmente. Security Group que permite todo el tráfico (0.0.0.0/0). Credenciales IAM hardcodeadas en el código fuente subido a GitHub. Root account sin MFA. Instancias con sistemas operativos sin parchear.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cs2')">
+        <span class="acc-badge" style="background:var(--sec-blue-l);color:var(--sec-blue);">Seguridad en virtualización</span>
+        <div class="acc-info"><div class="acc-name">Hypervisor · VM isolation · Snapshots · OVF — la base de la seguridad en infraestructura virtual</div><div class="acc-tag">Basado en el documento Cloud Security — Virtualización</div></div>
+        <span class="acc-chv" id="achv-cs2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cs2">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-icon">🔒</div>
+              <div class="mc-title">Aislamiento de VMs (VM Isolation)</div>
+              <div class="mc-text">Cada VM opera de forma aislada. Los problemas (incluidos los de seguridad) en una VM no afectan a las otras. <strong>El hypervisor es el árbitro que garantiza ese aislamiento</strong> — si el hypervisor se compromete, todas las VMs quedan expuestas (VM escape).</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">📸</div>
+              <div class="mc-title">Snapshots como respaldo de seguridad</div>
+              <div class="mc-text">Una snapshot es una foto del estado completo de la VM en un momento. Si hay un incidente (ransomware, corrupción), se puede revertir a la snapshot anterior. <strong>Son la primera línea de recuperación ante ransomware en entornos virtualizados.</strong></div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">📦</div>
+              <div class="mc-title">Dispositivos virtuales (OVF/OVA)</div>
+              <div class="mc-text">Imágenes preconfiguradas de appliances de seguridad (firewalls, IDS, WAF) que se despliegan en segundos. Los FortiGate-VM, Check Point CloudGuard y Palo Alto VM-Series se despliegan como OVF en VMware o KVM.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🛡</div>
+              <div class="mc-title">Segmentación de red virtual</div>
+              <div class="mc-text">Las VLANs y los VNets/VPCs segmentan el tráfico entre VMs aunque estén en el mismo host físico. Un atacante que compromete una VM de desarrollo no puede acceder a las VMs de producción si la red virtual está correctamente segmentada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 COMPARATIVAS -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--sec-teal-l);">📊</div>
+    <div>
+      <div class="vert-title">08 — Cuadros comparativos de referencia</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">VPN vs ZTNA · On-prem vs Cloud Security · SIEM vs XDR · IPS vs IDS</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cmp1')">
+        <span class="acc-badge" style="background:var(--sec-teal-l);color:var(--sec-teal);">VPN tradicional vs ZTNA</span>
+        <div class="acc-info"><div class="acc-name">Por qué la VPN sola ya no es suficiente para el acceso remoto seguro</div></div>
+        <span class="acc-chv" id="achv-cmp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cmp1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Aspecto</th><th>VPN Tradicional</th><th>ZTNA</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Qué se expone</td><td class="cross">Toda la red interna al usuario conectado</td><td class="check">Solo la app específica a la que el usuario necesita acceder</td></tr>
+              <tr><td class="tn">Visibilidad de aplicaciones</td><td class="cross">Nula — es un tubo genérico</td><td class="check">Total — sabe exactamente qué app y qué hace el usuario</td></tr>
+              <tr><td class="tn">Verificación continua</td><td class="cross">Solo al conectar. Una vez dentro, permanece.</td><td class="check">Continua durante toda la sesión. Re-verifica en cada transacción.</td></tr>
+              <tr><td class="tn">Movimiento lateral si se roba la sesión</td><td class="cross">El atacante hereda todo el acceso de red</td><td class="check">El atacante solo accede a la app específica autorizada</td></tr>
+              <tr><td class="tn">Experiencia de usuario</td><td class="partial">Lenta (todo el tráfico por el hub)</td><td class="check">Rápida — acceso directo a la app por el PoP más cercano</td></tr>
+              <tr><td class="tn">Aplicaciones SaaS</td><td class="cross">Ineficiente — el tráfico va al hub y vuelve a internet</td><td class="check">Acceso directo optimizado</td></tr>
+              <tr><td class="tn">Dispositivos no gestionados (BYOD)</td><td class="cross">Sin visibilidad del estado del dispositivo</td><td class="check">Evalúa postura del dispositivo antes de permitir acceso</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cmp2')">
+        <span class="acc-badge" style="background:var(--sec-teal-l);color:var(--sec-teal);">IDS vs IPS vs EDR vs XDR</span>
+        <div class="acc-info"><div class="acc-name">La evolución de la detección y respuesta — cuándo usar cada herramienta</div></div>
+        <span class="acc-chv" id="achv-cmp2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cmp2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Solución</th><th>Qué hace</th><th>Responde automáticamente</th><th>Alcance</th><th>Cuándo elegirlo</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">IDS</td><td>Intrusion Detection System. Detecta y <strong>alerta</strong> sobre tráfico malicioso en la red.</td><td class="cross">No — solo alerta</td><td>Red</td><td>Cuando se quiere visibilidad sin intervenir el tráfico (modo pasivo).</td></tr>
+              <tr><td class="tn">IPS</td><td>Intrusion Prevention System. Detecta Y <strong>bloquea</strong> el tráfico malicioso en tiempo real.</td><td class="check">Sí — bloquea automáticamente</td><td>Red</td><td>Siempre que sea posible. Incluido en NGFW/FortiGate.</td></tr>
+              <tr><td class="tn">EDR</td><td>Endpoint Detection &amp; Response. Monitorea comportamiento en el dispositivo final (PC, servidor). Detecta malware que evadió el perímetro.</td><td class="check">Sí — aísla el endpoint, mata procesos maliciosos</td><td>Endpoint</td><td>Complemento obligatorio del NGFW. FortiEDR, CrowdStrike, SentinelOne.</td></tr>
+              <tr><td class="tn">XDR</td><td>Extended Detection &amp; Response. Correlaciona eventos de red + endpoint + cloud + email para detectar ataques complejos que atraviesan múltiples capas.</td><td class="check">Sí — respuesta orquestada en todas las capas</td><td>Red + Endpoint + Cloud + Email</td><td>Organizaciones con múltiples herramientas de seguridad que necesitan correlación.</td></tr>
+              <tr><td class="tn">SIEM</td><td>Security Information &amp; Event Management. Agrega y correlaciona logs de toda la infraestructura. Detecta patrones de amenaza complejos.</td><td class="partial">Depende — puede disparar playbooks SOAR</td><td>Toda la infraestructura</td><td>SOC (Security Operations Center). FortiSIEM, Splunk, IBM QRadar, Microsoft Sentinel.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cmp3')">
+        <span class="acc-badge" style="background:var(--sec-teal-l);color:var(--sec-teal);">Puertos y servicios comunes</span>
+        <div class="acc-info"><div class="acc-name">Los puertos que todo técnico de seguridad debe conocer — y por qué importan para las reglas de firewall</div></div>
+        <span class="acc-chv" id="achv-cmp3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cmp3">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Puerto</th><th>Protocolo</th><th>Servicio</th><th>Riesgo si queda abierto hacia internet</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">22</td><td>TCP</td><td>SSH</td><td>Fuerza bruta automatizada. Siempre restringir a IPs específicas o usar bastion host.</td></tr>
+              <tr><td class="tn">80 / 443</td><td>TCP</td><td>HTTP / HTTPS</td><td>Bajo si el contenido está inspeccionado. HTTPS requiere SSL inspection para ver el contenido real.</td></tr>
+              <tr><td class="tn">3389</td><td>TCP</td><td>RDP (Remote Desktop)</td><td>CRÍTICO si está expuesto. Vector favorito de ransomware. Nunca exponer directamente a internet.</td></tr>
+              <tr><td class="tn">445</td><td>TCP</td><td>SMB (File Sharing)</td><td>CRÍTICO. WannaCry/NotPetya usaron SMB para propagarse. Siempre bloqueado en el perímetro.</td></tr>
+              <tr><td class="tn">25 / 587</td><td>TCP</td><td>SMTP (Email)</td><td>Puerto 25 abierto = servidor puede usarse para spam. Usar 587 con autenticación.</td></tr>
+              <tr><td class="tn">53</td><td>UDP/TCP</td><td>DNS</td><td>DNS puede usarse para C2 (Command &amp; Control) y exfiltración de datos. Monitorear consultas DNS salientes.</td></tr>
+              <tr><td class="tn">1433 / 3306</td><td>TCP</td><td>SQL Server / MySQL</td><td>NUNCA exponer bases de datos a internet. Solo accesibles desde la red interna o VPC privada.</td></tr>
+              <tr><td class="tn">8080 / 8443</td><td>TCP</td><td>HTTP/HTTPS alternos</td><td>Frecuentemente usados por malware para C2 evadiendo los filtros del puerto 80/443.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 PERSONAL TECH -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--sec-green-l);">🏢</div>
+    <div>
+      <div class="vert-title">09 — Ciberseguridad en Personal Tech</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">El portfolio de seguridad de Personal Tech y los argumentos de venta</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <p class="vert-intro">Personal Tech (Telecom Argentina) ofrece ciberseguridad como una capa que se integra sobre su infraestructura de red y cloud. <strong>La ventaja competitiva: la seguridad no es un producto externo que se agrega — es parte del tejido de la red.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt1')">
+        <span class="acc-badge" style="background:var(--sec-green-l);color:var(--sec-green);">Portfolio y argumentos</span>
+        <div class="acc-info"><div class="acc-name">Servicios de seguridad de Personal Tech y cómo posicionarlos frente al cliente</div></div>
+        <span class="acc-chv" id="achv-pt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Servicio</th><th>Qué incluye</th><th>Argumento de venta</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">SOC gestionado 24/7</td><td>Centro de Operaciones de Seguridad con monitoreo continuo, análisis de incidentes y respuesta. Analistas en Argentina que entienden el contexto regulatorio local (BCRA, CNV).</td><td>"Un SOC propio cuesta $1M+/año en salarios. Personal Tech da el mismo servicio por una fracción del costo, con SLA de respuesta y analistas locales."</td></tr>
+              <tr><td class="tn">DDoS Mitigation</td><td>Protección ante ataques de denegación de servicio en la capa de red, antes de que lleguen al cliente. Scrubbing centers que filtran el tráfico malicioso.</td><td>"El ataque DDoS se absorbe en la red de Telecom — el cliente nunca lo ve. No se puede hacer eso con un appliance on-premise."</td></tr>
+              <tr><td class="tn">Firewall gestionado (FWaaS)</td><td>FortiGate o Fortinet gestionado por Personal Tech. El cliente tiene el NGFW sin el costo y la complejidad de operarlo.</td><td>"El cliente tiene seguridad de primer nivel sin necesitar un equipo de seguridad propio."</td></tr>
+              <tr><td class="tn">SD-WAN + Seguridad convergida</td><td>La solución SD-WAN de Personal Tech incluye funciones de seguridad (IPS, URL filtering, app control) en la misma plataforma de conectividad.</td><td>"Un solo contrato da conectividad y seguridad. Menos vendors, menos complejidad, un SLA end-to-end."</td></tr>
+              <tr><td class="tn">Ciberseguridad industrial (OT)</td><td>Seguridad para redes de tecnología operacional: plantas de manufactura, minería, energía. Incluye segmentación IT/OT y monitoreo de protocolos industriales (Modbus, OPC-UA).</td><td>"La mayoría de los proveedores de ciberseguridad no conocen el mundo OT. Personal Tech tiene experiencia real en Vaca Muerta y minería."</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">Argumento maestro para la venta de seguridad</div>
+            <div class="pitch-text">"El 95% de los incidentes de seguridad pueden prevenirse con tres controles básicos: MFA en todas las cuentas, parches al día y backups offline. Pero cuando un cliente ya tiene esos tres, el siguiente nivel requiere visibilidad continua, detección de anomalías y respuesta en minutos — no en días. Para eso está el SOC de Personal Tech."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 DICCIONARIO A–Z -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--gray-light);">📖</div>
+    <div>
+      <div class="vert-title">10 — Diccionario de Ciberseguridad A–Z</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">60+ términos definidos — el glosario completo para cualquier conversación técnica o ejecutiva</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dA')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">A – C</span>
+        <div class="acc-info"><div class="acc-name">APT · Autenticación · Backdoor · Botnet · Breach · CASB · Cifrado · C2 · CVE</div></div>
+        <span class="acc-chv" id="achv-dA">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dA">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-red-l);">
+                <div class="dict-letter" style="background:var(--sec-red);color:#fff;">A</div>
+                <div><div class="dict-term">APT</div><div class="dict-en">Advanced Persistent Threat</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Ataque sofisticado y prolongado por actores altamente capacitados (estados, grupos organizados). Se instalan silenciosamente en la red y permanecen meses o años extrayendo información.</div>
+                <div class="dict-example">APT28 (Fancy Bear, Rusia) — responsable de hackeos a partidos políticos europeos y OTAN.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-amber-l);">
+                <div class="dict-letter" style="background:var(--sec-amber-m);color:#fff;">B</div>
+                <div><div class="dict-term">Backdoor</div><div class="dict-en">Backdoor / Puerta trasera</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Acceso secreto instalado por un atacante (o a veces por el fabricante) que permite entrar al sistema evitando la autenticación normal. Pueden persistir años sin ser detectados.</div>
+                <div class="dict-example">RAT (Remote Access Trojan) instalado tras un phishing exitoso que da al atacante control total del sistema.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-red-l);">
+                <div class="dict-letter" style="background:var(--sec-red);color:#fff;">B</div>
+                <div><div class="dict-term">Botnet</div><div class="dict-en">Botnet</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Red de dispositivos infectados controlados remotamente por un atacante (C2). Se usan para DDoS, spam, minería de criptomonedas o como plataforma de lanzamiento de ataques.</div>
+                <div class="dict-example">Mirai (2016): botnet de 300.000 cámaras IP infectadas que generó el mayor DDoS de la historia hasta ese momento.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-blue-l);">
+                <div class="dict-letter" style="background:var(--sec-blue-m);color:#fff;">C</div>
+                <div><div class="dict-term">CASB</div><div class="dict-en">Cloud Access Security Broker</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Punto de control de seguridad entre los usuarios y los servicios cloud (SaaS, PaaS, IaaS). Supervisa la actividad, aplica políticas y protege datos confidenciales contra fugas.</div>
+                <div class="dict-example">El CASB detecta que un empleado sube un archivo confidencial a su Google Drive personal y lo bloquea según la política DLP.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-teal-l);">
+                <div class="dict-letter" style="background:var(--sec-teal-m);color:#fff;">C</div>
+                <div><div class="dict-term">CVE</div><div class="dict-en">Common Vulnerabilities and Exposures</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Sistema de identificación estandarizado para vulnerabilidades de seguridad conocidas. Cada CVE tiene un número único (CVE-2024-XXXX) y una puntuación de criticidad (CVSS 0–10).</div>
+                <div class="dict-example">CVE-2021-44228 (Log4Shell) — CVSS 10.0 (máximo). La vulnerabilidad de Java de 2021 que afectó millones de sistemas.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-purple-l);">
+                <div class="dict-letter" style="background:var(--sec-purple-m);color:#fff;">C</div>
+                <div><div class="dict-term">C2 / C&C</div><div class="dict-en">Command and Control</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Infraestructura que el atacante usa para comunicarse con el malware instalado en los sistemas de la víctima y enviar instrucciones.</div>
+                <div class="dict-example">El malware instalado en una PC hace consultas DNS aparentemente normales que en realidad son instrucciones codificadas del servidor C2 del atacante.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dD')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">D – I</span>
+        <div class="acc-info"><div class="acc-name">DDoS · DLP · EDR · Exploit · Firewall · Hardening · IAM · IDS · IPS</div></div>
+        <span class="acc-chv" id="achv-dD">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dD">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-red-l);">
+                <div class="dict-letter" style="background:var(--sec-red);color:#fff;">D</div>
+                <div><div class="dict-term">DDoS</div><div class="dict-en">Distributed Denial of Service</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Ataque que inunda de tráfico un servidor o servicio desde miles de fuentes simultáneas, haciendo que sea inaccesible para usuarios legítimos.</div>
+                <div class="dict-example">Ataque de 3.47 Tbps en 2021 contra un cliente de Microsoft Azure — el mayor registrado hasta ese momento.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-amber-l);">
+                <div class="dict-letter" style="background:var(--sec-amber-m);color:#fff;">D</div>
+                <div><div class="dict-term">DLP</div><div class="dict-en">Data Loss Prevention</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Herramientas y políticas que detectan y previenen el envío de información confidencial fuera de la organización, ya sea por email, USB, nube o cualquier otro canal.</div>
+                <div class="dict-example">DLP detecta que un empleado intenta enviar por email un archivo Excel con números de tarjetas de crédito y lo bloquea automáticamente.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-blue-l);">
+                <div class="dict-letter" style="background:var(--sec-blue-m);color:#fff;">E</div>
+                <div><div class="dict-term">EDR</div><div class="dict-en">Endpoint Detection & Response</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Solución que monitorea el comportamiento en dispositivos finales (PCs, servidores, móviles) para detectar y responder a amenazas que evadieron las defensas perimetrales.</div>
+                <div class="dict-example">CrowdStrike Falcon detecta que un proceso inusual intenta cifrar archivos y lo mata automáticamente antes de que el ransomware se propague.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-red-l);">
+                <div class="dict-letter" style="background:var(--sec-red);color:#fff;">E</div>
+                <div><div class="dict-term">Exploit</div><div class="dict-en">Exploit</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Código o técnica que aprovecha una vulnerabilidad específica de software o hardware para tomar control de un sistema o ejecutar acciones no autorizadas.</div>
+                <div class="dict-example">EternalBlue: exploit desarrollado por la NSA que aprovechaba una vulnerabilidad en SMB de Windows. Filtrado y usado en WannaCry/NotPetya.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-green-l);">
+                <div class="dict-letter" style="background:var(--sec-green-m);color:#fff;">H</div>
+                <div><div class="dict-term">Hardening</div><div class="dict-en">Hardening / Bastionado</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Proceso de reducir la superficie de ataque de un sistema: desactivar servicios innecesarios, cambiar configuraciones por defecto, aplicar mínimo privilegio, cerrar puertos no usados, eliminar software innecesario.</div>
+                <div class="dict-example">Bastionar un servidor web: desactivar FTP, cambiar el banner de servidor, deshabilitar métodos HTTP innecesarios (PUT, DELETE), instalar solo los módulos necesarios.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-purple-l);">
+                <div class="dict-letter" style="background:var(--sec-purple-m);color:#fff;">I</div>
+                <div><div class="dict-term">IAM</div><div class="dict-en">Identity & Access Management</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Marco de políticas y tecnologías que garantiza que los usuarios autorizados tengan el acceso adecuado a los recursos tecnológicos en el momento correcto y nada más.</div>
+                <div class="dict-example">AWS IAM: el desarrollador tiene acceso solo a los buckets S3 de desarrollo, no a los de producción ni a los de otro equipo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dM')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">M – Z</span>
+        <div class="acc-info"><div class="acc-name">Malware · MFA · NGFW · Phishing · Ransomware · SASE · SIEM · SOC · SSL/TLS · WAF · Zero Trust · ZTNA</div></div>
+        <span class="acc-chv" id="achv-dM">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dM">
+        <div class="ab-inner">
+          <div class="dict-grid">
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-red-l);">
+                <div class="dict-letter" style="background:var(--sec-red);color:#fff;">M</div>
+                <div><div class="dict-term">Malware</div><div class="dict-en">Malicious Software</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Término paraguas para cualquier software diseñado para dañar, robar, interrumpir o acceder sin autorización. Incluye virus, gusanos, troyanos, ransomware, spyware, adware y rootkits.</div>
+                <div class="dict-example">Un virus se autorreplica y contagia otros archivos. Un troyano se disfraza de software legítimo. Un rootkit se oculta del sistema operativo.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-blue-l);">
+                <div class="dict-letter" style="background:var(--sec-blue-m);color:#fff;">M</div>
+                <div><div class="dict-term">MFA</div><div class="dict-en">Multi-Factor Authentication</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Verificación de identidad que requiere dos o más factores: algo que sabés (contraseña), algo que tenés (teléfono, token físico), algo que sos (biometría). Bloquea el 99.9% de los ataques de credenciales comprometidas.</div>
+                <div class="dict-example">Microsoft Authenticator + contraseña. YubiKey físico para cuentas críticas.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-amber-l);">
+                <div class="dict-letter" style="background:var(--sec-amber-m);color:#fff;">N</div>
+                <div><div class="dict-term">NGFW</div><div class="dict-en">Next-Generation Firewall</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Firewall de 3ª generación con inspección profunda de paquetes (DPI), identificación de aplicaciones y usuarios (Layer 7), IPS integrado e inspección SSL.</div>
+                <div class="dict-example">FortiGate, Palo Alto Networks, Check Point, Cisco FTD. Saben que el tráfico del puerto 443 es Netflix y no HTTPS corporativo.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-red-l);">
+                <div class="dict-letter" style="background:var(--sec-red);color:#fff;">R</div>
+                <div><div class="dict-term">Ransomware</div><div class="dict-en">Ransomware</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Malware que cifra los archivos de la víctima y exige rescate. Los grupos modernos también roban los datos antes de cifrar (doble extorsión) y amenazan con publicarlos.</div>
+                <div class="dict-example">LockBit 3.0 — el grupo más activo de 2023. Atacó al BCRA, hospitales y organismos gubernamentales globalmente.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-blue-l);">
+                <div class="dict-letter" style="background:var(--sec-blue-m);color:#fff;">S</div>
+                <div><div class="dict-term">SASE</div><div class="dict-en">Secure Access Service Edge</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Modelo arquitectónico cloud que unifica SD-WAN + ZTNA + CASB + SWG + FWaaS en una sola plataforma. Propuesto por Gartner en 2019 como el futuro de la seguridad de red.</div>
+                <div class="dict-example">Fortinet SASE, Zscaler, Palo Alto Prisma Access, Cisco Umbrella.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-teal-l);">
+                <div class="dict-letter" style="background:var(--sec-teal-m);color:#fff;">S</div>
+                <div><div class="dict-term">SOC</div><div class="dict-en">Security Operations Center</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Equipo dedicado y sala de operaciones que monitorea la seguridad 24/7, detecta incidentes, investiga y coordina la respuesta. Usa SIEM, XDR y playbooks de respuesta automatizada.</div>
+                <div class="dict-example">Un SOC propio cuesta +$1M/año. Personal Tech ofrece SOC gestionado como servicio (SOC-as-a-Service).</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-green-l);">
+                <div class="dict-letter" style="background:var(--sec-green-m);color:#fff;">W</div>
+                <div><div class="dict-term">WAF</div><div class="dict-en">Web Application Firewall</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Firewall especializado para aplicaciones web. Bloquea ataques de capa 7: SQL Injection, XSS, CSRF, inclusión de archivos, etc. Se ubica delante del servidor web.</div>
+                <div class="dict-example">AWS WAF, Azure WAF, F5, ModSecurity. Si la app tiene vulnerabilidades no parcheadas, el WAF puede mitigar el riesgo mientras se corrige el código.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-purple-l);">
+                <div class="dict-letter" style="background:var(--sec-purple-m);color:#fff;">Z</div>
+                <div><div class="dict-term">Zero Trust</div><div class="dict-en">Zero Trust Architecture (ZTA)</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Filosofía de seguridad que elimina la confianza implícita: ningún usuario, dispositivo o sistema es confiable por defecto. Todo requiere verificación continua de identidad, dispositivo y contexto.</div>
+                <div class="dict-example">NIST SP 800-207 es el estándar de referencia para implementar ZTA. El modelo de Biden (EO 14028) lo declaró obligatorio para agencias federales de EE.UU.</div>
+              </div>
+            </div>
+            <div class="dict-card">
+              <div class="dict-head" style="background:var(--sec-blue-l);">
+                <div class="dict-letter" style="background:var(--sec-blue-m);color:#fff;">Z</div>
+                <div><div class="dict-term">ZTNA</div><div class="dict-en">Zero Trust Network Access</div></div>
+              </div>
+              <div class="dict-body">
+                <div class="dict-def">Tecnología que crea límites de acceso seguros alrededor de aplicaciones específicas basados en identidad del usuario y postura del dispositivo. Reemplaza a la VPN tradicional.</div>
+                <div class="dict-example">Fortinet ZTNA, Zscaler Private Access, Cloudflare Access. El usuario accede solo a la app que necesita — no a toda la red corporativa.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Basado en Fortinet NSE, IBM, NIST y Cloud Security Alliance · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

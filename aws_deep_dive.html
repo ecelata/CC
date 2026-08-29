@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Deep Dive — Well-Architected · Pricing · Arquitecturas de referencia | Personal Tech</title>
+<style>
+:root {
+  --aws:#FF9900;--aws-l:#FFF4E0;--aws-d:#7A4700;
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* MODULE PILLS */
+.module-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+.mod-pill{border-radius:var(--radius);padding:18px 20px;border:.5px solid var(--border);cursor:pointer;transition:all .18s;}
+.mod-pill:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.mod-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;opacity:.6;}
+.mod-name{font-size:16px;font-weight:700;margin-bottom:4px;}
+.mod-desc{font-size:12px;line-height:1.5;opacity:.7;}
+
+/* VERTICAL */
+.vertical{margin-bottom:52px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* PILLAR CARDS */
+.pillar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:14px 0;}
+.pillar{border-radius:var(--radius-sm);border:.5px solid var(--border);overflow:hidden;}
+.pillar-head{padding:13px 16px;display:flex;align-items:center;gap:10px;}
+.pillar-icon{font-size:20px;flex-shrink:0;}
+.pillar-title{font-size:13.5px;font-weight:700;}
+.pillar-body{padding:12px 16px 14px;border-top:.5px solid var(--border);}
+.pillar-desc{font-size:12.5px;color:var(--text-sec);line-height:1.6;margin-bottom:8px;}
+.pillar-tips{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.pillar-tips li{font-size:12px;color:var(--text-sec);display:flex;gap:6px;align-items:flex-start;line-height:1.5;}
+.pillar-tips li strong{color:var(--text);}
+.pdot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* ARCHITECTURE DIAGRAM (CSS) */
+.arch-diagram{background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);padding:20px;margin:14px 0;font-size:12px;text-align:center;}
+.arch-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;flex-wrap:wrap;}
+.arch-box{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;font-weight:700;color:var(--text);}
+.arch-box.aws-orange{border-color:var(--aws);background:var(--aws-l);color:var(--aws-d);}
+.arch-box.blue{border-color:var(--blue-mid);background:var(--blue-light);color:var(--blue-dark);}
+.arch-box.green{border-color:var(--green-mid);background:var(--green-light);color:var(--green-dark);}
+.arch-box.purple{border-color:var(--purple-mid);background:var(--purple-light);color:var(--purple-dark);}
+.arch-box.teal{border-color:var(--teal-mid);background:var(--teal-light);color:var(--teal-dark);}
+.arch-box.amber{border-color:var(--amber-mid);background:var(--amber-light);color:var(--amber-dark);}
+.arch-arrow{font-size:18px;color:var(--text-ter);flex-shrink:0;}
+.arch-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:8px;}
+.arch-section{border:.5px dashed var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin:4px;}
+
+/* PRICING TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.check{color:var(--green-dark);font-weight:700;}
+
+/* PITCH / NOTES */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+
+/* SECTION DIVIDER */
+.section-divider{height:2px;background:linear-gradient(90deg,var(--text),transparent);margin:48px 0 36px;border-radius:1px;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .module-strip,.grid2,.grid3{grid-template-columns:1fr;}
+  .pillar-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🟠 AWS Deep Dive</div>
+  <a class="tnav" href="#wa">01 Well-Architected</a>
+  <a class="tnav" href="#wa-op">Operacional</a>
+  <a class="tnav" href="#wa-sec">Seguridad</a>
+  <a class="tnav" href="#wa-rel">Fiabilidad</a>
+  <a class="tnav" href="#wa-perf">Rendimiento</a>
+  <a class="tnav" href="#wa-cost">Costos</a>
+  <a class="tnav" href="#wa-sust">Sostenibilidad</a>
+  <a class="tnav" href="#pricing">02 Pricing</a>
+  <a class="tnav" href="#arch">03 Arquitecturas</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">AWS Deep Dive — Well-Architected · Pricing · Arquitecturas</div>
+    <div class="doc-sub">Guía técnica y comercial basada en la documentación oficial de AWS · Personal Tech</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- MODULE STRIP -->
+<div class="module-strip">
+  <div class="mod-pill" style="background:var(--aws-l);border-color:var(--aws);" onclick="document.getElementById('wa').scrollIntoView({behavior:'smooth'})">
+    <div class="mod-num" style="color:var(--aws-d);">Módulo 01</div>
+    <div class="mod-name" style="color:var(--aws-d);">Well-Architected</div>
+    <div class="mod-desc" style="color:var(--aws-d);">Los 6 pilares para evaluar y mejorar cualquier arquitectura en AWS</div>
+  </div>
+  <div class="mod-pill" style="background:var(--blue-light);border-color:var(--blue-mid);" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">
+    <div class="mod-num" style="color:var(--blue-dark);">Módulo 02</div>
+    <div class="mod-name" style="color:var(--blue-dark);">Pricing AWS</div>
+    <div class="mod-desc" style="color:var(--blue-dark);">Modelos de precio, calculadora y cómo construir el TCO de una propuesta</div>
+  </div>
+  <div class="mod-pill" style="background:var(--green-light);border-color:var(--green-mid);" onclick="document.getElementById('arch').scrollIntoView({behavior:'smooth'})">
+    <div class="mod-num" style="color:var(--green-dark);">Módulo 03</div>
+    <div class="mod-name" style="color:var(--green-dark);">Arquitecturas de Referencia</div>
+    <div class="mod-desc" style="color:var(--green-dark);">Patrones hexagonales y microservicios con servicios AWS reales</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ MÓDULO 01: WELL-ARCHITECTED -->
+<div class="vertical" id="wa">
+  <div class="vert-header" onclick="toggleV('wa')">
+    <div class="vert-icon" style="background:var(--aws-l);font-size:22px;">🟠</div>
+    <div>
+      <div class="vert-title">01 — AWS Well-Architected Framework</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">6 pilares para diseñar y evaluar arquitecturas cloud seguras, eficientes y resilientes</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-wa">▼</span>
+  </div>
+  <div class="vert-body open" id="vbdy-wa">
+    <p class="vert-intro">El AWS Well-Architected Framework es la guía de referencia de Amazon para diseñar y evaluar cargas de trabajo en la nube. <strong>No es un set de reglas — es un sistema de preguntas</strong> que ayudan a identificar riesgos en la arquitectura antes de que se conviertan en problemas. Está organizado en 6 pilares, cada uno con sus propios principios de diseño y mejores prácticas. Para el consultor cloud de Personal Tech, conocerlo es clave para dos cosas: auditar la arquitectura actual del cliente y diseñar arquitecturas nuevas que el cliente pueda defender ante su directorio.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('wa0')">
+        <span class="acc-badge" style="background:var(--aws-l);color:var(--aws-d);">¿Por qué importa?</span>
+        <div class="acc-info"><div class="acc-name">Cómo usar Well-Architected en una venta de Personal Tech</div><div class="acc-tag">El framework como herramienta de preventa, no solo de arquitectura</div></div>
+        <span class="acc-chv" id="achv-wa0">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-wa0">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">Para el CTO o arquitecto del cliente</div>
+            <div class="pitch-text">"Lo primero que hacemos antes de proponer cualquier arquitectura es una revisión Well-Architected de lo que tenés hoy. En una reunión de 2 horas identificamos los riesgos más altos de tu arquitectura actual — seguridad, disponibilidad, costo, rendimiento. Ese diagnóstico es gratuito y te queda como activo independientemente de lo que decidas hacer después."</div>
+          </div>
+          <div class="tip-note"><strong>La Well-Architected Tool es gratuita</strong> en la consola de AWS. Usarla con el cliente es una forma de agregar valor inmediato antes de cerrar cualquier contrato. El cliente que hizo la revisión con vos, cuando decida migrar, llama a Personal Tech primero.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOS 6 PILARES -->
+    <div class="pillar-grid">
+
+      <!-- OPERACIONAL -->
+      <div class="pillar" id="wa-op" style="scroll-margin-top:52px;">
+        <div class="pillar-head" style="background:var(--blue-light);">
+          <div class="pillar-icon">⚙️</div>
+          <div class="pillar-title" style="color:var(--blue-dark);">Excelencia Operativa</div>
+        </div>
+        <div class="pillar-body">
+          <div class="pillar-desc">Ejecutar y monitorear sistemas mejorando continuamente los procesos. Foco en automatización, respuesta a eventos y estándares operativos.</div>
+          <ul class="pillar-tips">
+            <li><span class="pdot" style="background:var(--blue-mid)"></span><strong>Infraestructura como código (IaC):</strong> CloudFormation, CDK o Terraform. Nunca cambios manuales en producción.</li>
+            <li><span class="pdot" style="background:var(--blue-mid)"></span><strong>Pequeños cambios frecuentes:</strong> deploys pequeños y reversibles son menos riesgosos que grandes releases esporádicos.</li>
+            <li><span class="pdot" style="background:var(--blue-mid)"></span><strong>Anticipar el fallo:</strong> diseñar sabiendo que algo va a fallar. Runbooks documentados, alarmas configuradas, respuesta automatizada.</li>
+            <li><span class="pdot" style="background:var(--blue-mid)"></span><strong>Métricas operativas:</strong> CloudWatch con dashboards y alertas sobre métricas de negocio, no solo técnicas.</li>
+          </ul>
+          <div class="pitch" style="margin-top:10px;"><div class="pitch-label">Argumento para el COO</div><div class="pitch-text">"¿Cuánto tiempo tarda tu equipo IT en desplegar un cambio en producción? ¿Tienen runbooks documentados para los incidentes más frecuentes? El pilar operacional define exactamente cómo Personal Tech gestiona tu infraestructura sin depender de la memoria de una sola persona."</div></div>
+        </div>
+      </div>
+
+      <!-- SEGURIDAD -->
+      <div class="pillar" id="wa-sec" style="scroll-margin-top:52px;">
+        <div class="pillar-head" style="background:var(--coral-light);">
+          <div class="pillar-icon">🔐</div>
+          <div class="pillar-title" style="color:var(--coral-dark);">Seguridad</div>
+        </div>
+        <div class="pillar-body">
+          <div class="pillar-desc">Proteger información y sistemas. Confidencialidad, integridad de datos, gestión de permisos y detección de eventos de seguridad.</div>
+          <ul class="pillar-tips">
+            <li><span class="pdot" style="background:var(--coral-mid)"></span><strong>Identidad sólida:</strong> MFA en todas las cuentas. Roles IAM con mínimos permisos. Nunca credenciales de larga duración en aplicaciones.</li>
+            <li><span class="pdot" style="background:var(--coral-mid)"></span><strong>Trazabilidad completa:</strong> CloudTrail activo en todas las regiones. Cada API call queda registrado. Logs centralizados en CloudWatch Logs.</li>
+            <li><span class="pdot" style="background:var(--coral-mid)"></span><strong>Defensa en profundidad:</strong> VPC con subredes públicas/privadas, Security Groups, WAF, GuardDuty. Capas de seguridad que se cubren entre sí.</li>
+            <li><span class="pdot" style="background:var(--coral-mid)"></span><strong>Encriptación por defecto:</strong> datos en reposo (KMS) y en tránsito (TLS). No como feature opcional — como default.</li>
+            <li><span class="pdot" style="background:var(--coral-mid)"></span><strong>Preparación para incidentes:</strong> plan documentado, rol de respuesta definido, simulacros periódicos.</li>
+          </ul>
+          <div class="win-note"><strong>Conexión con Personal Tech:</strong> El SOC 24/7 de Personal Tech implementa exactamente este pilar como servicio gestionado. El cliente no tiene que construir la capacidad de detección — la contrata.</div>
+        </div>
+      </div>
+
+      <!-- FIABILIDAD -->
+      <div class="pillar" id="wa-rel" style="scroll-margin-top:52px;">
+        <div class="pillar-head" style="background:var(--green-light);">
+          <div class="pillar-icon">🔄</div>
+          <div class="pillar-title" style="color:var(--green-dark);">Fiabilidad</div>
+        </div>
+        <div class="pillar-body">
+          <div class="pillar-desc">Cargas de trabajo que realizan sus funciones previstas y se recuperan rápidamente de los fallos. Diseño de sistemas distribuidos y recuperación ante desastres.</div>
+          <ul class="pillar-tips">
+            <li><span class="pdot" style="background:var(--green-mid)"></span><strong>Recuperación automática del fallo:</strong> CloudWatch Alarms que activan acciones de auto-healing sin intervención humana.</li>
+            <li><span class="pdot" style="background:var(--green-mid)"></span><strong>Multi-AZ por defecto:</strong> ningún componente crítico en una sola zona de disponibilidad. RDS Multi-AZ, ALB, Auto Scaling Groups.</li>
+            <li><span class="pdot" style="background:var(--green-mid)"></span><strong>RTO y RPO definidos:</strong> ¿cuánto tiempo puede estar caído? ¿cuántos datos puede perder? Sin estas definiciones no hay DR real.</li>
+            <li><span class="pdot" style="background:var(--green-mid)"></span><strong>Gestión de cambios:</strong> los cambios en producción son controlados, auditados y reversibles.</li>
+          </ul>
+          <div class="pitch" style="margin-top:10px;"><div class="pitch-label">Para el COO</div><div class="pitch-text">"¿Cuál es el RTO de tu aplicación más crítica? ¿Lo probaron? El pilar de fiabilidad de AWS define exactamente cómo diseñamos el DRS de Personal Tech — con un RTO contractual que podés mostrar a tu directorio."</div></div>
+        </div>
+      </div>
+
+      <!-- RENDIMIENTO -->
+      <div class="pillar" id="wa-perf" style="scroll-margin-top:52px;">
+        <div class="pillar-head" style="background:var(--purple-light);">
+          <div class="pillar-icon">⚡</div>
+          <div class="pillar-title" style="color:var(--purple-dark);">Eficiencia de Rendimiento</div>
+        </div>
+        <div class="pillar-body">
+          <div class="pillar-desc">Asignación estructurada de recursos de IT. Selección de tipos y tamaños correctos, monitoreo del rendimiento y eficiencia a medida que evoluciona el negocio.</div>
+          <ul class="pillar-tips">
+            <li><span class="pdot" style="background:var(--purple-mid)"></span><strong>Selección correcta de recursos:</strong> elegir el tipo de instancia adecuado para cada workload. Una DB no necesita la misma instancia que un servidor web.</li>
+            <li><span class="pdot" style="background:var(--purple-mid)"></span><strong>Arquitecturas serverless donde aplica:</strong> Lambda + API Gateway para cargas intermitentes. Se paga por ejecución, no por tiempo encendido.</li>
+            <li><span class="pdot" style="background:var(--purple-mid)"></span><strong>Cachés en capas:</strong> ElastiCache (Redis/Memcached) para DB. CloudFront para contenido estático. Reduce carga y mejora latencia.</li>
+            <li><span class="pdot" style="background:var(--purple-mid)"></span><strong>Auto Scaling:</strong> el sistema crece automáticamente con la demanda y se reduce cuando baja. Sin sobredimensionamiento permanente.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- COSTOS -->
+      <div class="pillar" id="wa-cost" style="scroll-margin-top:52px;">
+        <div class="pillar-head" style="background:var(--amber-light);">
+          <div class="pillar-icon">💰</div>
+          <div class="pillar-title" style="color:var(--amber-dark);">Optimización de Costos</div>
+        </div>
+        <div class="pillar-body">
+          <div class="pillar-desc">Evitar gastos innecesarios. Comprensión del gasto, selección de recursos correctos y escalado sin excesos. Es el pilar de FinOps.</div>
+          <ul class="pillar-tips">
+            <li><span class="pdot" style="background:var(--amber-mid)"></span><strong>Implementar la gestión del gasto en la nube:</strong> etiquetado (Tags) de todos los recursos por proyecto, área y entorno.</li>
+            <li><span class="pdot" style="background:var(--amber-mid)"></span><strong>Reserved Instances y Savings Plans:</strong> comprometer consumo a 1–3 años para ahorrar hasta 72% vs. on-demand.</li>
+            <li><span class="pdot" style="background:var(--amber-mid)"></span><strong>Instancias Spot:</strong> para cargas interrumpibles (batch, rendering, CI/CD) con hasta 90% de descuento.</li>
+            <li><span class="pdot" style="background:var(--amber-mid)"></span><strong>Eliminar recursos zombies:</strong> instancias paradas que pagan storage, EIPs no asignadas, snapshots de años.</li>
+            <li><span class="pdot" style="background:var(--amber-mid)"></span><strong>Rightsizing continuo:</strong> AWS Compute Optimizer sugiere automáticamente cambios de tipo de instancia.</li>
+          </ul>
+          <div class="win-note"><strong>Conexión con Personal Tech FinOps:</strong> El pilar de optimización de costos es exactamente el servicio FinOps de Personal Tech. El cliente que tiene AWS o Azure sin FinOps está desperdiciando entre el 20% y el 35% de su gasto cloud.</div>
+        </div>
+      </div>
+
+      <!-- SOSTENIBILIDAD -->
+      <div class="pillar" id="wa-sust" style="scroll-margin-top:52px;">
+        <div class="pillar-head" style="background:var(--teal-light);">
+          <div class="pillar-icon">🌱</div>
+          <div class="pillar-title" style="color:var(--teal-dark);">Sostenibilidad</div>
+        </div>
+        <div class="pillar-body">
+          <div class="pillar-desc">Minimizar el impacto ambiental de las cargas de trabajo en la nube. Modelo de responsabilidad compartida ambiental y maximización de la eficiencia de recursos.</div>
+          <ul class="pillar-tips">
+            <li><span class="pdot" style="background:var(--teal-mid)"></span><strong>Maximizar la utilización:</strong> servidores sobredimensionados consumen energía innecesaria. Rightsizing es también sostenibilidad.</li>
+            <li><span class="pdot" style="background:var(--teal-mid)"></span><strong>Usar regiones con energía renovable:</strong> AWS publica el mix energético de cada región.</li>
+            <li><span class="pdot" style="background:var(--teal-mid)"></span><strong>Arquitecturas eficientes:</strong> serverless consume energía solo cuando ejecuta. Menos recursos inactivos = menos energía.</li>
+            <li><span class="pdot" style="background:var(--teal-mid)"></span><strong>Personal Tech:</strong> el DC de Pacheco opera con 100% energía renovable — argumento de sostenibilidad real para empresas con reportes ESG.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /pillar-grid -->
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('wa-lens')">
+        <span class="acc-badge" style="background:var(--aws-l);color:var(--aws-d);">Well-Architected Lenses</span>
+        <div class="acc-info"><div class="acc-name">Extensiones del framework para dominios específicos — ML, IoT, SAP, Serverless, HPC</div><div class="acc-tag">Cómo aplicar Well-Architected a industrias y tecnologías concretas</div></div>
+        <span class="acc-chv" id="achv-wa-lens">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-wa-lens">
+        <div class="ab-inner">
+          <p class="block-text">Los Lenses son extensiones del framework para dominios específicos. Cada Lens agrega preguntas y mejores prácticas específicas para ese dominio sin reemplazar los 6 pilares base.</p>
+          <div class="grid3">
+            <div class="mini-card"><div class="mc-icon">🤖</div><div class="mc-title">Machine Learning</div><div class="mc-text">Cómo diseñar pipelines de ML seguros, eficientes y reproducibles en SageMaker. Gobierno del modelo, monitoreo de drift, versionado de datos.</div></div>
+            <div class="mini-card"><div class="mc-icon">📡</div><div class="mc-title">IoT</div><div class="mc-text">Conectividad de millones de dispositivos, gestión de flotas, procesamiento en el edge. Con AWS IoT Core, Greengrass y rules engine.</div></div>
+            <div class="mini-card"><div class="mc-icon">🏢</div><div class="mc-title">SAP</div><div class="mc-text">Migración y operación de SAP en AWS. Sizing de instancias certificadas, alta disponibilidad de SAP HANA, backup con AWS Backup.</div></div>
+            <div class="mini-card"><div class="mc-icon">⚡</div><div class="mc-title">Serverless</div><div class="mc-text">Diseño de aplicaciones sin servidores con Lambda, API Gateway, DynamoDB, EventBridge. Manejo de errores, cold starts, idempotencia.</div></div>
+            <div class="mini-card"><div class="mc-icon">🏦</div><div class="mc-title">Financial Services</div><div class="mc-text">Compliance regulatorio, auditabilidad, segmentación de datos de clientes, controles de acceso granulares. Para banca, seguros y fintech.</div></div>
+            <div class="mini-card"><div class="mc-icon">🎮</div><div class="mc-title">Games / Streaming</div><div class="mc-text">Arquitecturas de baja latencia para juegos online y streaming de contenido. Auto Scaling agresivo, CDN, sesión de jugador persistente.</div></div>
+          </div>
+          <div class="tip-note"><strong>Para el consultor:</strong> Antes de entrar a una reunión con un cliente de manufactura o finanzas, revisar el Lens correspondiente. Las preguntas que hace el Lens son exactamente las preguntas de discovery que deberías hacer vos en la reunión.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /wa -->
+
+<div class="section-divider"></div>
+
+
+<!-- ══════════════════════════════════════════════ MÓDULO 02: PRICING -->
+<div class="vertical" id="pricing">
+  <div class="vert-header" onclick="toggleV('pricing')">
+    <div class="vert-icon" style="background:var(--blue-light);font-size:22px;">💰</div>
+    <div>
+      <div class="vert-title">02 — Pricing AWS: cómo se cobra y cómo calcular el costo real</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Modelos de precio · AWS Pricing Calculator · Egress fees · Cómo construir un TCO honesto</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-pricing">▼</span>
+  </div>
+  <div class="vert-body open" id="vbdy-pricing">
+    <p class="vert-intro">Entender el pricing de AWS es fundamental para dos cosas: diseñar propuestas de Personal Tech que ganen en TCO, y para el servicio de FinOps donde el conocimiento profundo del pricing es lo que genera los ahorros. <strong>El pricing de AWS tiene muchas dimensiones ocultas que la mayoría de los clientes no ve hasta que llega la factura.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Los 3 modelos de precio</span>
+        <div class="acc-info"><div class="acc-name">On-Demand · Reserved Instances · Spot — cuándo usar cada uno y cuánto se ahorra</div><div class="acc-tag">La base del pricing de EC2 que aplica con variantes a casi todos los servicios</div></div>
+        <span class="acc-chv" id="achv-pr1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Modelo</th><th>Descripción</th><th>Ahorro vs. On-Demand</th><th>Mejor para</th><th>Riesgo</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">On-Demand</td>
+                <td>Pago por hora/segundo de uso. Sin compromiso. Precio de lista.</td>
+                <td>—</td>
+                <td>Cargas impredecibles, picos cortos, testing, entornos no productivos.</td>
+                <td>El más caro para cargas estables. Muchas empresas lo usan para todo sin saberlo.</td>
+              </tr>
+              <tr>
+                <td class="tn">Reserved Instances (RI)</td>
+                <td>Compromiso de 1 o 3 años a cambio de descuento. Pago por adelantado, parcial o mensual.</td>
+                <td style="color:var(--green-dark);font-weight:700;">Hasta 72%</td>
+                <td>Cargas estables y predecibles. Servidores de producción que corren 24/7.</td>
+                <td>Si la carga baja o cambia, la RI queda pagada sin usar. Requiere planificación.</td>
+              </tr>
+              <tr>
+                <td class="tn">Savings Plans</td>
+                <td>Compromiso de gasto por hora (no de instancia específica). Más flexible que las RI.</td>
+                <td style="color:var(--green-dark);font-weight:700;">Hasta 66%</td>
+                <td>Empresas que quieren descuento sin comprometerse a un tipo de instancia específico.</td>
+                <td>Requiere estimación precisa del uso futuro. Sin estimación, el plan queda subutilizado.</td>
+              </tr>
+              <tr>
+                <td class="tn">Spot Instances</td>
+                <td>Capacidad sobrante de AWS a precio variable, con posibilidad de interrupción con 2 min de aviso.</td>
+                <td style="color:var(--green-dark);font-weight:700;">Hasta 90%</td>
+                <td>Batch processing, rendering, CI/CD, análisis de datos, ML training. Cargas tolerantes a interrupciones.</td>
+                <td>AWS puede interrumpir la instancia con 2 minutos de aviso. No usar para producción web.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip-note"><strong>La estrategia óptima (que Personal Tech FinOps implementa):</strong> 60–70% de la carga base en Reserved Instances o Savings Plans + 20–30% en On-Demand para variabilidad + 10–20% en Spot para workloads batch. Este mix puede reducir el gasto total de EC2 entre un 40% y 60% sin cambiar la arquitectura.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Los costos ocultos de AWS</span>
+        <div class="acc-info"><div class="acc-name">Egress fees · Data transfer · NAT Gateway · Support — lo que no aparece en la demo de AWS</div><div class="acc-tag">Las sorpresas en la factura que el cliente no vio hasta el mes 2</div></div>
+        <span class="acc-chv" id="achv-pr2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Costo oculto</th><th>Qué es</th><th>Cuánto puede representar</th><th>Cómo mitigarlo / argumento Personal Tech</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">Egress fees (Data Transfer Out)</td>
+                <td>AWS cobra por los datos que SALEN de AWS hacia internet. Entrar datos a AWS es gratis — salir no.</td>
+                <td>Hasta el 20–30% de la factura total en aplicaciones con mucho tráfico de salida.</td>
+                <td>Personal Tech no cobra egress en Personal Cloud. Para salida a AWS, usar Direct Connect que tiene menor costo de egress que internet público.</td>
+              </tr>
+              <tr>
+                <td class="tn">NAT Gateway</td>
+                <td>Para que instancias en subredes privadas accedan a internet, se usa un NAT Gateway. Cobra por hora Y por GB procesado.</td>
+                <td>En arquitecturas con muchas instancias privadas puede ser $0.05/GB × millones de GBs = sorpresa grande.</td>
+                <td>Revisar si realmente necesitan NAT o si pueden usar VPC Endpoints (más barato) para acceder a servicios AWS.</td>
+              </tr>
+              <tr>
+                <td class="tn">Soporte AWS</td>
+                <td>El plan Business es el mínimo razonable para producción. Cuesta el 10% de la factura mensual (mínimo $100/mes).</td>
+                <td>Con factura de $10K/mes, el soporte Business agrega $1.000/mes más.</td>
+                <td>Personal Tech incluye soporte en el servicio. Sin costo de soporte adicional por encima del precio del servicio cloud.</td>
+              </tr>
+              <tr>
+                <td class="tn">Snapshots y backups</td>
+                <td>EBS snapshots se acumulan si no hay política de retención. Se pagan por GB-mes.</td>
+                <td>Empresas con años de snapshots sin gestionar pueden tener $2.000–$5.000/mes en storage de snapshots que nadie usa.</td>
+                <td>FinOps de Personal Tech incluye auditoría de snapshots como primera acción.</td>
+              </tr>
+              <tr>
+                <td class="tn">Tipo de cambio USD</td>
+                <td>AWS factura en USD. Si el ARS se deprecia, el costo en pesos sube automáticamente sin cambio en el servicio.</td>
+                <td>Una empresa que pagaba $5M ARS/mes puede estar pagando $8M ARS/mes 6 meses después por tipo de cambio, sin consumir más.</td>
+                <td>Personal Cloud factura en pesos. Sin exposición cambiaria. Presupuesto de IT predecible.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">Para el CFO que compara AWS vs Personal Tech en precio de lista</div>
+            <div class="pitch-text">"La instancia de AWS parece más barata si mirás solo el precio de la VM. Pero cuando sumás el egress, el NAT Gateway, el soporte Business, el tipo de cambio y el costo de IT para administrarlo, el TCO real es muy diferente. Eso es exactamente lo que hacemos con nuestra calculadora TCO — comparar el costo real, no el precio de lista."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr3')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Cómo usar la AWS Pricing Calculator</span>
+        <div class="acc-info"><div class="acc-name">calculator.aws — paso a paso para construir una estimación de costo real</div><div class="acc-tag">La herramienta que el consultor usa para construir el TCO del lado AWS de la propuesta</div></div>
+        <span class="acc-chv" id="achv-pr3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr3">
+        <div class="ab-inner">
+          <div class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Acceso:</strong> calculator.aws — gratuita, sin cuenta AWS requerida. Estimaciones exportables a PDF o CSV.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Paso 1 — Crear estimación:</strong> Nueva estimación → seleccionar región (sa-east-1 para São Paulo si el cliente quiere AWS, lo más cercano a Argentina).</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Paso 2 — Agregar servicios:</strong> buscar cada servicio por nombre (EC2, RDS, S3, etc.). Para EC2: especificar tipo de instancia, OS, horas de uso y modelo de precio (On-Demand vs. Reserved).</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Paso 3 — No olvidar los costos ocultos:</strong> agregar Data Transfer Out, NAT Gateway si aplica, soporte Business si van a producción.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Paso 4 — Exportar:</strong> la calculadora genera un resumen mensual y anual que se puede compartir como link público o exportar a PDF.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Paso 5 — Comparar con Personal Cloud:</strong> con el costo real de AWS (incluidos todos los extras), la comparativa con Personal Cloud muestra el ahorro real.</li>
+          </ul>
+          <div class="grid2" style="margin-top:12px;">
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-title">⚠️ Errores comunes al estimar</div>
+              <div class="mc-text">· Estimar con On-Demand sin explorar Reserved.<br>· Olvidar el egress de datos.<br>· No incluir el costo de soporte.<br>· Asumir que todos los servicios están en la calculadora con toda la funcionalidad.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-title">✅ Mejores prácticas</div>
+              <div class="mc-text">· Siempre comparar On-Demand vs. 1-year RI y mostrar las tres opciones al cliente.<br>· Incluir una fila de "optimización estimada con FinOps" del 20-25% adicional.<br>· Guardar el link de la estimación — es único y compartible.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pr4')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Pricing por servicio clave</span>
+        <div class="acc-info"><div class="acc-name">EC2 · S3 · RDS · Lambda · CloudFront — los servicios más usados y su lógica de precio</div><div class="acc-tag">Referencia rápida para estimar sin abrir la calculadora en cada reunión</div></div>
+        <span class="acc-chv" id="achv-pr4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pr4">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Servicio</th><th>Unidad de precio</th><th>Precio orientativo (São Paulo)</th><th>Lo que más impacta la factura</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">EC2 (t3.medium)</td><td>$/hora por instancia</td><td>~$0.052/hora On-Demand · ~$0.032/hora 1-year RI</td><td>Cantidad de instancias × horas activas. Muchas empresas dejan instancias de dev encendidas 24/7.</td></tr>
+              <tr><td class="tn">S3 (Standard)</td><td>$/GB-mes + requests</td><td>~$0.023/GB-mes storage · $0.005/1000 PUT · $0.0004/1000 GET</td><td>Egress: $0.09/GB de datos que salen a internet. En apps con mucha descarga, esto domina.</td></tr>
+              <tr><td class="tn">RDS (db.t3.medium, MySQL)</td><td>$/hora + storage + I/O</td><td>~$0.068/hora On-Demand · Multi-AZ duplica el precio</td><td>Multi-AZ (necesario para producción) duplica el costo. Storage de backups adicional.</td></tr>
+              <tr><td class="tn">Lambda</td><td>Por requests + GB-segundos</td><td>$0.20/millón de requests · $0.0000166667/GB-segundo</td><td>Primer millón de requests gratis/mes. Para la mayoría de los casos la capa gratuita es suficiente.</td></tr>
+              <tr><td class="tn">CloudFront (CDN)</td><td>$/GB transferido + requests</td><td>~$0.085/GB en LATAM (varía por volumen)</td><td>El costo disminuye con el volumen. Para sitios con mucho tráfico puede salir más barato que el egress de S3 directo.</td></tr>
+              <tr><td class="tn">Data Transfer Out</td><td>$/GB que sale de AWS a internet</td><td>$0.09/GB (primeros 10TB/mes) — primeros 100GB gratis</td><td>Una app que descarga 10TB/mes al exterior paga ~$900 solo en egress. Esto casi nunca entra en las estimaciones iniciales.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /pricing -->
+
+<div class="section-divider"></div>
+
+
+<!-- ══════════════════════════════════════════════ MÓDULO 03: ARQUITECTURAS -->
+<div class="vertical" id="arch">
+  <div class="vert-header" onclick="toggleV('arch')">
+    <div class="vert-icon" style="background:var(--green-light);font-size:22px;">🏗</div>
+    <div>
+      <div class="vert-title">03 — Arquitecturas de referencia en AWS</div>
+      <div style="font-size:12px;color:var(--text-ter);font-style:italic;">Patrones hexagonales · Microservicios · CQRS · Multi-dominio — con servicios AWS reales</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-arch">▼</span>
+  </div>
+  <div class="vert-body open" id="vbdy-arch">
+    <p class="vert-intro">Las arquitecturas hexagonales en AWS (también conocidas como Ports &amp; Adapters) separan la lógica de negocio del núcleo de los detalles técnicos de entrada/salida. <strong>El dominio no conoce a AWS — solo conoce interfaces abstractas. Los servicios AWS implementan esas interfaces.</strong> Este modelo genera código altamente testeable, portable y resiliente al cambio tecnológico.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arc0')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Conceptos clave</span>
+        <div class="acc-info"><div class="acc-name">Dominio · Clientes · Adaptadores primarios · Adaptadores secundarios · Puertos</div><div class="acc-tag">El vocabulario de la arquitectura hexagonal aplicado a servicios AWS</div></div>
+        <span class="acc-chv" id="achv-arc0">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arc0">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Concepto</th><th>Qué es</th><th>Servicios AWS que lo implementan</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Dominio</td><td>La lógica de negocio pura. No conoce AWS. Solo conoce interfaces (puertos). Es el corazón de la aplicación.</td><td>No es un servicio AWS — es el código de la aplicación.</td></tr>
+              <tr><td class="tn">Puerto</td><td>Interfaz abstracta que define lo que el dominio necesita del mundo exterior (guardar datos, enviar mensajes) o cómo acepta peticiones.</td><td>Interface/Abstract class en el código.</td></tr>
+              <tr><td class="tn">Cliente</td><td>Quién inicia la interacción con el dominio desde el exterior. Dispara la ejecución.</td><td>API Gateway · SQS · EventBridge · Elastic Load Balancing</td></tr>
+              <tr><td class="tn">Adaptador primario</td><td>Recibe la petición del cliente y llama al dominio. Traduce entre el protocolo externo y el dominio.</td><td>Lambda · ECS · EKS · EC2</td></tr>
+              <tr><td class="tn">Adaptador secundario</td><td>Implementa los puertos de salida del dominio. Traduce las necesidades del dominio a tecnología concreta.</td><td>DynamoDB · RDS · Aurora · SQS · SNS · API Gateway (para llamar APIs externas)</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>Por qué importa esto para Personal Tech:</strong> Un cliente que implementa arquitectura hexagonal puede cambiar de DynamoDB a Personal Cloud Storage, o de Lambda a ECS, sin tocar el dominio. Eso hace que su arquitectura sea agnóstica de proveedor — y Personal Tech puede entrar como adaptador secundario en cualquier parte del sistema.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 1: SIMPLE -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arc1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Ejemplo 1 — Simple (MVP)</span>
+        <div class="acc-info"><div class="acc-name">API Gateway + Lambda + DynamoDB — La arquitectura hexagonal más sencilla: 100% serverless</div><div class="acc-tag">El punto de partida recomendado por AWS para microservicios nuevos</div></div>
+        <span class="acc-chv" id="achv-arc1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arc1">
+        <div class="ab-inner">
+          <div class="arch-diagram">
+            <div class="arch-label">Arquitectura hexagonal simple — Serverless MVP</div>
+            <div class="arch-row">
+              <div class="arch-box blue">Cliente Web / Mobile</div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box aws-orange">API Gateway<br><span style="font-size:10px;font-weight:400;">(Cliente / punto de entrada)</span></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box purple">Lambda<br><span style="font-size:10px;font-weight:400;">(Adaptador primario)</span></div>
+            </div>
+            <div class="arch-row">
+              <div style="width:200px"></div>
+              <div style="width:80px"></div>
+              <div class="arch-arrow" style="transform:rotate(90deg);">↓</div>
+            </div>
+            <div class="arch-row">
+              <div style="width:200px"></div>
+              <div style="width:80px"></div>
+              <div class="arch-box" style="background:var(--gray-light);border-color:var(--gray-mid);">Dominio<br><span style="font-size:10px;font-weight:400;">(Lógica de negocio)</span></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box green">DynamoDB<br><span style="font-size:10px;font-weight:400;">(Adaptador secundario)</span></div>
+            </div>
+          </div>
+          <div class="block-label">Cuándo usar esta arquitectura</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Microservicio nuevo con pocas operaciones:</strong> CRUD básico, consultas simples, webhook handler.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Tráfico variable o impredecible:</strong> Lambda escala a cero cuando no hay tráfico — costo $0 en horas sin uso.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>MVP o PoC:</strong> entrar en producción rápidamente sin gestionar servidores.</li>
+          </ul>
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-title">✅ Ventajas</div>
+              <div class="mc-text">Sin servidores que administrar. Escalado automático a cero. Pago por ejecución. Despliegue en minutos con SAM o Serverless Framework.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-title">⚠️ Limitaciones</div>
+              <div class="mc-text">Cold starts de Lambda (50–500ms) pueden impactar UX. Timeout máximo de 15 minutos. No sirve para procesos de larga duración.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 2: CQRS -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arc2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Ejemplo 2 — CQRS</span>
+        <div class="acc-info"><div class="acc-name">API Gateway + SQS + Lambda (dual) + DynamoDB — Separar lecturas de escrituras</div><div class="acc-tag">Command Query Responsibility Segregation: lectura sincrónica, escritura asincrónica</div></div>
+        <span class="acc-chv" id="achv-arc2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arc2">
+        <div class="ab-inner">
+          <div class="arch-diagram">
+            <div class="arch-label">Patrón CQRS — Dos controladores Lambda, dos flujos</div>
+            <div class="arch-row">
+              <div class="arch-box blue">API Gateway</div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box purple">Lambda Query<br><span style="font-size:10px;font-weight:400;">(Sincrónico — READ)</span></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box green">DynamoDB<br><span style="font-size:10px;font-weight:400;">(Lectura)</span></div>
+            </div>
+            <div style="height:8px;"></div>
+            <div class="arch-row">
+              <div class="arch-box amber">SQS Queue</div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box purple">Lambda Command<br><span style="font-size:10px;font-weight:400;">(Asincrónico — WRITE)</span></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box green">DynamoDB<br><span style="font-size:10px;font-weight:400;">(Escritura)</span></div>
+            </div>
+          </div>
+          <div class="block-label">Por qué separar lecturas de escrituras</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Escalado independiente:</strong> las lecturas pueden escalar x10 sin afectar las escrituras y viceversa.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Escrituras asincrónicas via SQS:</strong> el cliente recibe confirmación inmediata y el procesamiento ocurre en background. Mejor UX y mayor resiliencia.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Desacoplamiento:</strong> si el procesador de escrituras falla, los mensajes quedan en SQS hasta que se recupere — sin pérdida de datos.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Optimización de modelos de datos:</strong> el modelo de lectura puede estar desnormalizado para performance; el de escritura puede ser normalizado para integridad.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 3: EVOLUCIONADO -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arc3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Ejemplo 3 — Evolucionado</span>
+        <div class="acc-info"><div class="acc-name">EventBridge + ECS + RDS + API externa — Añadir contenedores, SQL y APIs de terceros</div><div class="acc-tag">Cuando Lambda no es suficiente: procesos largos, bases de datos relacionales, integraciones externas</div></div>
+        <span class="acc-chv" id="achv-arc3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arc3">
+        <div class="ab-inner">
+          <div class="arch-diagram">
+            <div class="arch-label">Arquitectura evolucionada — Contenedores + Relacional + API externa</div>
+            <div class="arch-row">
+              <div class="arch-box amber">EventBridge<br><span style="font-size:10px;font-weight:400;">(Cliente / evento)</span></div>
+              <div class="arch-arrow">→</div>
+              <div class="arch-box teal">ECS Task<br><span style="font-size:10px;font-weight:400;">(Adaptador primario — proceso largo)</span></div>
+            </div>
+            <div class="arch-row">
+              <div style="width:220px;"></div>
+              <div class="arch-arrow" style="transform:rotate(90deg);">↓</div>
+            </div>
+            <div class="arch-row">
+              <div style="width:220px;"></div>
+              <div class="arch-box" style="background:var(--gray-light);border-color:var(--gray-mid);">Dominio</div>
+            </div>
+            <div class="arch-row">
+              <div style="width:220px;"></div>
+              <div style="display:flex;gap:12px;">
+                <div>
+                  <div class="arch-arrow" style="transform:rotate(90deg);display:block;text-align:center;">↓</div>
+                  <div class="arch-box green">Amazon RDS<br><span style="font-size:10px;font-weight:400;">(SQL relacional)</span></div>
+                </div>
+                <div>
+                  <div class="arch-arrow" style="transform:rotate(90deg);display:block;text-align:center;">↓</div>
+                  <div class="arch-box blue">API Externa<br><span style="font-size:10px;font-weight:400;">(via API Gateway)</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="block-label">Cuándo pasar de Lambda a ECS</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Procesos que duran más de 15 minutos:</strong> reportes complejos, procesamiento de archivos grandes, migraciones de datos.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Necesidad de base de datos relacional:</strong> esquema complejo, joins, transacciones ACID → RDS o Aurora.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Llamadas a APIs externas:</strong> el dominio necesita consultar sistemas externos (CRM, ERP, pagos). El API Gateway actúa como adaptador secundario.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Control total del runtime:</strong> ECS con Docker permite usar cualquier lenguaje, versión o dependencia sin las limitaciones de Lambda.</li>
+          </ul>
+          <div class="tip-note"><strong>La regla de cambio de adaptador:</strong> Si mañana necesitás cambiar de RDS a DynamoDB (o de Amazon RDS a Personal Cloud DB), el dominio no cambia — solo escribís un nuevo adaptador que implementa el mismo puerto. Eso es exactamente la ventaja de la arquitectura hexagonal.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 4: MULTI-DOMINIO -->
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arc4')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Ejemplo 4 — Multi-dominio</span>
+        <div class="acc-info"><div class="acc-name">Múltiples microservicios comunicados — Lambda + EC2 + ECS Fargate + ALB + SQS + EventBridge</div><div class="acc-tag">La arquitectura de una aplicación enterprise con múltiples dominios de negocio desacoplados</div></div>
+        <span class="acc-chv" id="achv-arc4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arc4">
+        <div class="ab-inner">
+          <div class="arch-diagram">
+            <div class="arch-label">Arquitectura multi-dominio — Microservicios desacoplados</div>
+            <div class="arch-row">
+              <div class="arch-section" style="text-align:center;flex:1;">
+                <div style="font-size:10px;font-weight:700;color:var(--blue-dark);margin-bottom:6px;">Dominio A</div>
+                <div class="arch-box blue" style="font-size:11px;">Lambda</div>
+              </div>
+              <div class="arch-arrow">⇆</div>
+              <div class="arch-section" style="text-align:center;flex:1;">
+                <div style="font-size:10px;font-weight:700;color:var(--green-dark);margin-bottom:6px;">Dominio B</div>
+                <div class="arch-box green" style="font-size:11px;">ECS Fargate</div>
+              </div>
+              <div class="arch-arrow">⇆</div>
+              <div class="arch-section" style="text-align:center;flex:1;">
+                <div style="font-size:10px;font-weight:700;color:var(--amber-dark);margin-bottom:6px;">Dominio C</div>
+                <div class="arch-box amber" style="font-size:11px;">EC2</div>
+              </div>
+            </div>
+            <div class="arch-row" style="margin-top:12px;">
+              <div class="arch-box blue" style="font-size:11px;">ALB</div>
+              <div class="arch-box amber" style="font-size:11px;">SQS</div>
+              <div class="arch-box purple" style="font-size:11px;">EventBridge</div>
+              <div style="font-size:11px;color:var(--text-ter);align-self:center;">← Comunicación entre dominios</div>
+            </div>
+          </div>
+          <div class="block-label">Principios del diseño multi-dominio</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Cada dominio es un microservicio:</strong> tiene su propio código, su propio repositorio, su propio ciclo de despliegue.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Comunicación via puertos/adaptadores:</strong> los dominios no se llaman directamente — usan SQS (asincrónico), EventBridge (eventos) o ALB (HTTP sincrónico).</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Entornos de cómputo distintos por dominio:</strong> el dominio A puede usar Lambda, el B puede usar ECS y el C puede usar EC2 — cada uno elige según sus necesidades.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Cambio sin ruptura:</strong> si el dominio B cambia de ECS a Lambda, el dominio A no se entera porque la comunicación es via SQS/EventBridge, no por llamada directa.</li>
+          </ul>
+          <div class="pitch">
+            <div class="pitch-label">Cómo Personal Tech puede entrar en arquitecturas multi-dominio</div>
+            <div class="pitch-text">"Tu Dominio A puede correr en AWS Lambda y tu Dominio B puede correr en Personal Cloud — ambos comunicados vía SQS. Los datos regulados van al Dominio B en Personal Cloud (dato soberano), los datos no regulados van al Dominio A en AWS. Un solo contrato con Personal Tech gestiona ambos entornos."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arc5')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Cómo elegir el patrón correcto</span>
+        <div class="acc-info"><div class="acc-name">Árbol de decisión — Simple vs. CQRS vs. Evolucionado vs. Multi-dominio</div><div class="acc-tag">La guía práctica para recomendar el patrón correcto según las necesidades del cliente</div></div>
+        <span class="acc-chv" id="achv-arc5">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arc5">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Situación del cliente</th><th>Patrón recomendado</th><th>Por qué</th></tr></thead>
+            <tbody>
+              <tr><td>Nuevo microservicio, pocas operaciones, tráfico variable</td><td class="tn">Simple (API GW + Lambda + DynamoDB)</td><td>Mínima complejidad, costo $0 en horas sin uso, despliegue rápido.</td></tr>
+              <tr><td>Microservicio con muchas operaciones o separación lectura/escritura importante</td><td class="tn">CQRS (API GW + SQS + Lambda dual)</td><td>Escalado independiente, resiliencia en escrituras, mejor UX con confirmación inmediata.</td></tr>
+              <tr><td>Procesos de larga duración, base de datos SQL, integración con APIs externas</td><td class="tn">Evolucionado (EventBridge + ECS + RDS)</td><td>ECS soporta procesos largos, RDS es el estándar para datos relacionales, API GW para externas.</td></tr>
+              <tr><td>Aplicación con múltiples áreas de negocio que escalan independientemente</td><td class="tn">Multi-dominio (microservicios)</td><td>Cada dominio despliega y escala de forma autónoma. Menor acoplamiento = mayor agilidad.</td></tr>
+              <tr><td>Workloads mixtos: algunos regulados (dato en Argentina) y otros en AWS</td><td class="tn">Híbrido Personal Cloud + AWS</td><td>Datos regulados en Personal Cloud (soberanía), cargas ágiles en AWS, comunicados privadamente via Direct Connect.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /arch -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Basado en documentación oficial de AWS — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.getAttribute('id')+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

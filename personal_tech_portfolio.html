@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Personal Tech | Edgardo Celata</title>
+<style>
+  :root {
+    --blue-light: #E6F1FB; --blue-mid: #378ADD; --blue-dark: #0C447C;
+    --green-light: #E1F5EE; --green-mid: #1D9E75; --green-dark: #085041;
+    --amber-light: #FAEEDA; --amber-mid: #BA7517; --amber-dark: #633806;
+    --coral-light: #FAECE7; --coral-mid: #D85A30; --coral-dark: #4A1B0C;
+    --purple-light: #EEEDFE; --purple-mid: #7F77DD; --purple-dark: #26215C;
+    --teal-light: #E0F5F5; --teal-mid: #1A9696; --teal-dark: #0A4040;
+    --gray-light: #F1EFE8; --gray-mid: #888780; --gray-dark: #2C2C2A;
+    --text: #1a1a18; --text-sec: #5f5e5a; --text-ter: #888780;
+    --border: #e0ded6; --bg: #ffffff; --bg2: #f7f5f0;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 14px; color: var(--text); background: var(--bg); line-height: 1.7; }
+  .page { max-width: 960px; margin: 0 auto; padding: 40px 32px; }
+
+  /* HEADER */
+  .doc-header { border-bottom: 2px solid var(--text); padding-bottom: 20px; margin-bottom: 36px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .doc-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+  .doc-sub { font-size: 13px; color: var(--text-sec); margin-top: 4px; font-style: italic; }
+  .doc-meta { text-align: right; font-size: 12px; color: var(--text-ter); }
+
+  /* PILLAR NAV */
+  .pillar-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; padding: 16px; background: var(--bg2); border-radius: var(--radius); border: 0.5px solid var(--border); }
+  .pillar-nav-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-ter); width: 100%; margin-bottom: 4px; }
+  .pnav { font-size: 12px; font-weight: 700; padding: 5px 13px; border-radius: 20px; cursor: pointer; border: 1px solid transparent; transition: all .18s; text-decoration: none; display: inline-block; }
+  .pnav:hover { opacity: .85; }
+
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .section-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+  .section-title-block {}
+  .section-title { font-size: 19px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .section-subtitle { font-size: 13px; color: var(--text-sec); font-style: italic; margin-top: 2px; }
+  .section-intro { font-size: 13px; color: var(--text-sec); line-height: 1.7; margin: 14px 0 22px; padding: 12px 16px; background: var(--bg2); border-radius: var(--radius-sm); border-left: 3px solid var(--border); }
+  .section-intro strong { color: var(--text); }
+  .section-divider { border: none; border-top: 0.5px solid var(--border); margin-bottom: 22px; }
+
+  /* PRODUCT CARDS */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+  .product-card { border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .card-head { padding: 14px 16px 12px; }
+  .card-badge { font-size: 10.5px; font-weight: 700; padding: 2px 9px; border-radius: 20px; display: inline-block; margin-bottom: 8px; }
+  .card-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
+  .card-tagline { font-size: 12px; color: var(--text-ter); font-style: italic; line-height: 1.4; }
+  .card-body { padding: 0 16px 14px; }
+  .card-desc { font-size: 12.5px; color: var(--text-sec); line-height: 1.65; margin-bottom: 12px; }
+  .card-features { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .card-features li { font-size: 12px; color: var(--text-sec); display: flex; gap: 7px; align-items: flex-start; line-height: 1.5; }
+  .feat-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+
+  /* WIDE CARDS (span full width) */
+  .product-card.wide { grid-column: 1 / -1; }
+  .wide .card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .wide-col-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-ter); margin-bottom: 8px; }
+
+  /* SUBSECTION LABEL */
+  .subsection { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-ter); margin: 22px 0 12px; border-bottom: 0.5px solid var(--border); padding-bottom: 5px; }
+
+  /* DATACENTER BOX */
+  .dc-box { border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 4px; }
+  .dc-head { background: var(--bg2); padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+  .dc-name { font-size: 15px; font-weight: 700; }
+  .dc-sub { font-size: 12px; color: var(--text-ter); font-style: italic; margin-top: 2px; }
+  .dc-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 16px 18px; }
+  .dc-stat { background: var(--bg2); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .dc-stat-val { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .dc-stat-label { font-size: 11px; color: var(--text-ter); margin-top: 2px; }
+  .dc-certs { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 16px; }
+  .cert { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+  /* SECTORS GRID */
+  .sectors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 4px; }
+  .sector-card { background: var(--bg2); border-radius: var(--radius-sm); padding: 10px 12px; border: 0.5px solid var(--border); }
+  .sector-icon { font-size: 18px; margin-bottom: 5px; }
+  .sector-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .sector-desc { font-size: 11px; color: var(--text-ter); line-height: 1.45; }
+
+  /* TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 12px; }
+  .comp-table th { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-ter); padding: 7px 10px; border-bottom: 1.5px solid var(--border); text-align: left; background: var(--bg2); }
+  .comp-table td { padding: 9px 10px; vertical-align: top; border-bottom: 0.5px solid var(--border); color: var(--text-sec); line-height: 1.55; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: var(--bg2); }
+  .win { color: var(--green-mid); font-weight: 700; }
+  .lose { color: var(--coral-mid); }
+
+  /* SEP */
+  .sep { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
+
+  /* FOOTER */
+  .doc-footer { border-top: 0.5px solid var(--border); margin-top: 56px; padding-top: 16px; font-size: 11px; color: var(--text-ter); display: flex; justify-content: space-between; }
+
+  /* PRINT */
+  @media print {
+    body { font-size: 11.5px; }
+    .page { padding: 16px; max-width: 100%; }
+    .pillar-nav { display: none; }
+    .product-card { break-inside: avoid; }
+    @page { margin: 12mm; size: A4; }
+  }
+  @media (max-width: 640px) {
+    .doc-header { flex-direction: column; gap: 10px; }
+    .doc-meta { text-align: left; }
+    .wide .card-body { grid-template-columns: 1fr; }
+    .product-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div>
+      <div class="doc-title">Portfolio de Productos y Servicios</div>
+      <div class="doc-sub">Personal Tech · Referencia comercial y técnica para el equipo de pre-venta</div>
+    </div>
+    <div class="doc-meta">
+      Edgardo Mauricio Celata<br>
+      Solutions Manager | Pre-Sales<br>
+      <span id="fecha"></span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="pillar-nav">
+    <span class="pillar-nav-label">Pilares del portfolio — navegación rápida</span>
+    <a href="#s1" class="pnav" style="background:var(--blue-light);color:var(--blue-dark);border-color:var(--blue-light);">01 · Cloud & Datacenter</a>
+    <a href="#s2" class="pnav" style="background:var(--green-light);color:var(--green-dark);border-color:var(--green-light);">02 · Conectividad</a>
+    <a href="#s3" class="pnav" style="background:var(--coral-light);color:var(--coral-dark);border-color:var(--coral-light);">03 · Ciberseguridad</a>
+    <a href="#s4" class="pnav" style="background:var(--amber-light);color:var(--amber-dark);border-color:var(--amber-light);">04 · IoT</a>
+    <a href="#s5" class="pnav" style="background:var(--purple-light);color:var(--purple-dark);border-color:var(--purple-light);">05 · Servicios Profesionales</a>
+    <a href="#s6" class="pnav" style="background:var(--teal-light);color:var(--teal-dark);border-color:var(--teal-light);">06 · Datacenter Pacheco</a>
+    <a href="#s7" class="pnav" style="background:var(--gray-light);color:var(--gray-dark);border-color:var(--gray-light);">07 · Sectores verticales</a>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- 01 CLOUD & DATACENTER -->
+  <!-- ============================================================ -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--blue-light);">☁️</div>
+      <div class="section-title-block">
+        <div class="section-title">Cloud &amp; Datacenter</div>
+        <div class="section-subtitle">Infraestructura como servicio desde el DC propio de Personal Tech en Pacheco</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      Personal Tech opera su propio datacenter certificado en Pacheco (Buenos Aires), desde donde ofrece cloud privada, pública e híbrida. <strong>El diferenciador central frente a AWS y Azure</strong>: los datos nunca salen del territorio argentino, el SLA es contractual con soporte local, y la conectividad de acceso (fibra, MPLS, SD-WAN) es del mismo proveedor. Un solo contrato, un solo responsable.
+    </p>
+
+    <div class="subsection">Modelos de cloud</div>
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--blue-light);">
+          <span class="card-badge" style="background:#fff;color:var(--blue-dark);">IaaS · Cloud Privada</span>
+          <div class="card-name">Cloud Privada Personal Tech</div>
+          <div class="card-tagline">Infraestructura dedicada, dato soberano, SLA contractual</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Plataforma de virtualización exclusiva para el cliente dentro del DC de Pacheco. Los recursos de cómputo (vCPU, RAM), almacenamiento y red no se comparten con otros tenants. El cliente tiene visibilidad y control total sobre su entorno.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span><strong>Máquinas virtuales (VMs)</strong> con perfiles de CPU y RAM configurables según la carga.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span><strong>Almacenamiento SAN/NAS</strong>: bloques de alto rendimiento para bases de datos y archivos compartidos.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span><strong>Red privada</strong>: VLANs, firewalling perimetral, microsegmentación incluidos.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span><strong>Portal de autogestión</strong>: el cliente provisionea, escala y monitorea sin llamar a soporte.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>SLA de disponibilidad 99,95% con penalidades contractuales y soporte 24/7 en castellano.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Soberanía del dato</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">BCRA/CNV compliant</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Tenancy exclusivo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--green-light);">
+          <span class="card-badge" style="background:#fff;color:var(--green-dark);">IaaS · Cloud Pública</span>
+          <div class="card-name">Cloud Pública</div>
+          <div class="card-tagline">Recursos bajo demanda, pago por uso, escalado inmediato</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Entorno multi-tenant donde el cliente accede a cómputo, almacenamiento y red en segundos. Ideal para cargas de trabajo variables, entornos de desarrollo/testing y aplicaciones con picos de demanda. Los recursos se comparten entre clientes pero los datos están aislados por red.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span><strong>Pay-as-you-go</strong>: se paga por hora de uso. Sin contratos mínimos de largo plazo.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span><strong>Autoescalado</strong>: las VMs crecen en CPU/RAM automáticamente ante picos de tráfico.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span><strong>Object Storage (tipo S3)</strong>: almacenamiento de objetos para backups, archivos y datos no estructurados.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Ventaja vs. AWS: misma flexibilidad pero con <strong>latencia local</strong> y <strong>sin egress fees</strong> en pesos.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Dev/Test</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Cargas variables</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Sin egress fees</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--amber-light);">
+          <span class="card-badge" style="background:#fff;color:var(--amber-dark);">IaaS · Cloud Híbrida</span>
+          <div class="card-name">Cloud Híbrida + Multicloud</div>
+          <div class="card-tagline">Lo mejor de Personal Tech y los hyperscalers en un solo modelo</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Arquitectura que combina cloud privada de Personal Tech con servicios de Azure, AWS o GCP. Las cargas críticas y datos regulados quedan en Argentina (Personal Tech); las cargas más flexibles o con dependencia de servicios de los hyperscalers van a la nube pública. Personal Tech actúa como broker de conectividad entre ambos mundos.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span><strong>Peering directo con AWS y Azure</strong>: el tráfico hacia hyperscalers no pasa por internet público — va por la red troncal de Personal Tech.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span><strong>Gestión unificada</strong>: un solo panel que muestra el estado de los recursos propios y en hyperscaler.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Posicionamiento como <strong>partner de ExpressRoute (Azure)</strong> y gateway para AWS Direct Connect.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Multicloud</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Azure ExpressRoute partner</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Workloads mixtos</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /product-grid modelos -->
+
+    <div class="subsection">Servicios complementarios de cloud</div>
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--coral-light);">
+          <span class="card-badge" style="background:#fff;color:var(--coral-dark);">Backup as a Service</span>
+          <div class="card-name">Backup Gestionado</div>
+          <div class="card-tagline">Copias de seguridad automáticas, en el DC de Personal Tech</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Servicio de copia de seguridad de servidores físicos, VMs y datos críticos hacia el datacenter de Personal Tech. No depende de tapes ni soluciones on-premise del cliente. El dato replicado queda en territorio argentino.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Backup diario, semanal o por política personalizada.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Retención configurable: 7, 30, 90 días o más.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Cifrado en tránsito y en reposo.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Monitoreo y alertas automáticas si una copia falla.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">BaaS</span>
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Dato en AR</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--purple-light);">
+          <span class="card-badge" style="background:#fff;color:var(--purple-dark);">Disaster Recovery as a Service</span>
+          <div class="card-name">DRaaS — Recuperación ante Desastres</div>
+          <div class="card-tagline">RTO y RPO contractuales para garantizar continuidad del negocio</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Replicación continua de los sistemas productivos del cliente hacia el DC de Personal Tech. Ante una falla (datacenter propio, incendio, ataque ransomware), los sistemas levantan automáticamente en la infraestructura de Personal Tech en minutos.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span><strong>RTO (Recovery Time Objective)</strong>: tiempo máximo para restaurar operaciones. Se define y garantiza en contrato.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span><strong>RPO (Recovery Point Objective)</strong>: máxima pérdida de datos aceptable (ej: máximo 1 hora de datos). También contractual.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Drills periódicos de recuperación para validar el plan sin impacto productivo.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Compatible con entornos físicos, virtuales y cargas en hyperscaler.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">DRaaS</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">BCRA compliance</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Continuidad crítica</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--teal-light);">
+          <span class="card-badge" style="background:#fff;color:var(--teal-dark);">Managed Services</span>
+          <div class="card-name">Managed Cloud</div>
+          <div class="card-tagline">Personal Tech opera y administra tu infraestructura cloud</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">El cliente no necesita un equipo interno de infraestructura. Personal Tech se hace cargo del parchado de sistemas operativos, monitoreo, gestión de capacidad, actualizaciones de seguridad y alertas. El cliente solo usa los sistemas.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Monitoreo 24/7 de disponibilidad y rendimiento.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Patch management (actualizaciones de seguridad gestionadas).</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Gestión de capacidad: recomendaciones de escala antes de que el problema ocurra.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Informes mensuales de uso, disponibilidad y eventos de seguridad.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Managed</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Empresas sin IT propio</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cloud complementarios -->
+  </div><!-- /section cloud -->
+
+
+  <!-- ============================================================ -->
+  <!-- 02 CONECTIVIDAD -->
+  <!-- ============================================================ -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--green-light);">🔗</div>
+      <div class="section-title-block">
+        <div class="section-title">Conectividad</div>
+        <div class="section-subtitle">Red troncal de fibra nacional, tecnologías WAN empresariales y acceso 4G/LTE/satelital</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      Personal Tech (Telecom Argentina) opera una de las redes de fibra más grandes del país. Esto le permite ofrecer el circuito de acceso, la red WAN y el cloud en un mismo contrato — algo que AWS y Azure estructuralmente no pueden hacer. <strong>Un solo proveedor para todo el camino: desde la oficina del cliente hasta el servidor.</strong>
+    </p>
+
+    <div class="subsection">Tecnologías WAN empresariales</div>
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--blue-light);">
+          <span class="card-badge" style="background:#fff;color:var(--blue-dark);">WAN privada</span>
+          <div class="card-name">MPLS Empresarial</div>
+          <div class="card-tagline">Red privada, tráfico nunca toca internet, SLA contractual</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Red de área amplia basada en conmutación por etiquetas (Multi-Protocol Label Switching). Cada paquete de datos viaja por rutas predefinidas sobre la infraestructura del carrier. Sin internet público en ningún punto del recorrido.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Conecta múltiples sedes de la empresa en una red privada unificada.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>QoS (Quality of Service) configurable: prioridad para voz, video o datos críticos.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Cloud OnRamp: el circuito MPLS termina directo en el DC de Pacheco — dato nunca sale del carrier.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Latencia garantizada por contrato. SLA con uptime 99,9%.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Banca</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Gobierno</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Industria crítica</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--green-light);">
+          <span class="card-badge" style="background:#fff;color:var(--green-dark);">WAN por software</span>
+          <div class="card-name">SD-WAN</div>
+          <div class="card-tagline">Gestión inteligente de múltiples links con orquestación centralizada</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Separa la lógica del tráfico de la red física. El controlador SD-WAN gestiona dinámicamente el flujo de datos sobre múltiples transportes (MPLS, fibra broadband, 4G) según políticas de negocio definidas centralmente. La empresa opera como si tuviera una sola red unificada.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Panel único de gestión para todas las sedes. Un solo técnico opera toda la WAN.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Failover automático: si cae un link, el tráfico salta al siguiente sin intervención manual.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Políticas granulares: videoconferencia por el link de menor latencia, backups por el más económico.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Cloud Gateway integrado: envía tráfico al DC de Personal Tech o directo a Azure/AWS según política.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Reducción de costo WAN típica: 30–60% frente a MPLS puro.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Retail</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Muchas sucursales</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Reducción de costos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--amber-light);">
+          <span class="card-badge" style="background:#fff;color:var(--amber-dark);">Internet dedicado</span>
+          <div class="card-name">DIA — Dedicated Internet Access</div>
+          <div class="card-tagline">Ancho de banda exclusivo, simétrico, con SLA de velocidad garantizada</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Enlace de internet no compartido con ningún otro cliente. La velocidad contratada está disponible el 100% del tiempo. Simétrico: la misma velocidad de subida y bajada — crítico para empresas que suben backups, hacen videoconferencias en HD o trabajan con aplicaciones cloud intensivas.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>SLA con penalidades económicas si no se cumple el ancho de banda comprometido.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Direct Peering con AWS y Azure: menos saltos de red, mejor latencia hacia hyperscalers.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>IP fija incluida. Bloques de IPs disponibles para empresas con múltiples servicios expuestos.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Disponible en capacidades desde 10 Mbps hasta 10 Gbps según el nodo de fibra.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Alto consumo cloud</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Teletrabajo masivo</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Videoconferencia HD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--coral-light);">
+          <span class="card-badge" style="background:#fff;color:var(--coral-dark);">Circuito privado</span>
+          <div class="card-name">Acceso Dedicado + Cross-Connect</div>
+          <div class="card-tagline">Cable físico punto a punto. Máximo rendimiento, latencia sub-milisegundo</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Circuito de fibra óptica exclusivo entre la sede del cliente y el DC de Personal Tech. El Cross-Connect es la variante dentro del propio datacenter: un cable que une el rack del cliente (en colocation) con la infraestructura de Personal Tech. Cero variabilidad, cero internet en el camino.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Latencia sub-milisegundo (Cross-Connect dentro del DC).</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Sin compartir infraestructura física con otros clientes.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Ideal para replicación de bases de datos en tiempo real, trading, sistemas de misión crítica.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Capacidades desde 1 Gbps hasta 100 Gbps (dark fiber disponible).</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Colocation</span>
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">DR activo-activo</span>
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">Trading / Fintech</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /WAN -->
+
+    <div class="subsection">Acceso móvil y satelital</div>
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--teal-light);">
+          <span class="card-badge" style="background:#fff;color:var(--teal-dark);">Móvil empresarial</span>
+          <div class="card-name">4G/LTE Empresarial</div>
+          <div class="card-tagline">Backup de enlace principal o conectividad primaria en zonas sin fibra</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Utiliza la red móvil de Personal (Telecom) como enlace de datos empresarial. Usado como respaldo automático cuando cae el enlace fijo principal, o como conectividad primaria en ubicaciones donde la fibra no llega (depósitos, plantas industriales, obras).</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>APN privado: el tráfico de los dispositivos de la empresa va por una red APN aislada, sin pasar por internet público.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>SIM Management centralizado: un portal para gestionar todas las SIMs de la empresa.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Failover automático integrado con SD-WAN.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Backup WAN</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Agro</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Industria</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--purple-light);">
+          <span class="card-badge" style="background:#fff;color:var(--purple-dark);">Satelital</span>
+          <div class="card-name">Conectividad Satelital</div>
+          <div class="card-tagline">Para zonas sin infraestructura terrestre: campo, minería, logística</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Conectividad de datos por satélite para ubicaciones donde no existe fibra ni cobertura 4G. Integrable con la red SD-WAN corporativa — el campo o la mina queda conectada a la misma plataforma de gestión que las sedes urbanas.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Casos de uso: agronegocios, minería, plataformas offshore, logística en rutas.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Complementa con IoT para monitoreo de campo y maquinaria remota.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Gestión unificada desde el mismo portal SD-WAN.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Agro</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Minería</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Logística</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /section conectividad -->
+
+
+  <!-- ============================================================ -->
+  <!-- 03 CIBERSEGURIDAD -->
+  <!-- ============================================================ -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--coral-light);">🔒</div>
+      <div class="section-title-block">
+        <div class="section-title">Ciberseguridad</div>
+        <div class="section-subtitle">Protección end-to-end: red, endpoint, identidad y operaciones de seguridad 24/7</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      Personal Tech cubre la seguridad tanto de la red de acceso como de la infraestructura cloud. Esto es clave para sectores regulados: el cliente no necesita un proveedor de seguridad separado — el mismo carrier que gestiona el circuito y el cloud puede operar el SOC. <strong>Un solo responsable para toda la cadena.</strong>
+    </p>
+
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--coral-light);">
+          <span class="card-badge" style="background:#fff;color:var(--coral-dark);">Seguridad gestionada</span>
+          <div class="card-name">SOC — Centro de Operaciones de Seguridad</div>
+          <div class="card-tagline">Monitoreo 24/7 de amenazas con respuesta activa ante incidentes</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">El SOC es un equipo de analistas de seguridad que monitorea en tiempo real todos los eventos de la infraestructura del cliente. Cuando detectan una amenaza (intrusión, malware, comportamiento anómalo), actúan antes de que cause daño. Es como tener un equipo de seguridad propio, sin el costo de armarlo.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Monitoreo 24/7/365. Sin cortes de guardia ni fines de semana.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>SIEM (Security Information and Event Management): correlación de eventos de toda la infraestructura en un motor de alertas.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Playbooks de respuesta automática: ante ciertos tipos de ataque, se ejecutan acciones de contención sin esperar al analista.</li>
+            <li><span class="feat-dot" style="background:var(--coral-mid)"></span>Informes de incidentes y métricas de seguridad para el CISO o el directorio.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">SOC as a Service</span>
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">SIEM</span>
+            <span class="tag" style="background:var(--coral-light);color:var(--coral-dark);">24/7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--amber-light);">
+          <span class="card-badge" style="background:#fff;color:var(--amber-dark);">Seguridad de red</span>
+          <div class="card-name">Firewall Gestionado + NGFW</div>
+          <div class="card-tagline">Protección perimetral de la red corporativa, gestionada por Personal Tech</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">El Next-Generation Firewall (NGFW) va más allá del firewall tradicional: no solo filtra puertos, sino que inspecciona el contenido del tráfico, detecta amenazas conocidas y bloquea aplicaciones no autorizadas. Gestionado por Personal Tech, sin que el cliente necesite expertise interno en seguridad de red.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Inspección profunda de paquetes (DPI): ve qué hay dentro del tráfico, no solo de dónde viene.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>IPS/IDS: detección y prevención de intrusiones en tiempo real.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Filtrado de URLs y control de aplicaciones (bloquea Netflix en horario laboral, permite Zoom).</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Alta disponibilidad: dos firewalls en modo activo-pasivo para que una falla no deje la empresa sin protección.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">NGFW</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">IPS/IDS</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Gestionado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--purple-light);">
+          <span class="card-badge" style="background:#fff;color:var(--purple-dark);">Endpoint</span>
+          <div class="card-name">EDR — Endpoint Detection &amp; Response</div>
+          <div class="card-tagline">Protección avanzada en laptops, servidores y dispositivos móviles</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Va más allá del antivirus tradicional. El EDR monitorea el comportamiento de cada dispositivo en tiempo real. Si un proceso empieza a cifrar archivos (ransomware), el EDR lo detecta y lo detiene antes de que afecte al resto de la organización.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Detección de comportamientos anómalos, no solo firmas de virus conocidos.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Respuesta automática: aislamiento del dispositivo comprometido de la red.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Consola centralizada: el equipo de seguridad ve todos los endpoints de la empresa en un panel.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Integrado con el SOC: los eventos del EDR alimentan el SIEM en tiempo real.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">EDR</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Anti-ransomware</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Endpoints</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--blue-light);">
+          <span class="card-badge" style="background:#fff;color:var(--blue-dark);">Acceso seguro</span>
+          <div class="card-name">Zero Trust Network Access (ZTNA)</div>
+          <div class="card-tagline">Nadie accede a nada sin verificación explícita, siempre</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Modelo de seguridad que elimina la confianza implícita de las redes corporativas. En lugar de "estás dentro de la red, entonces confiamos en vos", ZTNA verifica identidad y contexto en cada acceso a cada aplicación. Diseñado para el mundo del trabajo remoto y multicloud.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Autenticación multifactor (MFA) obligatoria para todo acceso sensible.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Acceso basado en identidad y contexto: mismo usuario puede tener permisos distintos desde la oficina vs. desde un café.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Reemplaza la VPN tradicional con un modelo más seguro y granular.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Alineado con frameworks ISO 27001 y NIST CSF.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Zero Trust</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">ZTNA</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Teletrabajo</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /section ciberseguridad -->
+
+
+  <!-- ============================================================ -->
+  <!-- 04 IoT -->
+  <!-- ============================================================ -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--amber-light);">📡</div>
+      <div class="section-title-block">
+        <div class="section-title">IoT — Internet de las Cosas</div>
+        <div class="section-subtitle">Conectividad, sensores y plataforma de datos para industria, agro y ciudades</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      Personal Tech integra la conectividad (4G, satelital, LPWAN) con plataformas de ingesta y análisis de datos de dispositivos IoT. El diferenciador es que el mismo proveedor gestiona el sensor, el circuito de comunicaciones y la plataforma cloud donde llegan los datos — <strong>eliminando la fragmentación típica de proyectos IoT donde intervienen 3 o 4 proveedores distintos.</strong>
+    </p>
+
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--amber-light);">
+          <span class="card-badge" style="background:#fff;color:var(--amber-dark);">Plataforma</span>
+          <div class="card-name">Plataforma IoT</div>
+          <div class="card-tagline">Ingesta, procesamiento y visualización de datos de dispositivos conectados</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Plataforma cloud que recibe datos de sensores y dispositivos, los procesa en tiempo real y los presenta en dashboards configurables. Permite crear alertas automáticas ("si la temperatura supera X grados, enviar alerta") y conectar los datos con sistemas de negocio (ERP, SCADA).</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Compatibilidad con protocolos estándar: MQTT, HTTP, CoAP.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Dashboards de monitoreo en tiempo real configurables por el cliente.</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>Motor de reglas: si condición X, entonces acción Y (alertas, actuaciones sobre dispositivos).</li>
+            <li><span class="feat-dot" style="background:var(--amber-mid)"></span>API REST para integración con sistemas de gestión existentes.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Industria 4.0</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Monitoreo remoto</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--green-light);">
+          <span class="card-badge" style="background:#fff;color:var(--green-dark);">Vertical</span>
+          <div class="card-name">AgTech — IoT para Agronegocios</div>
+          <div class="card-tagline">Digitalización del campo: sensores, conectividad 4G/satelital y datos operativos</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Solución integral para el sector agroindustrial. Combina conectividad 4G y satelital en campos remotos con sensores de temperatura, humedad, nivel de agua, posición de maquinaria y rendimiento de cultivos. Los datos llegan a una plataforma cloud con alertas y análisis para tomar mejores decisiones de campo.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Sensores de suelo, clima y maquinaria conectados por 4G o satélite según cobertura.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Centro de Monitoreo Operativo: visualización en tiempo real de datos de toda la explotación.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Alertas de anomalías: fallo de bomba de riego, temperatura fuera de rango, etc.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Trazabilidad de lotes para exportación y cumplimiento de normativas internacionales.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Agricultura</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Ganadería</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Agroindustria</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--teal-light);">
+          <span class="card-badge" style="background:#fff;color:var(--teal-dark);">Vertical</span>
+          <div class="card-name">IoT Industrial</div>
+          <div class="card-tagline">Monitoreo de activos, mantenimiento predictivo y automatización</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Conexión de maquinaria industrial, líneas de producción y activos críticos a la plataforma IoT. Permite pasar del mantenimiento correctivo (esperar que algo se rompa) al predictivo (detectar señales de falla antes de que ocurra), reduciendo paradas no planificadas y costos de reparación.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Sensores de vibración, temperatura, corriente y presión en maquinaria.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Modelos de mantenimiento predictivo basados en histórico de datos.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Integración con sistemas SCADA y MES existentes vía API.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>APN privado: los datos de la planta nunca pasan por internet público.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Manufactura</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Oil &amp; Gas</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Mantenimiento predictivo</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /section IoT -->
+
+
+  <!-- ============================================================ -->
+  <!-- 05 SERVICIOS PROFESIONALES -->
+  <!-- ============================================================ -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--purple-light);">🧠</div>
+      <div class="section-title-block">
+        <div class="section-title">Servicios Profesionales</div>
+        <div class="section-subtitle">Consultoría, arquitectura, migración y gestión de proyectos de transformación digital</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      Los servicios profesionales son la capa de consultoría que convierte un producto técnico en una solución de negocio. Son el punto donde entra con más fuerza tu perfil — <strong>arquitecturas técnicas, análisis TCO/ROI, gestión de proyectos complejos y posicionamiento frente a la C-suite del cliente.</strong>
+    </p>
+
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--purple-light);">
+          <span class="card-badge" style="background:#fff;color:var(--purple-dark);">Consultoría</span>
+          <div class="card-name">Assessment &amp; Arquitectura Cloud</div>
+          <div class="card-tagline">Diagnóstico del estado actual y diseño del estado futuro</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Relevamiento de la infraestructura existente del cliente (servidores, red, aplicaciones, equipo humano) y diseño de la arquitectura cloud objetivo. Incluye análisis de dependencias entre sistemas, identificación de riesgos de migración y hoja de ruta priorizada.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Inventario automatizado de la infraestructura actual.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Diseño de arquitectura target con BOM (Bill of Materials) detallado.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Análisis TCO: costo real del estado actual vs. costo proyectado en cloud, a 3 y 5 años.</li>
+            <li><span class="feat-dot" style="background:var(--purple-mid)"></span>Roadmap de migración con fases, hitos y criterios de éxito.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">TCO/ROI</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">Arquitectura</span>
+            <span class="tag" style="background:var(--purple-light);color:var(--purple-dark);">BOM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--blue-light);">
+          <span class="card-badge" style="background:#fff;color:var(--blue-dark);">Ejecución</span>
+          <div class="card-name">Migración a Cloud</div>
+          <div class="card-tagline">Mover las cargas del cliente al cloud de Personal Tech sin cortar operaciones</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">El servicio de migración cubre el traslado de servidores físicos, bases de datos y aplicaciones hacia la cloud de Personal Tech. Se ejecuta con técnicas de migración en caliente (sin apagar sistemas en producción) o con ventanas de corte planificadas para aplicaciones que lo requieran.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Lift &amp; Shift: migración directa sin rediseño de la aplicación.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Re-platforming: ajuste de la aplicación para aprovechar servicios cloud nativos.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Testing de carga post-migración para validar rendimiento antes del go-live.</li>
+            <li><span class="feat-dot" style="background:var(--blue-mid)"></span>Plan de rollback: si algo falla, reversión al estado previo en minutos.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Lift &amp; Shift</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Cero downtime</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Re-platform</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="card-head" style="background:var(--green-light);">
+          <span class="card-badge" style="background:#fff;color:var(--green-dark);">Optimización</span>
+          <div class="card-name">FinOps — Optimización de Costos Cloud</div>
+          <div class="card-tagline">Reducir el gasto cloud sin degradar el rendimiento ni la disponibilidad</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Análisis del consumo cloud del cliente para identificar recursos sobredimensionados, sin uso o mal configurados. FinOps es la disciplina que pone a ingeniería, finanzas y negocio a hablar el mismo idioma: el del costo por resultado de negocio.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Análisis de rightsizing: VMs sobredimensionadas que pagan capacidad que no usan.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Identificación de recursos zombies: servidores encendidos sin carga, snapshots acumulados.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Dashboard de costos por proyecto, área o aplicación.</li>
+            <li><span class="feat-dot" style="background:var(--green-mid)"></span>Recomendaciones de Reserved Instances o compromisos de consumo para bajar el precio unitario.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">FinOps</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Rightsizing</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Reducción de costos</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /servicios profesionales -->
+
+
+  <!-- ============================================================ -->
+  <!-- 06 DATACENTER PACHECO -->
+  <!-- ============================================================ -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--teal-light);">🏭</div>
+      <div class="section-title-block">
+        <div class="section-title">Datacenter Pacheco — EZE1</div>
+        <div class="section-subtitle">La infraestructura física que hace posible todo el portfolio</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      El datacenter de Pacheco es el activo físico diferenciador de Personal Tech. <strong>Es el #1 de Buenos Aires por servicios activos</strong>, opera con 100% energía renovable, tiene certificación CEEDA y es anchor PoP de los cables submarinos que llegan a Argentina. Ningún hyperscaler puede replicar esto localmente.
+    </p>
+
+    <div class="dc-box">
+      <div class="dc-head">
+        <div>
+          <div class="dc-name">Pacheco Datacenter — EZE1</div>
+          <div class="dc-sub">Colectora Este 32375, Pacheco, Buenos Aires · Telecom Argentina</div>
+        </div>
+      </div>
+      <div class="dc-stats">
+        <div class="dc-stat"><div class="dc-stat-val">1.29 MW</div><div class="dc-stat-label">Capacidad de potencia total</div></div>
+        <div class="dc-stat"><div class="dc-stat-val">N+1</div><div class="dc-stat-label">Redundancia en cooling (aire + agua)</div></div>
+        <div class="dc-stat"><div class="dc-stat-val">100%</div><div class="dc-stat-label">Energía renovable desde 2024</div></div>
+        <div class="dc-stat"><div class="dc-stat-val">24/7</div><div class="dc-stat-label">Seguridad física con biometría + CCTV</div></div>
+        <div class="dc-stat"><div class="dc-stat-val">#1</div><div class="dc-stat-label">Datacenter de Buenos Aires por servicios</div></div>
+        <div class="dc-stat"><div class="dc-stat-val">IXP</div><div class="dc-stat-label">Internet Exchange Point anclado en el DC</div></div>
+      </div>
+      <div class="dc-certs">
+        <span class="cert" style="background:var(--green-light);color:var(--green-dark);">✓ CEEDA — Eficiencia energética internacional</span>
+        <span class="cert" style="background:var(--blue-light);color:var(--blue-dark);">✓ Anchor PoP cables submarinos AR</span>
+        <span class="cert" style="background:var(--amber-light);color:var(--amber-dark);">✓ Carrier Neutral — todos los ISPs tienen acceso</span>
+        <span class="cert" style="background:var(--purple-light);color:var(--purple-dark);">✓ Peering directo con AWS y Azure</span>
+      </div>
+    </div>
+
+    <div class="subsection" style="margin-top:22px;">Servicios de Colocation</div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="card-head" style="background:var(--teal-light);">
+          <span class="card-badge" style="background:#fff;color:var(--teal-dark);">Colocation</span>
+          <div class="card-name">Housing de Servidores</div>
+          <div class="card-tagline">El cliente pone su hardware, Personal Tech pone el espacio y la infraestructura</div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">La empresa alquila espacio físico (racks o fracciones de rack) dentro del DC de Pacheco para instalar sus propios servidores. Personal Tech provee energía redundante, cooling, seguridad física 24/7 y conectividad de acceso. El cliente conserva el control total de su hardware.</p>
+          <ul class="card-features">
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Fracciones de rack, rack completo o jaula privada según necesidad.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Acceso remoto por KVM IP y acceso físico con acreditación.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Conectividad: Cross-Connect al cloud de Personal Tech o a cualquier carrier del DC.</li>
+            <li><span class="feat-dot" style="background:var(--teal-mid)"></span>Power redundante en A/B con UPS y generadores.</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Housing</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Hardware propio</span>
+            <span class="tag" style="background:var(--teal-light);color:var(--teal-dark);">Control total</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /datacenter -->
+
+
+  <!-- ============================================================ -->
+  <!-- 07 SECTORES VERTICALES -->
+  <!-- ============================================================ -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--gray-light);">🏢</div>
+      <div class="section-title-block">
+        <div class="section-title">Sectores Verticales</div>
+        <div class="section-subtitle">Propuestas de valor específicas por industria</div>
+      </div>
+    </div>
+    <p class="section-intro">
+      Personal Tech no vende tecnología genérica — posiciona sus soluciones con argumentos específicos para cada vertical. <strong>Tu experiencia en Banca, Gobierno y Retail vale doble acá</strong>: podés hablarle al CIO de un banco con el lenguaje de BCRA, o al CFO de un retailer con el lenguaje de continuidad operativa en temporada alta.
+    </p>
+
+    <div class="sectors-grid">
+      <div class="sector-card">
+        <div class="sector-icon">🏦</div>
+        <div class="sector-name">Banca y Seguros</div>
+        <div class="sector-desc">MPLS + DR + Cloud soberana para compliance BCRA/CNV. SLA contractual. Soberanía del dato obligatoria.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏛️</div>
+        <div class="sector-name">Gobierno</div>
+        <div class="sector-desc">Cloud privada on-shore, soberanía total, energía renovable. Cumplimiento de normativas de datos públicos y privacidad ciudadana.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🛒</div>
+        <div class="sector-name">Retail</div>
+        <div class="sector-desc">SD-WAN para 100+ sucursales, escalado en temporada alta, continuidad operativa en picos de demanda (Hot Sale, Navidad).</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏭</div>
+        <div class="sector-name">Manufactura</div>
+        <div class="sector-desc">IoT industrial, conectividad de planta (4G + APN privado), mantenimiento predictivo y SCADA en cloud soberana.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🌾</div>
+        <div class="sector-name">Agronegocios</div>
+        <div class="sector-desc">AgTech: conectividad 4G+satelital en campo, sensores IoT, plataforma de datos operativos y trazabilidad de lotes.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">⚡</div>
+        <div class="sector-name">Oil, Gas &amp; Energía</div>
+        <div class="sector-desc">Conectividad en zonas remotas, monitoreo IoT de activos críticos, seguridad OT/IT y continuidad operativa 99,99%.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏥</div>
+        <div class="sector-name">Salud</div>
+        <div class="sector-desc">Cloud con dato soberano para historia clínica digital, DR para sistemas críticos (HIS, LIS), ciberseguridad de dispositivos médicos.</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">📦</div>
+        <div class="sector-name">Logística</div>
+        <div class="sector-desc">Trazabilidad de flota y cargas por IoT+4G, conectividad en depósitos y rutas, SD-WAN para operaciones distribuidas.</div>
+      </div>
+    </div>
+  </div><!-- /sectores -->
+
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>Edgardo Mauricio Celata · Personal Tech · Referencia comercial pre-venta</span>
+    <span>Documento de uso personal — confidencial</span>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', { year:'numeric', month:'long', day:'numeric' });
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+</body>
+</html>

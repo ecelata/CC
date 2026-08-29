@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud Adoption Frameworks — AWS · Azure · GCP | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --aws:#FF9900;--aws-d:#7A4700;--aws-l:#FFF4E0;
+  --az:#0078D4;--az-d:#004578;--az-l:#E6F2FF;
+  --gcp:#4285F4;--gcp-d:#1A3A7A;--gcp-l:#E8F0FE;
+  --pt:#0070F3;--pt-d:#004DBF;--pt-l:#EBF5FF;
+  --ink:#0D1117;--ink2:#1C2333;--ink3:#374151;
+  --muted:#6B7280;--faint:#9CA3AF;--line:#E5E7EB;
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;
+  --green:#059669;--green-l:#D1FAE5;
+  --amber:#D97706;--amber-l:#FEF3C7;
+  --red:#DC2626;--red-l:#FEE2E2;
+  --purple:#7C3AED;--purple-l:#EDE9FE;
+  --r:10px;--r-sm:7px;
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04);
+  --sh-m:0 4px 20px rgba(0,0,0,.08),0 10px 40px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;overflow-x:auto;gap:0;}
+.nav-logo{font-size:12px;font-weight:800;color:var(--pt);white-space:nowrap;padding:13px 18px 13px 0;border-right:1px solid var(--line);margin-right:8px;letter-spacing:-.2px;}
+.nl{font-size:11px;font-weight:600;padding:14px 11px;white-space:nowrap;color:var(--faint);border-bottom:2px solid transparent;text-decoration:none;transition:all .13s;cursor:pointer;}
+.nl:hover,.nl.on{color:var(--ink);border-bottom-color:var(--pt);}
+
+/* PAGE */
+.page{max-width:1080px;margin:0 auto;padding:0 24px 100px;}
+
+/* HERO */
+.hero{padding:68px 0 56px;border-bottom:1px solid var(--line);margin-bottom:64px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--pt);background:var(--pt-l);padding:4px 13px;border-radius:20px;margin-bottom:18px;}
+.hero-h1{font-size:38px;font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-.5px;margin-bottom:14px;}
+.hero-h1 em{color:var(--pt);font-style:normal;}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:700px;margin-bottom:32px;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
+.hero-pill{font-size:12px;font-weight:700;padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--line);}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.hg{border-radius:var(--r);padding:18px 16px;border:1px solid var(--line);}
+.hg-val{font-size:20px;font-weight:800;line-height:1;margin-bottom:5px;}
+.hg-label{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* CHAPTER */
+.chap{margin-bottom:72px;scroll-margin-top:54px;}
+.chap-hd{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:24px;}
+.chap-icon{width:40px;height:40px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.chap-num{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);}
+.chap-title{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.2px;flex:1;}
+.chap-badge{font-size:10.5px;font-weight:700;padding:3px 11px;border-radius:20px;}
+
+/* ACCORDION */
+.acc{border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;overflow:hidden;transition:box-shadow .2s;}
+.acc.open{box-shadow:var(--sh);}
+.acc-h{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;background:var(--bg2);transition:background .12s;}
+.acc-h:hover,.acc.open .acc-h{background:var(--bg3);}
+.acc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.acc-num-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.acc-meta{flex:1;}
+.acc-title{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px;line-height:1.3;}
+.acc-sub{font-size:11.5px;color:var(--muted);}
+.acc-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;flex-shrink:0;}
+.acc-chv{font-size:11px;color:var(--faint);transition:transform .2s;flex-shrink:0;}
+.acc.open .acc-chv{transform:rotate(180deg);}
+.acc-body{display:none;border-top:1px solid var(--line);padding:22px 20px 24px;}
+.acc.open .acc-body{display:block;}
+
+/* PERSPECTIVE / PILLAR GRID */
+.pillar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:16px 0;}
+.pillar{border-radius:var(--r);border:1px solid var(--line);overflow:hidden;transition:box-shadow .15s;}
+.pillar:hover{box-shadow:var(--sh);}
+.pillar-top{padding:16px 18px 12px;display:flex;align-items:flex-start;gap:12px;}
+.pillar-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:#fff;}
+.pillar-info{flex:1;}
+.pillar-name{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:3px;line-height:1.2;}
+.pillar-en{font-size:10.5px;color:var(--faint);font-weight:500;}
+.pillar-body{border-top:1px solid var(--line);padding:12px 18px 14px;background:var(--bg2);}
+.pillar-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px;}
+.pillar-desc strong{color:var(--ink3);}
+.pillar-q{font-size:11.5px;color:var(--muted);padding:7px 10px;border-radius:var(--r-sm);border-left:2px solid var(--line);background:var(--bg);line-height:1.5;font-style:italic;}
+.pillar-q strong{color:var(--ink3);font-style:normal;}
+
+/* PHASE TRACK (vertical timeline) */
+.phase-track{position:relative;margin:24px 0;}
+.phase-track::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--line);}
+.phase{display:flex;gap:16px;margin-bottom:24px;position:relative;}
+.phase:last-child{margin-bottom:0;}
+.phase-bullet{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;position:relative;z-index:1;border:2px solid;}
+.phase-content{flex:1;padding-top:6px;}
+.phase-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
+.phase-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.phase-desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+.phase-desc strong{color:var(--ink3);}
+.phase-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.ptag{font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:20px;}
+
+/* DATA TABLE */
+.dtw{overflow-x:auto;margin:14px 0;}
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);border-bottom:1.5px solid var(--line);text-align:left;background:var(--bg2);}
+.dt td{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.55;color:var(--muted);}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:var(--bg2);}
+.dt-title{font-weight:700;color:var(--ink);font-size:12.5px;}
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap;margin:1px 2px 0 0;}
+.th-aws{color:var(--aws-d)!important;background:var(--aws-l);}
+.th-az{color:var(--az-d)!important;background:var(--az-l);}
+.th-gcp{color:var(--gcp-d)!important;background:var(--gcp-l);}
+.td-aws{border-left:2px solid var(--aws);}
+.td-az{border-left:2px solid var(--az);}
+.td-gcp{border-left:2px solid var(--gcp);}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0;}
+.card{border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 16px;background:var(--bg);}
+.card-icon{font-size:18px;margin-bottom:6px;}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.card-text{font-size:12px;color:var(--muted);line-height:1.6;}
+.card-text strong{color:var(--ink3);}
+
+/* CALLOUT */
+.cl{border-radius:var(--r-sm);padding:13px 16px;margin:14px 0;border-left:3px solid;font-size:13px;line-height:1.65;color:var(--muted);}
+.cl strong{font-weight:700;}
+.cl-pt{background:var(--pt-l);border-color:var(--pt);} .cl-pt strong{color:var(--pt-d);}
+.cl-aws{background:var(--aws-l);border-color:var(--aws);} .cl-aws strong{color:var(--aws-d);}
+.cl-az{background:var(--az-l);border-color:var(--az);} .cl-az strong{color:var(--az-d);}
+.cl-gcp{background:var(--gcp-l);border-color:var(--gcp);} .cl-gcp strong{color:var(--gcp-d);}
+.cl-green{background:var(--green-l);border-color:var(--green);} .cl-green strong{color:#065F46;}
+.cl-amber{background:var(--amber-l);border-color:var(--amber);} .cl-amber strong{color:#92400E;}
+
+/* FEAT */
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--ink3);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* MATURITY BARS */
+.mchart{margin:14px 0;display:flex;flex-direction:column;gap:8px;}
+.mb-row{display:flex;align-items:center;gap:10px;}
+.mb-label{font-size:11.5px;font-weight:600;color:var(--ink3);width:140px;flex-shrink:0;line-height:1.3;}
+.mb-track{flex:1;height:10px;background:var(--line);border-radius:5px;overflow:hidden;}
+.mb-fill{height:100%;border-radius:5px;}
+.mb-pct{font-size:11px;font-weight:700;color:var(--muted);width:42px;text-align:right;}
+
+/* PITCH */
+.pitch{background:var(--ink);border-radius:var(--r);padding:28px 32px;margin:24px 0;}
+.pitch-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:8px;}
+.pitch-text{font-size:15px;color:rgba(255,255,255,.87);line-height:1.8;font-style:italic;}
+.pitch-text strong{color:#fff;font-style:normal;}
+
+.footer{border-top:1px solid var(--line);margin-top:64px;padding-top:16px;display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint);flex-wrap:wrap;gap:8px;}
+
+@media(max-width:720px){
+  .page{padding:0 16px 80px;} .hero{padding:44px 0 32px;} .hero-h1{font-size:26px;}
+  .g2,.g3,.pillar-grid,.hero-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Personal Tech · CAF</div>
+  <a class="nl" href="#c1">¿Qué es un CAF?</a>
+  <a class="nl" href="#c2">AWS CAF</a>
+  <a class="nl" href="#c3">Azure CAF</a>
+  <a class="nl" href="#c4">GCP Adoption</a>
+  <a class="nl" href="#c5">Comparativa</a>
+  <a class="nl" href="#c6">Madurez</a>
+  <a class="nl" href="#c7">Personal Tech</a>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">☁️ Guía técnico-comercial · Personal Tech · Pre-Sales Toolkit</div>
+  <div class="hero-h1">Cloud Adoption Frameworks:<br><em>AWS · Azure · GCP</em> comparados</div>
+  <div class="hero-sub">Los tres grandes hyperscalers desarrollaron su propio framework para guiar la adopción cloud de las organizaciones. Aunque cada uno tiene su propio lenguaje y estructura, los tres comparten una lógica común: <strong>perspectivas/pilares de capacidades + fases de adopción.</strong> Esta guía detalla cada uno, los compara y muestra cómo aplicarlos en propuestas de Personal Tech.</div>
+  <div class="hero-pills">
+    <span class="hero-pill" style="background:var(--aws-l);color:var(--aws-d);border-color:var(--aws);">🟠 AWS CAF — 6 Perspectivas</span>
+    <span class="hero-pill" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">🔵 Microsoft CAF — 6 Fases (Methodologies)</span>
+    <span class="hero-pill" style="background:var(--gcp-l);color:var(--gcp-d);border-color:var(--gcp);">🔷 Google Cloud Adoption Framework — 4 Themes</span>
+    <span class="hero-pill" style="background:var(--pt-l);color:var(--pt-d);border-color:var(--pt);">📊 Modelo de madurez por etapas</span>
+  </div>
+  <div class="hero-grid">
+    <div class="hg" style="border-top:3px solid var(--aws);">
+      <div class="hg-val" style="color:var(--aws-d);">6</div>
+      <div class="hg-label">Perspectivas del AWS CAF: Business, People, Governance, Platform, Security, Operations</div>
+    </div>
+    <div class="hg" style="border-top:3px solid var(--az);">
+      <div class="hg-val" style="color:var(--az-d);">6</div>
+      <div class="hg-label">Fases metodológicas de Microsoft CAF: Strategy → Plan → Ready → Adopt → Govern → Manage</div>
+    </div>
+    <div class="hg" style="border-top:3px solid var(--gcp);">
+      <div class="hg-val" style="color:var(--gcp-d);">4</div>
+      <div class="hg-label">Themes de Google Cloud: Learn, Lead, Scale, Secure — con epochs de madurez</div>
+    </div>
+    <div class="hg" style="border-top:3px solid var(--pt);">
+      <div class="hg-val" style="color:var(--pt-d);">3</div>
+      <div class="hg-label">Niveles de madurez universales: Initial → Managed → Optimized</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C1: QUÉ ES UN CAF ══════ -->
+<div class="chap" id="c1">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--pt-l);">📐</div>
+    <span class="chap-num">01</span>
+    <div class="chap-title">¿Qué es un Cloud Adoption Framework y por qué importa?</div>
+    <span class="chap-badge" style="background:var(--pt-l);color:var(--pt-d);">Fundamentos</span>
+  </div>
+
+  <div class="acc" id="a_def1">
+    <div class="acc-h" onclick="T('a_def1')">
+      <div class="acc-dot" style="background:var(--pt);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Un CAF no es una checklist técnica — es un mapa de capacidades organizacionales</div>
+        <div class="acc-sub">El error más común es pensar que un CAF es solo "cómo migrar servidores"</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;">Un <strong>Cloud Adoption Framework (CAF)</strong> es un conjunto de guías, mejores prácticas, herramientas y documentación que ayuda a las organizaciones a desarrollar una estrategia de adopción cloud eficiente. No se trata únicamente de tecnología — cubre <strong>negocio, personas, gobernanza, plataforma, seguridad y operaciones</strong> simultáneamente.</p>
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--aws);">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Por qué existen</div>
+          <div class="card-text">Los hyperscalers descubrieron que <strong>el 70% de los proyectos de migración fallan por razones organizacionales</strong>, no técnicas: falta de skills, resistencia al cambio, sin gobernanza, sin alineación con negocio. El CAF aborda esas causas raíz.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-icon">🧩</div>
+          <div class="card-title">La estructura común</div>
+          <div class="card-text">Los tres frameworks comparten dos ejes: <strong>"perspectivas" o "pilares"</strong> (las áreas de capacidad que hay que desarrollar) y <strong>"fases"</strong> (la secuencia temporal del proyecto). Varían en nombres, pero la lógica es la misma.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-icon">💼</div>
+          <div class="card-title">Por qué importa para Personal Tech</div>
+          <div class="card-text">Hablar el lenguaje del CAF que el cliente ya conoce (si usa AWS, hablar de "Perspectivas"; si usa Azure, de "Landing Zone") <strong>genera credibilidad inmediata</strong> y posiciona a Personal Tech como un partner que entiende la metodología, no solo la infraestructura.</div>
+        </div>
+      </div>
+      <div class="cl cl-pt"><strong>El insight clave:</strong> Cuando un cliente dice "ya tenemos nuestra Landing Zone en Azure" o "estamos en la fase de Readiness del AWS CAF", está usando el vocabulario de su hyperscaler. Reconocer esos términos y responder en el mismo lenguaje acelera la conversación técnica.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C2: AWS CAF ══════ -->
+<div class="chap" id="c2">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--aws-l);">🟠</div>
+    <span class="chap-num">02</span>
+    <div class="chap-title">AWS Cloud Adoption Framework — 6 Perspectivas</div>
+    <span class="chap-badge" style="background:var(--aws-l);color:var(--aws-d);">El más adoptado en LATAM</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">El AWS CAF organiza la guía en <strong>6 perspectivas</strong>, cada una compuesta por un conjunto de "Capability Areas" (áreas de capacidad). Las perspectivas se agrupan en dos grupos: las que orientan el <em>"qué" y "por qué"</em> (Business, People, Governance) y las que orientan el <em>"cómo"</em> (Platform, Security, Operations).</p>
+
+  <div class="pillar-grid">
+
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--aws-l);">
+        <div class="pillar-icon" style="background:var(--aws);">💼</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Business Perspective</div>
+          <div class="pillar-en">Perspectiva de Negocio</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Asegura que las inversiones en IT estén directamente vinculadas a los resultados de negocio. Define el Business Case, los KPIs y la estrategia de portfolio. <strong>Stakeholders típicos: CFO, CEO, líderes de unidad de negocio.</strong></div>
+        <div class="pillar-q"><strong>Pregunta clave:</strong> "¿Cómo se traduce esta migración en valor medible para el negocio — ingresos, costos o riesgo?"</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--aws-l);">
+        <div class="pillar-icon" style="background:var(--aws);">👥</div>
+        <div class="pillar-info">
+          <div class="pillar-name">People Perspective</div>
+          <div class="pillar-en">Perspectiva de Personas</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Gestión del cambio organizacional (Change Management), capacitación, nuevas estructuras de equipo y cultura cloud. <strong>El cloud cambia roles: el "administrador de servidores" se convierte en "ingeniero de plataforma".</strong> Stakeholders: RRHH, líderes de equipo.</div>
+        <div class="pillar-q"><strong>Pregunta clave:</strong> "¿El equipo actual tiene las habilidades para operar en cloud, o necesita capacitación/contratación?"</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--aws-l);">
+        <div class="pillar-icon" style="background:var(--aws);">⚖️</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Governance Perspective</div>
+          <div class="pillar-en">Perspectiva de Gobernanza</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Define cómo se toman las decisiones cloud: gestión de portfolio, presupuesto, compras, gestión de riesgos y compliance. Establece las políticas que guían todo lo demás. <strong>Stakeholders: CIO, oficina de gestión de programas, compliance.</strong></div>
+        <div class="pillar-q"><strong>Pregunta clave:</strong> "¿Quién decide qué se migra primero, cuánto se gasta y cómo se mide el cumplimiento normativo?"</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--aws-l);">
+        <div class="pillar-icon" style="background:var(--aws);">🏗</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Platform Perspective</div>
+          <div class="pillar-en">Perspectiva de Plataforma</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">La perspectiva más técnica. Cubre la arquitectura de referencia, los patrones de diseño, la Landing Zone, modernización de aplicaciones y datos. <strong>Aquí vive el trabajo de arquitectos de soluciones.</strong> Stakeholders: CTO, arquitectos, equipos de ingeniería.</div>
+        <div class="pillar-q"><strong>Pregunta clave:</strong> "¿Cuál es la arquitectura objetivo, y cómo migran las aplicaciones desde el estado actual hacia ella?"</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--aws-l);">
+        <div class="pillar-icon" style="background:var(--aws);">🔐</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Security Perspective</div>
+          <div class="pillar-en">Perspectiva de Seguridad</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Garantiza confidencialidad, integridad y disponibilidad de los datos y workloads durante todo el ciclo de adopción. Incluye IAM, detección de amenazas, protección de infraestructura, datos e incident response. <strong>Stakeholders: CISO, equipos de seguridad.</strong></div>
+        <div class="pillar-q"><strong>Pregunta clave:</strong> "¿Cómo se traduce el modelo de seguridad on-premise al modelo de responsabilidad compartida del cloud?"</div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--aws-l);">
+        <div class="pillar-icon" style="background:var(--aws);">⚙️</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Operations Perspective</div>
+          <div class="pillar-en">Perspectiva de Operaciones</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Define cómo se ejecutan, monitorean y mejoran los servicios cloud día a día. Observabilidad, gestión de eventos, recuperación ante desastres y excelencia operacional continua. <strong>Stakeholders: equipos de IT Ops, SRE, soporte.</strong></div>
+        <div class="pillar-q"><strong>Pregunta clave:</strong> "¿Quién recibe la alerta a las 3am si algo falla, y qué runbook sigue?"</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="acc" id="a_aws_phases">
+    <div class="acc-h" onclick="T('a_aws_phases')">
+      <div class="acc-num-badge" style="background:var(--aws);">4</div>
+      <div class="acc-meta">
+        <div class="acc-title">Las 4 fases de transformación del AWS CAF</div>
+        <div class="acc-sub">Cómo se ejecuta el journey de adopción cloud paso a paso</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="phase-track">
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--aws-l);color:var(--aws-d);border-color:var(--aws);">1</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--aws-d);">Fase 1 · Envision (Visión)</div>
+            <div class="phase-name">Identificar oportunidades de transformación</div>
+            <div class="phase-desc">Los líderes de negocio identifican resultados deseados y casos de uso potenciales. Se define cómo el cloud puede acelerar resultados de negocio. <strong>Output: lista priorizada de oportunidades con impacto estimado.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--aws-l);color:var(--aws-d);">Business Perspective lidera</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--aws-l);color:var(--aws-d);border-color:var(--aws);">2</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--aws-d);">Fase 2 · Align (Alineación)</div>
+            <div class="phase-name">Identificar gaps de capacidades entre las 6 perspectivas</div>
+            <div class="phase-desc">Se hace un assessment de madurez en cada una de las 6 perspectivas. Se identifican los gaps que deben cerrarse antes de avanzar. <strong>Output: roadmap de capacidades con responsables por perspectiva.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--aws-l);color:var(--aws-d);">Assessment de madurez 360°</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--aws-l);color:var(--aws-d);border-color:var(--aws);">3</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--aws-d);">Fase 3 · Launch (Lanzamiento)</div>
+            <div class="phase-name">Ejecutar pilotos en producción</div>
+            <div class="phase-desc">Se lanzan los primeros workloads en producción siguiendo un enfoque iterativo. Se valida el modelo operativo y se ajustan los procesos. <strong>Output: primeros workloads en producción + lecciones aprendidas documentadas.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--aws-l);color:var(--aws-d);">Quick wins / Olas iniciales</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--aws-l);color:var(--aws-d);border-color:var(--aws);">4</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--aws-d);">Fase 4 · Scale (Escala)</div>
+            <div class="phase-name">Expandir el éxito a través de toda la organización</div>
+            <div class="phase-desc">Con el modelo validado, se expande la adopción a más unidades de negocio y workloads. Se institucionaliza el modelo operativo cloud como el estándar de la empresa. <strong>Output: cloud como el modelo operativo por defecto.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--aws-l);color:var(--aws-d);">Migración masiva + CoE</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cl cl-aws"><strong>Centro de Excelencia Cloud (CCoE):</strong> El AWS CAF recomienda formar un Cloud Center of Excellence — un equipo multidisciplinario con representantes de las 6 perspectivas que guía la adopción cloud de toda la organización. Es el "dueño" del CAF dentro de la empresa del cliente.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C3: AZURE CAF ══════ -->
+<div class="chap" id="c3">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--az-l);">🔵</div>
+    <span class="chap-num">03</span>
+    <div class="chap-title">Microsoft Cloud Adoption Framework for Azure — Metodologías</div>
+    <span class="chap-badge" style="background:var(--az-l);color:var(--az-d);">El más prescriptivo</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">A diferencia de AWS, Microsoft organiza su CAF como una <strong>secuencia de 6 metodologías</strong> (no perspectivas paralelas) que se ejecutan en orden, aunque con iteración continua entre ellas. Es el framework más prescriptivo en términos de "qué hacer primero" — y el más fuerte en el concepto de <strong>Landing Zone.</strong></p>
+
+  <div class="acc" id="a_az1">
+    <div class="acc-h" onclick="T('a_az1')">
+      <div class="acc-num-badge" style="background:var(--az);">6</div>
+      <div class="acc-meta">
+        <div class="acc-title">Las 6 metodologías del Microsoft CAF — secuencia recomendada</div>
+        <div class="acc-sub">Strategy → Plan → Ready → Adopt (Migrate/Innovate) → Govern → Manage</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="phase-track">
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">1</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--az-d);">Strategy (Estrategia)</div>
+            <div class="phase-name">Definir y documentar la motivación de negocio</div>
+            <div class="phase-desc">Captura motivaciones, resultados de negocio esperados y justificación financiera. Responde "¿por qué nos movemos al cloud?" antes de cualquier decisión técnica. <strong>Documento clave: Business Justification.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Motivations</span><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Business Outcomes</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">2</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--az-d);">Plan (Planificación)</div>
+            <div class="phase-name">Traducir la estrategia en un plan de adopción accionable</div>
+            <div class="phase-desc">Inventario digital del estado actual (digital estate), alineación organizacional y un plan de adopción con cronograma. <strong>Aquí se hace el rationalization del portfolio — similar al 7R de AWS.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Digital Estate</span><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Rationalization</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">3</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--az-d);">Ready (Preparación)</div>
+            <div class="phase-name">Preparar el entorno con la Landing Zone</div>
+            <div class="phase-desc"><strong>La pieza más distintiva del CAF de Microsoft.</strong> La Landing Zone es el entorno Azure pre-configurado con identidad, redes, seguridad y gobernanza — listo para recibir workloads. Existen plantillas predefinidas (Landing Zone Accelerators).</div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Landing Zone</span><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Azure Resource Manager</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">4</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--az-d);">Adopt — Migrate / Innovate</div>
+            <div class="phase-name">Migrar workloads existentes o innovar con nuevos</div>
+            <div class="phase-desc">Se divide en dos caminos paralelos: <strong>Migrate</strong> (mover y modernizar cargas existentes usando Azure Migrate) e <strong>Innovate</strong> (construir nuevas soluciones cloud-native con datos, IA y DevOps). La mayoría de los clientes hacen ambos en paralelo.</div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Azure Migrate</span><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Innovate (DevOps/IA)</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">5</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--az-d);">Govern (Gobernanza)</div>
+            <div class="phase-name">Establecer disciplinas de gobernanza con Azure Policy</div>
+            <div class="phase-desc">5 disciplinas de gobernanza: Cost Management, Security Baseline, Identity Baseline, Resource Consistency, Deployment Acceleration. Se implementan con <strong>Azure Policy y Management Groups</strong> aplicados desde el día 1.</div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Azure Policy</span><span class="ptag" style="background:var(--az-l);color:var(--az-d);">5 Disciplinas</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-bullet" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">6</div>
+          <div class="phase-content">
+            <div class="phase-label" style="color:var(--az-d);">Manage (Gestión)</div>
+            <div class="phase-name">Operar y optimizar continuamente</div>
+            <div class="phase-desc">Operaciones diarias: monitoreo (Azure Monitor), protección (backup/DR), cumplimiento continuo y optimización de costos. <strong>El "estado estable" del cloud — equivalente al Operate del AWS CAF.</strong></div>
+            <div class="phase-tags"><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Azure Monitor</span><span class="ptag" style="background:var(--az-l);color:var(--az-d);">Cost Management</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_az2">
+    <div class="acc-h" onclick="T('a_az2')">
+      <div class="acc-dot" style="background:var(--az);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Landing Zone — el concepto más importante de Azure CAF</div>
+        <div class="acc-sub">Por qué este término aparece en casi toda conversación con clientes Microsoft-first</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div>
+          <div class="card-title" style="margin-bottom:8px;">¿Qué incluye una Landing Zone?</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--az);"></span><strong>Identidad y acceso:</strong> integración con Entra ID (ex Azure AD), roles y permisos base</li>
+            <li><span class="fdot" style="background:var(--az);"></span><strong>Topología de red:</strong> VNets, subnets, peering, conectividad híbrida (ExpressRoute/VPN)</li>
+            <li><span class="fdot" style="background:var(--az);"></span><strong>Gobernanza:</strong> políticas (Azure Policy), estructura de Management Groups y suscripciones</li>
+            <li><span class="fdot" style="background:var(--az);"></span><strong>Seguridad:</strong> Microsoft Defender for Cloud, Key Vault, configuración base de NSGs</li>
+            <li><span class="fdot" style="background:var(--az);"></span><strong>Monitoreo:</strong> Log Analytics Workspace, Azure Monitor configurado desde el día 1</li>
+          </ul>
+        </div>
+        <div>
+          <div class="card-title" style="margin-bottom:8px;">Tipos de Landing Zone</div>
+          <div class="dtw"><table class="dt">
+            <thead><tr><th>Tipo</th><th>Cuándo usar</th></tr></thead>
+            <tbody>
+              <tr><td class="dt-title">Start Small / Expand</td><td>Empresas pequeñas que crecerán gradualmente. Topología simple, escala después.</td></tr>
+              <tr><td class="dt-title">Enterprise-Scale</td><td>Empresas grandes con múltiples unidades de negocio. Topología hub-spoke desde el inicio.</td></tr>
+            </tbody>
+          </table></div>
+          <div class="cl cl-az" style="margin-top:10px;"><strong>Para Personal Tech:</strong> Cuando un cliente Microsoft-first menciona "Landing Zone", está hablando de la infraestructura base de red+seguridad+gobernanza. Personal Tech puede posicionar su conectividad (ExpressRoute partner) como parte de esa Landing Zone desde el día 1.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C4: GCP ADOPTION FRAMEWORK ══════ -->
+<div class="chap" id="c4">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--gcp-l);">🔷</div>
+    <span class="chap-num">04</span>
+    <div class="chap-title">Google Cloud Adoption Framework — Themes &amp; Epochs</div>
+    <span class="chap-badge" style="background:var(--gcp-l);color:var(--gcp-d);">El más orientado a madurez</span>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Google estructura su framework alrededor de <strong>4 "themes" (temas) transversales</strong> y un modelo de madurez de <strong>3 "epochs" (fases evolutivas)</strong>. Es el enfoque más orientado a evaluar "dónde está la organización hoy" antes de prescribir qué hacer.</p>
+
+  <div class="pillar-grid">
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--gcp-l);">
+        <div class="pillar-icon" style="background:var(--gcp);">🎓</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Learn</div>
+          <div class="pillar-en">Aprender</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Desarrollar las habilidades cloud del personal: capacitación técnica, certificaciones y programas de aprendizaje continuo. <strong>Sin este theme, los otros tres no son sostenibles.</strong></div>
+        <div class="pillar-q"><strong>Foco:</strong> Cloud skills, certificaciones, cultura de aprendizaje continuo</div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--gcp-l);">
+        <div class="pillar-icon" style="background:var(--gcp);">🧭</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Lead</div>
+          <div class="pillar-en">Liderar</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Establecer la estructura organizacional, roles y responsabilidades para gobernar la adopción cloud. Define quién es dueño de qué decisiones. <strong>Equivalente al CCoE de AWS.</strong></div>
+        <div class="pillar-q"><strong>Foco:</strong> Estructura organizacional, ownership, toma de decisiones</div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--gcp-l);">
+        <div class="pillar-icon" style="background:var(--gcp);">📈</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Scale</div>
+          <div class="pillar-en">Escalar</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Procesos técnicos y automatización para escalar la adopción: IaC, CI/CD, gestión de recursos, FinOps y arquitectura para crecer sin fricción. <strong>El "cómo" operativo de Google CAF.</strong></div>
+        <div class="pillar-q"><strong>Foco:</strong> Automatización, IaC, FinOps, arquitectura escalable</div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-top" style="background:var(--gcp-l);">
+        <div class="pillar-icon" style="background:var(--gcp);">🔒</div>
+        <div class="pillar-info">
+          <div class="pillar-name">Secure</div>
+          <div class="pillar-en">Asegurar</div>
+        </div>
+      </div>
+      <div class="pillar-body">
+        <div class="pillar-desc">Seguridad integrada en cada etapa: identidad, protección de datos, detección de amenazas y compliance. <strong>Tratado como un tema transversal, no como una fase separada</strong> — debe estar presente en Learn, Lead y Scale simultáneamente.</div>
+        <div class="pillar-q"><strong>Foco:</strong> IAM, protección de datos, compliance transversal</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_gcp1">
+    <div class="acc-h" onclick="T('a_gcp1')">
+      <div class="acc-num-badge" style="background:var(--gcp);">3</div>
+      <div class="acc-meta">
+        <div class="acc-title">Las 3 Epochs de madurez de Google Cloud — Tactical, Strategic, Transformational</div>
+        <div class="acc-sub">El modelo evolutivo que define cómo cambia la relación de la organización con el cloud</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--faint);">
+          <div class="card-icon">🔧</div>
+          <div class="card-title">Epoch 1 — Tactical</div>
+          <div class="card-text">El cloud se usa de forma reactiva para resolver problemas puntuales: un proyecto aquí, una migración ahí. <strong>Sin estrategia unificada.</strong> Equipos individuales adoptan cloud por su cuenta, sin coordinación central. Riesgo: silos y costos descontrolados.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Epoch 2 — Strategic</div>
+          <div class="card-text">La organización tiene una <strong>estrategia cloud unificada</strong> con gobernanza centralizada. Existe un CCoE o equivalente. Las decisiones de adopción siguen un framework consistente. La mayoría de las empresas medianas-grandes de Argentina están aquí o transicionando hacia aquí.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">🚀</div>
+          <div class="card-title">Epoch 3 — Transformational</div>
+          <div class="card-text">El cloud es el <strong>habilitador central de la innovación del negocio.</strong> Cloud-native por defecto. La organización piensa "cloud-first" en cada decisión nueva. IA, datos y automatización están integrados en los procesos core del negocio.</div>
+        </div>
+      </div>
+      <div class="cl cl-gcp"><strong>Aplicación comercial:</strong> Preguntarle al cliente en qué Epoch se ubica define el tipo de conversación. Un cliente Tactical necesita gobernanza y orden (CCoE, políticas). Un cliente Strategic necesita escalar con automatización. Un cliente Transformational busca IA y nuevas capacidades — ahí entra la propuesta de IIoT + IA de Personal Tech.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C5: COMPARATIVA ══════ -->
+<div class="chap" id="c5">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bg3);">⚖️</div>
+    <span class="chap-num">05</span>
+    <div class="chap-title">Comparativa de los 3 Cloud Adoption Frameworks</div>
+    <span class="chap-badge" style="background:var(--bg3);color:var(--ink3);">Referencia rápida</span>
+  </div>
+
+  <div class="acc" id="a_comp1">
+    <div class="acc-h" onclick="T('a_comp1')">
+      <div class="acc-dot" style="background:var(--ink);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Tabla de equivalencias — el mismo concepto, distinto nombre</div>
+        <div class="acc-sub">Para traducir el lenguaje del cliente sin importar qué hyperscaler use</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th style="width:160px">Concepto universal</th><th class="th-aws">🟠 AWS CAF</th><th class="th-az">🔵 Microsoft CAF</th><th class="th-gcp">🔷 Google Cloud</th></tr></thead>
+        <tbody>
+          <tr><td class="dt-title">Estructura general</td><td class="td-aws">6 Perspectivas (paralelas)</td><td class="td-az">6 Metodologías (secuenciales)</td><td class="td-gcp">4 Themes + 3 Epochs (madurez)</td></tr>
+          <tr><td class="dt-title">Justificación de negocio</td><td class="td-aws">Business Perspective</td><td class="td-az">Strategy methodology</td><td class="td-gcp">Implícito en Lead</td></tr>
+          <tr><td class="dt-title">Gestión del cambio / personas</td><td class="td-aws">People Perspective</td><td class="td-az">Parte de Plan y Adopt</td><td class="td-gcp">Learn theme</td></tr>
+          <tr><td class="dt-title">Gobernanza y políticas</td><td class="td-aws">Governance Perspective</td><td class="td-az">Govern methodology (5 disciplinas)</td><td class="td-gcp">Lead theme</td></tr>
+          <tr><td class="dt-title">Arquitectura / infraestructura base</td><td class="td-aws">Platform Perspective + Landing Zone (AWS)</td><td class="td-az">Ready methodology + Landing Zone</td><td class="td-gcp">Scale theme</td></tr>
+          <tr><td class="dt-title">Seguridad</td><td class="td-aws">Security Perspective (dedicada)</td><td class="td-az">Incluida en Govern + Ready</td><td class="td-gcp">Secure theme (transversal)</td></tr>
+          <tr><td class="dt-title">Operación continua</td><td class="td-aws">Operations Perspective</td><td class="td-az">Manage methodology</td><td class="td-gcp">Scale theme (parte)</td></tr>
+          <tr><td class="dt-title">Inventario / Assessment inicial</td><td class="td-aws">Align phase</td><td class="td-az">Plan methodology (Digital Estate)</td><td class="td-gcp">Determinación del Epoch actual</td></tr>
+          <tr><td class="dt-title">Equipo central de gobierno cloud</td><td class="td-aws">Cloud Center of Excellence (CCoE)</td><td class="td-az">Cloud Center of Excellence / Cloud Governance Team</td><td class="td-gcp">Cloud Center of Excellence</td></tr>
+          <tr><td class="dt-title">Modelo de madurez explícito</td><td class="td-aws">No formal — implícito en las 4 fases</td><td class="td-az">No formal — basado en metodologías</td><td class="td-gcp"><strong>Sí — 3 Epochs explícitas</strong></td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-pt"><strong>El insight central:</strong> Más allá de los nombres, los 3 frameworks responden las mismas 6 preguntas: ¿Por qué migramos? (Business/Strategy) ¿Quién lo hace? (People/Lead) ¿Con qué reglas? (Governance/Govern) ¿Sobre qué base técnica? (Platform/Landing Zone) ¿Cómo lo protegemos? (Security/Secure) ¿Cómo lo operamos? (Operations/Manage).</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_comp2">
+    <div class="acc-h" onclick="T('a_comp2')">
+      <div class="acc-dot" style="background:var(--purple);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Fortalezas distintivas de cada framework — cuál usar según el contexto</div>
+        <div class="acc-sub">Ningún framework es "mejor" — cada uno refleja la filosofía de su hyperscaler</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--aws);">
+          <div class="card-icon">🟠</div>
+          <div class="card-title">AWS CAF — el más equilibrado</div>
+          <div class="card-text">Cubre las 6 dimensiones de forma pareja. <strong>Mejor para organizaciones que necesitan un mapa de capacidades amplio</strong> sin sesgo hacia ninguna área. Ideal como framework "neutral" para clientes multicloud.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-icon">🔵</div>
+          <div class="card-title">Microsoft CAF — el más prescriptivo</div>
+          <div class="card-text">El concepto de Landing Zone con plantillas (Accelerators) da <strong>el camino más claro de "qué hacer primero".</strong> Ideal para organizaciones que quieren menos ambigüedad y más pasos concretos a seguir.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-icon">🔷</div>
+          <div class="card-title">Google Cloud — el más honesto sobre madurez</div>
+          <div class="card-text">Las 3 Epochs fuerzan una <strong>autoevaluación realista</strong> antes de prescribir soluciones. Ideal para organizaciones que sospechan estar en una etapa más temprana de lo que creen — evita "vender" transformación a quien necesita orden básico primero.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C6: MODELO DE MADUREZ ══════ -->
+<div class="chap" id="c6">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bg3);">📊</div>
+    <span class="chap-num">06</span>
+    <div class="chap-title">Modelo de madurez cloud — el eje que atraviesa los 3 frameworks</div>
+    <span class="chap-badge" style="background:var(--bg3);color:var(--ink3);">Diagnóstico</span>
+  </div>
+
+  <div class="acc" id="a_mat1">
+    <div class="acc-h" onclick="T('a_mat1')">
+      <div class="acc-dot" style="background:var(--green);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Los 3 niveles universales de madurez — Initial, Managed, Optimized</div>
+        <div class="acc-sub">Independiente del hyperscaler, toda organización pasa por estos 3 niveles en cada perspectiva/tema</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="mchart">
+        <div class="mb-row"><span class="mb-label">Business alignment</span><div class="mb-track"><div class="mb-fill" style="width:35%;background:var(--amber);"></div></div><span class="mb-pct">Initial</span></div>
+        <div class="mb-row"><span class="mb-label">Skills &amp; cultura</span><div class="mb-track"><div class="mb-fill" style="width:40%;background:var(--amber);"></div></div><span class="mb-pct">Initial</span></div>
+        <div class="mb-row"><span class="mb-label">Governance</span><div class="mb-track"><div class="mb-fill" style="width:65%;background:var(--gcp);"></div></div><span class="mb-pct">Managed</span></div>
+        <div class="mb-row"><span class="mb-label">Platform / Landing Zone</span><div class="mb-track"><div class="mb-fill" style="width:60%;background:var(--gcp);"></div></div><span class="mb-pct">Managed</span></div>
+        <div class="mb-row"><span class="mb-label">Security</span><div class="mb-track"><div class="mb-fill" style="width:55%;background:var(--gcp);"></div></div><span class="mb-pct">Managed</span></div>
+        <div class="mb-row"><span class="mb-label">Operations</span><div class="mb-track"><div class="mb-fill" style="width:30%;background:var(--amber);"></div></div><span class="mb-pct">Initial</span></div>
+      </div>
+      <p style="font-size:12px;color:var(--faint);margin-bottom:14px;">↑ Ejemplo de perfil de madurez típico de un cliente argentino mediano — desbalanceado entre dimensiones, lo cual es completamente normal.</p>
+
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Nivel</th><th>Características</th><th>Riesgo si se queda aquí</th><th>Qué se necesita para avanzar</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill" style="background:var(--amber-l);color:#92400E;">Initial</span></td>
+            <td>Procesos ad-hoc, decisiones reactivas, sin estandarización, dependencia de "héroes" individuales</td>
+            <td>Costos descontrolados, incidentes de seguridad, conocimiento concentrado en pocas personas</td>
+            <td>Documentar procesos, definir políticas básicas, establecer un equipo responsable (CCoE inicial)</td>
+          </tr>
+          <tr>
+            <td><span class="pill" style="background:var(--gcp-l);color:var(--gcp-d);">Managed</span></td>
+            <td>Procesos definidos y repetibles, gobernanza activa, automatización parcial, roles claros</td>
+            <td>Eficiencia subóptima — funciona, pero no escala sin fricción ni aprovecha todo el potencial</td>
+            <td>Automatizar lo manual (IaC, CI/CD), implementar FinOps, expandir el CCoE a más áreas</td>
+          </tr>
+          <tr>
+            <td><span class="pill" style="background:var(--green-l);color:#065F46;">Optimized</span></td>
+            <td>Automatización end-to-end, mejora continua basada en datos, cloud como ventaja competitiva</td>
+            <td>Mantener la disciplina ante el crecimiento — la complacencia es el riesgo en este nivel</td>
+            <td>Innovación continua: IA, nuevos modelos de negocio habilitados por datos y automatización</td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_mat2">
+    <div class="acc-h" onclick="T('a_mat2')">
+      <div class="acc-dot" style="background:var(--pt);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Las 8 preguntas de diagnóstico rápido de madurez — para usar en la primera reunión</div>
+        <div class="acc-sub">Una pregunta por dimensión, calificable rápidamente</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <ul class="feat">
+        <li><span class="fdot" style="background:var(--aws);"></span><strong>Business:</strong> "¿Existe un documento de Business Case para sus iniciativas cloud, o las decisiones se toman caso por caso?"</li>
+        <li><span class="fdot" style="background:var(--aws);"></span><strong>People:</strong> "¿Su equipo de IT tiene certificaciones cloud (AWS/Azure/GCP), o aprenden sobre la marcha?"</li>
+        <li><span class="fdot" style="background:var(--az);"></span><strong>Governance:</strong> "¿Existe una política escrita sobre quién puede crear recursos cloud y bajo qué presupuesto?"</li>
+        <li><span class="fdot" style="background:var(--az);"></span><strong>Platform:</strong> "¿Tienen una arquitectura de referencia documentada, o cada proyecto define su propia arquitectura?"</li>
+        <li><span class="fdot" style="background:var(--gcp);"></span><strong>Security:</strong> "¿Saben en este momento cuántos recursos cloud tienen expuestos a internet sin necesidad?"</li>
+        <li><span class="fdot" style="background:var(--gcp);"></span><strong>Operations:</strong> "Si un sistema cloud falla a las 3am, ¿existe un runbook documentado o depende de que alguien específico conteste el teléfono?"</li>
+        <li><span class="fdot" style="background:var(--purple);"></span><strong>FinOps:</strong> "¿Alguien revisa mensualmente la factura cloud para identificar gastos innecesarios, o solo se paga?"</li>
+        <li><span class="fdot" style="background:var(--pt);"></span><strong>Innovación:</strong> "En el último año, ¿lanzaron algún proyecto que no hubiera sido posible sin cloud (IA, analytics en tiempo real, etc.)?"</li>
+      </ul>
+      <div class="cl cl-green"><strong>Cómo usar el resultado:</strong> Si la mayoría de las respuestas son "no" o "no sabemos" → cliente en Epoch Tactical / nivel Initial. La propuesta debe enfocarse en gobernanza y orden (Governance + Platform), no en IA o innovación. Si la mayoría son afirmativas con procesos documentados → cliente Strategic/Managed, listo para conversación de Analytics e IA.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ C7: PERSONAL TECH ══════ -->
+<div class="chap" id="c7">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--pt-l);">🏢</div>
+    <span class="chap-num">07</span>
+    <div class="chap-title">Aplicando el CAF en propuestas de Personal Tech</div>
+    <span class="chap-badge" style="background:var(--pt-l);color:var(--pt-d);">Para la reunión</span>
+  </div>
+
+  <div class="acc" id="a_pt1">
+    <div class="acc-h" onclick="T('a_pt1')">
+      <div class="acc-dot" style="background:var(--pt);"></div>
+      <div class="acc-meta">
+        <div class="acc-title">Cómo posicionar a Personal Tech dentro de cada perspectiva/dimensión del CAF</div>
+        <div class="acc-sub">Personal Tech no reemplaza el CAF del cliente — se inserta como acelerador en varias dimensiones a la vez</div>
+      </div>
+      <span class="acc-badge" style="background:var(--pt-l);color:var(--pt-d);">Argumentario</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Dimensión CAF (cualquier hyperscaler)</th><th>Cómo Personal Tech acelera esta dimensión</th></tr></thead>
+        <tbody>
+          <tr><td class="dt-title">Platform / Landing Zone</td><td>Personal Tech provee la <strong>conectividad MPLS que conecta la sede del cliente con la Landing Zone</strong> — sea en Pacheco, AWS o Azure (como Direct Connect/ExpressRoute partner). La Landing Zone empieza con conectividad confiable.</td></tr>
+          <tr><td class="dt-title">Security</td><td>SASE, Zero Trust y FortiGate gestionado de Personal Tech cubren los <strong>guardrails de seguridad de red</strong> que cualquier CAF exige antes de migrar — sin que el cliente tenga que construir su propio SOC.</td></tr>
+          <tr><td class="dt-title">Governance</td><td>Personal Tech, como empresa regulada por ENACOM y con Personal Pay regulado por BCRA, <strong>aporta el modelo de compliance ya probado</strong> que ayuda al cliente a definir sus propias políticas de gobernanza cloud.</td></tr>
+          <tr><td class="dt-title">Operations</td><td>El cloud de Personal Tech en Pacheco/Hornos incluye <strong>DR, backup inmutable (Veeam) y soporte 24×7 en español</strong> — cubriendo gran parte de la metodología Manage/Operations sin que el cliente arme su propio equipo de guardia.</td></tr>
+          <tr><td class="dt-title">Business / Strategy</td><td>La <strong>calculadora TCO/ROI de Personal Tech</strong> alimenta directamente el Business Case que exige la fase Strategy/Business Perspective — con datos reales en pesos argentinos.</td></tr>
+          <tr><td class="dt-title">People / Learn</td><td>Personal Tech puede acompañar con <strong>capacitación y soporte continuo</strong>, reduciendo la curva de aprendizaje del equipo del cliente durante la transición.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="pitch">
+    <div class="pitch-eyebrow">El pitch que conecta el CAF del cliente con Personal Tech</div>
+    <div class="pitch-text">"No importa si su framework de referencia es el de AWS, Azure o Google — todos comparten la misma estructura: necesitan una base de plataforma sólida, gobernanza clara, seguridad desde el día 1 y operación confiable. <strong>Personal Tech no reemplaza ese framework — lo acelera en 4 de sus 6 dimensiones simultáneamente:</strong> damos la conectividad que conecta su Landing Zone, la seguridad de red que sus guardrails necesitan, el modelo de compliance que ya operamos como empresa regulada, y el soporte 24x7 en español que su metodología de Operations exige. Cualquiera sea el framework que estén siguiendo, avanzan más rápido con nosotros como partner de las capas que ya dominamos."</div>
+  </div>
+</div>
+
+
+<div class="footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Cloud Adoption Frameworks — AWS · Azure · GCP · <span id="fecha"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+document.getElementById('fecha').textContent=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function T(id){
+  var el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Nav active
+var navLinks=document.querySelectorAll('.nl');
+var chapters=document.querySelectorAll('.chap');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  var cur=null;
+  chapters.forEach(function(c){if(sy>=c.offsetTop)cur=c;});
+  navLinks.forEach(function(n){n.classList.remove('on');});
+  if(cur){var a=document.querySelector('.nl[href="#'+cur.id+'"]');if(a)a.classList.add('on');}
+});
+
+// Open first acc by default
+document.getElementById('a_def1').classList.add('open');
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

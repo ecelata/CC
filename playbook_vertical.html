@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playbook por Vertical de Industria | Personal Tech</title>
+<style>
+:root {
+  /* Base */
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+
+  /* Banca */
+  --banca:#0C2D6B;--banca-m:#1A5EBD;--banca-l:#E8F0FD;--banca-d:#06183A;
+  /* Manufactura */
+  --mfg:#4A2000;--mfg-m:#C05C00;--mfg-l:#FFF0E0;--mfg-d:#2A1200;
+  /* Gobierno */
+  --gov:#064035;--gov-m:#0E9E7A;--gov-l:#E0F5F0;--gov-d:#032820;
+  /* Agro */
+  --agro:#1A4A00;--agro-m:#4C9A00;--agro-l:#EDFADC;--agro-d:#0D2600;
+  /* Retail */
+  --retail:#5C0A3A;--retail-m:#B01E78;--retail-l:#FAECF4;--retail-d:#350320;
+
+  /* Common accents */
+  --green-l:#E1F5EE;--green-m:#1D9E75;--green-d:#085041;
+  --red-l:#FDECEC;--red-m:#C0392B;--red-d:#7B1A1A;
+  --amber-l:#FAEEDA;--amber-m:#BA7517;--amber-d:#633806;
+  --blue-l:#E6F1FB;--blue-m:#378ADD;--blue-d:#0C447C;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--text);border-bottom:2px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:11px;font-weight:700;white-space:nowrap;padding:12px 14px 12px 0;border-right:.5px solid rgba(255,255,255,.1);margin-right:6px;color:rgba(255,255,255,.5);letter-spacing:.05em;}
+.tnav{font-size:11px;font-weight:700;padding:13px 12px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,.35);transition:all .18s;text-decoration:none;}
+.tnav:hover{color:rgba(255,255,255,.8);}
+.tnav.banca:hover,.tnav.banca.active{color:#6BA4FF;border-bottom-color:#6BA4FF;}
+.tnav.mfg:hover,.tnav.mfg.active{color:#FFA040;border-bottom-color:#FFA040;}
+.tnav.gov:hover,.tnav.gov.active{color:#40DEB0;border-bottom-color:#40DEB0;}
+.tnav.agro:hover,.tnav.agro.active{color:#90D830;border-bottom-color:#90D830;}
+.tnav.retail:hover,.tnav.retail.active{color:#FF80C8;border-bottom-color:#FF80C8;}
+
+/* PAGE */
+.page{max-width:1020px;margin:0 auto;padding:36px 24px 80px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HOW-TO STRIP */
+.howto{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:32px;padding:16px;background:var(--bg2);border-radius:var(--radius);border:.5px solid var(--border);}
+.howto-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);grid-column:1/-1;margin-bottom:4px;}
+.howto-item{font-size:12px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;}
+.howto-item strong{color:var(--text);}
+
+/* VERTICAL SECTION */
+.vertical{margin-bottom:56px;scroll-margin-top:54px;}
+.vert-hero{border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+.vert-hero-top{padding:28px 32px 22px;position:relative;overflow:hidden;}
+.vert-hero-top::after{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04);}
+.vert-hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin-bottom:8px;}
+.vert-hero-title{font-size:24px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:6px;position:relative;z-index:1;}
+.vert-hero-sub{font-size:13px;color:rgba(255,255,255,.55);font-style:italic;position:relative;z-index:1;}
+.vert-hero-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1;}
+.vert-tag{font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
+.vert-hero-stats{display:flex;gap:0;background:rgba(0,0,0,.2);}
+.vert-stat{flex:1;padding:12px 16px;border-right:.5px solid rgba(255,255,255,.06);}
+.vert-stat:last-child{border-right:none;}
+.vert-stat-val{font-size:17px;font-weight:700;color:#fff;}
+.vert-stat-label{font-size:10px;color:rgba(255,255,255,.35);margin-top:1px;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:18px 20px 20px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);margin:16px 0 8px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:9px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 15px;border:.5px solid var(--border);}
+.mini-card.dark{background:var(--text);color:#fff;border-color:var(--text);}
+.mc-icon{font-size:18px;margin-bottom:5px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-title.white{color:#fff;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+.mc-text.white{color:rgba(255,255,255,.7);}
+.mc-text.white strong{color:#fff;}
+
+/* Q&A — preguntas */
+.qlist{display:flex;flex-direction:column;gap:10px;margin:10px 0;}
+.q-item{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 15px;border:.5px solid var(--border);}
+.q-text{font-size:13px;color:var(--text);font-style:italic;margin-bottom:4px;}
+.q-hint{font-size:11.5px;color:var(--text-ter);}
+.q-hint strong{color:var(--text-sec);}
+
+/* OBJECTION TABLE */
+.obj-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0;}
+.obj-table th{padding:8px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.obj-table td{padding:10px 12px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.obj-table tr:last-child td{border-bottom:none;}
+.obj-table td:first-child{color:var(--text);font-style:italic;font-weight:600;}
+
+/* PITCH BOX */
+.pitch{border-radius:var(--radius-sm);padding:16px 18px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;opacity:.5;}
+.pitch-text{font-size:13.5px;line-height:1.7;font-style:italic;font-weight:500;}
+
+/* NOTES */
+.win-note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin-top:12px;border-left:3px solid;line-height:1.6;}
+.win-note strong{font-weight:700;}
+.note-green{background:var(--green-l);border-color:var(--green-m);color:var(--text-sec);}
+.note-green strong{color:var(--green-d);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);color:var(--text-sec);}
+.note-amber strong{color:var(--amber-d);}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);color:var(--text-sec);}
+.note-blue strong{color:var(--blue-d);}
+.note-red{background:var(--red-l);border-color:var(--red-m);color:var(--text-sec);}
+.note-red strong{color:var(--red-d);}
+
+/* SOLUTION STACK */
+.sol-stack{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:12px 0;}
+.sol-card{border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.sol-icon{font-size:20px;margin-bottom:5px;}
+.sol-name{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.sol-desc{font-size:11.5px;color:var(--text-sec);line-height:1.5;}
+.sol-pt{font-size:10px;font-weight:700;margin-top:5px;padding:2px 7px;border-radius:20px;display:inline-block;}
+
+/* METRICS TABLE */
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:10px 0;}
+.metric-box{border-radius:var(--radius-sm);padding:11px 14px;border:.5px solid var(--border);text-align:center;}
+.metric-val{font-size:19px;font-weight:700;line-height:1.1;margin-bottom:3px;}
+.metric-label{font-size:10.5px;color:var(--text-ter);}
+
+/* FICHA RAPIDA */
+.ficha{background:var(--text);border-radius:var(--radius);padding:20px 22px;margin:12px 0;color:#fff;}
+.ficha-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:12px;}
+.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ficha-block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.3);margin-bottom:6px;}
+.ficha-item{font-size:12px;color:rgba(255,255,255,.7);padding:3px 0;border-bottom:.5px solid rgba(255,255,255,.06);}
+.ficha-item:last-child{border-bottom:none;}
+.ficha-item strong{color:#fff;}
+
+/* SEPARATOR */
+.vert-divider{height:2px;border-radius:1px;margin:48px 0 40px;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media print{
+  .topnav{display:none;}
+  .vertical{page-break-before:always;}
+  .vertical:first-of-type{page-break-before:avoid;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3,.ficha-grid,.vert-hero-stats{grid-template-columns:1fr;}
+  .sol-stack,.metrics-row{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">📋 Playbook Vertical</div>
+  <a class="tnav banca" href="#banca">🏦 Banca</a>
+  <a class="tnav mfg" href="#manufactura">🏭 Manufactura</a>
+  <a class="tnav gov" href="#gobierno">🏛 Gobierno</a>
+  <a class="tnav agro" href="#agro">🌾 Agro</a>
+  <a class="tnav retail" href="#retail">🛒 Retail</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Playbook por Vertical de Industria</div>
+    <div class="doc-sub">5 fichas técnico-comerciales · Banca · Manufactura · Gobierno · Agro · Retail · Listas para la primera reunión</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HOW TO USE -->
+<div class="howto">
+  <div class="howto-title">📖 Cómo usar este playbook</div>
+  <div class="howto-item"><strong>Antes de la reunión</strong> — leé la ficha del sector completa. 15 minutos.</div>
+  <div class="howto-item"><strong>En la reunión</strong> — usá las preguntas de discovery para guiar la conversación.</div>
+  <div class="howto-item"><strong>Ante objeciones</strong> — la tabla de objeciones te da el pivot exacto.</div>
+  <div class="howto-item"><strong>Para cerrar</strong> — el pitch de apertura y las métricas de éxito son el ancla financiera.</div>
+  <div class="howto-item"><strong>Para la propuesta</strong> — el stack de soluciones es el input para el BOM.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ BANCA ══════════════════════════════════════════════ -->
+<div class="vertical" id="banca">
+
+  <div class="vert-hero">
+    <div class="vert-hero-top" style="background:linear-gradient(135deg,var(--banca-d) 0%,var(--banca) 60%,#1A3A8A 100%);">
+      <div class="vert-hero-eyebrow">Vertical 01 · Banca y Servicios Financieros</div>
+      <div class="vert-hero-title">🏦 Banca, Fintech y Aseguradoras</div>
+      <div class="vert-hero-sub">Compliance BCRA · Zero Trust · Soberanía del dato · Alta disponibilidad regulatoria</div>
+      <div class="vert-hero-tags">
+        <span class="vert-tag">BCRA Com. A 7724</span>
+        <span class="vert-tag">Zero Trust</span>
+        <span class="vert-tag">Dato soberano</span>
+        <span class="vert-tag">99.999% uptime</span>
+        <span class="vert-tag">DR regulatorio</span>
+        <span class="vert-tag">SOC 24/7</span>
+        <span class="vert-tag">PCI-DSS</span>
+      </div>
+    </div>
+    <div class="vert-hero-stats" style="background:var(--banca-d);">
+      <div class="vert-stat">
+        <div class="vert-stat-val">$2.5M</div>
+        <div class="vert-stat-label">Costo promedio de 1hs de caída en banca</div>
+      </div>
+      <div class="vert-stat">
+        <div class="vert-stat-val">45</div>
+        <div class="vert-stat-label">Bancos privados activos en Argentina (BCRA)</div>
+      </div>
+      <div class="vert-stat">
+        <div class="vert-stat-val">99.98%</div>
+        <div class="vert-stat-label">Disponibilidad mínima exigida por BCRA</div>
+      </div>
+      <div class="vert-stat">
+        <div class="vert-stat-val">72hs</div>
+        <div class="vert-stat-label">Plazo máximo de notificación de incidente BCRA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEXTO -->
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('b1')">
+      <span class="acc-badge" style="background:var(--banca-l);color:var(--banca);">Contexto regulatorio</span>
+      <div class="acc-info"><div class="acc-name">El marco normativo que define cada decisión de IT en banca</div><div class="acc-tag">BCRA · CNV · UIF · PCI-DSS · DORA — lo que el cliente no puede ignorar</div></div>
+      <span class="acc-chv" id="achv-b1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-b1"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div class="block-label">Regulaciones clave en Argentina</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--banca-m);"></span><strong>BCRA Com. A 7724 (IT Risk):</strong> Exige política formal de seguridad de la información, gestión de riesgos tecnológicos, plan de continuidad del negocio (BCP) y Disaster Recovery documentado con pruebas periódicas.</li>
+            <li><span class="fdot" style="background:var(--banca-m);"></span><strong>BCRA Com. A 7266 (Cloud):</strong> Permite el uso de servicios cloud con condiciones específicas: el dato debe permanecer en Argentina, el banco debe conservar el control y acceso auditado en todo momento.</li>
+            <li><span class="fdot" style="background:var(--banca-m);"></span><strong>UIF Resolución 76/2019:</strong> Obliga a mantener registros de transacciones por 10 años en medios seguros e inalterables.</li>
+            <li><span class="fdot" style="background:var(--banca-m);"></span><strong>PCI-DSS v4.0:</strong> Estándar para protección de datos de tarjetas. Requiere cifrado, segmentación de red, monitoreo 24/7 y pruebas de penetración anuales.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-label">Lo que el BCRA exige en la nube</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--red-m);"></span><strong>El dato no puede salir del país.</strong> AWS São Paulo, Azure Brazil South y GCP no cumplen — el dato cruza la frontera.</li>
+            <li><span class="fdot" style="background:var(--red-m);"></span><strong>El banco debe tener acceso a los datos en todo momento,</strong> incluso si el proveedor quiebra o rescinde el contrato.</li>
+            <li><span class="fdot" style="background:var(--red-m);"></span><strong>Auditorías de seguridad:</strong> el proveedor debe permitir auditorías por parte del banco y el BCRA.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Personal Tech cumple todo esto:</strong> DC en Argentina, acceso garantizado contractualmente, auditorías posibles, SOC 24/7 local.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="win-note note-green"><strong>✅ El argumento que cierra la puerta a los hyperscalers:</strong> "Un banco argentino no puede poner su dato en AWS São Paulo por Com. A 7266. Personal Tech es el único cloud enterprise que cumple con BCRA de forma nativa — porque el DC está en Pacheco, Buenos Aires."</div>
+    </div></div>
+  </div>
+
+  <!-- DOLORES -->
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('b2')">
+      <span class="acc-badge" style="background:var(--red-l);color:var(--red-d);">Dolores del CIO/CISO bancario</span>
+      <div class="acc-info"><div class="acc-name">Los 6 problemas que mantienen despierto al Director de IT de cualquier banco mediano</div></div>
+      <span class="acc-chv" id="achv-b2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-b2"><div class="ab-inner">
+      <div class="sol-stack">
+        <div class="sol-card" style="background:var(--red-l);border-color:var(--red-m);">
+          <div class="sol-icon">🔴</div>
+          <div class="sol-name">Legacy IT con deuda técnica</div>
+          <div class="sol-desc">Sistemas core bancarios de 20+ años que no se pueden apagar pero tampoco escalar. El mainframe cuesta $500K/año solo en mantenimiento.</div>
+        </div>
+        <div class="sol-card" style="background:var(--red-l);border-color:var(--red-m);">
+          <div class="sol-icon">🔴</div>
+          <div class="sol-name">Ciberataques crecientes</div>
+          <div class="sol-desc">Los bancos argentinos son el target #1. Ransomware, credential stuffing, phishing dirigido a empleados. El 67% de los bancos locales sufrieron un incidente en 2023.</div>
+        </div>
+        <div class="sol-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+          <div class="sol-icon">⚠️</div>
+          <div class="sol-name">Auditoría BCRA inminente</div>
+          <div class="sol-desc">Cada auditoría del BCRA puede resultar en observaciones que obligan inversiones no planificadas. Sin documentación de DR y BCP el riesgo es multa o restricción operativa.</div>
+        </div>
+        <div class="sol-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+          <div class="sol-icon">⚠️</div>
+          <div class="sol-name">VPN y acceso remoto inseguro</div>
+          <div class="sol-desc">Post-pandemia, la banca tiene 30–60% del staff trabajando remoto. La VPN da acceso completo a la red — si las credenciales se comprometen, el banco queda expuesto.</div>
+        </div>
+        <div class="sol-card" style="background:var(--amber-l);border-color:var(--amber-m);">
+          <div class="sol-icon">⚠️</div>
+          <div class="sol-name">Sin visibilidad de seguridad</div>
+          <div class="sol-desc">La mayoría de los bancos medianos no tienen SIEM ni SOC. Detectan incidentes semanas o meses después. El tiempo promedio de detección en Argentina: 197 días.</div>
+        </div>
+        <div class="sol-card" style="background:var(--banca-l);border-color:var(--banca-m);">
+          <div class="sol-icon">🔵</div>
+          <div class="sol-name">Presión por digitalización</div>
+          <div class="sol-desc">Billeteras digitales, Open Banking, onboarding digital exigen infraestructura elástica. Las APIs financieras tienen picos de tráfico 10× en fechas clave (fin de mes, Día de la Madre).</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STACK SOLUCIONES -->
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('b3')">
+      <span class="acc-badge" style="background:var(--banca-l);color:var(--banca);">Stack de soluciones Personal Tech</span>
+      <div class="acc-info"><div class="acc-name">Qué proponer y por qué — el portafolio completo para el segmento bancario</div></div>
+      <span class="acc-chv" id="achv-b3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-b3"><div class="ab-inner">
+      <div class="sol-stack">
+        <div class="sol-card">
+          <div class="sol-icon">🏗</div>
+          <div class="sol-name">Cloud Privado Soberano</div>
+          <div class="sol-desc">VMs en Pacheco + replicación a Hornos. Dato 100% en Argentina. Cumplimiento BCRA Com. A 7266 nativo.</div>
+          <span class="sol-pt" style="background:var(--banca-l);color:var(--banca);">Core de la propuesta</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">🔗</div>
+          <div class="sol-name">MPLS Financiero</div>
+          <div class="sol-desc">Circuito privado dedicado entre sedes y DC. Sin internet público. SLA 99.99%. Ideal para core bancario y ATMs.</div>
+          <span class="sol-pt" style="background:var(--green-l);color:var(--green-d);">Conectividad</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">🚫</div>
+          <div class="sol-name">ZTNA (reemplaza VPN)</div>
+          <div class="sol-desc">Acceso remoto con verificación continua de identidad y dispositivo. Cada empleado accede solo a lo que necesita, no a toda la red.</div>
+          <span class="sol-pt" style="background:var(--red-l);color:var(--red-d);">Seguridad</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">🛡</div>
+          <div class="sol-name">SOC 24/7 gestionado</div>
+          <div class="sol-desc">Monitoreo continuo con analistas en Argentina. Detección de amenazas en minutos. Reportes para auditorías BCRA incluidos.</div>
+          <span class="sol-pt" style="background:var(--red-l);color:var(--red-d);">Seguridad</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">♻️</div>
+          <div class="sol-name">DR certificado</div>
+          <div class="sol-desc">Plan de DR documentado con RTO ≤4hs y RPO ≤1hs. Prueba semestral documentada para la auditoría BCRA. Failover automatizado.</div>
+          <span class="sol-pt" style="background:var(--amber-l);color:var(--amber-d);">Continuidad</span>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">🔥</div>
+          <div class="sol-name">NGFW + DDoS</div>
+          <div class="sol-desc">FortiGate gestionado + DDoS mitigation en la red Telecom antes de llegar al cliente. Crítico para banca digital y home banking.</div>
+          <span class="sol-pt" style="background:var(--red-l);color:var(--red-d);">Seguridad</span>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- DISCOVERY + OBJECIONES -->
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('b4')">
+      <span class="acc-badge" style="background:var(--banca-l);color:var(--banca);">Discovery y objeciones</span>
+      <div class="acc-info"><div class="acc-name">Las 5 preguntas que abren la conversación + las 4 objeciones más frecuentes</div></div>
+      <span class="acc-chv" id="achv-b4">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-b4"><div class="ab-inner">
+      <div class="block-label">Preguntas de discovery para la primera reunión</div>
+      <div class="qlist">
+        <div class="q-item"><div class="q-text">"¿Cuándo fue la última auditoría tecnológica del BCRA y qué observaciones recibieron?"</div><div class="q-hint"><strong>Objetivo:</strong> Descubrir el punto de dolor regulatorio. Si tuvieron observaciones, hay urgencia de resolver.</div></div>
+        <div class="q-item"><div class="q-text">"¿Su plan de DR ha sido probado en el último año? ¿Cuánto tardaron en recuperar el sistema en el último test real?"</div><div class="q-hint"><strong>Objetivo:</strong> La mayoría no tiene prueba documentada. Abre la conversación de DR como servicio gestionado.</div></div>
+        <div class="q-item"><div class="q-text">"¿Cómo gestionan el acceso remoto hoy? ¿Tienen visibilidad de qué hace cada usuario conectado remotamente?"</div><div class="q-hint"><strong>Objetivo:</strong> VPN = sin visibilidad. Abre la conversación de ZTNA.</div></div>
+        <div class="q-item"><div class="q-text">"Si mañana un empleado con acceso a core banking hace click en un phishing, ¿cuánto tarda en detectarlo su equipo?"</div><div class="q-hint"><strong>Objetivo:</strong> El promedio es semanas. Abre la conversación de SOC y detección temprana.</div></div>
+        <div class="q-item"><div class="q-text">"¿Tienen evaluado el costo de cada hora de caída del home banking o el sistema de pagos?"</div><div class="q-hint"><strong>Objetivo:</strong> Cuantificar el riesgo de downtime. Un banco mediano pierde $500K–$2.5M por hora.</div></div>
+      </div>
+      <div class="block-label" style="margin-top:18px;">Objeciones frecuentes y cómo responderlas</div>
+      <table class="obj-table">
+        <thead><tr><th>Objeción</th><th>Pivot recomendado</th></tr></thead>
+        <tbody>
+          <tr><td>"Ya tenemos cloud con AWS."</td><td>AWS São Paulo no cumple Com. A 7266 — el dato sale del país. ¿Tienen eso documentado ante el BCRA? Personal Tech da lo mismo con dato en Argentina y un solo contrato bajo ley argentina.</td></tr>
+          <tr><td>"El BCRA no nos auditó en años."</td><td>La nueva Com. A 7724 amplió el alcance. Los bancos que no se preparan hoy son los que reciben las observaciones más costosas en la próxima auditoría.</td></tr>
+          <tr><td>"Tenemos un equipo IT interno muy bueno."</td><td>El SOC 24/7 no compite con su equipo — lo complementa. Ningún equipo interno puede tener personas monitoreando las 3am de un domingo. Personal Tech sí.</td></tr>
+          <tr><td>"El cloud es muy caro para un banco de nuestro tamaño."</td><td>¿Calcularon el costo de una caída de 8 horas? Eso ya financia 2 años de servicio. El cloud no es un costo — es un seguro con RTO garantizado.</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- PITCH + MÉTRICAS -->
+  <div class="ficha">
+    <div class="ficha-title">Ficha rápida — para llevar impresa a la reunión</div>
+    <div class="ficha-grid">
+      <div>
+        <div class="ficha-block-label">Pitch de apertura</div>
+        <div class="ficha-item">"El mayor riesgo de un banco argentino hoy no es la competencia — es una observación del BCRA por falta de DR documentado o un incidente de ransomware sin SOC. Personal Tech resuelve ambos con un solo contrato, dato en Argentina y SLA end-to-end."</div>
+      </div>
+      <div>
+        <div class="ficha-block-label">Métricas de éxito para la propuesta</div>
+        <div class="ficha-item">✅ DR documentado con RTO ≤4hs para auditoría BCRA</div>
+        <div class="ficha-item">✅ 0 observaciones tecnológicas en próxima auditoría</div>
+        <div class="ficha-item">✅ Tiempo de detección de incidentes &lt;15 minutos</div>
+        <div class="ficha-item">✅ 100% usuarios remotos con ZTNA en 30 días</div>
+        <div class="ficha-item">✅ Disponibilidad ≥99.98% certificada mensualmente</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /banca -->
+<div class="vert-divider" style="background:linear-gradient(90deg,var(--banca),transparent);"></div>
+
+
+<!-- ══════════════════════════════════════════════ MANUFACTURA ══════════════════════════════════════════════ -->
+<div class="vertical" id="manufactura">
+
+  <div class="vert-hero">
+    <div class="vert-hero-top" style="background:linear-gradient(135deg,var(--mfg-d) 0%,var(--mfg) 60%,#703000 100%);">
+      <div class="vert-hero-eyebrow">Vertical 02 · Industria 4.0 y Manufactura</div>
+      <div class="vert-hero-title">🏭 Manufactura, Minería y Oil & Gas</div>
+      <div class="vert-hero-sub">IoT industrial · OT/IT convergencia · Mantenimiento predictivo · 5G privado</div>
+      <div class="vert-hero-tags">
+        <span class="vert-tag">IoT / IIoT</span>
+        <span class="vert-tag">OPC-UA / Modbus</span>
+        <span class="vert-tag">5G privado</span>
+        <span class="vert-tag">Edge Computing</span>
+        <span class="vert-tag">Mantenimiento predictivo</span>
+        <span class="vert-tag">SCADA en cloud</span>
+        <span class="vert-tag">MES / ERP industrial</span>
+      </div>
+    </div>
+    <div class="vert-hero-stats" style="background:var(--mfg-d);">
+      <div class="vert-stat"><div class="vert-stat-val">$15K</div><div class="vert-stat-label">Costo por hora de línea parada (planta mediana)</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">40%</div><div class="vert-stat-label">Reducción de paradas con mantenimiento predictivo</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">2026</div><div class="vert-stat-label">Año en que el 60% de las plantas tendrán IIoT activo</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">197d</div><div class="vert-stat-label">Tiempo promedio de detección de un ciberataque OT</div></div>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('m1')">
+      <span class="acc-badge" style="background:var(--mfg-l);color:var(--mfg);">El mundo OT/IT — por qué la convergencia es el desafío</span>
+      <div class="acc-info"><div class="acc-name">La fábrica tiene dos mundos que nunca hablaron — y ahora tienen que integrarse</div><div class="acc-tag">IT (sistemas de información) vs. OT (sistemas operacionales) — la brecha que hay que cerrar</div></div>
+      <span class="acc-chv" id="achv-m1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-m1"><div class="ab-inner">
+      <div class="grid2">
+        <div class="mini-card">
+          <div class="mc-icon">💻</div>
+          <div class="mc-title">IT — Tecnología de la Información</div>
+          <div class="mc-text">ERP, CRM, correo, servidores de archivos, endpoints. Ciclos de actualización anuales. Conectado a internet. El área de IT lo conoce bien.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-icon">⚙️</div>
+          <div class="mc-title">OT — Tecnología Operacional</div>
+          <div class="mc-text">PLCs, SCADA, sensores industriales, brazos robóticos, líneas de producción. Protocolo Modbus/OPC-UA. Diseñados para durar 20 años. <strong>Nunca se actualizan porque "si funciona no se toca".</strong></div>
+        </div>
+      </div>
+      <ul class="feat" style="margin-top:10px;">
+        <li><span class="fdot" style="background:var(--mfg-m);"></span><strong>El problema:</strong> Los sistemas OT nunca fueron diseñados para estar conectados a internet. Ahora que la empresa quiere IoT y analytics, hay que conectarlos — exponiendo vulnerabilidades de 20 años.</li>
+        <li><span class="fdot" style="background:var(--mfg-m);"></span><strong>El ataque de Triton (2017):</strong> El primer malware diseñado específicamente para matar gente destruyendo sistemas de seguridad física en una planta industrial. Marca el inicio de los ciberataques a OT.</li>
+        <li><span class="fdot" style="background:var(--green-m);"></span><strong>La solución:</strong> Segmentación IT/OT con DMZ industrial + gateway de traducción de protocolos (Modbus → MQTT) que permite extraer el dato sin exponer directamente el PLC.</li>
+      </ul>
+      <div class="win-note note-amber"><strong>⚠️ Para el consultor:</strong> En una planta industrial, el CISO de IT y el Gerente de Planta suelen no hablar entre sí. El vendedor que logra sentar a los dos en la misma reunión y hablar el idioma de ambos gana la confianza de toda la organización.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('m2')">
+      <span class="acc-badge" style="background:var(--mfg-l);color:var(--mfg);">Mantenimiento predictivo — el caso de negocio más claro</span>
+      <div class="acc-info"><div class="acc-name">Del mantenimiento reactivo al predictivo: cómo IoT + IA elimina las paradas no planificadas</div></div>
+      <span class="acc-chv" id="achv-m2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-m2"><div class="ab-inner">
+      <div class="block-label">El flujo técnico completo</div>
+      <div class="grid3">
+        <div class="mini-card" style="background:var(--mfg-l);">
+          <div class="mc-icon">📡</div>
+          <div class="mc-title">1. Sensores IoT en maquinaria</div>
+          <div class="mc-text">Vibración, temperatura, corriente eléctrica, presión. 4G/5G o cableado industrial. Protocolo MQTT hacia gateway edge.</div>
+        </div>
+        <div class="mini-card" style="background:var(--mfg-l);">
+          <div class="mc-icon">⚡</div>
+          <div class="mc-title">2. Edge + Cloud Personal Tech</div>
+          <div class="mc-text">Gateway procesa localmente (latencia crítica). Cloud Personal Tech recibe el historial. Modelo ML entrenado sobre las vibraciones normales del motor.</div>
+        </div>
+        <div class="mini-card" style="background:var(--mfg-l);">
+          <div class="mc-icon">🔔</div>
+          <div class="mc-title">3. Alerta predictiva</div>
+          <div class="mc-text">"Probabilidad de falla del motor #7 en los próximos 5 días: 87%." El técnico programa el mantenimiento sin parar la línea.</div>
+        </div>
+      </div>
+      <div class="block-label">El ROI del mantenimiento predictivo</div>
+      <div class="metrics-row">
+        <div class="metric-box" style="background:var(--green-l);">
+          <div class="metric-val" style="color:var(--green-d);">-40%</div>
+          <div class="metric-label">Reducción de paradas no planificadas</div>
+        </div>
+        <div class="metric-box" style="background:var(--green-l);">
+          <div class="metric-val" style="color:var(--green-d);">-25%</div>
+          <div class="metric-label">Reducción de costo de mantenimiento</div>
+        </div>
+        <div class="metric-box" style="background:var(--green-l);">
+          <div class="metric-val" style="color:var(--green-d);">+12%</div>
+          <div class="metric-label">Aumento de vida útil del equipo</div>
+        </div>
+        <div class="metric-box" style="background:var(--blue-l);">
+          <div class="metric-val" style="color:var(--blue-d);">6-18m</div>
+          <div class="metric-label">Payback típico del proyecto IoT</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('m3')">
+      <span class="acc-badge" style="background:var(--mfg-l);color:var(--mfg);">Discovery, stack y objeciones</span>
+      <div class="acc-info"><div class="acc-name">Preguntas clave · Soluciones Personal Tech · Cómo responder al Gerente de Planta</div></div>
+      <span class="acc-chv" id="achv-m3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-m3"><div class="ab-inner">
+      <div class="block-label">Preguntas de discovery</div>
+      <div class="qlist">
+        <div class="q-item"><div class="q-text">"¿Cuánto les costó la última parada no planificada de producción? ¿Cuántas horas duró?"</div><div class="q-hint"><strong>Objetivo:</strong> Cuantificar el dolor. Una planta mediana pierde $10K–50K por hora. Ese número justifica toda la inversión IoT.</div></div>
+        <div class="q-item"><div class="q-text">"¿Sus operadores saben en tiempo real el estado de cada máquina de la planta o tienen que ir físicamente a revisar?"</div><div class="q-hint"><strong>Objetivo:</strong> Revelar la brecha de visibilidad. La respuesta casi siempre es "van físicamente".</div></div>
+        <div class="q-item"><div class="q-text">"¿Tienen conectividad estable en toda la planta o hay zonas muertas? ¿Qué pasa en zonas remotas como Vaca Muerta?"</div><div class="q-hint"><strong>Objetivo:</strong> Abrir la conversación de 5G privado y satelital como solución de conectividad industrial.</div></div>
+        <div class="q-item"><div class="q-text">"¿Sus sistemas SCADA y PLCs están aislados de la red corporativa o están conectados?"</div><div class="q-hint"><strong>Objetivo:</strong> Evaluar la brecha de seguridad OT. Si están conectados sin segmentación: vulnerabilidad crítica.</div></div>
+      </div>
+      <div class="block-label" style="margin-top:14px;">Objeciones frecuentes</div>
+      <table class="obj-table">
+        <thead><tr><th>Objeción</th><th>Pivot</th></tr></thead>
+        <tbody>
+          <tr><td>"Nuestros PLCs tienen 15 años y no tienen API."</td><td>No hace falta cambiar los PLCs. Un gateway industrial (Modbus RTU → MQTT) captura el dato del PLC y lo sube a la nube sin tocar el sistema existente.</td></tr>
+          <tr><td>"Si conectamos la planta a internet, nos van a hackear."</td><td>El APN privado de Personal Tech no pasa por internet. El sensor se comunica con la red de Telecom y de ahí al cloud de Pacheco — nunca toca internet público.</td></tr>
+          <tr><td>"El Gerente de Planta no quiere cambiar nada que funcione."</td><td>No se cambia nada que funcione. Se agrega una capa de lectura no invasiva. El PLC sigue haciendo lo que siempre hizo — solo ahora alguien puede verlo desde la oficina.</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="ficha">
+    <div class="ficha-title">Ficha rápida — manufactura</div>
+    <div class="ficha-grid">
+      <div>
+        <div class="ficha-block-label">Pitch de apertura</div>
+        <div class="ficha-item">"Cada hora que su línea está parada sin aviso previo son $15.000 que podrían haberse evitado. Con IoT y 5G de Personal Tech, sus técnicos reciben la alerta 72 horas antes de que el motor falle — no 2 horas después de que paró."</div>
+      </div>
+      <div>
+        <div class="ficha-block-label">Soluciones clave a proponer</div>
+        <div class="ficha-item">📡 IoT industrial con APN privado (sin internet público)</div>
+        <div class="ficha-item">📶 5G privado para zonas sin cobertura</div>
+        <div class="ficha-item">⚡ Edge Computing para latencia crítica en planta</div>
+        <div class="ficha-item">🧠 Analytics + alertas predictivas en cloud</div>
+        <div class="ficha-item">🔐 Segmentación IT/OT con DMZ industrial</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /manufactura -->
+<div class="vert-divider" style="background:linear-gradient(90deg,var(--mfg),transparent);"></div>
+
+
+<!-- ══════════════════════════════════════════════ GOBIERNO ══════════════════════════════════════════════ -->
+<div class="vertical" id="gobierno">
+
+  <div class="vert-hero">
+    <div class="vert-hero-top" style="background:linear-gradient(135deg,var(--gov-d) 0%,var(--gov) 60%,#0A6050 100%);">
+      <div class="vert-hero-eyebrow">Vertical 03 · Sector Público y Organismos Estatales</div>
+      <div class="vert-hero-title">🏛 Gobierno, Municipios y Organismos</div>
+      <div class="vert-hero-sub">Dato soberano · Licitación pública · Smart City · Ciudadano digital</div>
+      <div class="vert-hero-tags">
+        <span class="vert-tag">Dato soberano</span>
+        <span class="vert-tag">Ley 25.326 privacidad</span>
+        <span class="vert-tag">Licitación pública</span>
+        <span class="vert-tag">Smart City</span>
+        <span class="vert-tag">Tramitación digital</span>
+        <span class="vert-tag">SLA gobierno</span>
+        <span class="vert-tag">Facturación en pesos</span>
+      </div>
+    </div>
+    <div class="vert-hero-stats" style="background:var(--gov-d);">
+      <div class="vert-stat"><div class="vert-stat-val">500+</div><div class="vert-stat-label">Municipios en Argentina — mercado potencial</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">100%</div><div class="vert-stat-label">Del dato gubernamental debe permanecer en Argentina</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">$0</div><div class="vert-stat-label">Riesgo cambiario — facturación en pesos</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">2027</div><div class="vert-stat-label">Meta gobierno digital nacional (DNAT)</div></div>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('g1')">
+      <span class="acc-badge" style="background:var(--gov-l);color:var(--gov);">El marco legal y regulatorio del sector público</span>
+      <div class="acc-info"><div class="acc-name">Ley 25.326 · Decreto 1109/2021 · Ley 27.078 Argentina Digital — lo que los hyperscalers no pueden cumplir</div></div>
+      <span class="acc-chv" id="achv-g1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-g1"><div class="ab-inner">
+      <div class="grid2">
+        <div>
+          <div class="block-label">Regulaciones clave</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Ley 25.326 (Protección de Datos Personales):</strong> Los datos personales de ciudadanos argentinos no pueden transferirse a países sin nivel adecuado de protección.</li>
+            <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Decreto 1109/2021 (Plan de Modernización):</strong> Migración de sistemas gubernamentales a plataformas digitales. Prioridad a proveedores nacionales para datos críticos del Estado.</li>
+            <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Ley 27.078 (Argentina Digital):</strong> Telecom como infraestructura crítica. Personal Tech como carrier nacional tiene posición privilegiada en licitaciones de conectividad pública.</li>
+            <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Ley de Compre Nacional:</strong> Preferencia por proveedores locales en licitaciones. Personal Tech (Telecom Argentina) es empresa nacional.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="block-label">Por qué los hyperscalers no ganan licitaciones de gobierno</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--red-m);"></span>AWS, Azure y GCP no tienen infraestructura propia en Argentina — el dato va a Brasil o EE.UU.</li>
+            <li><span class="fdot" style="background:var(--red-m);"></span>Facturación en dólares — el presupuesto público es en pesos y los pliegos suelen requerir precio en moneda nacional.</li>
+            <li><span class="fdot" style="background:var(--red-m);"></span>No tienen soporte local con SLA en castellano y marco legal argentino.</li>
+            <li><span class="fdot" style="background:var(--green-m);"></span><strong>Personal Tech gana en los tres:</strong> dato en Argentina, pesos, soporte local bajo ley argentina.</li>
+          </ul>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('g2')">
+      <span class="acc-badge" style="background:var(--gov-l);color:var(--gov);">Smart City y servicios al ciudadano</div>
+      <div class="acc-info"><div class="acc-name">Alumbrado inteligente · Residuos · WiFi público · Tramitación digital · Seguridad urbana</div></div>
+      <span class="acc-chv" id="achv-g2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-g2"><div class="ab-inner">
+      <div class="sol-stack">
+        <div class="sol-card" style="background:var(--gov-l);">
+          <div class="sol-icon">💡</div>
+          <div class="sol-name">Alumbrado inteligente</div>
+          <div class="sol-desc">Sensores NB-IoT en postes. Regulación automática de intensidad según hora y presencia. Reducción del consumo energético 30–50%. Dashboard para el municipio.</div>
+        </div>
+        <div class="sol-card" style="background:var(--gov-l);">
+          <div class="sol-icon">🗑</div>
+          <div class="sol-name">Gestión de residuos</div>
+          <div class="sol-desc">Contenedores con sensor de nivel. La camión va cuando está lleno — no en ruta fija. Reducción de viajes del 40%. Métricas de reciclaje en tiempo real.</div>
+        </div>
+        <div class="sol-card" style="background:var(--gov-l);">
+          <div class="sol-icon">📶</div>
+          <div class="sol-name">WiFi público municipal</div>
+          <div class="sol-desc">Hotspots en plazas, terminales y edificios públicos. Gestión centralizada, portal cautivo personalizable. Analítica de uso para planificación urbana.</div>
+        </div>
+        <div class="sol-card" style="background:var(--gov-l);">
+          <div class="sol-icon">📋</div>
+          <div class="sol-name">Tramitación digital</div>
+          <div class="sol-desc">Plataforma de gestión documental en cloud Personal Tech. Firma digital, turnos online, notificaciones. Reduce la presencialidad en un 60%.</div>
+        </div>
+        <div class="sol-card" style="background:var(--gov-l);">
+          <div class="sol-icon">📹</div>
+          <div class="sol-name">CCTV inteligente</div>
+          <div class="sol-desc">Cámaras IP con Computer Vision en la nube. Detección de incidentes en tiempo real. Almacenamiento soberano de las grabaciones en Argentina.</div>
+        </div>
+        <div class="sol-card" style="background:var(--gov-l);">
+          <div class="sol-icon">🚦</div>
+          <div class="sol-name">Semáforos inteligentes</div>
+          <div class="sol-desc">Ajuste dinámico de ciclos según flujo vehicular real. Sensor de presencia + conectividad NB-IoT. Reducción de tiempos de espera hasta 25%.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('g3')">
+      <span class="acc-badge" style="background:var(--gov-l);color:var(--gov);">Cómo navegar el proceso de licitación</span>
+      <div class="acc-info"><div class="acc-name">El proceso de compra pública y cómo posicionar a Personal Tech desde el inicio</div><div class="acc-tag">El gobierno no compra como una empresa privada — hay que entender el proceso</div></div>
+      <span class="acc-chv" id="achv-g3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-g3"><div class="ab-inner">
+      <ul class="feat">
+        <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Etapa 1 — Influir el pliego ANTES de que salga:</strong> La mayor ventaja competitiva en gobierno es influir en los criterios del pliego. Reunirse con el Director de IT/Sistemas del organismo 6–12 meses antes. Hacer el relevamiento gratuito. Que los criterios del pliego reflejen lo que Personal Tech da mejor: dato en Argentina, facturación en pesos, soporte local, SLA end-to-end.</li>
+        <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Etapa 2 — Presentar como "consultores, no vendedores":</strong> El funcionario público no quiere que le vendan — quiere resolver un problema de ciudadanos y no tener problemas con la AGN (Auditoría General de la Nación). Posicionarse como expertos en soluciones similares ya implementadas.</li>
+        <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Etapa 3 — El precio en pesos como diferenciador:</strong> En licitaciones con partida presupuestaria en pesos, un proveedor que cotiza en dólares pierde puntos por riesgo cambiario. Personal Tech en pesos es una ventaja estructural.</li>
+        <li><span class="fdot" style="background:var(--gov-m);"></span><strong>Etapa 4 — Los casos de referencia locales:</strong> El gobierno necesita ver que otro municipio o provincia ya lo implementó. CIDAC (Córdoba), Smart City Buenos Aires y las soluciones en Neuquén (5G + Vaca Muerta) son referencias de alto valor.</li>
+      </ul>
+      <div class="win-note note-green"><strong>✅ Argumento maestro para gobierno:</strong> "Personal Tech es la única empresa que puede dar conectividad + cloud + IoT + seguridad en un solo contrato, en pesos, con dato en Argentina, bajo ley argentina y con soporte en castellano. Ningún otro puede dar todo eso."</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('g4')">
+      <span class="acc-badge" style="background:var(--gov-l);color:var(--gov);">Discovery y objeciones</span>
+      <div class="acc-info"><div class="acc-name">Las 4 preguntas de apertura y las objeciones típicas del funcionario público</div></div>
+      <span class="acc-chv" id="achv-g4">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-g4"><div class="ab-inner">
+      <div class="qlist">
+        <div class="q-item"><div class="q-text">"¿Cuáles son los servicios al ciudadano que más quejas generan por demoras o falta de digitalización?"</div><div class="q-hint"><strong>Objetivo:</strong> Encontrar el dolor político — lo que presiona al intendente/ministro.</div></div>
+        <div class="q-item"><div class="q-text">"¿Tienen presupuesto IT aprobado para el ejercicio? ¿O estamos en etapa de planificación para el próximo?"</div><div class="q-hint"><strong>Objetivo:</strong> Identificar el timing del proceso de compra. En gobierno los tiempos son largos.</div></div>
+        <div class="q-item"><div class="q-text">"¿Los datos de los ciudadanos están hoy en servidores propios o en servicios de terceros? ¿Tienen documentado dónde están?"</div><div class="q-hint"><strong>Objetivo:</strong> Revelar el riesgo de cumplimiento de la Ley 25.326.</div></div>
+        <div class="q-item"><div class="q-text">"¿Cuándo fue la última vez que un incidente de IT afectó un servicio al ciudadano?"</div><div class="q-hint"><strong>Objetivo:</strong> Cuantificar el impacto político del downtime — que un sistema caído es una nota periodística.</div></div>
+      </div>
+      <div class="block-label" style="margin-top:14px;">Objeciones frecuentes</div>
+      <table class="obj-table">
+        <thead><tr><th>Objeción</th><th>Pivot</th></tr></thead>
+        <tbody>
+          <tr><td>"El proceso de licitación tarda 12 meses."</td><td>Entonces hay que empezar hoy. Le ofrecemos el relevamiento gratuito y el diseño de la solución para que el pliego esté listo cuando abra el presupuesto.</td></tr>
+          <tr><td>"No tenemos presupuesto IT este año."</td><td>¿Hay partida para infraestructura o servicios? La modernización tecnológica puede entrar por distintas partidas. Y un piloto en un municipio puede financiarse con un convenio de obra.</td></tr>
+          <tr><td>"Usamos software del Estado nacional que ya tiene su propio datacenter."</td><td>Perfecto. Personal Tech puede complementar — la conectividad entre municipios y el datacenter nacional, o los servicios que no provee el Estado (IoT, CCTV, WiFi público).</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="ficha">
+    <div class="ficha-title">Ficha rápida — gobierno</div>
+    <div class="ficha-grid">
+      <div>
+        <div class="ficha-block-label">Pitch de apertura</div>
+        <div class="ficha-item">"El ciudadano que hace fila 3 horas para un trámite que podría hacerse en 5 minutos desde el celular es el mayor argumento político para la modernización. Personal Tech da la tecnología, el dato se queda en Argentina y la factura llega en pesos."</div>
+      </div>
+      <div>
+        <div class="ficha-block-label">Ventajas diferenciales clave</div>
+        <div class="ficha-item">✅ Único con dato soberano en Argentina</div>
+        <div class="ficha-item">✅ Facturación en pesos — sin riesgo cambiario</div>
+        <div class="ficha-item">✅ Empresa nacional — Compre Nacional</div>
+        <div class="ficha-item">✅ Infraestructura de conectividad preexistente</div>
+        <div class="ficha-item">✅ Referencias: CIDAC Córdoba, municipios 5G</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /gobierno -->
+<div class="vert-divider" style="background:linear-gradient(90deg,var(--gov),transparent);"></div>
+
+
+<!-- ══════════════════════════════════════════════ AGRO ══════════════════════════════════════════════ -->
+<div class="vertical" id="agro">
+
+  <div class="vert-hero">
+    <div class="vert-hero-top" style="background:linear-gradient(135deg,var(--agro-d) 0%,var(--agro) 60%,#2A7000 100%);">
+      <div class="vert-hero-eyebrow">Vertical 04 · Agroindustria y Campo</div>
+      <div class="vert-hero-title">🌾 Agro, Ganadería y Agroindustria</div>
+      <div class="vert-hero-sub">LoRa · Satelital · Campo remoto · Agricultura de precisión · Sin cobertura celular</div>
+      <div class="vert-hero-tags">
+        <span class="vert-tag">LoRaWAN</span>
+        <span class="vert-tag">Satelital Starlink</span>
+        <span class="vert-tag">Sensores de suelo</span>
+        <span class="vert-tag">Nivel de silos</span>
+        <span class="vert-tag">Riego automático</span>
+        <span class="vert-tag">Tracking de hacienda</span>
+        <span class="vert-tag">4G + Satelital failover</span>
+      </div>
+    </div>
+    <div class="vert-hero-stats" style="background:var(--agro-d);">
+      <div class="vert-stat"><div class="vert-stat-val">40%</div><div class="vert-stat-label">Reducción del consumo de agua con riego inteligente</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">65%</div><div class="vert-stat-label">Del campo argentino sin cobertura 4G estable</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">$200</div><div class="vert-stat-label">Costo por sensor LoRa instalado (sin SIM, sin factura mensual)</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">10 años</div><div class="vert-stat-label">Vida de batería de un sensor LoRa en campo</div></div>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a1')">
+      <span class="acc-badge" style="background:var(--agro-l);color:var(--agro);">El desafío de conectividad en el campo</span>
+      <div class="acc-info"><div class="acc-name">El 65% del campo sin 4G — la guía de qué tecnología usar en cada situación</div><div class="acc-tag">LoRa · NB-IoT · 4G · Satelital — cada una tiene su lugar</div></div>
+      <span class="acc-chv" id="achv-a1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a1"><div class="ab-inner">
+      <div class="block-label">La guía de selección de conectividad para el campo</div>
+      <table class="obj-table">
+        <thead><tr><th>Situación</th><th>Tecnología recomendada</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Campo con cobertura 4G de Personal Tech</td><td><strong>4G LTE con SIM + APN privado</strong></td><td>La solución más simple. Alta velocidad, bidireccional, compatible con cualquier sensor GPS/GPRS. APN privado para que el dato vaya directo al cloud sin internet público.</td></tr>
+          <tr><td>Campo sin cobertura celular, envía pocos datos (temperatura, nivel, posición)</td><td><strong>LoRaWAN + gateway 4G</strong></td><td>Un gateway LoRa con 4G cubre hasta 15 km de radio. Los sensores tienen batería de 10 años y no necesitan SIM. El gateway sube los datos por 4G cuando tiene señal.</td></tr>
+          <tr><td>Campo completamente remoto sin ninguna cobertura</td><td><strong>Satelital (Starlink + IoT)</strong></td><td>Starlink LEO da 20–60ms de latencia desde cualquier punto de Argentina. Para maquinaria agrícola que se mueve y necesita datos en tiempo real, es la única opción.</td></tr>
+          <tr><td>Alta densidad de sensores en un área pequeña (invernadero, tambo)</td><td><strong>WiFi + LoRa local</strong></td><td>WiFi para sensores con alimentación eléctrica (climatización, riego). LoRa para sensores de batería distribuidos en el campo.</td></tr>
+          <tr><td>Maquinaria agrícola (tractores, cosechadoras) en movimiento</td><td><strong>4G con failover satelital</strong></td><td>4G como principal + Starlink como backup automático cuando pierde cobertura. Siempre conectado, independientemente de dónde esté la máquina.</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a2')">
+      <span class="acc-badge" style="background:var(--agro-l);color:var(--agro);">Casos de uso agrícola con mayor ROI</span>
+      <div class="acc-info"><div class="acc-name">Los 5 proyectos IoT agro que más rápido se pagan y más fácil se venden</div></div>
+      <span class="acc-chv" id="achv-a2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a2"><div class="ab-inner">
+      <div class="sol-stack">
+        <div class="sol-card" style="background:var(--agro-l);">
+          <div class="sol-icon">💧</div>
+          <div class="sol-name">Riego inteligente</div>
+          <div class="sol-desc">Sensor de humedad de suelo + sensor de temperatura. Activa el riego automáticamente cuando el suelo lo necesita. <strong>Ahorro de agua 30–45%.</strong> Payback en 1 temporada.</div>
+        </div>
+        <div class="sol-card" style="background:var(--agro-l);">
+          <div class="sol-icon">🏚</div>
+          <div class="sol-name">Nivel de silos</div>
+          <div class="sol-desc">Sensor ultrasónico no invasivo en la tapa del silo. Monitoreo del nivel de cereal en tiempo real desde el celular. <strong>Elimina la visita física al silo</strong> — un campo puede tener 50 silos a 30 km de distancia.</div>
+        </div>
+        <div class="sol-card" style="background:var(--agro-l);">
+          <div class="sol-icon">🐄</div>
+          <div class="sol-name">Rastreo de hacienda</div>
+          <div class="sol-desc">Collar GPS + LoRa o 4G. Posición de cada animal en tiempo real. Alerta si un animal sale del perímetro. <strong>Reduce el robo de hacienda</strong> — problema crítico en zonas remotas.</div>
+        </div>
+        <div class="sol-card" style="background:var(--agro-l);">
+          <div class="sol-icon">🌡</div>
+          <div class="sol-name">Monitoreo agrometeorológico</div>
+          <div class="sol-desc">Estación climática en campo: temperatura, humedad, viento, lluvia, radiación solar. Dashboard que combina datos propios con forecast nacional. Optimiza decisiones de siembra y fumigación.</div>
+        </div>
+        <div class="sol-card" style="background:var(--agro-l);">
+          <div class="sol-icon">🚜</div>
+          <div class="sol-name">Telemetría de maquinaria</div>
+          <div class="sol-desc">GPS + OBD en tractor/cosechadora. Posición, velocidad, horas de motor, consumo de combustible. Detecta desvíos de ruta y uso fuera de horario. <strong>Ahorro de combustible 15–20%.</strong></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a3')">
+      <span class="acc-badge" style="background:var(--agro-l);color:var(--agro);">Discovery y objeciones</span>
+      <div class="acc-info"><div class="acc-name">Cómo hablar con el dueño del campo — un perfil muy diferente al CIO corporativo</div></div>
+      <span class="acc-chv" id="achv-a3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a3"><div class="ab-inner">
+      <div class="block-label">El perfil del interlocutor agrícola</div>
+      <div class="win-note note-blue"><strong>💡 Clave:</strong> El dueño del campo no es un CIO — es un empresario agropecuario que piensa en rendimiento, costo por hectárea y clima. No habla de "cloud" ni "IoT". Habla de "no tener que mandar al peón a revisar el silo" o "saber cuándo llover sin ir al campo". Hay que traducir la tecnología a esas palabras.</div>
+      <div class="qlist">
+        <div class="q-item"><div class="q-text">"¿Cuántas veces por semana mandan gente al campo solo para revisar niveles de silos o el estado del riego?"</div><div class="q-hint"><strong>Objetivo:</strong> Cuantificar el costo operativo de la "visita física". Si son 3 viajes por semana a 100 km, son $6.000/mes solo en logística.</div></div>
+        <div class="q-item"><div class="q-text">"¿Tuvieron algún problema de robo de hacienda o combustible en los últimos años?"</div><div class="q-hint"><strong>Objetivo:</strong> El dolor de seguridad en el campo es muy real. Un animal robado = $300–500. Un tanque de combustible = $2.000.</div></div>
+        <div class="q-item"><div class="q-text">"¿Cómo deciden cuándo regar? ¿Tienen datos de humedad del suelo o es experiencia del operario?"</div><div class="q-hint"><strong>Objetivo:</strong> Revelar la oportunidad de precisión vs. empirismo. La respuesta casi siempre es "el operario decide por experiencia".</div></div>
+        <div class="q-item"><div class="q-text">"¿Tienen cobertura de celular en todo el campo o hay zonas muertas?"</div><div class="q-hint"><strong>Objetivo:</strong> Evaluar si necesitan LoRa o satelital. El 65% del campo argentino tiene zonas sin cobertura.</div></div>
+      </div>
+      <div class="block-label" style="margin-top:14px;">Objeciones frecuentes</div>
+      <table class="obj-table">
+        <thead><tr><th>Objeción</th><th>Pivot</th></tr></thead>
+        <tbody>
+          <tr><td>"No tengo internet en el campo."</td><td>No hace falta internet en el sensor. LoRa llega a 15 km sin internet. El único punto que necesita conectividad es el gateway — que puede ser un modem 4G de Personal Tech o Starlink en zonas sin señal celular.</td></tr>
+          <tr><td>"¿Cuánto cuesta y cuándo lo recupero?"</td><td>Un sensor de humedad de suelo cuesta $150–300 USD instalado. Si ahorra 2 riegos de 100hs por temporada, recupera la inversión en la primera temporada.</td></tr>
+          <tr><td>"Mis hijos me quieren poner estas cosas pero yo no sé de tecnología."</td><td>No necesita saber de tecnología. La app muestra un semáforo: verde = todo bien, rojo = hay que actuar. Es tan simple como el WhatsApp.</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="ficha">
+    <div class="ficha-title">Ficha rápida — agro</div>
+    <div class="ficha-grid">
+      <div>
+        <div class="ficha-block-label">Pitch de apertura</div>
+        <div class="ficha-item">"¿Cuántos viajes al campo hace su gente por semana solo para ver si el silo está lleno o si el riego funcionó? Con un sensor de $200 y la cobertura de Personal Tech, esa información llega al celular — sin salir de la oficina."</div>
+      </div>
+      <div>
+        <div class="ficha-block-label">Stack tecnológico recomendado</div>
+        <div class="ficha-item">📡 LoRaWAN para sensores de campo (batería 10 años)</div>
+        <div class="ficha-item">📶 4G Personal Tech para gateways y maquinaria</div>
+        <div class="ficha-item">🛰 Satelital Starlink para zonas sin cobertura</div>
+        <div class="ficha-item">☁️ Cloud Personal Tech para analytics y alertas</div>
+        <div class="ficha-item">📱 App móvil con semáforo simple para el productor</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /agro -->
+<div class="vert-divider" style="background:linear-gradient(90deg,var(--agro),transparent);"></div>
+
+
+<!-- ══════════════════════════════════════════════ RETAIL ══════════════════════════════════════════════ -->
+<div class="vertical" id="retail">
+
+  <div class="vert-hero">
+    <div class="vert-hero-top" style="background:linear-gradient(135deg,var(--retail-d) 0%,var(--retail) 60%,#8B1060 100%);">
+      <div class="vert-hero-eyebrow">Vertical 05 · Comercio y E-Commerce</div>
+      <div class="vert-hero-title">🛒 Retail, E-Commerce y Grandes Superficies</div>
+      <div class="vert-hero-sub">DDoS · CDN · Picos de tráfico · Continuidad del POS · Omnicanalidad</div>
+      <div class="vert-hero-tags">
+        <span class="vert-tag">DDoS protection</span>
+        <span class="vert-tag">CDN</span>
+        <span class="vert-tag">Auto-scaling</span>
+        <span class="vert-tag">POS conectado</span>
+        <span class="vert-tag">PCI-DSS</span>
+        <span class="vert-tag">Black Friday</span>
+        <span class="vert-tag">Omnicanalidad</span>
+        <span class="vert-tag">WiFi 6 en tienda</span>
+      </div>
+    </div>
+    <div class="vert-hero-stats" style="background:var(--retail-d);">
+      <div class="vert-stat"><div class="vert-stat-val">$50K</div><div class="vert-stat-label">Pérdida por hora de e-commerce caído en pico (retail mediano)</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">10×</div><div class="vert-stat-label">Pico de tráfico en Black Friday vs. día promedio</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">73%</div><div class="vert-stat-label">Clientes que no vuelven a una tienda con WiFi lento</div></div>
+      <div class="vert-stat"><div class="vert-stat-val">35%</div><div class="vert-stat-label">De ventas online que se pierden por página lenta (&gt;3 seg)</div></div>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('r1')">
+      <span class="acc-badge" style="background:var(--retail-l);color:var(--retail);">El problema del e-commerce en fechas clave</span>
+      <div class="acc-info"><div class="acc-name">Black Friday · Hot Sale · CyberMonday · Día del Niño — el mismo drama todos los años</div><div class="acc-tag">Por qué el hosting fijo on-premise no puede responder a los picos</div></div>
+      <span class="acc-chv" id="achv-r1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-r1"><div class="ab-inner">
+      <div class="grid2">
+        <div class="mini-card" style="background:var(--red-l);border-color:var(--red-m);">
+          <div class="mc-icon">💥</div>
+          <div class="mc-title" style="color:var(--red-d);">El problema: infraestructura estática + tráfico dinámico</div>
+          <div class="mc-text">El retailer tiene servidores dimensionados para el tráfico promedio. En Black Friday el tráfico sube 10×. El servidor colapsa. La web cae. Los clientes van a la competencia. Cada minuto de caída = ventas perdidas + daño de marca.</div>
+        </div>
+        <div class="mini-card" style="background:var(--green-l);border-color:var(--green-m);">
+          <div class="mc-icon">✅</div>
+          <div class="mc-title" style="color:var(--green-d);">La solución: Auto-scaling + CDN + DDoS</div>
+          <div class="mc-text">Cloud con auto-scaling: los servidores se multiplican automáticamente cuando el tráfico sube. CDN: el contenido estático (imágenes, CSS) se sirve desde el PoP más cercano al usuario. DDoS: los ataques se absorben en la red antes de llegar al servidor.</div>
+        </div>
+      </div>
+      <div class="block-label">El costo de una caída en Black Friday — cálculo real</div>
+      <div class="metrics-row">
+        <div class="metric-box" style="background:var(--retail-l);">
+          <div class="metric-val" style="color:var(--retail);">$50K</div>
+          <div class="metric-label">Pérdida por hora de caída (retailer $30M de ventas anuales)</div>
+        </div>
+        <div class="metric-box" style="background:var(--retail-l);">
+          <div class="metric-val" style="color:var(--retail);">35%</div>
+          <div class="metric-label">De visitantes que abandonan si tarda &gt;3 segundos en cargar</div>
+        </div>
+        <div class="metric-box" style="background:var(--retail-l);">
+          <div class="metric-val" style="color:var(--retail);">67%</div>
+          <div class="metric-label">Que no vuelven tras una mala experiencia de compra online</div>
+        </div>
+        <div class="metric-box" style="background:var(--green-l);">
+          <div class="metric-val" style="color:var(--green-d);">+21%</div>
+          <div class="metric-label">Aumento de conversión con tiempo de carga &lt;1 segundo</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('r2')">
+      <span class="acc-badge" style="background:var(--retail-l);color:var(--retail);">Tienda física + digital: la omnicanalidad técnica</span>
+      <div class="acc-info"><div class="acc-name">POS conectado · WiFi 6 en tienda · Click & Collect · Stock unificado — la infraestructura de la tienda moderna</div></div>
+      <span class="acc-chv" id="achv-r2">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-r2"><div class="ab-inner">
+      <div class="sol-stack">
+        <div class="sol-card" style="background:var(--retail-l);">
+          <div class="sol-icon">💳</div>
+          <div class="sol-name">POS conectado con APN privado</div>
+          <div class="sol-desc">Todas las terminales de pago conectadas via SIM Personal Tech con APN privado. Si cae el WiFi de la tienda, el POS sigue funcionando por 4G. <strong>Nunca más "el sistema de cobro está caído".</strong></div>
+        </div>
+        <div class="sol-card" style="background:var(--retail-l);">
+          <div class="sol-icon">📶</div>
+          <div class="sol-name">WiFi 6 para la tienda</div>
+          <div class="sol-desc">Red WiFi 6 de alta densidad para clientes y empleados. Analítica de comportamiento: mapas de calor de circulación, tiempo en góndolas, días y horarios de mayor tráfico.</div>
+        </div>
+        <div class="sol-card" style="background:var(--retail-l);">
+          <div class="sol-icon">📦</div>
+          <div class="sol-name">Stock unificado en cloud</div>
+          <div class="sol-desc">Un solo sistema de inventario para tiendas físicas, e-commerce y depósitos. Actualización en tiempo real. Elimina el "se vendió en web pero no había en depósito".</div>
+        </div>
+        <div class="sol-card" style="background:var(--retail-l);">
+          <div class="sol-icon">🔐</div>
+          <div class="sol-name">Seguridad PCI-DSS</div>
+          <div class="sol-desc">Segmentación de red: la red de POS está aislada de la red de clientes y empleados. Cumplimiento PCI-DSS para protección de datos de tarjetas. Requerido por todos los adquirentes.</div>
+        </div>
+        <div class="sol-card" style="background:var(--retail-l);">
+          <div class="sol-icon">📹</div>
+          <div class="sol-name">CCTV + analítica de tienda</div>
+          <div class="sol-desc">Cámaras IP con Computer Vision: conteo automático de personas, detección de colas en cajas, alertas de comportamiento sospechoso. Todo grabado en cloud Personal Tech en Argentina.</div>
+        </div>
+        <div class="sol-card" style="background:var(--retail-l);">
+          <div class="sol-icon">🛡</div>
+          <div class="sol-name">DDoS + WAF para e-commerce</div>
+          <div class="sol-desc">Los ataques DDoS en fechas clave del retail son frecuentes — a veces es la competencia. Personal Tech absorbe el ataque en su red antes de que llegue al servidor del cliente.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('r3')">
+      <span class="acc-badge" style="background:var(--retail-l);color:var(--retail);">Discovery, objeciones y pitch</span>
+      <div class="acc-info"><div class="acc-name">Las preguntas que revelan el dolor + las objeciones del Gerente de IT de retail</div></div>
+      <span class="acc-chv" id="achv-r3">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-r3"><div class="ab-inner">
+      <div class="block-label">Preguntas de discovery</div>
+      <div class="qlist">
+        <div class="q-item"><div class="q-text">"¿Cuánto tarda en cargar su home page en Mobile? ¿Lo midieron con herramientas como GTmetrix o Google PageSpeed?"</div><div class="q-hint"><strong>Objetivo:</strong> La mayoría no lo mide. El promedio de e-commerce argentino tarda 4–6 segundos. Con CDN baja a 0.8–1.5 segundos. El impacto en conversión es inmediato.</div></div>
+        <div class="q-item"><div class="q-text">"¿Qué pasó en el último Black Friday / Hot Sale? ¿Tuvieron caídas o lentitud?"</div><div class="q-hint"><strong>Objetivo:</strong> El 70% de los e-commerce argentinos tuvo algún problema en el último Hot Sale. Si lo tuvieron, hay urgencia de resolver.</div></div>
+        <div class="q-item"><div class="q-text">"¿Sus terminales de cobro en tienda dependen de internet? Si cae la red de la tienda, ¿pueden seguir cobrando?"</div><div class="q-hint"><strong>Objetivo:</strong> Abrir la conversación de POS con backup 4G. La respuesta casi siempre es "no podemos cobrar sin internet".</div></div>
+        <div class="q-item"><div class="q-text">"¿Tienen visibility del comportamiento de los clientes en tienda — cuáles son las góndolas más transitadas, cuánto tiempo pasan frente a cada producto?"</div><div class="q-hint"><strong>Objetivo:</strong> Abrir la conversación de WiFi analytics y Computer Vision. El retail físico moderno compite con e-commerce en datos.</div></div>
+      </div>
+      <div class="block-label" style="margin-top:14px;">Objeciones frecuentes</div>
+      <table class="obj-table">
+        <thead><tr><th>Objeción</th><th>Pivot</th></tr></thead>
+        <tbody>
+          <tr><td>"Ya tenemos hosting en un proveedor local."</td><td>¿Ese proveedor absorbe un ataque DDoS de 100 Gbps? ¿Tiene auto-scaling que se activa en 30 segundos? ¿Tiene CDN con PoPs en las ciudades donde están sus clientes? Personal Tech tiene la red y el cloud en el mismo contrato.</td></tr>
+          <tr><td>"Nuestro e-commerce lo maneja una agencia."</td><td>Perfecto. La agencia se encarga de la app. Personal Tech se encarga de la infraestructura donde corre. Son capas distintas. Coordinamos directamente con la agencia si hace falta.</td></tr>
+          <tr><td>"El WiFi de las tiendas está gestionado por nuestro equipo IT."</td><td>WiFi 6 de Personal Tech se gestiona remotamente desde una consola central. El equipo IT de ustedes tiene visibilidad de todas las tiendas en un solo panel, sin tener que ir físicamente.</td></tr>
+          <tr><td>"El Black Friday es una vez al año — no vale la pena invertir en infraestructura para eso."</td><td>El auto-scaling paga solo cuando lo usa. Un servidor fijo dimensionado para el pico cuesta $3.000/mes los 12 meses. El auto-scaling en cloud cuesta $15.000 solo en el mes de Black Friday — y nada el resto del año.</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="ficha">
+    <div class="ficha-title">Ficha rápida — retail</div>
+    <div class="ficha-grid">
+      <div>
+        <div class="ficha-block-label">Pitch de apertura</div>
+        <div class="ficha-item">"El año pasado, ¿cuántas ventas perdieron en el último Hot Sale porque la página tardaba o se caía? Ese número — en un solo día — financia toda la inversión en cloud que necesitan para que no vuelva a pasar. Y el auto-scaling solo cobra cuando lo usás."</div>
+      </div>
+      <div>
+        <div class="ficha-block-label">Stack clave para proponer</div>
+        <div class="ficha-item">🛡 DDoS mitigation (red Telecom, absorción previa)</div>
+        <div class="ficha-item">🚀 CDN + auto-scaling para picos de tráfico</div>
+        <div class="ficha-item">💳 POS con backup 4G (APN privado)</div>
+        <div class="ficha-item">📶 WiFi 6 con analítica de comportamiento</div>
+        <div class="ficha-item">🔐 Segmentación PCI-DSS para red de cobro</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /retail -->
+
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Playbook Vertical · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent = hoy;
+document.getElementById('fecha2').textContent = hoy;
+
+function toggleAcc(id){
+  var b = document.getElementById('abdy-'+id);
+  var c = document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open', b.classList.contains('open'));
+}
+
+// Nav active on scroll
+var verticals = document.querySelectorAll('.vertical');
+var navLinks = document.querySelectorAll('.tnav');
+window.addEventListener('scroll', function(){
+  var sy = window.scrollY + 70;
+  verticals.forEach(function(v){
+    if(sy >= v.offsetTop && sy < v.offsetTop + v.offsetHeight){
+      navLinks.forEach(function(n){ n.classList.remove('active'); });
+      var a = document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+</body>
+</html>

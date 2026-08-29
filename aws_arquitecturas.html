@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitecturas AWS de Referencia | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* AWS official colors */
+  --aws-orange:#FF9900; --aws-dark:#232F3E; --aws-dark2:#161E2D;
+  --aws-compute:#FF9900; --aws-compute-l:#FFF4E0;
+  --aws-storage:#3F8624; --aws-storage-l:#EBF5E6;
+  --aws-database:#2E73B8; --aws-database-l:#E8F0FB;
+  --aws-network:#8C4FFF; --aws-network-l:#F2EEFF;
+  --aws-security:#DD344C; --aws-security-l:#FDEAEC;
+  --aws-analytics:#01A88D; --aws-analytics-l:#E0F7F4;
+  --aws-ml:#01A88D; --aws-ml-l:#E0F7F4;
+  --aws-integration:#E7157B; --aws-integration-l:#FDE8F3;
+  --aws-mgmt:#E7157B; --aws-mgmt-l:#FDE8F3;
+  --aws-media:#AB2DF3;
+  --vpc-border:#8C4FFF;
+  --subnet-public:#E8FFE0;
+  --subnet-private:#E8EEFF;
+  --subnet-isolated:#FFE8E8;
+  /* UI */
+  --text:#1a1a18; --text-sec:#5f5e5a; --text-ter:#888780;
+  --border:#e0ded6; --bg:#fff; --bg2:#f7f5f0;
+  --blue:#0C447C; --blue-m:#378ADD; --blue-l:#E6F1FB;
+  --radius:10px; --radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.6;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--aws-dark);border-bottom:2px solid var(--aws-orange);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:12px 14px 12px 0;border-right:.5px solid rgba(255,255,255,.15);margin-right:8px;color:rgba(255,255,255,.5);letter-spacing:.05em;}
+.tnav{font-size:10.5px;font-weight:700;padding:13px 11px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,.35);transition:all .18s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--aws-orange);}
+
+/* PAGE */
+.page{max-width:1060px;margin:0 auto;padding:32px 24px 80px;}
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
+.doc-title{font-size:26px;font-weight:700;letter-spacing:-.4px;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;padding:14px 16px;background:var(--aws-dark);border-radius:var(--radius);}
+.legend-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);width:100%;margin-bottom:4px;}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.6);}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+
+/* ARCH SECTION */
+.arch-section{margin-bottom:48px;scroll-margin-top:52px;}
+.arch-header{border-bottom:1.5px solid var(--text);padding-bottom:10px;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.arch-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);min-width:28px;}
+.arch-title{font-size:18px;font-weight:700;flex:1;}
+.arch-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--aws-compute-l);color:var(--aws-dark);}
+
+/* DIAGRAM WRAPPER */
+.diagram-wrap{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;}
+.diagram-scroll{overflow-x:auto;padding:24px;}
+.diagram-scroll svg{display:block;margin:0 auto;}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;}
+.acc-head{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.acc-name{font-size:13.5px;font-weight:700;flex:1;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);padding:16px 18px;}
+.acc-body.open{display:block;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);margin:12px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:10px 0;}
+.svc-card{border-radius:var(--radius-sm);padding:11px 13px;border:.5px solid var(--border);background:var(--bg);}
+.svc-name{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.svc-desc{font-size:12px;color:var(--text-sec);line-height:1.5;}
+.flow-list{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+.flow-step{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--text-sec);line-height:1.55;}
+.flow-num{width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--aws-orange);color:#fff;}
+.note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid;line-height:1.6;color:var(--text-sec);}
+.note strong{font-weight:700;}
+.note-orange{background:var(--aws-compute-l);border-color:var(--aws-orange);}
+.note-orange strong{color:var(--aws-dark);}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);}
+.note-blue strong{color:var(--blue);}
+
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+@media(max-width:640px){.doc-header{flex-direction:column;gap:8px;}.doc-meta{text-align:left;}.services-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">☁️ AWS Arquitecturas</div>
+  <a class="tnav" href="#a1">01 Web 3-tier</a>
+  <a class="tnav" href="#a2">02 Serverless API</a>
+  <a class="tnav" href="#a3">03 Data Lake</a>
+  <a class="tnav" href="#a4">04 Microservicios EKS</a>
+  <a class="tnav" href="#a5">05 Hybrid Cloud</a>
+  <a class="tnav" href="#a6">06 DR Multi-región</a>
+  <a class="tnav" href="#a7">07 ML Pipeline</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Arquitecturas AWS de Referencia</div>
+    <div class="doc-sub">7 patrones de arquitectura cloud más usados en enterprise — con diagramas de servicios, flujo de tráfico y consideraciones de diseño</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud · Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">Referencia de colores por categoría de servicio AWS</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-orange);"></div>Cómputo (EC2, Lambda, ECS)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-storage);"></div>Storage (S3, EBS, EFS)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-database);"></div>Bases de datos (RDS, DynamoDB)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-network);"></div>Red y CDN (VPC, CloudFront, Route 53)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-security);"></div>Seguridad (IAM, KMS, WAF)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-analytics);"></div>Analytics &amp; ML (Glue, Athena, SageMaker)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--aws-integration);"></div>Integración (API GW, SQS, SNS)</div>
+</div>
+
+
+<!-- ══════ A1: WEB 3-TIER ══════ -->
+<div class="arch-section" id="a1">
+  <div class="arch-header">
+    <div class="arch-num">01</div>
+    <div class="arch-title">Aplicación Web 3 Capas — Alta Disponibilidad</div>
+    <span class="arch-badge">El más usado en enterprise</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="900" height="500" viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <marker id="arrorange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF9900"/></marker>
+          <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- INTERNET -->
+        <rect x="10" y="20" width="100" height="60" rx="10" fill="#F1EFE8" stroke="#e0ded6" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="60" y="42" text-anchor="middle" font-family="Roboto,sans-serif" font-size="18">🌐</text>
+        <text x="60" y="60" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a" font-weight="600">Internet</text>
+        <text x="60" y="72" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Usuarios</text>
+
+        <!-- ROUTE 53 -->
+        <rect x="150" y="20" width="100" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="200" y="40" text-anchor="middle" font-family="Roboto,sans-serif" font-size="16">🌐</text>
+        <text x="200" y="58" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">Route 53</text>
+        <text x="200" y="70" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">DNS</text>
+
+        <!-- CLOUDFRONT -->
+        <rect x="290" y="20" width="100" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="340" y="40" text-anchor="middle" font-family="Roboto,sans-serif" font-size="16">⚡</text>
+        <text x="340" y="58" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">CloudFront</text>
+        <text x="340" y="70" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">CDN + WAF</text>
+
+        <!-- WAF badge -->
+        <rect x="310" y="8" width="36" height="16" rx="8" fill="#DD344C"/>
+        <text x="328" y="20" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#fff" font-weight="700">WAF</text>
+
+        <!-- Arrows internet zone -->
+        <line x1="110" y1="50" x2="148" y2="50" stroke="#888780" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="250" y1="50" x2="288" y2="50" stroke="#888780" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- VPC BOX -->
+        <rect x="10" y="120" width="880" height="360" rx="12" fill="none" stroke="#8C4FFF" stroke-width="2" stroke-dasharray="8,5"/>
+        <text x="26" y="140" font-family="Roboto,sans-serif" font-size="11" fill="#8C4FFF" font-weight="700">VPC — 10.0.0.0/16</text>
+
+        <!-- AZ1 label -->
+        <text x="30" y="168" font-family="Roboto,sans-serif" font-size="10" fill="#888780">AZ-1 (us-east-1a)</text>
+        <!-- AZ2 label -->
+        <text x="490" y="168" font-family="Roboto,sans-serif" font-size="10" fill="#888780">AZ-2 (us-east-1b)</text>
+
+        <!-- PUBLIC SUBNET AZ1 -->
+        <rect x="22" y="175" width="420" height="100" rx="8" fill="#E8FFE0" stroke="#3F8624" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="34" y="192" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="600">Subnet Pública 10.0.1.0/24</text>
+
+        <!-- ALB AZ1 -->
+        <rect x="40" y="198" width="110" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="95" y="218" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">⚖️</text>
+        <text x="95" y="236" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">ALB</text>
+        <text x="95" y="248" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Load Balancer</text>
+
+        <!-- NAT GW AZ1 -->
+        <rect x="180" y="198" width="110" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="235" y="218" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">🔀</text>
+        <text x="235" y="236" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">NAT GW</text>
+        <text x="235" y="248" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Salida a internet</text>
+
+        <!-- PUBLIC SUBNET AZ2 -->
+        <rect x="458" y="175" width="420" height="100" rx="8" fill="#E8FFE0" stroke="#3F8624" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="470" y="192" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="600">Subnet Pública 10.0.2.0/24</text>
+
+        <!-- ALB AZ2 -->
+        <rect x="476" y="198" width="110" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="531" y="218" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">⚖️</text>
+        <text x="531" y="236" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">ALB</text>
+        <text x="531" y="248" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Load Balancer</text>
+
+        <!-- NAT GW AZ2 -->
+        <rect x="616" y="198" width="110" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="671" y="218" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">🔀</text>
+        <text x="671" y="236" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">NAT GW</text>
+        <text x="671" y="248" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Salida a internet</text>
+
+        <!-- PRIVATE SUBNET AZ1 (App) -->
+        <rect x="22" y="290" width="200" height="90" rx="8" fill="#E8EEFF" stroke="#8C4FFF" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="34" y="306" font-family="Roboto,sans-serif" font-size="9" fill="#8C4FFF" font-weight="600">Subnet Privada (App)</text>
+
+        <!-- EC2 ASG AZ1 -->
+        <rect x="40" y="312" width="170" height="55" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="125" y="332" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">🖥</text>
+        <text x="125" y="350" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">EC2 Auto Scaling</text>
+        <text x="125" y="362" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">App Tier</text>
+
+        <!-- PRIVATE SUBNET AZ2 (App) -->
+        <rect x="458" y="290" width="200" height="90" rx="8" fill="#E8EEFF" stroke="#8C4FFF" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="470" y="306" font-family="Roboto,sans-serif" font-size="9" fill="#8C4FFF" font-weight="600">Subnet Privada (App)</text>
+
+        <!-- EC2 ASG AZ2 -->
+        <rect x="476" y="312" width="170" height="55" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="561" y="332" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">🖥</text>
+        <text x="561" y="350" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">EC2 Auto Scaling</text>
+        <text x="561" y="362" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">App Tier</text>
+
+        <!-- ISOLATED SUBNET (DB) -->
+        <rect x="240" y="395" width="420" height="75" rx="8" fill="#FFE8E8" stroke="#DD344C" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="252" y="411" font-family="Roboto,sans-serif" font-size="9" fill="#DD344C" font-weight="600">Subnet Aislada (Datos) — sin ruta a internet</text>
+
+        <!-- RDS Primary -->
+        <rect x="258" y="417" width="120" height="42" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="318" y="434" text-anchor="middle" font-family="Roboto,sans-serif" font-size="12">🗄</text>
+        <text x="318" y="448" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">RDS Primary</text>
+
+        <!-- RDS Replica badge -->
+        <rect x="394" y="407" width="56" height="14" rx="7" fill="#2E73B8"/>
+        <text x="422" y="418" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#fff" font-weight="700">Multi-AZ ✓</text>
+
+        <!-- RDS Standby -->
+        <rect x="405" y="417" width="120" height="42" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#shadow)"/>
+        <text x="465" y="434" text-anchor="middle" font-family="Roboto,sans-serif" font-size="12">🗄</text>
+        <text x="465" y="448" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">RDS Standby</text>
+
+        <!-- ElastiCache -->
+        <rect x="540" y="417" width="110" height="42" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="595" y="434" text-anchor="middle" font-family="Roboto,sans-serif" font-size="12">⚡</text>
+        <text x="595" y="448" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">ElastiCache</text>
+
+        <!-- S3 (outside VPC) -->
+        <rect x="770" y="290" width="100" height="55" rx="8" fill="#EBF5E6" stroke="#3F8624" stroke-width="1.5" filter="url(#shadow)"/>
+        <text x="820" y="312" text-anchor="middle" font-family="Roboto,sans-serif" font-size="14">🪣</text>
+        <text x="820" y="330" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#3F8624" font-weight="700">S3</text>
+        <text x="820" y="342" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Assets / Backup</text>
+
+        <!-- FLOW ARROWS -->
+        <!-- CloudFront → ALB -->
+        <line x1="340" y1="80" x2="340" y2="120" stroke="#FF9900" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrorange)"/>
+        <line x1="340" y1="120" x2="95" y2="175" stroke="#FF9900" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <line x1="340" y1="120" x2="531" y2="175" stroke="#FF9900" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+        <!-- ALB → EC2 -->
+        <line x1="95" y1="258" x2="125" y2="312" stroke="#888780" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="531" y1="258" x2="561" y2="312" stroke="#888780" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- EC2 → RDS -->
+        <line x1="125" y1="367" x2="318" y2="417" stroke="#888780" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="561" y1="367" x2="465" y2="417" stroke="#888780" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- RDS replication -->
+        <line x1="378" y1="438" x2="403" y2="438" stroke="#2E73B8" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+
+        <!-- EC2 → S3 -->
+        <line x1="648" y1="340" x2="768" y2="318" stroke="#3F8624" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+
+        <!-- Route 53 label -->
+        <line x1="390" y1="50" x2="440" y2="50" stroke="#888780" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="445" y="46" font-family="Roboto,sans-serif" font-size="9" fill="#888780">DNS</text>
+        <text x="445" y="57" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Failover</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a1_1')">
+      <span class="acc-badge" style="background:var(--aws-compute-l);color:var(--aws-dark);">Servicios involucrados</span>
+      <div class="acc-name">Detalle de cada componente y su rol en la arquitectura</div>
+      <span class="acc-chv" id="achv-a1_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a1_1">
+      <div class="services-grid">
+        <div class="svc-card" style="border-color:var(--aws-network);"><div class="svc-name" style="color:var(--aws-network);">Route 53</div><div class="svc-desc">DNS con health checks. Failover automático entre AZs. Enruta el tráfico al ALB más cercano o al secundario si el primario falla.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-network);"><div class="svc-name" style="color:var(--aws-network);">CloudFront + WAF</div><div class="svc-desc">CDN global que cachea contenido estático. WAF integrado bloquea OWASP Top 10, DDoS y ataques de bots antes de llegar al origen.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-network);"><div class="svc-name" style="color:var(--aws-network);">ALB (Application Load Balancer)</div><div class="svc-desc">Distribuye tráfico HTTP/HTTPS entre instancias EC2 según health checks. Soporta routing por path (/api → microservicio, / → frontend).</div></div>
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">EC2 Auto Scaling Group</div><div class="svc-desc">Grupo de instancias que escala automáticamente según CPU, requests o métricas custom. Min 2 instancias en 2 AZs para alta disponibilidad.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-database);"><div class="svc-name" style="color:var(--aws-database);">RDS Multi-AZ</div><div class="svc-desc">Base de datos relacional con réplica sincrónica en otra AZ. Failover automático en &lt;60 segundos si la instancia primaria falla.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-database);"><div class="svc-name" style="color:var(--aws-database);">ElastiCache (Redis)</div><div class="svc-desc">Cache en memoria para sesiones de usuario y datos frecuentes. Reduce la carga en RDS hasta un 80% para lecturas repetitivas.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-storage);"><div class="svc-name" style="color:var(--aws-storage);">S3</div><div class="svc-desc">Assets estáticos (imágenes, CSS, JS), backups de RDS, logs de acceso. Integrado con CloudFront para distribución global.</div></div>
+      </div>
+      <div class="block-label">Flujo de una request</div>
+      <div class="flow-list">
+        <div class="flow-step"><div class="flow-num">1</div>Usuario resuelve DNS en Route 53 → obtiene el IP del CloudFront distribution.</div>
+        <div class="flow-step"><div class="flow-num">2</div>CloudFront responde con el contenido cacheado (CSS, JS, imágenes) sin llegar al origen. WAF filtra ataques.</div>
+        <div class="flow-step"><div class="flow-num">3</div>Requests dinámicas (/api) pasan al ALB en la subnet pública. El ALB elige la instancia EC2 más sana.</div>
+        <div class="flow-step"><div class="flow-num">4</div>La instancia EC2 consulta ElastiCache primero (cache hit = sin ir a RDS). Cache miss: consulta RDS Primary.</div>
+        <div class="flow-step"><div class="flow-num">5</div>RDS escribe sincrónicamente en el Standby de la AZ2. Si Primary falla, el Standby se promueve automáticamente.</div>
+      </div>
+      <div class="note note-orange"><strong>Personal Tech:</strong> Esta arquitectura puede replicarse en la nube privada de Pacheco usando VMs + HAProxy/NGinx como ALB + MySQL Multi-AZ. El cliente obtiene la misma resiliencia con dato soberano en Argentina.</div>
+    </div>
+  </div>
+</div><!-- /a1 -->
+
+
+<!-- ══════ A2: SERVERLESS API ══════ -->
+<div class="arch-section" id="a2">
+  <div class="arch-header">
+    <div class="arch-num">02</div>
+    <div class="arch-title">API Serverless — Costo cero cuando no hay tráfico</div>
+    <span class="arch-badge">Startups · Microservicios · Eventos</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="860" height="320" viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <marker id="arrorange2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF9900"/></marker>
+          <filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- CLIENT -->
+        <rect x="10" y="130" width="90" height="60" rx="10" fill="#F1EFE8" stroke="#e0ded6" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="55" y="153" text-anchor="middle" font-size="18">📱</text>
+        <text x="55" y="170" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a" font-weight="600">Cliente</text>
+        <text x="55" y="182" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Web / Mobile</text>
+
+        <!-- COGNITO -->
+        <rect x="130" y="130" width="100" height="60" rx="8" fill="#FDEAEC" stroke="#DD344C" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="180" y="153" text-anchor="middle" font-size="16">🔐</text>
+        <text x="180" y="170" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#DD344C" font-weight="700">Cognito</text>
+        <text x="180" y="182" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Auth / JWT</text>
+
+        <!-- API GATEWAY -->
+        <rect x="260" y="130" width="110" height="60" rx="8" fill="#FDE8F3" stroke="#E7157B" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="315" y="153" text-anchor="middle" font-size="16">🚪</text>
+        <text x="315" y="170" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#E7157B" font-weight="700">API Gateway</text>
+        <text x="315" y="182" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">REST / WebSocket</text>
+
+        <!-- LAMBDA group -->
+        <rect x="400" y="80" width="130" height="200" rx="10" fill="#FFF4E0" stroke="#FF9900" stroke-width="1" stroke-dasharray="5,3"/>
+        <text x="465" y="100" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="700">Lambda Functions</text>
+
+        <rect x="415" y="108" width="100" height="40" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="465" y="124" text-anchor="middle" font-size="12">λ</text>
+        <text x="465" y="138" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">Auth Lambda</text>
+
+        <rect x="415" y="158" width="100" height="40" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="465" y="174" text-anchor="middle" font-size="12">λ</text>
+        <text x="465" y="188" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">Business Lambda</text>
+
+        <rect x="415" y="208" width="100" height="40" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="465" y="224" text-anchor="middle" font-size="12">λ</text>
+        <text x="465" y="238" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">Events Lambda</text>
+
+        <!-- DYNAMODB -->
+        <rect x="570" y="108" width="100" height="60" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="620" y="130" text-anchor="middle" font-size="14">⚡</text>
+        <text x="620" y="148" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">DynamoDB</text>
+        <text x="620" y="160" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">NoSQL</text>
+
+        <!-- SQS -->
+        <rect x="570" y="188" width="100" height="60" rx="8" fill="#FDE8F3" stroke="#E7157B" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="620" y="210" text-anchor="middle" font-size="14">📨</text>
+        <text x="620" y="228" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#E7157B" font-weight="700">SQS</text>
+        <text x="620" y="240" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Queue async</text>
+
+        <!-- S3 -->
+        <rect x="710" y="108" width="100" height="60" rx="8" fill="#EBF5E6" stroke="#3F8624" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="760" y="130" text-anchor="middle" font-size="14">🪣</text>
+        <text x="760" y="148" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#3F8624" font-weight="700">S3</text>
+        <text x="760" y="160" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Assets / Files</text>
+
+        <!-- CloudWatch -->
+        <rect x="710" y="188" width="100" height="60" rx="8" fill="#FDE8F3" stroke="#E7157B" stroke-width="1.5" filter="url(#sh2)"/>
+        <text x="760" y="210" text-anchor="middle" font-size="14">📊</text>
+        <text x="760" y="228" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#E7157B" font-weight="700">CloudWatch</text>
+        <text x="760" y="240" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Logs / Alerts</text>
+
+        <!-- ARROWS -->
+        <line x1="100" y1="160" x2="128" y2="160" stroke="#888780" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="230" y1="160" x2="258" y2="160" stroke="#888780" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="370" y1="160" x2="398" y2="160" stroke="#FF9900" stroke-width="2" marker-end="url(#arrorange2)"/>
+        <line x1="515" y1="128" x2="568" y2="138" stroke="#888780" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="515" y1="178" x2="568" y2="218" stroke="#888780" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="670" y1="138" x2="708" y2="138" stroke="#888780" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="670" y1="218" x2="708" y2="218" stroke="#888780" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+        <!-- Cost note -->
+        <rect x="130" y="260" width="300" height="40" rx="8" fill="#EBF5E6" stroke="#3F8624" stroke-width="1"/>
+        <text x="280" y="277" text-anchor="middle" font-family="Roboto,sans-serif" font-size="11" fill="#3F8624" font-weight="700">💰 Costo = $0 cuando no hay requests</text>
+        <text x="280" y="291" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">Lambda: primer 1M req/mes gratis. Pago por ejecución.</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a2_1')">
+      <span class="acc-badge" style="background:var(--aws-compute-l);color:var(--aws-dark);">Servicios y flujo</span>
+      <div class="acc-name">Cuándo elegir serverless — ventajas y limitaciones</div>
+      <span class="acc-chv" id="achv-a2_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a2_1">
+      <div class="services-grid">
+        <div class="svc-card" style="border-color:#E7157B;"><div class="svc-name" style="color:#E7157B;">API Gateway</div><div class="svc-desc">Punto de entrada único para todas las APIs. Maneja autenticación, throttling (límite de requests por segundo), SSL, transformación de requests/responses y CORS.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">Lambda</div><div class="svc-desc">Función de código que se ejecuta en respuesta a eventos. Sin servidor que gestionar. Escala de 0 a miles de ejecuciones simultáneas en segundos. Tiempo máximo: 15 minutos.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-database);"><div class="svc-name" style="color:var(--aws-database);">DynamoDB</div><div class="svc-desc">NoSQL serverless de latencia milisegundo garantizado. Escala automáticamente. Ideal para serverless porque no tiene conexiones persistentes como RDS.</div></div>
+        <div class="svc-card" style="border-color:#DD344C;"><div class="svc-name" style="color:#DD344C;">Cognito</div><div class="svc-desc">Autenticación y autorización serverless. Gestiona usuarios, tokens JWT, MFA y federación con Google/Microsoft/redes sociales sin código de autenticación propio.</div></div>
+        <div class="svc-card" style="border-color:#E7157B;"><div class="svc-name" style="color:#E7157B;">SQS</div><div class="svc-desc">Cola de mensajes para desacoplar servicios. La Lambda de eventos procesa mensajes de forma asíncrona. Si falla, el mensaje vuelve a la cola automáticamente (retry).</div></div>
+      </div>
+      <div class="note note-orange"><strong>Cuándo NO usar serverless:</strong> Funciones que corren continuamente (websockets persistentes), alto volumen de requests constante (las Reserved Instances serían más baratas), dependencias de librerías muy pesadas (&gt;250MB) o que requieren estado compartido entre ejecuciones.</div>
+    </div>
+  </div>
+</div><!-- /a2 -->
+
+
+<!-- ══════ A3: DATA LAKE ══════ -->
+<div class="arch-section" id="a3">
+  <div class="arch-header">
+    <div class="arch-num">03</div>
+    <div class="arch-title">Data Lake & Analytics — Procesar petabytes sin infraestructura</div>
+    <span class="arch-badge">Analytics · BI · Data Science</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="860" height="280" viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <filter id="sh3"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- SOURCE SYSTEMS -->
+        <rect x="10" y="40" width="110" height="200" rx="10" fill="#F1EFE8" stroke="#e0ded6" stroke-width="1.5"/>
+        <text x="65" y="62" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#888780" font-weight="700">FUENTES</text>
+        <rect x="20" y="70" width="90" height="32" rx="6" fill="#fff" stroke="#e0ded6"/>
+        <text x="65" y="91" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a">📊 RDS/MySQL</text>
+        <rect x="20" y="112" width="90" height="32" rx="6" fill="#fff" stroke="#e0ded6"/>
+        <text x="65" y="133" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a">📡 IoT / Kinesis</text>
+        <rect x="20" y="154" width="90" height="32" rx="6" fill="#fff" stroke="#e0ded6"/>
+        <text x="65" y="175" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a">📁 Logs / CSV</text>
+        <rect x="20" y="196" width="90" height="32" rx="6" fill="#fff" stroke="#e0ded6"/>
+        <text x="65" y="217" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a">🔗 APIs externas</text>
+
+        <!-- INGEST -->
+        <rect x="150" y="110" width="100" height="60" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh3)"/>
+        <text x="200" y="132" text-anchor="middle" font-size="14">🌊</text>
+        <text x="200" y="150" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">Kinesis</text>
+        <text x="200" y="162" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Stream / Firehose</text>
+
+        <!-- S3 DATA LAKE -->
+        <rect x="285" y="40" width="130" height="200" rx="10" fill="#EBF5E6" stroke="#3F8624" stroke-width="2"/>
+        <text x="350" y="65" text-anchor="middle" font-family="Roboto,sans-serif" font-size="11" fill="#3F8624" font-weight="700">S3 Data Lake</text>
+        <rect x="295" y="74" width="110" height="28" rx="5" fill="#fff" stroke="#3F8624" stroke-width="1"/>
+        <text x="350" y="93" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">🗂 /raw (datos crudos)</text>
+        <rect x="295" y="110" width="110" height="28" rx="5" fill="#fff" stroke="#3F8624" stroke-width="1"/>
+        <text x="350" y="129" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">🔧 /processed (limpio)</text>
+        <rect x="295" y="146" width="110" height="28" rx="5" fill="#fff" stroke="#3F8624" stroke-width="1"/>
+        <text x="350" y="165" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">✅ /curated (final)</text>
+        <rect x="295" y="182" width="110" height="28" rx="5" fill="#fff" stroke="#3F8624" stroke-width="1"/>
+        <text x="350" y="201" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">🗜 Glacier (archivo)</text>
+
+        <!-- GLUE -->
+        <rect x="445" y="70" width="100" height="60" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh3)"/>
+        <text x="495" y="92" text-anchor="middle" font-size="14">🔧</text>
+        <text x="495" y="110" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">AWS Glue</text>
+        <text x="495" y="122" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">ETL Serverless</text>
+
+        <!-- ATHENA -->
+        <rect x="445" y="155" width="100" height="60" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh3)"/>
+        <text x="495" y="177" text-anchor="middle" font-size="14">🔍</text>
+        <text x="495" y="195" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">Athena</text>
+        <text x="495" y="207" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">SQL sobre S3</text>
+
+        <!-- REDSHIFT -->
+        <rect x="580" y="70" width="110" height="60" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" filter="url(#sh3)"/>
+        <text x="635" y="92" text-anchor="middle" font-size="14">🗃</text>
+        <text x="635" y="110" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">Redshift</text>
+        <text x="635" y="122" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Data Warehouse</text>
+
+        <!-- QUICKSIGHT -->
+        <rect x="580" y="155" width="110" height="60" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh3)"/>
+        <text x="635" y="177" text-anchor="middle" font-size="14">📈</text>
+        <text x="635" y="195" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">QuickSight</text>
+        <text x="635" y="207" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">BI / Dashboards</text>
+
+        <!-- SAGEMAKER -->
+        <rect x="730" y="70" width="110" height="60" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh3)"/>
+        <text x="785" y="92" text-anchor="middle" font-size="14">🤖</text>
+        <text x="785" y="110" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">SageMaker</text>
+        <text x="785" y="122" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">ML Training</text>
+
+        <!-- ARROWS -->
+        <line x1="120" y1="140" x2="148" y2="140" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <line x1="250" y1="140" x2="283" y2="140" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <line x1="415" y1="100" x2="443" y2="100" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <line x1="415" y1="185" x2="443" y2="185" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <line x1="545" y1="100" x2="578" y2="100" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <line x1="545" y1="185" x2="578" y2="185" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+        <line x1="690" y1="100" x2="728" y2="100" stroke="#888780" stroke-width="1.5" marker-end="url(#arr3)"/>
+
+        <!-- Flow label -->
+        <text x="65" y="255" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Ingesta</text>
+        <text x="200" y="255" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Stream</text>
+        <text x="350" y="255" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="600">Storage</text>
+        <text x="495" y="255" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Transform</text>
+        <text x="635" y="255" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Analyze</text>
+        <text x="785" y="255" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">ML</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a3_1')">
+      <span class="acc-badge" style="background:var(--aws-analytics-l);color:var(--aws-teal);">Detalle de servicios</span>
+      <div class="acc-name">Las 4 zonas del Data Lake y cuándo usar Athena vs. Redshift</div>
+      <span class="acc-chv" id="achv-a3_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a3_1">
+      <div class="services-grid">
+        <div class="svc-card" style="border-color:var(--aws-analytics);"><div class="svc-name" style="color:var(--aws-analytics);">Kinesis Data Firehose</div><div class="svc-desc">Ingestión en tiempo real de streams de datos (IoT, logs, clicks) directamente a S3, Redshift o Elasticsearch. Serverless, escala automáticamente.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-storage);"><div class="svc-name" style="color:var(--aws-storage);">S3 (Data Lake)</div><div class="svc-desc">El lago de datos central. Organizado en zonas: raw (datos crudos sin procesar), processed (limpios), curated (listos para análisis), archive (Glacier para datos históricos).</div></div>
+        <div class="svc-card" style="border-color:var(--aws-analytics);"><div class="svc-name" style="color:var(--aws-analytics);">AWS Glue</div><div class="svc-desc">ETL serverless basado en Spark. Crawlers que descubren el esquema automáticamente. Transforma datos de /raw a /processed. Data Catalog: el catálogo de metadatos del lake.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-analytics);"><div class="svc-name" style="color:var(--aws-analytics);">Athena</div><div class="svc-desc">SQL sobre S3 sin servidor. Pago por query ($5/TB procesado). Ideal para análisis ad-hoc y equipos de Data Science. No requiere aprovisionar infraestructura.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-database);"><div class="svc-name" style="color:var(--aws-database);">Redshift</div><div class="svc-desc">Data Warehouse para queries SQL complejos sobre petabytes. Mejor para reportes predefinidos y alto volumen de usuarios de BI. Serverless disponible desde 2022.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-analytics);"><div class="svc-name" style="color:var(--aws-analytics);">QuickSight</div><div class="svc-desc">BI serverless nativo AWS. Dashboards interactivos conectados a Athena, Redshift, S3, RDS. SPICE: motor de cálculo en memoria para respuestas instantáneas.</div></div>
+      </div>
+      <div class="note note-orange"><strong>Athena vs. Redshift:</strong> Athena si el equipo hace consultas ad-hoc esporádicas y el volumen varía mucho ($0 cuando no se usa). Redshift si hay un equipo grande de analistas con consultas predefinidas y recurrentes sobre mismos datasets (mejor precio a alto uso continuo).</div>
+    </div>
+  </div>
+</div><!-- /a3 -->
+
+
+<!-- ══════ A4: MICROSERVICIOS EKS ══════ -->
+<div class="arch-section" id="a4">
+  <div class="arch-header">
+    <div class="arch-num">04</div>
+    <div class="arch-title">Microservicios con Kubernetes (EKS)</div>
+    <span class="arch-badge">Aplicaciones complejas · DevOps maduro</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="860" height="360" viewBox="0 0 860 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <filter id="sh4"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- Internet + WAF + ALB -->
+        <rect x="10" y="145" width="90" height="60" rx="10" fill="#F1EFE8" stroke="#e0ded6" stroke-width="1.5"/>
+        <text x="55" y="167" text-anchor="middle" font-size="16">🌐</text>
+        <text x="55" y="184" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a" font-weight="600">Internet</text>
+        <text x="55" y="196" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Usuarios</text>
+
+        <rect x="126" y="145" width="100" height="60" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5" filter="url(#sh4)"/>
+        <text x="176" y="167" text-anchor="middle" font-size="14">⚖️</text>
+        <text x="176" y="184" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#8C4FFF" font-weight="700">ALB Ingress</text>
+        <text x="176" y="196" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">K8s Ingress Ctrl</text>
+
+        <!-- EKS CLUSTER -->
+        <rect x="252" y="30" width="460" height="300" rx="12" fill="none" stroke="#FF9900" stroke-width="2" stroke-dasharray="8,4"/>
+        <text x="270" y="52" font-family="Roboto,sans-serif" font-size="11" fill="#FF9900" font-weight="700">EKS Cluster (Kubernetes)</text>
+
+        <!-- Control Plane badge -->
+        <rect x="560" y="36" width="140" height="20" rx="10" fill="#FF9900"/>
+        <text x="630" y="50" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#fff" font-weight="700">Control Plane (gestionado por AWS)</text>
+
+        <!-- NAMESPACE: frontend -->
+        <rect x="264" y="60" width="200" height="90" rx="8" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="276" y="78" font-family="Roboto,sans-serif" font-size="9" fill="#8C4FFF" font-weight="600">ns: frontend</text>
+        <rect x="274" y="84" width="80" height="55" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="314" y="104" text-anchor="middle" font-size="12">📦</text>
+        <text x="314" y="120" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">web-pod</text>
+        <text x="314" y="130" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">x3 réplicas</text>
+        <rect x="368" y="84" width="80" height="55" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="408" y="104" text-anchor="middle" font-size="12">📦</text>
+        <text x="408" y="120" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">admin-pod</text>
+        <text x="408" y="130" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">x2 réplicas</text>
+
+        <!-- NAMESPACE: api -->
+        <rect x="264" y="165" width="200" height="90" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="276" y="183" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">ns: api-services</text>
+        <rect x="274" y="188" width="75" height="55" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="312" y="208" text-anchor="middle" font-size="11">λ</text>
+        <text x="312" y="224" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">auth-svc</text>
+        <rect x="357" y="188" width="75" height="55" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="395" y="208" text-anchor="middle" font-size="11">λ</text>
+        <text x="395" y="224" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">order-svc</text>
+
+        <!-- NAMESPACE: workers -->
+        <rect x="264" y="270" width="200" height="50" rx="8" fill="#E8FFE0" stroke="#3F8624" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="276" y="288" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="600">ns: workers (Fargate Spot)</text>
+        <rect x="274" y="294" width="80" height="20" rx="4" fill="#EBF5E6" stroke="#3F8624"/>
+        <text x="314" y="308" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#3F8624">batch-jobs 💰 Spot -70%</text>
+
+        <!-- NODE GROUPS -->
+        <rect x="478" y="60" width="220" height="110" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="490" y="78" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">Worker Nodes (EC2 — Managed Node Group)</text>
+        <rect x="488" y="85" width="90" height="70" rx="6" fill="#fff" stroke="#FF9900"/>
+        <text x="533" y="105" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a" font-weight="600">Node 1</text>
+        <text x="533" y="120" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">m5.xlarge</text>
+        <text x="533" y="132" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">4vCPU / 16GB</text>
+        <text x="533" y="144" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">3 pods corriendo</text>
+        <rect x="588" y="85" width="90" height="70" rx="6" fill="#fff" stroke="#FF9900"/>
+        <text x="633" y="105" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a" font-weight="600">Node 2</text>
+        <text x="633" y="120" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">m5.xlarge</text>
+        <text x="633" y="132" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">4vCPU / 16GB</text>
+        <text x="633" y="144" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">4 pods corriendo</text>
+
+        <!-- ECR -->
+        <rect x="478" y="185" width="100" height="55" rx="8" fill="#EBF5E6" stroke="#3F8624" stroke-width="1.5" filter="url(#sh4)"/>
+        <text x="528" y="205" text-anchor="middle" font-size="12">📦</text>
+        <text x="528" y="222" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#3F8624" font-weight="700">ECR</text>
+        <text x="528" y="233" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Container Registry</text>
+
+        <!-- EXTERNAL SERVICES -->
+        <rect x="736" y="80" width="110" height="55" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" filter="url(#sh4)"/>
+        <text x="791" y="100" text-anchor="middle" font-size="12">🗄</text>
+        <text x="791" y="118" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">RDS Aurora</text>
+        <text x="791" y="128" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">PostgreSQL</text>
+
+        <rect x="736" y="155" width="110" height="55" rx="8" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5" filter="url(#sh4)"/>
+        <text x="791" y="175" text-anchor="middle" font-size="12">⚡</text>
+        <text x="791" y="193" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#2E73B8" font-weight="700">ElastiCache</text>
+        <text x="791" y="203" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Redis</text>
+
+        <rect x="736" y="230" width="110" height="55" rx="8" fill="#FDE8F3" stroke="#E7157B" stroke-width="1.5" filter="url(#sh4)"/>
+        <text x="791" y="250" text-anchor="middle" font-size="12">📨</text>
+        <text x="791" y="268" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#E7157B" font-weight="700">SQS/SNS</text>
+        <text x="791" y="278" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Mensajería</text>
+
+        <!-- ARROWS -->
+        <line x1="100" y1="175" x2="124" y2="175" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+        <line x1="226" y1="175" x2="250" y2="175" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+        <line x1="464" y1="100" x2="476" y2="100" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+        <line x1="714" y1="107" x2="734" y2="107" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+        <line x1="464" y1="210" x2="476" y2="210" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+        <line x1="578" y1="210" x2="734" y2="175" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+        <line x1="578" y1="220" x2="734" y2="252" stroke="#888780" stroke-width="1.5" marker-end="url(#arr4)"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a4_1')">
+      <span class="acc-badge" style="background:var(--aws-compute-l);color:var(--aws-dark);">Conceptos K8s clave</span>
+      <div class="acc-name">Pods, namespaces, Ingress, node groups — la terminología que hay que manejar</div>
+      <span class="acc-chv" id="achv-a4_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a4_1">
+      <div class="services-grid">
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">Pod</div><div class="svc-desc">Unidad mínima de K8s. Uno o más contenedores que comparten red y storage. Si un pod falla, K8s crea uno nuevo automáticamente en el nodo más disponible.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">Namespace</div><div class="svc-desc">Partición lógica del cluster. Permite tener múltiples entornos (frontend, api, workers) o equipos aislados en el mismo cluster físico, con sus propias políticas de recursos.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-network);"><div class="svc-name" style="color:var(--aws-network);">ALB Ingress Controller</div><div class="svc-desc">Integración nativa AWS. Crea automáticamente un Application Load Balancer en AWS por cada Ingress definido en K8s. Sin configuración manual del ALB.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-storage);"><div class="svc-name" style="color:var(--aws-storage);">ECR</div><div class="svc-desc">Elastic Container Registry. Repositorio privado de imágenes Docker integrado con IAM. Los nodos de EKS pullan imágenes de ECR sin credenciales adicionales.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">Fargate Spot</div><div class="svc-desc">Serverless containers con descuento de hasta 70%. Para workers y batch jobs tolerantes a interrupciones. Sin gestión de nodos EC2 en ese namespace.</div></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /a4 -->
+
+
+<!-- ══════ A5: HYBRID CLOUD ══════ -->
+<div class="arch-section" id="a5">
+  <div class="arch-header">
+    <div class="arch-num">05</div>
+    <div class="arch-title">Hybrid Cloud — On-Premise conectado a AWS</div>
+    <span class="arch-badge">Enterprise · BCRA · Dato soberano</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="860" height="300" viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <marker id="arr5b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF9900"/></marker>
+          <filter id="sh5"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- ON-PREMISE -->
+        <rect x="10" y="20" width="230" height="260" rx="12" fill="#F1EFE8" stroke="#2C1A00" stroke-width="2" stroke-dasharray="6,4"/>
+        <text x="28" y="42" font-family="Roboto,sans-serif" font-size="11" fill="#2C1A00" font-weight="700">🏢 On-Premise (Datacenter propio)</text>
+
+        <rect x="24" y="52" width="95" height="55" rx="8" fill="#fff" stroke="#e0ded6" filter="url(#sh5)"/>
+        <text x="72" y="72" text-anchor="middle" font-size="14">🖥</text>
+        <text x="72" y="90" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" font-weight="600">Core ERP</text>
+        <text x="72" y="101" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">SAP On-prem</text>
+
+        <rect x="130" y="52" width="95" height="55" rx="8" fill="#fff" stroke="#e0ded6" filter="url(#sh5)"/>
+        <text x="178" y="72" text-anchor="middle" font-size="14">🗄</text>
+        <text x="178" y="90" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" font-weight="600">Oracle DB</text>
+        <text x="178" y="101" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Datos core</text>
+
+        <rect x="24" y="120" width="95" height="55" rx="8" fill="#fff" stroke="#e0ded6" filter="url(#sh5)"/>
+        <text x="72" y="140" text-anchor="middle" font-size="14">🔒</text>
+        <text x="72" y="158" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" font-weight="600">Active Dir.</text>
+        <text x="72" y="169" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">LDAP / AD</text>
+
+        <rect x="130" y="120" width="95" height="55" rx="8" fill="#fff" stroke="#e0ded6" filter="url(#sh5)"/>
+        <text x="178" y="140" text-anchor="middle" font-size="14">🌐</text>
+        <text x="178" y="158" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" font-weight="600">DNS Interno</text>
+        <text x="178" y="169" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Split horizon</text>
+
+        <!-- CUSTOMER GW badge -->
+        <rect x="80" y="192" width="100" height="40" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="130" y="208" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="700">Customer GW</text>
+        <text x="130" y="222" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Router / Firewall</text>
+
+        <!-- CONNECTIVITY LAYER -->
+        <rect x="270" y="100" width="200" height="100" rx="12" fill="#232F3E" stroke="#FF9900" stroke-width="2"/>
+        <text x="370" y="122" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="rgba(255,255,255,.6)" font-weight="700">CONECTIVIDAD PRIVADA</text>
+        <rect x="284" y="130" width="78" height="50" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="323" y="150" text-anchor="middle" font-size="11">🔗</text>
+        <text x="323" y="165" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="700">Direct Connect</text>
+        <rect x="374" y="130" width="78" height="50" rx="6" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5"/>
+        <text x="413" y="150" text-anchor="middle" font-size="11">🛡</text>
+        <text x="413" y="165" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#8C4FFF" font-weight="700">VPN Site-Site</text>
+        <text x="413" y="175" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">(backup)</text>
+
+        <!-- AWS VPC -->
+        <rect x="500" y="20" width="350" height="260" rx="12" fill="none" stroke="#8C4FFF" stroke-width="2" stroke-dasharray="8,5"/>
+        <text x="516" y="42" font-family="Roboto,sans-serif" font-size="11" fill="#8C4FFF" font-weight="700">AWS VPC — 10.1.0.0/16</text>
+
+        <!-- TGW -->
+        <rect x="514" y="120" width="90" height="60" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#sh5)"/>
+        <text x="559" y="142" text-anchor="middle" font-size="13">🔀</text>
+        <text x="559" y="158" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="700">Transit GW</text>
+        <text x="559" y="170" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">Hub de redes</text>
+
+        <!-- Private subnets -->
+        <rect x="624" y="55" width="110" height="60" rx="8" fill="#E8EEFF" stroke="#8C4FFF" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="636" y="72" font-family="Roboto,sans-serif" font-size="8" fill="#8C4FFF">Subnet Privada</text>
+        <rect x="633" y="78" width="90" height="30" rx="6" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5"/>
+        <text x="678" y="97" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="600">🖥 EC2 (extensión)</text>
+
+        <rect x="624" y="135" width="110" height="60" rx="8" fill="#E8EEFF" stroke="#8C4FFF" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="636" y="152" font-family="Roboto,sans-serif" font-size="8" fill="#8C4FFF">Subnet Privada</text>
+        <rect x="633" y="158" width="90" height="30" rx="6" fill="#E8F0FB" stroke="#2E73B8" stroke-width="1.5"/>
+        <text x="678" y="177" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#2E73B8" font-weight="600">🗄 RDS (nueva app)</text>
+
+        <!-- AD Connector -->
+        <rect x="624" y="215" width="110" height="50" rx="8" fill="#FDEAEC" stroke="#DD344C" stroke-width="1.5" filter="url(#sh5)"/>
+        <text x="679" y="235" text-anchor="middle" font-size="11">🔐</text>
+        <text x="679" y="250" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#DD344C" font-weight="700">AD Connector</text>
+        <text x="679" y="260" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">Federa AD on-prem</text>
+
+        <!-- S3 + Glacier -->
+        <rect x="750" y="80" width="88" height="50" rx="8" fill="#EBF5E6" stroke="#3F8624" stroke-width="1.5" filter="url(#sh5)"/>
+        <text x="794" y="100" text-anchor="middle" font-size="12">🪣</text>
+        <text x="794" y="117" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="700">S3 + Glacier</text>
+        <text x="794" y="127" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">Backup offsite</text>
+
+        <!-- AWS Managed AD -->
+        <rect x="750" y="150" width="88" height="50" rx="8" fill="#FDEAEC" stroke="#DD344C" stroke-width="1.5" filter="url(#sh5)"/>
+        <text x="794" y="170" text-anchor="middle" font-size="12">👥</text>
+        <text x="794" y="188" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#DD344C" font-weight="700">AWS Managed AD</text>
+        <text x="794" y="198" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">Directorio cloud</text>
+
+        <!-- ARROWS -->
+        <line x1="130" y1="212" x2="268" y2="155" stroke="#FF9900" stroke-width="2" marker-end="url(#arr5b)"/>
+        <line x1="178" y1="212" x2="270" y2="162" stroke="#FF9900" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr5b)"/>
+        <line x1="470" y1="150" x2="512" y2="150" stroke="#FF9900" stroke-width="2" marker-end="url(#arr5b)"/>
+        <line x1="604" y1="150" x2="622" y2="150" stroke="#888780" stroke-width="1.5" marker-end="url(#arr5)"/>
+        <line x1="604" y1="155" x2="622" y2="165" stroke="#888780" stroke-width="1.5" marker-end="url(#arr5)"/>
+        <line x1="604" y1="160" x2="622" y2="240" stroke="#888780" stroke-width="1.5" marker-end="url(#arr5)"/>
+        <line x1="734" y1="85" x2="748" y2="85" stroke="#888780" stroke-width="1.5" marker-end="url(#arr5)"/>
+        <line x1="734" y1="165" x2="748" y2="165" stroke="#888780" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+        <!-- latency label -->
+        <rect x="270" y="212" width="200" height="28" rx="6" fill="#232F3E"/>
+        <text x="370" y="230" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="700">🔒 Tráfico NUNCA toca internet público</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a5_1')">
+      <span class="acc-badge" style="background:var(--aws-network-l);color:var(--aws-dark);">Servicios de conectividad híbrida</span>
+      <div class="acc-name">Direct Connect vs. VPN · Transit Gateway · AD Connector — las piezas del híbrido</div>
+      <span class="acc-chv" id="achv-a5_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a5_1">
+      <div class="services-grid">
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">AWS Direct Connect</div><div class="svc-desc">Circuito dedicado de 1–100 Gbps entre el datacenter y AWS. Latencia predecible, sin variabilidad de internet. Personal Tech es partner certificado — provisiona el circuito desde Argentina.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-network);"><div class="svc-name" style="color:var(--aws-network);">VPN Site-to-Site (backup)</div><div class="svc-desc">Túnel IPSec sobre internet como backup del Direct Connect. Si el circuito falla, el tráfico conmuta automáticamente a la VPN. Mayor latencia pero garantiza continuidad.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">Transit Gateway</div><div class="svc-desc">Hub central que conecta múltiples VPCs, Direct Connect y VPN en una sola entidad gestionada. Sin Transit Gateway, cada VPC necesita peering individual con cada otra — exponencialmente complejo.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-security);"><div class="svc-name" style="color:var(--aws-security);">AD Connector</div><div class="svc-desc">Proxy que redirige las solicitudes de directorio de AWS al Active Directory on-premise. Los usuarios usan las mismas credenciales corporativas para acceder a recursos en AWS.</div></div>
+      </div>
+      <div class="note note-blue"><strong>Caso Personal Tech:</strong> Personal Tech puede ser el proveedor del circuito Direct Connect, el cloud privado soberano (Pacheco) y la conectividad a AWS — todo en un solo contrato. El cliente no necesita hablar con AWS, con la telco y con un ISP por separado.</div>
+    </div>
+  </div>
+</div><!-- /a5 -->
+
+
+<!-- ══════ A6: DR MULTI-REGIÓN ══════ -->
+<div class="arch-section" id="a6">
+  <div class="arch-header">
+    <div class="arch-num">06</div>
+    <div class="arch-title">Disaster Recovery — Estrategias por RTO/RPO</div>
+    <span class="arch-badge">BCRA · Continuidad del negocio · SLA</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="860" height="290" viewBox="0 0 860 290" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr6" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <marker id="arr6r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#DD344C"/></marker>
+          <filter id="sh6"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- HEADER LABELS -->
+        <text x="150" y="18" text-anchor="middle" font-family="Roboto,sans-serif" font-size="11" fill="#888780" font-weight="700">ESTRATEGIA DR</text>
+        <text x="370" y="18" text-anchor="middle" font-family="Roboto,sans-serif" font-size="11" fill="#888780" font-weight="700">RTO / RPO</text>
+        <text x="590" y="18" text-anchor="middle" font-family="Roboto,sans-serif" font-size="11" fill="#888780" font-weight="700">ARQUITECTURA</text>
+        <text x="790" y="18" text-anchor="middle" font-family="Roboto,sans-serif" font-size="11" fill="#888780" font-weight="700">COSTO RELATIVO</text>
+        <line x1="10" y1="22" x2="850" y2="22" stroke="#e0ded6" stroke-width="1"/>
+
+        <!-- ROW 1: BACKUP & RESTORE -->
+        <rect x="10" y="30" width="840" height="55" rx="6" fill="#F1EFE8" stroke="#e0ded6"/>
+        <text x="26" y="50" font-family="Roboto,sans-serif" font-size="11" fill="#5f5e5a" font-weight="700">🗄 Backup &amp; Restore</text>
+        <text x="26" y="65" font-family="Roboto,sans-serif" font-size="10" fill="#888780">Backups en S3 / Glacier. Restaurar ante desastre.</text>
+        <text x="280" y="53" font-family="Roboto,sans-serif" font-size="12" fill="#DD344C" font-weight="700">RTO: horas — días</text>
+        <text x="280" y="70" font-family="Roboto,sans-serif" font-size="11" fill="#888780">RPO: 24 horas (1 backup/día)</text>
+        <!-- mini diagram -->
+        <rect x="490" y="35" width="55" height="36" rx="5" fill="#FFF4E0" stroke="#FF9900"/>
+        <text x="518" y="55" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900">🖥 Prod</text>
+        <line x1="545" y1="53" x2="558" y2="53" stroke="#888780" stroke-width="1.5" marker-end="url(#arr6)"/>
+        <rect x="558" y="35" width="55" height="36" rx="5" fill="#EBF5E6" stroke="#3F8624"/>
+        <text x="585" y="55" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624">🪣 S3</text>
+        <text x="640" y="50" font-family="Roboto,sans-serif" font-size="9" fill="#888780">→ Restore manual</text>
+        <!-- cost -->
+        <rect x="740" y="40" width="50" height="16" rx="8" fill="#E1F5EE"/><text x="765" y="52" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#085041" font-weight="700">$ bajo</text>
+
+        <!-- ROW 2: PILOT LIGHT -->
+        <rect x="10" y="90" width="840" height="55" rx="6" fill="#F1EFE8" stroke="#e0ded6"/>
+        <text x="26" y="110" font-family="Roboto,sans-serif" font-size="11" fill="#5f5e5a" font-weight="700">💡 Pilot Light</text>
+        <text x="26" y="125" font-family="Roboto,sans-serif" font-size="10" fill="#888780">Core mínimo encendido en DR. Se escala ante desastre.</text>
+        <text x="280" y="113" font-family="Roboto,sans-serif" font-size="12" fill="#BA7517" font-weight="700">RTO: decenas de minutos</text>
+        <text x="280" y="130" font-family="Roboto,sans-serif" font-size="11" fill="#888780">RPO: minutos (replicación continua)</text>
+        <rect x="490" y="95" width="55" height="36" rx="5" fill="#FFF4E0" stroke="#FF9900"/>
+        <text x="518" y="115" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900">🖥 Prod</text>
+        <line x1="545" y1="113" x2="558" y2="113" stroke="#DD344C" stroke-width="1.5" marker-end="url(#arr6r)"/>
+        <rect x="558" y="95" width="55" height="36" rx="5" fill="#FDEAEC" stroke="#DD344C" stroke-dasharray="3,2"/>
+        <text x="585" y="107" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#DD344C">🖥 DR</text>
+        <text x="585" y="120" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">apagado</text>
+        <text x="640" y="110" font-family="Roboto,sans-serif" font-size="9" fill="#888780">+ RDS Replica encendida</text>
+        <rect x="740" y="100" width="60" height="16" rx="8" fill="#FAEEDA"/><text x="770" y="112" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#633806" font-weight="700">$$ medio</text>
+
+        <!-- ROW 3: WARM STANDBY -->
+        <rect x="10" y="150" width="840" height="55" rx="6" fill="#F1EFE8" stroke="#e0ded6"/>
+        <text x="26" y="170" font-family="Roboto,sans-serif" font-size="11" fill="#5f5e5a" font-weight="700">🔥 Warm Standby</text>
+        <text x="26" y="185" font-family="Roboto,sans-serif" font-size="10" fill="#888780">Sistema reducido corriendo en DR. Se escala a full ante desastre.</text>
+        <text x="280" y="173" font-family="Roboto,sans-serif" font-size="12" fill="#BA7517" font-weight="700">RTO: minutos</text>
+        <text x="280" y="190" font-family="Roboto,sans-serif" font-size="11" fill="#888780">RPO: segundos (replicación sync)</text>
+        <rect x="490" y="155" width="55" height="36" rx="5" fill="#FFF4E0" stroke="#FF9900"/>
+        <text x="518" y="175" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900">🖥 Prod</text>
+        <line x1="545" y1="173" x2="558" y2="173" stroke="#DD344C" stroke-width="1.5" marker-end="url(#arr6r)"/>
+        <rect x="558" y="155" width="55" height="36" rx="5" fill="#FDEAEC" stroke="#DD344C"/>
+        <text x="585" y="169" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#DD344C">🖥 DR</text>
+        <text x="585" y="182" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">reducido</text>
+        <text x="640" y="170" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Misma app, menos instancias</text>
+        <rect x="740" y="160" width="70" height="16" rx="8" fill="#FAEEDA"/><text x="775" y="172" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#633806" font-weight="700">$$$ medio-alto</text>
+
+        <!-- ROW 4: ACTIVE-ACTIVE -->
+        <rect x="10" y="210" width="840" height="65" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+        <text x="26" y="232" font-family="Roboto,sans-serif" font-size="11" fill="#085041" font-weight="700">⚡ Multi-Site Active-Active</text>
+        <text x="26" y="247" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a">Dos regiones activas simultáneamente. Route 53 balancea el tráfico.</text>
+        <text x="26" y="261" font-family="Roboto,sans-serif" font-size="10" fill="#5f5e5a">Sin failover — las dos corren siempre. Si una falla, la otra absorbe todo.</text>
+        <text x="280" y="232" font-family="Roboto,sans-serif" font-size="13" fill="#085041" font-weight="700">RTO: 0 (sin failover)</text>
+        <text x="280" y="252" font-family="Roboto,sans-serif" font-size="11" fill="#5f5e5a">RPO: 0 (replicación sync)</text>
+        <rect x="490" y="218" width="55" height="36" rx="5" fill="#FFF4E0" stroke="#FF9900"/>
+        <text x="518" y="240" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900">🖥 SA-EAST</text>
+        <line x1="545" y1="236" x2="558" y2="236" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr6)"/>
+        <rect x="558" y="218" width="55" height="36" rx="5" fill="#FFF4E0" stroke="#FF9900"/>
+        <text x="585" y="240" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900">🖥 US-EAST</text>
+        <text x="640" y="230" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">Aurora Global + R53 Latency</text>
+        <rect x="740" y="225" width="90" height="16" rx="8" fill="#FAEEDA"/><text x="785" y="237" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#633806" font-weight="700">$$$$ máximo</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a6_1')">
+      <span class="acc-badge" style="background:var(--aws-security-l);color:var(--aws-security);">Servicios clave de DR</span>
+      <div class="acc-name">AWS Backup · Aurora Global · Route 53 failover · S3 Cross-Region Replication</div>
+      <span class="acc-chv" id="achv-a6_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a6_1">
+      <div class="services-grid">
+        <div class="svc-card" style="border-color:var(--aws-compute);"><div class="svc-name" style="color:var(--aws-compute);">AWS Backup</div><div class="svc-desc">Servicio centralizado para gestionar backups de EC2, RDS, EFS, DynamoDB y más. Políticas de retención, cifrado automático y copias cross-region en un solo lugar.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-database);"><div class="svc-name" style="color:var(--aws-database);">Aurora Global Database</div><div class="svc-desc">Replicación física de Aurora entre regiones con RPO &lt;1 segundo y RTO &lt;1 minuto. La región secundaria puede promovida a primaria en caso de desastre.</div></div>
+        <div class="svc-card" style="border-color:var(--aws-network);"><div class="svc-name" style="color:var(--aws-network);">Route 53 Health Checks</div><div class="svc-desc">Monitorea la salud del endpoint primario y redirige automáticamente el DNS a la región DR si el primario falla. Tiempo de failover: 60–120 segundos (TTL del DNS).</div></div>
+        <div class="svc-card" style="border-color:var(--aws-storage);"><div class="svc-name" style="color:var(--aws-storage);">S3 Cross-Region Replication</div><div class="svc-desc">Replica automáticamente cada objeto subido a S3 en otra región. Asegura que los backups y assets estén disponibles aunque una región entera caiga.</div></div>
+      </div>
+      <div class="note note-orange"><strong>Para clientes regulados (BCRA):</strong> La normativa exige RTO y RPO documentados con prueba semestral. Personal Tech puede proveer el sitio DR (Hornos como secundario de Pacheco) + documentación para la auditoría. Sin necesidad de que el cliente construya su propio site DR.</div>
+    </div>
+  </div>
+</div><!-- /a6 -->
+
+
+<!-- ══════ A7: ML PIPELINE ══════ -->
+<div class="arch-section" id="a7">
+  <div class="arch-header">
+    <div class="arch-num">07</div>
+    <div class="arch-title">Pipeline de Machine Learning — De datos crudos a modelo en producción</div>
+    <span class="arch-badge">IA Generativa · MLOps · SageMaker</span>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-scroll">
+      <svg width="860" height="260" viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr7" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888780"/></marker>
+          <marker id="arr7t" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#01A88D"/></marker>
+          <filter id="sh7"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/></filter>
+        </defs>
+
+        <!-- PHASE LABELS -->
+        <rect x="10" y="10" width="110" height="22" rx="5" fill="#F1EFE8"/>
+        <text x="65" y="25" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780" font-weight="700">① DATOS</text>
+        <rect x="140" y="10" width="110" height="22" rx="5" fill="#EBF5E6"/>
+        <text x="195" y="25" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="700">② PREPARACIÓN</text>
+        <rect x="270" y="10" width="200" height="22" rx="5" fill="#E0F7F4"/>
+        <text x="370" y="25" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#01A88D" font-weight="700">③ ENTRENAMIENTO (SageMaker)</text>
+        <rect x="490" y="10" width="130" height="22" rx="5" fill="#E0F7F4"/>
+        <text x="555" y="25" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#01A88D" font-weight="700">④ EVALUACIÓN</text>
+        <rect x="640" y="10" width="100" height="22" rx="5" fill="#FFF4E0"/>
+        <text x="690" y="25" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#FF9900" font-weight="700">⑤ DEPLOY</text>
+        <rect x="760" y="10" width="90" height="22" rx="5" fill="#F2EEFF"/>
+        <text x="805" y="25" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#8C4FFF" font-weight="700">⑥ CONSUMO</text>
+
+        <!-- S3 RAW -->
+        <rect x="10" y="50" width="110" height="160" rx="10" fill="#EBF5E6" stroke="#3F8624" stroke-width="1.5"/>
+        <text x="65" y="72" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#3F8624" font-weight="700">S3 Data Lake</text>
+        <rect x="20" y="80" width="90" height="28" rx="5" fill="#fff" stroke="#3F8624"/>
+        <text x="65" y="98" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">📂 /raw</text>
+        <rect x="20" y="116" width="90" height="28" rx="5" fill="#fff" stroke="#3F8624"/>
+        <text x="65" y="134" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">🔧 /processed</text>
+        <rect x="20" y="152" width="90" height="28" rx="5" fill="#fff" stroke="#3F8624"/>
+        <text x="65" y="170" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#5f5e5a">🏷 /training</text>
+
+        <!-- GLUE + FEATURE STORE -->
+        <rect x="140" y="50" width="110" height="75" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh7)"/>
+        <text x="195" y="70" text-anchor="middle" font-size="14">🔧</text>
+        <text x="195" y="88" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">AWS Glue</text>
+        <text x="195" y="100" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">ETL / limpieza</text>
+        <text x="195" y="113" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">normalización</text>
+
+        <rect x="140" y="135" width="110" height="55" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh7)"/>
+        <text x="195" y="155" text-anchor="middle" font-size="12">🏪</text>
+        <text x="195" y="172" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">Feature Store</text>
+        <text x="195" y="184" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Features reutilizables</text>
+
+        <!-- SAGEMAKER -->
+        <rect x="270" y="50" width="200" height="160" rx="10" fill="#E0F7F4" stroke="#01A88D" stroke-width="2"/>
+        <text x="370" y="70" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">SageMaker</text>
+
+        <rect x="280" y="78" width="85" height="38" rx="6" fill="#fff" stroke="#01A88D"/>
+        <text x="322" y="94" text-anchor="middle" font-size="10">📓</text>
+        <text x="322" y="108" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#5f5e5a">Notebooks</text>
+
+        <rect x="375" y="78" width="85" height="38" rx="6" fill="#fff" stroke="#01A88D"/>
+        <text x="418" y="94" text-anchor="middle" font-size="10">🎓</text>
+        <text x="418" y="108" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#5f5e5a">Training Jobs</text>
+
+        <rect x="280" y="128" width="85" height="38" rx="6" fill="#fff" stroke="#01A88D"/>
+        <text x="322" y="144" text-anchor="middle" font-size="10">🔄</text>
+        <text x="322" y="158" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#5f5e5a">Pipelines</text>
+
+        <rect x="375" y="128" width="85" height="38" rx="6" fill="#fff" stroke="#01A88D"/>
+        <text x="418" y="144" text-anchor="middle" font-size="10">📦</text>
+        <text x="418" y="158" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#5f5e5a">Model Registry</text>
+
+        <text x="370" y="200" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">GPU: ml.p4d.24xlarge (8×A100)</text>
+
+        <!-- EVAL -->
+        <rect x="490" y="50" width="130" height="75" rx="8" fill="#E0F7F4" stroke="#01A88D" stroke-width="1.5" filter="url(#sh7)"/>
+        <text x="555" y="72" text-anchor="middle" font-size="14">📊</text>
+        <text x="555" y="90" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#01A88D" font-weight="700">Model Eval</text>
+        <text x="555" y="104" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Accuracy/F1/AUC</text>
+        <text x="555" y="117" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">A/B Testing</text>
+
+        <rect x="490" y="135" width="130" height="55" rx="8" fill="#FDEAEC" stroke="#DD344C" stroke-width="1.5" filter="url(#sh7)"/>
+        <text x="555" y="157" text-anchor="middle" font-size="12">🛡</text>
+        <text x="555" y="174" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#DD344C" font-weight="700">Model Monitor</text>
+        <text x="555" y="184" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780">Drift detection</text>
+
+        <!-- DEPLOY -->
+        <rect x="640" y="50" width="100" height="75" rx="8" fill="#FFF4E0" stroke="#FF9900" stroke-width="1.5" filter="url(#sh7)"/>
+        <text x="690" y="72" text-anchor="middle" font-size="14">🚀</text>
+        <text x="690" y="90" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">SageMaker</text>
+        <text x="690" y="102" text-anchor="middle" font-family="Roboto,sans-serif" font-size="10" fill="#FF9900" font-weight="700">Endpoint</text>
+        <text x="690" y="117" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">Realtime/Batch</text>
+
+        <!-- LAMBDA + API GW -->
+        <rect x="640" y="135" width="100" height="55" rx="8" fill="#FDE8F3" stroke="#E7157B" stroke-width="1.5" filter="url(#sh7)"/>
+        <text x="690" y="157" text-anchor="middle" font-size="12">🚪</text>
+        <text x="690" y="173" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#E7157B" font-weight="700">API Gateway</text>
+        <text x="690" y="183" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#888780">+ Lambda proxy</text>
+
+        <!-- APP -->
+        <rect x="760" y="80" width="90" height="100" rx="10" fill="#F2EEFF" stroke="#8C4FFF" stroke-width="1.5"/>
+        <text x="805" y="102" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#8C4FFF" font-weight="700">Aplicaciones</text>
+        <rect x="770" y="110" width="70" height="24" rx="5" fill="#fff" stroke="#8C4FFF"/>
+        <text x="805" y="126" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#5f5e5a">📱 App móvil</text>
+        <rect x="770" y="140" width="70" height="24" rx="5" fill="#fff" stroke="#8C4FFF"/>
+        <text x="805" y="156" text-anchor="middle" font-family="Roboto,sans-serif" font-size="8" fill="#5f5e5a">🌐 Dashboard</text>
+
+        <!-- ARROWS -->
+        <line x1="120" y1="130" x2="138" y2="100" stroke="#888780" stroke-width="1.5" marker-end="url(#arr7)"/>
+        <line x1="250" y1="88" x2="268" y2="88" stroke="#01A88D" stroke-width="2" marker-end="url(#arr7t)"/>
+        <line x1="470" y1="88" x2="488" y2="88" stroke="#01A88D" stroke-width="2" marker-end="url(#arr7t)"/>
+        <line x1="620" y1="88" x2="638" y2="88" stroke="#01A88D" stroke-width="2" marker-end="url(#arr7t)"/>
+        <line x1="620" y1="163" x2="638" y2="163" stroke="#888780" stroke-width="1.5" marker-end="url(#arr7)"/>
+        <line x1="740" y1="125" x2="758" y2="125" stroke="#888780" stroke-width="1.5" marker-end="url(#arr7)"/>
+        <!-- retrain loop -->
+        <path d="M 620 170 Q 555 240 370 230 Q 270 225 270 210" stroke="#888780" stroke-width="1" stroke-dasharray="4,2" fill="none" marker-end="url(#arr7)"/>
+        <text x="450" y="245" text-anchor="middle" font-family="Roboto,sans-serif" font-size="9" fill="#888780" font-style="italic">↺ reentrenamiento automático si hay drift</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head" onclick="toggleAcc('a7_1')">
+      <span class="acc-badge" style="background:var(--aws-analytics-l);color:var(--aws-teal);">El ciclo MLOps completo</span>
+      <div class="acc-name">Del dato crudo al modelo en producción — y el loop de reentrenamiento</div>
+      <span class="acc-chv" id="achv-a7_1">▼</span>
+    </div>
+    <div class="acc-body" id="abdy-a7_1">
+      <div class="flow-list">
+        <div class="flow-step"><div class="flow-num">1</div><strong>Datos:</strong> Datos crudos de múltiples fuentes en S3. Glue los limpia, normaliza y lleva a /training. El Feature Store guarda features reutilizables entre proyectos.</div>
+        <div class="flow-step"><div class="flow-num">2</div><strong>Entrenamiento:</strong> SageMaker Training Jobs ejecutan el entrenamiento en instancias GPU (ml.p4d.24xlarge = 8×A100). Los experimentos se registran en MLflow o en el propio Experiments de SageMaker.</div>
+        <div class="flow-step"><div class="flow-num">3</div><strong>Evaluación:</strong> El modelo se evalúa automáticamente con métricas definidas (accuracy, F1, AUC). Si no supera el umbral mínimo, el pipeline no lo promueve a producción.</div>
+        <div class="flow-step"><div class="flow-num">4</div><strong>Deploy:</strong> El modelo aprobado se despliega como Endpoint de SageMaker (inferencia en tiempo real) o como Batch Transform (inferencia masiva). API Gateway + Lambda hacen de proxy para la app.</div>
+        <div class="flow-step"><div class="flow-num">5</div><strong>Monitor + Retrain:</strong> Model Monitor detecta data drift (los datos reales en producción empiezan a diferir del training set). Cuando supera el umbral, dispara automáticamente un nuevo ciclo de entrenamiento.</div>
+      </div>
+      <div class="note note-blue"><strong>IA Generativa:</strong> Para casos con LLMs (Bedrock/Claude/GPT-4), no es necesario entrenar desde cero. El pipeline simplifica a: datos del cliente → fine-tuning o RAG → endpoint del modelo → app. SageMaker JumpStart tiene 300+ modelos listos para hacer fine-tuning con un click.</div>
+    </div>
+  </div>
+</div><!-- /a7 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Arquitecturas AWS de Referencia · <span id="fecha2"></span></span>
+</div>
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var sections=document.querySelectorAll('.arch-section');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  sections.forEach(function(s){
+    if(sy>=s.offsetTop&&sy<s.offsetTop+s.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+s.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

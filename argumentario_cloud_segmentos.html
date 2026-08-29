@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argumentos de Migración Cloud por Segmento | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0C447C;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --green:#085041;--green-m:#1D9E75;--green-l:#E1F5EE;
+  --amber:#633806;--amber-m:#BA7517;--amber-l:#FAEEDA;
+  --coral:#4A1B0C;--coral-m:#D85A30;--coral-l:#FAECE7;
+  --red:#7B1A1A;--red-m:#C0392B;--red-l:#FDECEC;
+  --purple:#26215C;--purple-m:#7F77DD;--purple-l:#EEEDFE;
+  --teal:#0A4040;--teal-m:#1A9696;--teal-l:#E0F5F5;
+  --navy:#0C2D6B;--oil:#1A2E0A;--oil-m:#4A7A20;--oil-l:#EEF7E6;
+  --gray-l:#F1EFE8;--gray-m:#888780;--gray-d:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#fff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid var(--blue-m);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:11px;font-weight:700;white-space:nowrap;padding:12px 14px 12px 0;border-right:.5px solid rgba(255,255,255,.12);margin-right:8px;color:rgba(255,255,255,.4);letter-spacing:.05em;}
+.tnav{font-size:10.5px;font-weight:700;padding:13px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,.3);transition:all .18s;text-decoration:none;}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--blue-m);}
+
+/* PAGE */
+.page{max-width:1060px;margin:0 auto;padding:32px 24px 80px;}
+
+/* DOC HEADER */
+.doc-header{padding:36px 40px 30px;border-radius:var(--radius);margin-bottom:30px;background:linear-gradient(135deg,var(--navy) 0%,#1A4080 55%,#2060A0 100%);position:relative;overflow:hidden;}
+.doc-header::after{content:'';position:absolute;right:-80px;top:-80px;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.04);}
+.dh-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:8px;}
+.dh-title{font-size:27px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;position:relative;z-index:1;}
+.dh-sub{font-size:13px;color:rgba(255,255,255,.55);font-style:italic;margin-bottom:20px;}
+.dh-pills{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1;}
+.dh-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:.5px solid rgba(255,255,255,.15);}
+
+/* SECTION WRAPPER */
+.sec{margin-bottom:48px;scroll-margin-top:52px;}
+.sec-title{font-size:19px;font-weight:700;border-bottom:1.5px solid var(--text);padding-bottom:10px;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.sec-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-ter);}
+
+/* VIRTUE CARDS — GRID */
+.virtue-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:10px;}
+.vcard{border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;}
+.vcard-head{padding:14px 16px 10px;display:flex;gap:12px;align-items:flex-start;}
+.vcard-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.vcard-title{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:3px;}
+.vcard-tag{font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;display:inline-block;}
+.vcard-body{padding:0 16px 14px;}
+.vcard-desc{font-size:12.5px;color:var(--text-sec);line-height:1.65;}
+.vcard-desc strong{color:var(--text);}
+.vcard-example{font-size:11.5px;color:var(--text-ter);font-style:italic;margin-top:7px;padding:6px 10px;background:var(--bg2);border-radius:var(--radius-sm);border-left:2px solid var(--border);line-height:1.5;}
+
+/* SEGMENT CARDS */
+.seg-card{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;}
+.seg-head{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;cursor:pointer;transition:background .15s;}
+.seg-head:hover{background:var(--bg2);}
+.seg-icon-wrap{width:46px;height:46px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.seg-meta{flex:1;}
+.seg-name{font-size:15px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:4px;}
+.seg-tagline{font-size:12px;color:var(--text-sec);font-style:italic;line-height:1.4;}
+.seg-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.seg-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;}
+.seg-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:6px;}
+.seg-chv.open{transform:rotate(180deg);}
+.seg-body{display:none;border-top:.5px solid var(--border);}
+.seg-body.open{display:block;}
+.sb-inner{padding:18px 20px 20px;}
+
+/* WITHIN SEG CONTENT */
+.arg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.arg-block{background:var(--bg2);border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.ab-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.ab-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.ab-list li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.ab-list li strong{color:var(--text);}
+.ab-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:10px 0;}
+.kpi-card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;}
+.kpi-val{font-size:21px;font-weight:700;line-height:1;margin-bottom:3px;}
+.kpi-label{font-size:10.5px;color:var(--text-sec);line-height:1.4;}
+
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:6px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.82);line-height:1.75;font-style:italic;}
+
+.note{font-size:12.5px;padding:10px 14px;border-radius:var(--radius-sm);margin:10px 0;border-left:3px solid;line-height:1.6;color:var(--text-sec);}
+.note strong{font-weight:700;}
+.note-blue{background:var(--blue-l);border-color:var(--blue-m);} .note-blue strong{color:var(--blue);}
+.note-green{background:var(--green-l);border-color:var(--green-m);} .note-green strong{color:var(--green);}
+.note-amber{background:var(--amber-l);border-color:var(--amber-m);} .note-amber strong{color:var(--amber);}
+
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+
+/* FINOPS TABLE */
+.ftable-wrap{overflow-x:auto;margin:10px 0;}
+.ftable{width:100%;border-collapse:collapse;font-size:12px;}
+.ftable th{padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.ftable td{padding:8px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.ftable tr:last-child td{border-bottom:none;}
+.ftable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);}
+
+/* SEASONALITY CHART — CSS only */
+.season-chart{display:flex;align-items:flex-end;gap:4px;height:80px;margin:12px 0;padding:0 4px;}
+.s-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.s-bar{border-radius:3px 3px 0 0;width:100%;min-height:4px;transition:height .3s;}
+.s-label{font-size:9px;color:var(--text-ter);text-align:center;}
+
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+@media(max-width:680px){.virtue-grid{grid-template-columns:1fr;}.arg-grid{grid-template-columns:1fr;}.kpi-strip{grid-template-columns:repeat(2,1fr);}.dh-title{font-size:21px;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">☁️ Argumentario Migración Cloud</div>
+  <a class="tnav" href="#v0">Virtudes universales</a>
+  <a class="tnav" href="#v1">Banca</a>
+  <a class="tnav" href="#v2">Oil &amp; Gas</a>
+  <a class="tnav" href="#v3">Retail</a>
+  <a class="tnav" href="#v4">Manufactura</a>
+  <a class="tnav" href="#v5">Gobierno</a>
+  <a class="tnav" href="#v6">Salud</a>
+  <a class="tnav" href="#v7">Agro</a>
+  <a class="tnav" href="#v8">Logística</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div class="dh-label">Personal Tech · Argumentario comercial cloud</div>
+  <div class="dh-title">Argumentos de Migración Cloud<br>por Segmento de Industria</div>
+  <div class="dh-sub">CAPEX vs. OPEX · FinOps · Estacionalidad · Gobierno Multi-cloud · Virtudes estratégicas por vertical</div>
+  <div class="dh-pills">
+    <span class="dh-pill">💳 Banca</span>
+    <span class="dh-pill">🛢 Oil &amp; Gas</span>
+    <span class="dh-pill">🛒 Retail</span>
+    <span class="dh-pill">🏭 Manufactura</span>
+    <span class="dh-pill">🏛 Gobierno</span>
+    <span class="dh-pill">🏥 Salud</span>
+    <span class="dh-pill">🌾 Agro</span>
+    <span class="dh-pill">🚚 Logística</span>
+  </div>
+</div>
+
+
+<!-- ══════ VIRTUDES UNIVERSALES ══════ -->
+<div class="sec" id="v0">
+  <div class="sec-title">
+    <span class="sec-num">00</span>
+    Las 12 virtudes universales de la migración cloud
+  </div>
+
+  <div class="virtue-grid">
+
+    <div class="vcard" style="border-color:var(--amber-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">⚖️</div>
+        <div>
+          <div class="vcard-title">Arbitraje de costos instantáneo</div>
+          <span class="vcard-tag" style="background:var(--amber-l);color:var(--amber);">Multi-cloud · FinOps</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Permite mover cargas de trabajo entre AWS, Azure, GCP o Huawei Cloud buscando la tarifa por hora más competitiva. <strong>El cloud es un mercado spot de cómputo: el cliente elige dónde comprar más barato en cada momento.</strong></div>
+        <div class="vcard-example">Una workload de ML entrenando en AWS us-east-1 a $3.50/hr puede correr en GCP us-central1 a $2.80/hr — 20% de ahorro solo por elegir la región correcta.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--green-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🔬</div>
+        <div>
+          <div class="vcard-title">FinOps y asignación granular de costos</div>
+          <span class="vcard-tag" style="background:var(--green-l);color:var(--green);">FinOps · Visibilidad</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Vincula el costo operativo directo de cada microservicio, base de datos o función Lambda a centros de costos específicos del negocio. <strong>Por primera vez, el CFO puede ver cuánto cuesta cada funcionalidad, no solo "IT" en bloque.</strong></div>
+        <div class="vcard-example">El módulo de facturación del ERP costó $1.240 en procesamiento cloud en octubre. La app mobile del cliente costó $380. Imposible saber esto con infraestructura física compartida.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--blue-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🔓</div>
+        <div>
+          <div class="vcard-title">Flexibilidad sin Vendor Lock-in</div>
+          <span class="vcard-tag" style="background:var(--blue-l);color:var(--blue);">Multi-cloud · Estrategia</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Evita quedar amarrado a hardware físico deprecado. Si el proveedor sube precios o cae en problemas, <strong>la portabilidad de contenedores (Docker/K8s) permite mover workloads en días, no en años</strong>. Un datacenter propio nunca se puede mover.</div>
+        <div class="vcard-example">VMware subió licencias 800% en 2024 tras la adquisición por Broadcom. Los clientes cloud pudieron cambiar de proveedor; los de on-premise quedaron rehenes.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--purple-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">📊</div>
+        <div>
+          <div class="vcard-title">Compromisos elásticos: OPEX predecible</div>
+          <span class="vcard-tag" style="background:var(--purple-l);color:var(--purple);">FinOps · OPEX</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Savings Plans (AWS) y Reserved Instances (Azure/GCP) transforman el OPEX variable en gasto predecible con descuentos de hasta 72%. <strong>El CFO puede presupuestar con certeza, sin el shock del CAPEX de renovación.</strong></div>
+        <div class="vcard-example">Compromiso de $2.000/mes en AWS por 3 años: ahorro garantizado del 40% vs. on-demand. El CFO sabe exactamente cuánto paga cloud los próximos 36 meses.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--teal-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🤖</div>
+        <div>
+          <div class="vcard-title">Mitigación de obsolescencia tecnológica</div>
+          <span class="vcard-tag" style="background:var(--teal-l);color:var(--teal);">CAPEX · Tecnología</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Huawei Cloud y GCP actualizan sus arquitecturas de hardware (GPUs para IA, instancias ARM) sin que la empresa deba amortizar activos obsoletos. <strong>Acceso a la última generación de cómputo sin inversión de capital.</strong></div>
+        <div class="vcard-example">NVIDIA H100 GPU: $40K la unidad. En AWS: $32/hora en demanda. Un proyecto de fine-tuning de 48hs cuesta $1.536 vs. $40K de compra — y cuando salga la H200, se accede sin comprar nada.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--coral-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">📈</div>
+        <div>
+          <div class="vcard-title">Elasticidad ante estacionalidad de negocio</div>
+          <span class="vcard-tag" style="background:var(--coral-l);color:var(--coral);">CAPEX · Estacionalidad</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">El CAPEX obliga a comprar para el pico máximo y pagar ese hardware el resto del año al 10% de uso. El cloud paga solo lo que se usa. <strong>La empresa no subsidia su propia infraestructura ociosa.</strong></div>
+        <div class="vcard-example">Retailer con pico de Black Friday: on-premise compra 40 servidores para 3 días al año. Cloud: usa 40 servidores 3 días y 4 el resto. Diferencia anual: ~$180K.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--red-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🛡</div>
+        <div>
+          <div class="vcard-title">Seguridad integrada y actualizada automáticamente</div>
+          <span class="vcard-tag" style="background:var(--red-l);color:var(--red);">Seguridad · Compliance</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Los hyperscalers invierten más en seguridad en un año que la mayoría de las empresas en una década. Parches automáticos, Zero Trust nativo, cifrado end-to-end. <strong>La seguridad pasa de ser una tarea pendiente a ser una capa por defecto.</strong></div>
+        <div class="vcard-example">Un servidor on-premise puede estar sin parchear meses. AWS aplica parches de hipervisor automáticamente sin downtime — el cliente no sabe ni que hubo un CVE crítico.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--green-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🌍</div>
+        <div>
+          <div class="vcard-title">Expansión geográfica sin CAPEX adicional</div>
+          <span class="vcard-tag" style="background:var(--green-l);color:var(--green);">CAPEX · Crecimiento</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Abrir operaciones en Brasil, Chile o Colombia no requiere instalar servidores locales. <strong>El cloud convierte la expansión geográfica en una decisión de negocios, no de infraestructura.</strong></div>
+        <div class="vcard-example">Empresa argentina que abre en Brasil: datacenter propio = 6 meses + $200K. Cloud: activar región sa-east-1 en AWS en 30 minutos con la misma arquitectura ya probada.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--blue-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🔄</div>
+        <div>
+          <div class="vcard-title">Disaster Recovery sin segundo datacenter</div>
+          <span class="vcard-tag" style="background:var(--blue-l);color:var(--blue);">CAPEX · Resiliencia</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Un site DR on-premise cuesta el doble de la infraestructura principal y está sub-utilizado el 99% del tiempo. El cloud elimina ese CAPEX: <strong>el DR es una configuración, no una inversión.</strong></div>
+        <div class="vcard-example">Banco que necesita DR por BCRA: site DR propio = $400K de inversión + $15K/mes de mantenimiento. DR en Personal Tech Hornos: $2.500/mes. Ahorro año 1: $375K.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--amber-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">👥</div>
+        <div>
+          <div class="vcard-title">Atracción de talento tecnológico</div>
+          <span class="vcard-tag" style="background:var(--amber-l);color:var(--amber);">Talento · Cultura</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Los mejores ingenieros y arquitectos cloud no quieren trabajar con VMware 5.5 y VB6. Un stack moderno en cloud atrae perfiles que multiplican la capacidad del equipo. <strong>El stack tecnológico es parte del employer branding.</strong></div>
+        <div class="vcard-example">Una empresa que publica "trabajamos con Kubernetes, Terraform y Bedrock" recibe 3× más CVs de perfiles senior que una que dice "infraestructura on-premise".</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--purple-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">⚡</div>
+        <div>
+          <div class="vcard-title">Velocidad de innovación: de meses a días</div>
+          <span class="vcard-tag" style="background:var(--purple-l);color:var(--purple);">Negocio · Competitividad</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">CI/CD sobre cloud permite desplegar software múltiples veces por semana con rollback automático. <strong>La ventana de aprovisionamiento pasa de semanas (compra + instalación + config) a minutos (API call).</strong></div>
+        <div class="vcard-example">Nuevo servidor on-premise: cotización (1 sem) + compra (2 sem) + entrega (2–4 sem) + instalación (3 días) = 6–10 semanas. EC2 cloud: terraform apply → 3 minutos.</div>
+      </div>
+    </div>
+
+    <div class="vcard" style="border-color:var(--teal-m);">
+      <div class="vcard-head">
+        <div class="vcard-icon">🧮</div>
+        <div>
+          <div class="vcard-title">Gobernanza multi-cloud centralizada</div>
+          <span class="vcard-tag" style="background:var(--teal-l);color:var(--teal);">Multi-cloud · Gobernanza</span>
+        </div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-desc">Herramientas como AWS Organizations, Azure Management Groups y Terraform Cloud permiten gobernar múltiples nubes con políticas centralizadas. <strong>El CTO tiene visión única de costos, seguridad y compliance en todos los clouds desde un solo panel.</strong></div>
+        <div class="vcard-example">La política "ningún bucket S3 puede ser público" se define una vez en AWS Organizations y aplica automáticamente a todas las cuentas de todas las unidades de negocio de la empresa.</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v0 -->
+
+
+<!-- ══════ SEGMENTOS ══════ -->
+<div class="sec" id="v1">
+  <div class="sec-title"><span class="sec-num">01</span>Argumentario por segmento</div>
+
+  <!-- BANCA -->
+  <div class="seg-card">
+    <div class="seg-head" onclick="toggleSeg('banca')">
+      <div class="seg-icon-wrap" style="background:var(--blue-l);">💳</div>
+      <div class="seg-meta">
+        <div class="seg-name">Banca y Servicios Financieros</div>
+        <div class="seg-tagline">Entidades reguladas por BCRA · Fintech · Aseguradoras · Procesadoras de pago</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--red-l);color:var(--red-m);">🔥 Urgencia regulatoria</span>
+          <span class="seg-badge" style="background:var(--blue-l);color:var(--blue);">BCRA Com. A 7266/7724</span>
+          <span class="seg-badge" style="background:var(--green-l);color:var(--green);">Dato soberano</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-banca">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-banca">
+      <div class="sb-inner">
+        <div class="kpi-strip">
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--red-m);">45</div><div class="kpi-label">Bancos privados en Argentina — todos bajo BCRA</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--blue);">$4.4M</div><div class="kpi-label">Costo promedio de un incidente de seguridad (IBM 2024)</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--amber);">2027</div><div class="kpi-label">Deadline SAP R/3 EoS — migración obligatoria</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--green);">99.999%</div><div class="kpi-label">SLA requerido por BCRA para sistemas core</div></div>
+        </div>
+
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--blue);">📐 CAPEX → OPEX</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Eliminación de ciclo de renovación en dólares:</strong> hardware bancario (mainframes, storage NetApp, Cisco) se renueva cada 5 años con CAPEX dolarizado masivo. Cloud convierte ese shock en OPEX mensual en pesos.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>DR sin segundo datacenter:</strong> el BCRA exige site DR documentado y probado. Tenerlo on-premise duplica el CAPEX. Personal Tech Hornos como DR de Pacheco = $2.500/mes vs. $400K de inversión propia.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Licencias de middleware:</strong> Oracle, IBM WebSphere, Microsoft SQL Server en versión on-premise cuestan 3–5× más que en cloud (BYOL vs. licencia incluida en PaaS).</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--red-m);">⚖️ Compliance y regulación</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>Com. A 7266 — dato en Argentina:</strong> AWS São Paulo y Azure Brazil South están fuera del territorio argentino. Personal Tech cumple nativo — dato en Pacheco, BA. Ningún hyperscaler puede dar esto.</li>
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>Com. A 7724 — IT Risk:</strong> exige BCP documentado, DR probado semestralmente y gestión de riesgo de terceros. Personal Tech entrega la documentación que el compliance necesita.</li>
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>PCI-DSS automático:</strong> las capas de cloud modernas tienen controles PCI pre-certificados. Construirlos on-premise requiere auditores, consultores y proyectos de 6–18 meses.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--green);">💰 FinOps bancario</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Costo por transacción medible:</strong> por primera vez, el banco puede saber cuánto cuesta procesar una transferencia, una consulta de saldo o una apertura de cuenta digital. Permite optimizar por producto, no por "IT en bloque".</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Estacionalidad financiera:</strong> fin de mes (cobro de sueldos), cierre de año, semanas de pago de impuestos. Cloud escala automáticamente para esos picos y baja el resto del tiempo.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Chargeback por unidad de negocio:</strong> el costo de cloud de "Banca Empresas" se carga a ese P&L, separado de "Banca Minorista". El CFO ve el costo tecnológico real por línea de negocio.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--purple);">🌐 Multi-cloud en banca</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Modelo ideal para banca argentina:</strong> core en Personal Tech (dato soberano, Com. A 7266) + IA/analytics en AWS Bedrock o Azure OpenAI (servicios que Personal Tech no puede igualar) + conectividad MPLS de Personal Tech entre ambos.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Evitar dependencia de un solo proveedor regulado:</strong> si Personal Tech tiene un incidente, las apps no críticas siguen en el hyperscaler. Si el hyperscaler tiene un problema, los datos core siguen en Argentina. Resiliencia real.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Negociación de contratos independiente:</strong> Personal Tech en pesos, AWS en USD. El banco diversifica exposición cambiaria y negocia sin presión con cada proveedor.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pitch">
+          <div class="pitch-label">Argumento de cierre para el CISO bancario</div>
+          <div class="pitch-text">"Su CISO tiene dos problemas que no puede ignorar: la Com. A 7724 que exige DR probado antes de la próxima auditoría, y los 14 servidores con Windows Server 2012 que están en EOL desde octubre 2023. Cada día que pasan sin resolver esto, la exposición regulatoria y el riesgo de incidente crecen. Personal Tech resuelve los dos en un solo contrato: cloud soberana en Argentina + DR documentado y probado + parches automáticos. Sin CAPEX, sin comprar hardware, sin romper la Com. A 7266."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OIL & GAS -->
+  <div class="seg-card" id="v2">
+    <div class="seg-head" onclick="toggleSeg('oilgas')">
+      <div class="seg-icon-wrap" style="background:var(--oil-l);">🛢</div>
+      <div class="seg-meta">
+        <div class="seg-name">Oil &amp; Gas / Energía</div>
+        <div class="seg-tagline">E&amp;P · Refinería · Transporte de gas · Distribución eléctrica · Minería</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--oil-l);color:var(--oil);">OT/IT convergence</span>
+          <span class="seg-badge" style="background:var(--teal-l);color:var(--teal);">IoT industrial</span>
+          <span class="seg-badge" style="background:var(--amber-l);color:var(--amber);">Activos remotos</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-oilgas">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-oilgas">
+      <div class="sb-inner">
+        <div class="kpi-strip">
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--oil-m);">$500K</div><div class="kpi-label">Costo promedio de una hora de parada no planificada en refinería</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--teal-m);">40%</div><div class="kpi-label">Reducción de paradas con mantenimiento predictivo IoT+Cloud</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--amber);">Vaca Muerta</div><div class="kpi-label">Sin conectividad fija — 4G+Satelital de Personal Tech cubre el desierto</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--purple-m);">SCADA</div><div class="kpi-label">Integración OT→IT→Cloud sin exponer la red de control</div></div>
+        </div>
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--oil-m);">📐 CAPEX → OPEX en activos remotos</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Infraestructura de campo sin datacenter local:</strong> un pozo en Vaca Muerta hoy necesita servidores en el borde para procesar telemetría. Con Edge Computing + Cloud, esos servidores desaparecen — el gateway IoT sube todo a la nube.</li>
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Reemplazo del SCADA legacy:</strong> los sistemas SCADA on-premise tienen costos de licencia masivos y actualizaciones caras. Cloud-native SCADA en AWS IoT o Azure IoT Hub reemplaza esa arquitectura con OPEX predecible.</li>
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Simulación de yacimientos sin supercomputador:</strong> las empresas de E&P pagan millones por clusters de HPC para simulación sísmica. En cloud, el mismo cómputo se alquila por horas cuando se necesita y se apaga cuando termina.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--teal);">📡 IoT + Cloud para operaciones</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Mantenimiento predictivo que paga solo:</strong> 3.000 sensores en una planta de compresión generan alertas antes de la falla. El modelo ML en cloud predice con 72hs de antelación. Una parada evitada paga 12 meses de cloud.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Conectividad 4G+Satelital de Personal Tech:</strong> Vaca Muerta no tiene fibra. Personal Tech tiene el mayor despliegue 4G en Argentina + acuerdo con Starlink para zona sin cobertura. El gateway IoT del pozo conecta sin tender cable.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Digital Twin de instalaciones:</strong> gemelo digital de un oleoducto permite simular escenarios de presión, temperatura y corrosión sin parar la operación real.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--amber);">💰 FinOps en energía</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Costo por barril procesado:</strong> la operadora puede saber exactamente cuánto costó el procesamiento de datos de cada pozo por mes. El presupuesto IT se asigna por activo productivo.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Estacionalidad de demanda energética:</strong> la demanda de procesamiento de datos sigue la curva de producción y el precio del barril. Cloud escala con la actividad, no contra ella.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Proyectos de exploración en burst:</strong> una campaña sísmica genera petabytes de datos en semanas. Cloud absorbe ese pico y después escala a cero — sin comprar HPC que después queda ocioso.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--purple);">🌐 Convergencia OT/IT en cloud</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>OPC-UA como puente seguro:</strong> el gateway traduce datos del PLC (OT) a MQTT (IT) sin exponer la red de control a internet. La separación OT/IT se mantiene con cloud en la capa de análisis.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Gobierno centralizado de múltiples activos:</strong> una refinería en Bahía Blanca, un campo en Neuquén y una terminal en Dock Sud — todos visibles en un solo dashboard en tiempo real.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Cumplimiento de normas NERC/CIP:</strong> los proveedores cloud hiperescala tienen certificaciones de ciberseguridad industrial. Lograrlas on-premise cuesta años de auditorías.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">Argumento de cierre para el COO de una operadora</div>
+          <div class="pitch-text">"Una parada no planificada en su planta les cuesta $500.000 por hora. Si el sistema de mantenimiento predictivo basado en IoT y cloud evita una sola parada al año, paga 5 años de cloud. No les estamos vendiendo tecnología — les estamos vendiendo tiempo productivo. Y con la conectividad 4G de Personal Tech en Vaca Muerta, el dato del pozo llega a la nube en tiempo real sin tender un solo metro de fibra."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETAIL -->
+  <div class="seg-card" id="v3">
+    <div class="seg-head" onclick="toggleSeg('retail')">
+      <div class="seg-icon-wrap" style="background:var(--amber-l);">🛒</div>
+      <div class="seg-meta">
+        <div class="seg-name">Retail y E-commerce</div>
+        <div class="seg-tagline">Cadenas de supermercados · E-commerce · Fashion · Electrónica · Marketplace</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--amber-l);color:var(--amber);">🎄 Picos estacionales</span>
+          <span class="seg-badge" style="background:var(--red-l);color:var(--red-m);">Black Friday · Hot Sale</span>
+          <span class="seg-badge" style="background:var(--green-l);color:var(--green);">Analítica de consumo</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-retail">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-retail">
+      <div class="sb-inner">
+        <div class="kpi-strip">
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--amber);">10×</div><div class="kpi-label">Pico de tráfico en Hot Sale vs. día normal</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--red-m);">$180K</div><div class="kpi-label">Pérdida por hora caída en Black Friday (retailer mediano)</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--green);">72hs</div><div class="kpi-label">Antelación con que ML predice quiebre de stock</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--blue);">CDN</div><div class="kpi-label">Tiempo de carga en 400ms con CloudFront vs. 2.8s sin CDN</div></div>
+        </div>
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--amber);">📐 Estacionalidad — el argumento más poderoso</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>El problema del CAPEX para el pico:</strong> el retailer compra 40 servidores para que el sitio soporte el Hot Sale. Los usa 3 días al año al 100%. Los 362 días restantes corre al 5%. Ese hardware "duerme" pagado.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Auto-scaling en Black Friday:</strong> el tráfico sube de 1.000 a 10.000 usuarios simultáneos en 2 minutos. Cloud Auto Scaling agrega instancias automáticamente. Cuando termina el evento, las elimina. Solo paga las 72 horas de pico.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Estacionalidad de inventario:</strong> la capacidad de procesamiento de datos de inventario es 5× más alta en diciembre. Cloud absorbe esa curva sin sobredimensionar para todo el año.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--green);">📊 Analytics y personalización</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Recomendaciones en tiempo real:</strong> "Los que compraron X también compraron Y" requiere ML sobre millones de transacciones en milisegundos. Imposible on-premise con presupuesto retail.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Predicción de demanda por sucursal:</strong> el Data Lake en S3 + SageMaker predice qué producto va a faltar en qué sucursal con 72hs de antelación. Reduce quiebre de stock entre 20–35%.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>A/B Testing continuo:</strong> el e-commerce cloud puede probar 20 variantes de la home page simultáneamente y quedarse con la que convierte más. On-premise hacer esto era un proyecto de 3 meses.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--red-m);">🛡 Seguridad en retail</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>PCI-DSS en cloud:</strong> todo retailer que acepta tarjetas debe cumplir PCI. En cloud, las capas de PCI están pre-certificadas. On-premise requiere auditoría anual costosa.</li>
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>DDoS en eventos masivos:</strong> los sitios de e-commerce son el target preferido de ataques DDoS en eventos de ventas. CloudFront/CDN absorbe el ataque antes de que llegue al origen.</li>
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>Fraude en tiempo real:</strong> ML sobre transacciones en cloud detecta patrones de fraude en milisegundos. On-premise, la detección de fraude era batch — al otro día ya había ocurrido el daño.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--blue);">💰 FinOps retail</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Costo por visita y por transacción:</strong> el CFO retail puede saber exactamente cuánto cuesta en cloud procesar cada visita, cada carrito abandonado y cada compra completada. Optimización directa del unit economics.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Ahorro en storage estacional:</strong> las imágenes de productos de temporadas pasadas van automáticamente a S3 Glacier ($0.004/GB/mes) y vuelven en segundos si las necesitan. Storage inteligente sin gestión manual.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>CDN reduce costos de transferencia:</strong> los assets estáticos (imágenes, CSS, JS) servidos desde CloudFront reducen el tráfico al servidor origen hasta 85%. Menos cómputo, misma experiencia.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">Argumento de cierre para el CTO de retail</div>
+          <div class="pitch-text">"El año pasado, su sitio se cayó 40 minutos durante el Hot Sale porque los servidores no resistieron el pico de las 12hs. Perdieron $120.000 en ventas y la reputación del evento. Con cloud y auto-scaling, ese escenario no puede ocurrir — el sistema agrega capacidad automáticamente cuando el tráfico sube, y la quita cuando baja. Y solo pagan esas 72 horas de pico, no los 360 días restantes. ¿Cuánto les costó el incidente del año pasado incluyendo la reputación?"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANUFACTURA -->
+  <div class="seg-card" id="v4">
+    <div class="seg-head" onclick="toggleSeg('mfg')">
+      <div class="seg-icon-wrap" style="background:var(--teal-l);">🏭</div>
+      <div class="seg-meta">
+        <div class="seg-name">Manufactura e Industria</div>
+        <div class="seg-tagline">Automotriz · Alimentos y bebidas · Química · Papel y celulosa · Electrónica</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--teal-l);color:var(--teal);">Industry 4.0</span>
+          <span class="seg-badge" style="background:var(--oil-l);color:var(--oil);">OT/IT</span>
+          <span class="seg-badge" style="background:var(--amber-l);color:var(--amber);">Paradas de línea</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-mfg">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-mfg">
+      <div class="sb-inner">
+        <div class="kpi-strip">
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--amber);">$250K</div><div class="kpi-label">Costo promedio de una hora de parada en línea automotriz</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--teal-m);">35%</div><div class="kpi-label">Reducción de scrap con control de calidad por visión artificial</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--green);">8 años</div><div class="kpi-label">Vida útil de batería de un sensor LoRaWAN sin cableado</div></div>
+          <div class="kpi-card"><div class="kpi-val" style="color:var(--blue);">5G</div><div class="kpi-label">Personal Tech tiene el mayor despliegue 5G privado industrial de Argentina</div></div>
+        </div>
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--teal);">⚙️ Mantenimiento predictivo</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>El ROI más rápido de toda la industria:</strong> un sensor de vibración + ML en cloud sobre el compresor central detecta la falla 96 horas antes. Una sola parada evitada ($250K/hr × 4hr = $1M) paga 3 años de cloud y sensores.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Mantenimiento basado en condición vs. calendario:</strong> hoy se cambian repuestos cada 3 meses "por las dudas". Con telemetría en cloud, se cambian cuando el desgaste real lo indica — ahorro en repuestos del 20–30%.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Cero cableado con LoRaWAN:</strong> instalar sensores en maquinaria antigua requería tender cables por planta. LoRaWAN inalámbrico + cloud elimina esa obra civil — el sensor se adhiere a la máquina y empieza a transmitir.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--amber);">📐 CAPEX → OPEX industrial</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Estacionalidad de producción:</strong> las plantas de alimentos y bebidas tienen picos de producción estacionales (verano para bebidas, diciembre para alimentos). La capacidad de procesamiento de datos escala con la producción.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Simulación de procesos sin HPC:</strong> simular variaciones en la línea de producción antes de hacer cambios físicos requería hardware costoso. En cloud: el mismo modelo en burst computing por horas.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>ERP de planta sin servidor local:</strong> muchas plantas tienen un servidor físico dedicado al ERP del piso de fábrica. Migrarlo a cloud elimina ese CAPEX y da acceso remoto para el gerente de planta desde cualquier lugar.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--oil-m);">🏭 Control de calidad con IA</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Visión artificial en la línea:</strong> cámaras en la cinta transportadora + ML en cloud detectan defectos visuales a 200 unidades/minuto con mayor precisión que el inspector humano. Reduce scrap entre 20–35%.</li>
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Trazabilidad de lote completa:</strong> desde la materia prima hasta el producto final, cada paso queda registrado en cloud. Ante un recall, se identifica el lote afectado en minutos en lugar de días.</li>
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>5G privado en planta:</strong> Personal Tech despliega redes 5G privadas dentro de la planta para comunicación ultra-latencia entre robots AGV, brazo robótico y sistema central — todo procesado en edge computing local.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--green);">💰 FinOps industrial</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Costo por unidad producida:</strong> el gerente de planta puede ver cuánto costó en IT producir cada lote. Permite comparar eficiencia entre líneas, turnos y plantas.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Energía + cloud como un solo presupuesto de eficiencia:</strong> los datos de consumo eléctrico de cada máquina correlacionados con su producción en cloud revelan qué máquinas son ineficientes energéticamente.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Paradas programadas como cloud burst:</strong> durante las paradas de mantenimiento, el sistema ERP industrial procesa el backlog de análisis que requiere más cómputo. En esas 48hs de parada, burst computing en cloud sin comprar infraestructura permanente.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">Argumento de cierre para el Gerente de Planta</div>
+          <div class="pitch-text">"El compresor central de su planta tiene 12 años. Si falla un lunes a las 8am, le cuesta $1M en producción perdida mientras esperan el técnico y el repuesto. Si hubiera un sensor de vibración transmitiendo a la nube, el sistema lo habría alertado el jueves anterior. Personal Tech instala los sensores inalámbricos, la conectividad 4G y el ML en cloud. El primer mes ya tienen alertas en el celular del Gerente de Mantenimiento. El primero que resuelven, pagaron todo."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOBIERNO -->
+  <div class="seg-card" id="v5">
+    <div class="seg-head" onclick="toggleSeg('gob')">
+      <div class="seg-icon-wrap" style="background:var(--purple-l);">🏛</div>
+      <div class="seg-meta">
+        <div class="seg-name">Gobierno y Sector Público</div>
+        <div class="seg-tagline">Ministerios · Provincias · Municipios · ANSES · AFIP · Entes reguladores</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--purple-l);color:var(--purple-m);">Licitación pública</span>
+          <span class="seg-badge" style="background:var(--blue-l);color:var(--blue);">Dato soberano</span>
+          <span class="seg-badge" style="background:var(--green-l);color:var(--green);">Pesos — sin riesgo cambiario</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-gob">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-gob">
+      <div class="sb-inner">
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--purple);">📐 CAPEX público: el problema presupuestario</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>El ciclo presupuestario vs. el ciclo tecnológico:</strong> el gobierno aprueba presupuesto anual. Comprar servidores este año para usarlos 5 años complica la planificación. OPEX mensual encaja en el presupuesto operativo anual sin comprometer ejercicios futuros.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Licitaciones en pesos sin ajuste dólar:</strong> comprar servidores en licitación con precio dólar implica riesgo de desfasaje entre presupuesto aprobado y precio final. OPEX cloud en pesos con ajuste CPI es más predecible para el tesorero del organismo.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Arsat como referencia, Personal Tech como alternativa privada:</strong> Arsat da cloud estatal. Personal Tech da cloud privada bajo ley argentina con SLA real con penalidades. Para organismos que necesitan SLA exigible, Personal Tech es la opción.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--blue);">🌐 Modernización del ciudadano digital</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Trámite digital sin ventanilla:</strong> los trámites online requieren infraestructura que soporte picos (fin de mes, vencimientos impositivos). Cloud escala automáticamente para esos picos sin caídas.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Smart City sobre conectividad Personal Tech:</strong> CCTV inteligente, control de semáforos, WiFi público, sensores de basura — todo conectado por la red de Personal Tech y procesado en cloud local.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Interoperabilidad de organismos:</strong> ANSES + AFIP + Registro Civil comparten información via APIs en cloud. Hoy cada organismo tiene su silo. Cloud soberana con APIs comunes elimina esa duplicación.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--green);">🔐 Soberanía del dato público</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Dato ciudadano en Argentina:</strong> los datos de CUIL, CUIT, salud, antecedentes y tributarios no pueden salir del país bajo ninguna interpretación del Marco Legal de Datos Personales. Personal Tech lo garantiza.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Empresa bajo ley argentina:</strong> en una licitación pública, Personal Tech (Telecom Argentina S.A., cotizante en NYSE y Bolsa de Buenos Aires) es un proveedor elegible que AWS LLC no puede igualar en términos de jurisdicción.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Auditabilidad del acceso al dato:</strong> cada acceso a datos sensibles de ciudadanos queda registrado con timestamp, usuario y acción. Cumplimiento de transparencia y auditoría pública.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--amber);">💰 FinOps en gobierno</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Costo por trámite procesado:</strong> el organismo puede saber cuánto le costó al Estado procesar cada declaración jurada, cada subsidio asignado o cada turno médico. Transparencia presupuestaria real.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Estacionalidad de AFIP:</strong> el vencimiento del IVA genera un pico masivo de accesos simultáneos al portal. On-premise el sistema se cae. Cloud auto-escala y absorbe el pico sin inversión permanente.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Reducción de gasto en papel e impresión:</strong> los organismos que digitalizan trámites en cloud reportan ahorros del 60–80% en papel, impresión y almacenamiento físico de expedientes.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">Argumento para el Secretario de Modernización municipal</div>
+          <div class="pitch-text">"El municipio tiene $15 millones de pesos para modernización tecnológica este año. Con ese presupuesto, compran 8 servidores que en 3 años están obsoletos — o contratan 3 años de cloud con Personal Tech que incluye WiFi público en el centro, cámaras de monitoreo inteligentes, portal de trámites que no se cae en el vencimiento de tasas, y todo el mantenimiento incluido. El dato del ciudadano queda en Argentina, bajo ley argentina, y el organismo tiene un SLA con penalidades reales si el servicio falla."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SALUD -->
+  <div class="seg-card" id="v6">
+    <div class="seg-head" onclick="toggleSeg('salud')">
+      <div class="seg-icon-wrap" style="background:var(--red-l);">🏥</div>
+      <div class="seg-meta">
+        <div class="seg-name">Salud y Ciencias de la Vida</div>
+        <div class="seg-tagline">Clínicas y sanatorios · Obras sociales · Laboratorios · Farmacéuticas · Telemedicina</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--red-l);color:var(--red-m);">Ley 26.529 HCE</span>
+          <span class="seg-badge" style="background:var(--purple-l);color:var(--purple-m);">IA diagnóstica</span>
+          <span class="seg-badge" style="background:var(--teal-l);color:var(--teal);">Telemedicina</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-salud">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-salud">
+      <div class="sb-inner">
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--red-m);">📋 Compliance en salud</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>Ley 26.529 — Historia Clínica Electrónica:</strong> la HCE debe estar disponible en todo momento, con historial de accesos auditado y dato en Argentina. El cloud soberano de Personal Tech cumple los tres requisitos.</li>
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>Ley 25.326 — Protección de Datos Personales:</strong> los datos de salud son datos sensibles de categoría especial. Procesarlos en cloud extranjero requiere conformidad explícita del paciente — una complejidad que Personal Tech elimina.</li>
+              <li><span class="ab-dot" style="background:var(--red-m);"></span><strong>Disponibilidad de guardia 24/7:</strong> si el sistema de HCE cae a las 3am en guardia de emergencias, las consecuencias son clínicas y legales. Multi-AZ + DR automático garantiza que esto no ocurra.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--purple);">🧠 IA y diagnóstico</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Análisis de imágenes médicas con IA:</strong> un modelo de ML sobre radiografías de tórax detecta nódulos con mayor precisión que el radiólogo promedio. El procesamiento de imágenes DICOM en cloud ocurre en segundos.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Predicción de readmisiones:</strong> ML sobre el historial del paciente predice con 80% de precisión cuáles pacientes dados de alta van a reingresar en 30 días. Permite intervención preventiva.</li>
+              <li><span class="ab-dot" style="background:var(--purple-m);"></span><strong>Storage de imágenes médicas escalable:</strong> un hospital mediano genera 2TB/mes en imágenes DICOM. El storage on-premise escala con CAPEX. S3 escala sin límite con Glacier para imágenes antiguas a $0.004/GB.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--teal);">📡 Telemedicina y conectividad</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Telemedicina sin infraestructura propia:</strong> videoconsulta + HCE integrada en cloud. El médico accede desde su celular, el paciente desde cualquier dispositivo. Sin VPN, sin servidor propio de videoconferencia.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Sucursales y clínicas del interior:</strong> una clínica en Rosario puede acceder al HCE del paciente en tiempo real desde el mismo sistema que la sede central en Buenos Aires — sobre la conectividad MPLS de Personal Tech.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Integración con laboratorios externos:</strong> los resultados de laboratorio llegan via API al HCE del paciente automáticamente. Sin fax, sin carga manual, sin demora.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--green);">💰 FinOps en salud</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Costo por prestación:</strong> el director médico puede saber cuánto costó en IT procesar cada consulta, internación o estudio. Permite optimizar por especialidad.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Estacionalidad viral:</strong> invierno (gripe) y pandemia generan picos masivos de consultas digitales. Cloud escala automáticamente para esos picos de telemedicina sin sobredimensionar para todo el año.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Eliminación del servidor de imágenes local:</strong> los servidores PACS para imágenes médicas son caros y requieren mantenimiento especializado. Cloud PACS en S3 elimina ese CAPEX y lo convierte en OPEX por GB almacenado.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGRO -->
+  <div class="seg-card" id="v7">
+    <div class="seg-head" onclick="toggleSeg('agro')">
+      <div class="seg-icon-wrap" style="background:var(--oil-l);">🌾</div>
+      <div class="seg-meta">
+        <div class="seg-name">Agro e Industria Agroalimentaria</div>
+        <div class="seg-tagline">Productores sojeros · Frigoríficos · Procesadoras de granos · Bodegas · Citricultura</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--oil-l);color:var(--oil);">Campo sin cobertura</span>
+          <span class="seg-badge" style="background:var(--teal-l);color:var(--teal);">Agricultura de precisión</span>
+          <span class="seg-badge" style="background:var(--amber-l);color:var(--amber);">Estacionalidad de cosecha</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-agro">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-agro">
+      <div class="sb-inner">
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--oil-m);">📡 Conectividad en campo remoto</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>LoRaWAN sin SIM y sin factura por sensor:</strong> 500 sensores de humedad de suelo en el campo conectados a un solo gateway LoRa. Sin SIM, sin contrato por sensor, sin cable. El gateway sube por 4G o satelital.</li>
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Satelital LEO donde no llega 4G:</strong> campos en el interior de Santiago del Estero o Salta sin cobertura celular — Personal Tech ofrece Starlink (LEO) como backhaul del gateway IoT. Latencia 40ms, cobertura total.</li>
+              <li><span class="ab-dot" style="background:var(--oil-m);"></span><strong>Telemetría de maquinaria agrícola:</strong> cosechadoras, tractores y sembradoras envían GPS + consumo + rendimiento en tiempo real. El gerente de campo ve el mapa de producción desde la oficina en Buenos Aires.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--teal);">🌱 Agricultura de precisión</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Aplicación variable de insumos:</strong> el mapa de rendimiento histórico + sensor de suelo + modelo ML en cloud genera el mapa de aplicación variable de fertilizantes. Ahorro de insumos del 15–25% manteniendo el rendimiento.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Predicción de rendimiento de cosecha:</strong> imágenes satelitales + datos climáticos + historial de lotes alimentan un modelo que predice el rinde con 85% de precisión 60 días antes. Permite adelantar contratos de comercialización.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Monitoreo de silos:</strong> sensor de temperatura y nivel en silo conectado por LoRa. Alerta de fermentación o de robo antes de que sea tarde. El productor lo ve desde el celular.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--amber);">💰 Estacionalidad agro</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Pico de cosecha gruesa:</strong> marzo–mayo genera el 80% del movimiento de datos del año en empresas agrícolas. Cloud escala para ese pico y baja a mínimo el resto del año.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Costo por hectárea medible:</strong> el dueño del campo puede saber cuánto costó en tecnología producir cada hectárea y correlacionarlo con el rinde. Permite comparar lotes y tomar decisiones de inversión.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Sin datacenter en el campo:</strong> el productor no tiene que mantener servidores. Todo procesa en cloud. El único hardware en campo es el gateway IoT de $800 que dura 5+ años.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--green);">🏭 Agroindustria: frigoríficos y bodegas</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Control de cadena de frío en tiempo real:</strong> cada cámara frigorífica tiene sensor de temperatura conectado a cloud. Si sube 0.5°C de lo permitido, alerta instantánea al encargado. Previene pérdida de mercadería y problemas de SENASA.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Trazabilidad de origen para exportación:</strong> los mercados europeos y asiáticos exigen trazabilidad completa del animal o fruta desde el origen hasta el packaging. Cloud permite ese registro inmutable y auditable.</li>
+              <li><span class="ab-dot" style="background:var(--green-m);"></span><strong>Optimización de fermentación en bodega:</strong> sensores de temperatura, brix y pH en tanques de fermentación + ML en cloud predicen el momento óptimo de intervención del enólogo.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGÍSTICA -->
+  <div class="seg-card" id="v8">
+    <div class="seg-head" onclick="toggleSeg('log')">
+      <div class="seg-icon-wrap" style="background:var(--coral-l);">🚚</div>
+      <div class="seg-meta">
+        <div class="seg-name">Logística y Transporte</div>
+        <div class="seg-tagline">Operadores logísticos · Courier · Transporte de carga · Distribución · Cold chain</div>
+        <div class="seg-badges">
+          <span class="seg-badge" style="background:var(--coral-l);color:var(--coral-m);">Flota conectada</span>
+          <span class="seg-badge" style="background:var(--blue-l);color:var(--blue);">Ruteo dinámico</span>
+          <span class="seg-badge" style="background:var(--amber-l);color:var(--amber);">Visibilidad end-to-end</span>
+        </div>
+      </div>
+      <span class="seg-chv" id="schv-log">▼</span>
+    </div>
+    <div class="seg-body" id="sbdy-log">
+      <div class="sb-inner">
+        <div class="arg-grid">
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--coral-m);">🚛 Flota conectada</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--coral-m);"></span><strong>APN privado para telemetría de flota:</strong> 500 camiones con GPS + sensor de temperatura + CAN Bus transmitiendo al APN privado de Personal Tech. El dato va directo al cloud sin pasar por internet público — más seguro y sin latencia variable.</li>
+              <li><span class="ab-dot" style="background:var(--coral-m);"></span><strong>Ruteo dinámico con ML:</strong> el algoritmo de ruteo en cloud recalcula la ruta óptima en tiempo real considerando tráfico, ventanas de entrega y capacidad del camión. Ahorro de combustible del 12–18%.</li>
+              <li><span class="ab-dot" style="background:var(--coral-m);"></span><strong>Mantenimiento predictivo de flota:</strong> los datos del CAN Bus del camión (presión de aceite, temperatura de motor, desgaste de frenos) alimentan un modelo ML que predice la próxima falla antes de que ocurra en ruta.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--blue);">📦 Visibilidad de la cadena de suministro</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Track &amp; trace en tiempo real:</strong> el cliente final ve en el portal dónde está su paquete en tiempo real. El dato del GPS del camión llega al portal del cliente en menos de 30 segundos via cloud.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Integración con ERP del cliente:</strong> via APIs en cloud, el sistema logístico del operador se integra automáticamente con el ERP del cliente. La guía de remisión se genera sola cuando el camión sale del depósito.</li>
+              <li><span class="ab-dot" style="background:var(--blue-m);"></span><strong>Predicción de ventanas de entrega:</strong> ML sobre datos históricos de tráfico, clima y rutas predice el horario de entrega con ±20 minutos de precisión. Reduce los intentos fallidos de entrega un 30%.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--amber);">💰 Estacionalidad logística</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Picos de diciembre y Hot Sale:</strong> el volumen de paquetes se multiplica 3–5× en diciembre y eventos de e-commerce. El sistema de gestión logística en cloud escala automáticamente para ese pico sin contratar infraestructura permanente.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Costo por bulto medible:</strong> el CFO logístico puede asignar el costo de IT exactamente a cada cliente, ruta o servicio. El precio de cada contrato logístico puede calcularse con el costo tecnológico real incluido.</li>
+              <li><span class="ab-dot" style="background:var(--amber-m);"></span><strong>Depósitos inteligentes:</strong> sensores de ocupación en estanterías + ML en cloud optimizan la ubicación del stock para minimizar el tiempo de picking. Ahorro del 20% en horas de trabajo de depósito.</li>
+            </ul>
+          </div>
+          <div class="arg-block">
+            <div class="ab-title" style="color:var(--teal);">❄️ Cold chain y temperatura</div>
+            <ul class="ab-list">
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Monitoreo de temperatura en ruta:</strong> el sensor de temperatura del camión frigorífico transmite cada 30 segundos. Si se rompe el frío, alerta instantánea al operador y al cliente antes de que el producto se dañe.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Registro inmutable para SENASA/FDA:</strong> el log de temperatura de cada viaje queda almacenado en S3 con Object Lock (inmutable). Ante una auditoría, la trazabilidad de cold chain está disponible en segundos.</li>
+              <li><span class="ab-dot" style="background:var(--teal-m);"></span><strong>Predicción de falla del equipo de frío:</strong> el comportamiento del compresor del camión en datos históricos entrenó un modelo que detecta la firma de una falla próxima con 48hs de antelación.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pitch">
+          <div class="pitch-label">Argumento de cierre para el CEO de un operador logístico</div>
+          <div class="pitch-text">"Su operación tiene 300 camiones en ruta en este momento. ¿Sabe cuáles llegarán tarde a sus ventanas de entrega? ¿Cuál va a necesitar mantenimiento antes de fin de semana? ¿Cuál tiene el frío comprometido? Con la plataforma de Personal Tech — conectividad 4G con APN privado + cloud + analítica en tiempo real — esas 300 respuestas están en su celular ahora mismo. Y en el Hot Sale, cuando su flota pase a 500, el sistema escala solo."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /seg -->
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Argumentario Cloud por Segmento · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleSeg(id){
+  var b=document.getElementById('sbdy-'+id);
+  var c=document.getElementById('schv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  [['v0','v0'],['v1','v1'],['v2','v2'],['v3','v3'],['v4','v4'],['v5','v5'],['v6','v6'],['v7','v7'],['v8','v8']].forEach(function(p){
+    var el=document.getElementById(p[0]);
+    if(!el)return;
+    if(sy>=el.offsetTop&&sy<el.offsetTop+el.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+p[1]+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

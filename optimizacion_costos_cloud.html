@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimización de Costos Cloud — AWS · Azure · GCP · HWC | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --aws:#FF9900;--aws-d:#7A4700;--aws-l:#FFF4E0;--aws-m:#FFD08A;
+  --az:#0078D4;--az-d:#004578;--az-l:#E6F2FF;--az-m:#90C8F6;
+  --gcp:#4285F4;--gcp-d:#1A3A7A;--gcp-l:#E8F0FE;--gcp-m:#A8C7FA;
+  --hwc:#CF0A2C;--hwc-d:#6A0016;--hwc-l:#FFE8EC;--hwc-m:#F9A0B0;
+  --green:#059669;--green-l:#D1FAE5;--green-d:#065F46;
+  --amber:#D97706;--amber-l:#FEF3C7;--amber-d:#92400E;
+  --purple:#7C3AED;--purple-l:#EDE9FE;
+  --ink:#0D1117;--ink2:#1C2333;--ink3:#374151;
+  --muted:#6B7280;--faint:#9CA3AF;--line:#E5E7EB;
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;
+  --r:10px;--r-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:300;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;overflow-x:auto;gap:0;}
+.nav-brand{font-size:11.5px;font-weight:800;color:var(--ink);white-space:nowrap;padding:13px 16px 13px 0;border-right:1px solid var(--line);margin-right:6px;letter-spacing:-.2px;}
+.nl{font-size:11px;font-weight:700;padding:14px 10px;white-space:nowrap;color:var(--faint);border-bottom:2.5px solid transparent;cursor:pointer;transition:all .15s;text-decoration:none;}
+.nl:hover,.nl.on{color:var(--ink);border-bottom-color:var(--ink);}
+
+/* ── PAGE ── */
+.page{max-width:1080px;margin:0 auto;padding:0 22px 80px;}
+
+/* ── HERO ── */
+.hero{padding:56px 0 44px;border-bottom:2px solid var(--ink);margin-bottom:48px;display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:end;}
+.hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:12px;}
+.hero-h1{font-size:34px;font-weight:900;color:var(--ink);letter-spacing:-.6px;line-height:1.1;margin-bottom:14px;}
+.hero-h1 em{color:var(--green);font-style:normal;}
+.hero-sub{font-size:13.5px;color:var(--muted);line-height:1.75;max-width:580px;}
+.hero-meta{text-align:right;font-size:11px;color:var(--faint);}
+.hero-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px;}
+.hpill{font-size:11px;font-weight:700;padding:5px 13px;border-radius:20px;border:1px solid;}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:48px;}
+.stat{border-radius:var(--r);padding:16px 18px;border:1px solid var(--line);}
+.stat-val{font-size:24px;font-weight:900;line-height:1;margin-bottom:6px;}
+.stat-label{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* ── CHAPTER ── */
+.chap{margin-bottom:60px;scroll-margin-top:52px;}
+.chap-hd{display:flex;align-items:center;gap:13px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:24px;}
+.chap-icon{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chap-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);flex-shrink:0;}
+.chap-title{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.2px;flex:1;}
+.chap-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+
+/* ── ACCORDION ── */
+.acc{border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;overflow:hidden;transition:box-shadow .2s;}
+.acc.open{box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.acc-h{display:flex;align-items:flex-start;gap:12px;padding:14px 17px;cursor:pointer;background:var(--bg2);transition:background .12s;user-select:none;}
+.acc-h:hover,.acc.open .acc-h{background:var(--bg3);}
+.acc-hicon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#fff;margin-top:1px;}
+.acc-meta{flex:1;}
+.acc-title{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px;line-height:1.3;}
+.acc-sub{font-size:11.5px;color:var(--muted);}
+.acc-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;flex-shrink:0;margin-top:4px;}
+.acc-chv{font-size:11px;color:var(--faint);transition:transform .2s;margin-top:4px;}
+.acc.open .acc-chv{transform:rotate(180deg);}
+.acc-body{display:none;border-top:1px solid var(--line);padding:20px 20px 22px;}
+.acc.open .acc-body{display:block;}
+
+/* ── CONTENT INSIDE ACC ── */
+.prose{font-size:12.5px;color:var(--muted);line-height:1.75;margin-bottom:12px;}
+.prose strong{color:var(--ink3);}
+.prose em{color:var(--ink3);font-style:normal;font-weight:700;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:12px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.card{border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;background:var(--bg);}
+.card-icon{font-size:18px;margin-bottom:6px;}
+.card-title{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.card-text{font-size:11.5px;color:var(--muted);line-height:1.6;}
+.card-text strong{color:var(--ink3);}
+
+/* PROVIDER COMPARISON TABLE */
+.dtw{overflow-x:auto;margin:14px 0;}
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{padding:8px 11px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);border-bottom:1.5px solid var(--line);text-align:left;background:var(--bg2);}
+.dt td{padding:10px 11px;vertical-align:top;border-bottom:1px solid var(--line);color:var(--muted);line-height:1.55;}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:var(--bg2);}
+.dt .tt{font-weight:700;color:var(--ink);font-size:12px;}
+.th-aws{color:var(--aws-d)!important;background:var(--aws-l)!important;}
+.th-az{color:var(--az-d)!important;background:var(--az-l)!important;}
+.th-gcp{color:var(--gcp-d)!important;background:var(--gcp-l)!important;}
+.th-hwc{color:var(--hwc-d)!important;background:var(--hwc-l)!important;}
+.td-aws{border-left:2.5px solid var(--aws);}
+.td-az{border-left:2.5px solid var(--az);}
+.td-gcp{border-left:2.5px solid var(--gcp);}
+.td-hwc{border-left:2.5px solid var(--hwc);}
+
+/* PILLS */
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;margin:1px 2px 0 0;}
+
+/* CALLOUTS */
+.cl{border-radius:var(--r-sm);padding:12px 15px;margin:12px 0;border-left:3px solid;font-size:12.5px;line-height:1.7;color:var(--muted);}
+.cl strong{font-weight:700;}
+.cl-green{background:var(--green-l);border-color:var(--green);} .cl-green strong{color:var(--green-d);}
+.cl-amber{background:var(--amber-l);border-color:var(--amber);} .cl-amber strong{color:var(--amber-d);}
+.cl-aws{background:var(--aws-l);border-color:var(--aws);} .cl-aws strong{color:var(--aws-d);}
+.cl-az{background:var(--az-l);border-color:var(--az);} .cl-az strong{color:var(--az-d);}
+.cl-gcp{background:var(--gcp-l);border-color:var(--gcp);} .cl-gcp strong{color:var(--gcp-d);}
+.cl-hwc{background:var(--hwc-l);border-color:var(--hwc);} .cl-hwc strong{color:var(--hwc-d);}
+.cl-purple{background:var(--purple-l);border-color:var(--purple);} .cl-purple strong{color:#4C1D95;}
+
+/* FEAT LISTS */
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--ink3);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* TIMELINE / SCHEDULE */
+.timeline{display:flex;flex-direction:column;gap:0;margin:12px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+.tl-row{display:flex;align-items:stretch;border-bottom:1px solid var(--line);}
+.tl-row:last-child{border-bottom:none;}
+.tl-time{width:100px;flex-shrink:0;padding:10px 12px;font-size:11px;font-weight:700;color:var(--ink3);background:var(--bg2);display:flex;align-items:center;border-right:1px solid var(--line);}
+.tl-bar-wrap{flex:1;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.tl-bar{height:22px;border-radius:4px;display:flex;align-items:center;padding:0 9px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;}
+.tl-label{font-size:11px;color:var(--muted);}
+.tl-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:auto;flex-shrink:0;}
+
+/* SAVINGS CALCULATOR VISUAL */
+.savings-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.sc-item{border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--line);}
+.sc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:8px;}
+.sc-price{font-size:22px;font-weight:900;margin-bottom:4px;}
+.sc-note{font-size:11px;color:var(--muted);line-height:1.5;}
+.sc-saving{font-size:13px;font-weight:700;padding:6px 12px;border-radius:20px;margin-top:10px;display:inline-block;}
+
+/* STEP FLOW */
+.steps{display:flex;gap:0;margin:14px 0;position:relative;}
+.steps::before{content:'';position:absolute;top:19px;left:20px;right:20px;height:2px;background:var(--line);z-index:0;}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;}
+.step-num{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;margin-bottom:8px;flex-shrink:0;}
+.step-title{font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3;}
+.step-desc{font-size:10.5px;color:var(--muted);line-height:1.4;}
+
+/* PITCH */
+.pitch{background:var(--ink);border-radius:var(--r);padding:24px 28px;margin:20px 0;}
+.pitch-eyebrow{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:7px;}
+.pitch-text{font-size:14px;color:rgba(255,255,255,.85);line-height:1.8;font-style:italic;}
+.pitch-text strong{color:#fff;font-style:normal;}
+
+/* FOOTER */
+.doc-footer{border-top:1px solid var(--line);margin-top:60px;padding-top:14px;font-size:11px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+@media(max-width:780px){
+  .hero{grid-template-columns:1fr;}
+  .hero-meta{text-align:left;}
+  .g2,.g3,.g4,.stat-row{grid-template-columns:1fr;}
+  .steps{flex-direction:column;align-items:flex-start;}
+  .steps::before{display:none;}
+  .savings-compare{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">💰 FinOps Cloud</div>
+  <a class="nl" href="#c1">Modelos de precio</a>
+  <a class="nl" href="#c2">Savings Plans</a>
+  <a class="nl" href="#c3">Spot / Preemptible</a>
+  <a class="nl" href="#c4">Throughput & Storage</a>
+  <a class="nl" href="#c5">Ventanas horarias</a>
+  <a class="nl" href="#c6">FinOps Buenas prácticas</a>
+  <a class="nl" href="#c7">Comparativa</a>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">Guía técnico-comercial · Personal Tech · Pre-Sales Toolkit</div>
+    <div class="hero-h1">Optimización de<br><em>costos cloud</em>:<br>AWS · Azure · GCP · HWC</div>
+    <div class="hero-sub">Modelos de ahorro, instancias Spot, Savings Plans, ventanas horarias para backups y procesos batch, rightsizing y buenas prácticas FinOps para los cuatro hyperscalers. Todo lo que necesitás saber para armar un TCO honesto y demostrar el diferencial de Personal Tech.</div>
+    <div class="hero-pills">
+      <span class="hpill" style="background:var(--aws-l);color:var(--aws-d);border-color:var(--aws);">🟠 AWS</span>
+      <span class="hpill" style="background:var(--az-l);color:var(--az-d);border-color:var(--az);">🔵 Azure</span>
+      <span class="hpill" style="background:var(--gcp-l);color:var(--gcp-d);border-color:var(--gcp);">🔷 GCP</span>
+      <span class="hpill" style="background:var(--hwc-l);color:var(--hwc-d);border-color:var(--hwc);">🟥 Huawei Cloud</span>
+    </div>
+  </div>
+  <div class="hero-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br>Personal Tech<br><span id="fecha"></span></div>
+</div>
+
+<!-- STATS -->
+<div class="stat-row">
+  <div class="stat" style="border-top:3px solid var(--green);">
+    <div class="stat-val" style="color:var(--green);">hasta 90%</div>
+    <div class="stat-label">Ahorro con Spot / Preemptible vs. On-Demand en los 4 hyperscalers</div>
+  </div>
+  <div class="stat" style="border-top:3px solid var(--aws);">
+    <div class="stat-val" style="color:var(--aws-d);">hasta 72%</div>
+    <div class="stat-label">Ahorro con Reserved Instances o Savings Plans a 3 años (AWS)</div>
+  </div>
+  <div class="stat" style="border-top:3px solid var(--az);">
+    <div class="stat-val" style="color:var(--az-d);">hasta 55%</div>
+    <div class="stat-label">Ahorro con Azure Hybrid Benefit si ya tenés licencias Windows/SQL Server</div>
+  </div>
+  <div class="stat" style="border-top:3px solid var(--purple);">
+    <div class="stat-val" style="color:var(--purple);">30–40%</div>
+    <div class="stat-label">Reducción típica de costo cloud en los primeros 3 meses de práctica FinOps</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C1: MODELOS DE PRECIO ═══════════════════════════════ -->
+<div class="chap" id="c1">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bg3);">🏷</div>
+    <span class="chap-num">01</span>
+    <div class="chap-title">Modelos de precio estándar — On-Demand y sus variantes</div>
+    <span class="chap-badge" style="background:var(--bg3);color:var(--ink3);">Fundamentos</span>
+  </div>
+
+  <div class="acc" id="a_od">
+    <div class="acc-h" onclick="T('a_od')">
+      <div class="acc-hicon" style="background:var(--ink);">⏱</div>
+      <div class="acc-meta">
+        <div class="acc-title">On-Demand — el modelo base (y el más caro)</div>
+        <div class="acc-sub">Pago por hora o por segundo de uso. Sin compromiso, sin descuento.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">El modelo On-Demand es el punto de partida de todos los hyperscalers: pagás por el tiempo que el recurso está encendido, sin compromiso previo. Es el más flexible y el más caro. <strong>Sirve para cargas impredecibles o picos puntuales, pero usarlo como base de toda la infraestructura es el error más común que dispara facturas inesperadas.</strong></div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Aspecto</th><th class="th-aws">🟠 AWS</th><th class="th-az">🔵 Azure</th><th class="th-gcp">🔷 GCP</th><th class="th-hwc">🟥 HWC</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Nombre</td><td class="td-aws">On-Demand Instances</td><td class="td-az">Pay-as-you-go</td><td class="td-gcp">On-Demand</td><td class="td-hwc">Pay-per-use</td></tr>
+          <tr><td class="tt">Granularidad</td><td class="td-aws">Por segundo (mín. 60s)</td><td class="td-az">Por minuto</td><td class="td-gcp">Por segundo (mín. 60s)</td><td class="td-hwc">Por hora</td></tr>
+          <tr><td class="tt">Compromiso</td><td class="td-aws">Ninguno</td><td class="td-az">Ninguno</td><td class="td-gcp">Ninguno</td><td class="td-hwc">Ninguno</td></tr>
+          <tr><td class="tt">Cuándo usarlo</td><td class="td-aws">Desarrollo, cargas impredecibles, picos cortos</td><td class="td-az">PoCs, entornos efímeros, evaluaciones</td><td class="td-gcp">Workloads erráticos o de duración desconocida</td><td class="td-hwc">Pruebas y cargas no planificadas</td></tr>
+          <tr><td class="tt">Referencia de precio (vCPU general)</td><td class="td-aws">~USD 0.048/h (t3.medium)</td><td class="td-az">~USD 0.044/h (B2s)</td><td class="td-gcp">~USD 0.038/h (e2-medium)</td><td class="td-hwc">~USD 0.036/h (s6.medium)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-amber"><strong>Error típico:</strong> Dejar entornos de desarrollo, staging y QA encendidos 24x7 en On-Demand. Si el equipo trabaja 8h/día x 5 días, el 65% del tiempo esas máquinas están pagando sin producir nada. Con apagado programado se recuperan inmediatamente.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_ri">
+    <div class="acc-h" onclick="T('a_ri')">
+      <div class="acc-hicon" style="background:var(--green);">📅</div>
+      <div class="acc-meta">
+        <div class="acc-title">Reserved Instances / Committed Use — el descuento por compromiso</div>
+        <div class="acc-sub">Comprometés uso por 1 o 3 años y el hyperscaler te da hasta un 72% de descuento sobre On-Demand.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">El modelo de reserva es el más directo para bajar costos en cargas <em>estables y predecibles</em>. Comprometés una capacidad mínima a cambio de un precio significativamente menor. La diferencia entre vendors está en la flexibilidad del compromiso.</div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Aspecto</th><th class="th-aws">🟠 AWS</th><th class="th-az">🔵 Azure</th><th class="th-gcp">🔷 GCP</th><th class="th-hwc">🟥 HWC</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Nombre</td><td class="td-aws">Reserved Instances (RI)</td><td class="td-az">Reserved VM Instances</td><td class="td-gcp">Committed Use Discounts (CUD)</td><td class="td-hwc">Reserved Discounts / Yearly Prepay</td></tr>
+          <tr><td class="tt">Duración</td><td class="td-aws">1 año o 3 años</td><td class="td-az">1 año o 3 años</td><td class="td-gcp">1 año o 3 años</td><td class="td-hwc">1 mes, 1 año o 3 años</td></tr>
+          <tr><td class="tt">Ahorro máximo</td><td class="td-aws">Hasta 72% (3 años, all-upfront)</td><td class="td-az">Hasta 72% (3 años)</td><td class="td-gcp">Hasta 57% (3 años)</td><td class="td-hwc">Hasta 60% (3 años)</td></tr>
+          <tr><td class="tt">Pago</td><td class="td-aws">All-upfront (máx. descuento), Partial-upfront o No-upfront</td><td class="td-az">Pago único o mensual</td><td class="td-gcp">Solo mensual (sin prepago único)</td><td class="td-hwc">Prepago total o mensual</td></tr>
+          <tr><td class="tt">Flexibilidad</td><td class="td-aws">Convertible RIs: podés cambiar familia de instancia. Standard RIs: fijas pero mayor descuento.</td><td class="td-az">Instance Size Flexibility: aplica a cualquier tamaño dentro de la misma familia.</td><td class="td-gcp">Resource-based o Spend-based. Se aplica automáticamente a recursos compatibles.</td><td class="td-hwc">Menos flexible, ligada a región e instancia específica.</td></tr>
+          <tr><td class="tt">Ejemplo de ahorro</td><td class="td-aws">m5.xlarge On-Demand: ~USD 140/mes → RI 3 años all-upfront: ~USD 39/mes</td><td class="td-az">D4s_v3 On-Demand: ~USD 139/mes → Reserved 3 años: ~USD 39/mes</td><td class="td-gcp">n2-standard-4 On-Demand: ~USD 136/mes → CUD 3 años: ~USD 58/mes</td><td class="td-hwc">c6.xlarge On-Demand: ~USD 120/mes → 3 años: ~USD 48/mes</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-green"><strong>Cuándo recomendar Reserved:</strong> Si el workload lleva más de 6 meses en producción con uso mayor al 70% del tiempo, el payback de una reserva 1 año se da en menos de 3 meses. Para workloads estables (&gt;85% de uso), 3 años all-upfront es la opción óptima.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_su">
+    <div class="acc-h" onclick="T('a_su')">
+      <div class="acc-hicon" style="background:var(--gcp);">📈</div>
+      <div class="acc-meta">
+        <div class="acc-title">Sustained Use Discounts (GCP) — descuento automático sin hacer nada</div>
+        <div class="acc-sub">GCP descuenta automáticamente cuanto más tiempo corre una VM en el mes. No requiere compromiso previo.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose"><strong>Exclusivo de GCP.</strong> Si una VM corre más del 25% del mes, GCP aplica descuentos automáticos y crecientes según el % de uso mensual. No se necesita activar nada ni comprometer capacidad.</div>
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-title">0–25% del mes</div>
+          <div class="card-text">Precio On-Demand normal. Sin descuento aplicado aún.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-title">25–50% del mes</div>
+          <div class="card-text"><strong>20% de descuento</strong> sobre las horas en ese rango. Aplica automáticamente.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-title">50–75% del mes</div>
+          <div class="card-text"><strong>40% de descuento</strong> sobre las horas en ese rango.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-title">75–100% del mes</div>
+          <div class="card-text"><strong>60% de descuento</strong> sobre las horas en ese rango.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-title">Descuento efectivo final</div>
+          <div class="card-text">VM corriendo 100% del mes paga <strong>solo ~30% del precio On-Demand</strong> neto por el efecto compuesto de los tramos.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--amber);">
+          <div class="card-title">Limitación</div>
+          <div class="card-text">No aplica a Spot/Preemptible. Tampoco se combina con CUDs (se elige uno u otro por recurso).</div>
+        </div>
+      </div>
+      <div class="cl cl-gcp"><strong>Por qué importa para el argumentario:</strong> Un cliente que migra sus VMs a GCP y las deja correr sin hacer nada especial, ya obtiene un descuento automático. Con CUD encima, llega hasta el 57% de ahorro sin complejidad operativa.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_hyb">
+    <div class="acc-h" onclick="T('a_hyb')">
+      <div class="acc-hicon" style="background:var(--az);">🪟</div>
+      <div class="acc-meta">
+        <div class="acc-title">Azure Hybrid Benefit — el descuento que solo Microsoft puede dar</div>
+        <div class="acc-sub">Si ya tenés licencias de Windows Server o SQL Server, Azure te da la instancia casi gratis. Hasta 55% de ahorro adicional.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">Azure Hybrid Benefit (AHB) permite usar licencias on-premise ya adquiridas (con Software Assurance) para no pagar la licencia de sistema operativo o SQL Server en la nube. <strong>Es el argumento más potente para clientes Microsoft-first que tienen licencias perpetuas o SA activa.</strong></div>
+      <div class="g2">
+        <div>
+          <div class="card" style="border-top:3px solid var(--az);margin-bottom:10px;">
+            <div class="card-title">Windows Server + AHB</div>
+            <div class="card-text">Eliminás el costo de licencia de Windows Server incluido en el precio de la VM. <strong>Ahorro: 40–55%</strong> sobre el precio base de la VM con Windows.</div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--az);">
+            <div class="card-title">SQL Server + AHB</div>
+            <div class="card-text">Aportás tu licencia SQL Server y solo pagás el cómputo. <strong>Ahorro potencial: hasta 80%</strong> sobre el precio base de Azure SQL con licencia incluida.</div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="border-top:3px solid var(--green);">
+            <div class="card-title">AHB + Reserved Instance = máximo ahorro</div>
+            <div class="card-text">Combinando AHB con una reserva de 3 años:<br><br>Windows Server VM (D4s v3):<br>On-Demand + licencia: <strong>~USD 280/mes</strong><br>Reserved 3 años + AHB: <strong>~USD 55/mes</strong><br><br><span style="color:var(--green);font-weight:700;">Ahorro total: ~80%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cl cl-az"><strong>Cómo activarlo:</strong> Se activa en el portal de Azure al momento de crear o modificar la VM, marcando "Azure Hybrid Benefit" en la configuración. No requiere compra adicional, solo confirmación de que se cuenta con SA o suscripción activa. También se puede activar sobre VMs existentes sin detenerlas.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C2: SAVINGS PLANS ═══════════════════════════════ -->
+<div class="chap" id="c2">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--green-l);">💳</div>
+    <span class="chap-num">02</span>
+    <div class="chap-title">Savings Plans — compromiso de gasto, no de recurso</div>
+    <span class="chap-badge" style="background:var(--green-l);color:var(--green-d);">Hasta 66% de ahorro</span>
+  </div>
+
+  <div class="acc" id="a_sp_intro">
+    <div class="acc-h" onclick="T('a_sp_intro')">
+      <div class="acc-hicon" style="background:var(--green);">💡</div>
+      <div class="acc-meta">
+        <div class="acc-title">¿Qué son los Savings Plans? — La evolución de las Reserved Instances</div>
+        <div class="acc-sub">Comprometés un gasto mínimo por hora (ej. USD 10/h) y el hyperscaler aplica descuentos automáticamente a lo que consumís.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">Los Savings Plans son la respuesta a la rigidez de las Reserved Instances. En vez de comprometer una instancia específica, comprometés un <em>nivel mínimo de gasto por hora</em> (en USD). El hyperscaler aplica el descuento automáticamente a los servicios elegibles, independientemente de qué tipo de instancia uses o en qué región.</div>
+      <div class="g2">
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">🔒</div>
+          <div class="card-title">Reserved Instances (modelo anterior)</div>
+          <div class="card-text">Comprometés una instancia específica (tipo, región, OS). <strong>Mayor descuento</strong> pero inflexible — si cambiás de instancia, perdés el beneficio.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">🔓</div>
+          <div class="card-title">Savings Plans (modelo moderno)</div>
+          <div class="card-text">Comprometés un gasto mínimo por hora. <strong>Menor descuento máximo</strong> pero aplica automáticamente a cualquier instancia elegible. Mucho más fácil de gestionar.</div>
+        </div>
+      </div>
+      <div class="cl cl-green"><strong>¿Cuál elegir?</strong> Para workloads muy estables (misma instancia, misma región, durante años): Reserved Instance da más descuento. Para entornos que evolucionan, migran o cambian de tipo de instancia frecuentemente: Savings Plans dan flexibilidad sin sacrificar demasiado descuento.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_sp_aws">
+    <div class="acc-h" onclick="T('a_sp_aws')">
+      <div class="acc-hicon" style="background:var(--aws);">🟠</div>
+      <div class="acc-meta">
+        <div class="acc-title">AWS Savings Plans — Compute SP vs. EC2 Instance SP</div>
+        <div class="acc-sub">AWS tiene dos tipos de Savings Plans con diferente nivel de flexibilidad y descuento.</div>
+      </div>
+      <span class="acc-tag" style="background:var(--aws-l);color:var(--aws-d);">AWS</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Tipo</th><th>Flexibilidad</th><th>Ahorro máximo</th><th>Aplica a</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Compute Savings Plans</td><td class="td-aws">Máxima: cualquier familia EC2, región, OS, tenancy. También aplica a Fargate y Lambda.</td><td class="td-aws"><strong>Hasta 66%</strong> vs. On-Demand</td><td class="td-aws">EC2, Fargate, Lambda</td></tr>
+          <tr><td class="tt">EC2 Instance Savings Plans</td><td class="td-aws">Ligado a una familia de instancia y región (ej: m5 en us-east-1), pero flexible en tamaño y OS.</td><td class="td-aws"><strong>Hasta 72%</strong> vs. On-Demand</td><td class="td-aws">Solo EC2 en la familia/región comprometida</td></tr>
+          <tr><td class="tt">SageMaker Savings Plans</td><td class="td-aws">Específico para ML. Flexible en tipo de instancia y región.</td><td class="td-aws"><strong>Hasta 64%</strong></td><td class="td-aws">Amazon SageMaker</td></tr>
+        </tbody>
+      </table></div>
+      <div class="steps" style="margin-top:16px;">
+        <div class="step"><div class="step-num" style="background:var(--aws);">1</div><div class="step-title">Analizá tu uso</div><div class="step-desc">En AWS Cost Explorer → Savings Plans → Recommendations. AWS calcula el nivel óptimo de compromiso.</div></div>
+        <div class="step"><div class="step-num" style="background:var(--aws);">2</div><div class="step-title">Elegí el tipo</div><div class="step-desc">Compute SP para máxima flexibilidad, EC2 SP si tu workload es estable en familia y región.</div></div>
+        <div class="step"><div class="step-num" style="background:var(--aws);">3</div><div class="step-title">Definí el término</div><div class="step-desc">1 año o 3 años. Pago all-upfront (máx. descuento), partial o no upfront.</div></div>
+        <div class="step"><div class="step-num" style="background:var(--aws);">4</div><div class="step-title">Confirmá la compra</div><div class="step-desc">En Savings Plans → Purchase. Empieza a aplicarse en horas.</div></div>
+        <div class="step"><div class="step-num" style="background:var(--aws);">5</div><div class="step-title">Monitoreá la cobertura</div><div class="step-desc">Savings Plans Coverage Dashboard muestra qué % del uso está cubierto.</div></div>
+      </div>
+      <div class="cl cl-aws"><strong>Ejemplo práctico:</strong> Una empresa con gasto EC2 de USD 50/h en On-Demand compra un Compute SP de USD 35/h (70% del gasto). Todo lo que corre dentro del plan paga con descuento; lo que supera USD 35/h paga On-Demand. Ahorro estimado: USD 800–1.200/mes.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_sp_az">
+    <div class="acc-h" onclick="T('a_sp_az')">
+      <div class="acc-hicon" style="background:var(--az);">🔵</div>
+      <div class="acc-meta">
+        <div class="acc-title">Azure Savings Plans for Compute</div>
+        <div class="acc-sub">Introducido en 2022. Compromiso de gasto horario en cómputo con flexibilidad total de instancia, región y OS.</div>
+      </div>
+      <span class="acc-tag" style="background:var(--az-l);color:var(--az-d);">Azure</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">Azure Savings Plans for Compute aplica a VMs, Dedicated Hosts, Container Instances, Azure Functions Premium y Azure App Service. El compromiso es en USD/hora durante 1 o 3 años.</div>
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-title">Ahorro típico</div>
+          <div class="card-text">Hasta <strong>65%</strong> vs. Pay-as-you-go (1 año: ~37%, 3 años: ~65%)</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-title">Ámbito</div>
+          <div class="card-text">Se puede aplicar a un recurso, resource group, suscripción o toda la cuenta (Management Group)</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-title">SP + AHB + Reserved</div>
+          <div class="card-text">Savings Plans y AHB se pueden combinar. Savings Plans y Reserved Instance no se apilan — se elige uno por recurso.</div>
+        </div>
+      </div>
+      <div class="steps" style="margin-top:14px;">
+        <div class="step"><div class="step-num" style="background:var(--az);">1</div><div class="step-title">Azure Portal</div><div class="step-desc">→ Cost Management → Savings Plans → Recommendations</div></div>
+        <div class="step"><div class="step-num" style="background:var(--az);">2</div><div class="step-title">Revisá el análisis</div><div class="step-desc">Azure muestra el nivel óptimo basado en tu historial de los últimos 7/30/60 días.</div></div>
+        <div class="step"><div class="step-num" style="background:var(--az);">3</div><div class="step-title">Elegí 1 o 3 años</div><div class="step-desc">3 años da el máximo descuento pero menos flexibilidad ante cambios de plataforma.</div></div>
+        <div class="step"><div class="step-num" style="background:var(--az);">4</div><div class="step-title">Comprá</div><div class="step-desc">→ Purchase Savings Plan. Se activa en el momento.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_sp_gcp">
+    <div class="acc-h" onclick="T('a_sp_gcp')">
+      <div class="acc-hicon" style="background:var(--gcp);">🔷</div>
+      <div class="acc-meta">
+        <div class="acc-title">GCP Committed Use Discounts (CUD) — los "Savings Plans" de Google</div>
+        <div class="acc-sub">GCP llama Committed Use Discounts a su modelo de compromiso. Dos tipos: Resource-based y Spend-based.</div>
+      </div>
+      <span class="acc-tag" style="background:var(--gcp-l);color:var(--gcp-d);">GCP</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">GCP tiene dos variantes de CUD, con diferente nivel de flexibilidad y aplicabilidad:</div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Tipo</th><th>Compromiso</th><th>Flexibilidad</th><th>Ahorro</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Resource-based CUD</td><td class="td-gcp">Comprometés vCPUs y GB de RAM específicos por proyecto y región.</td><td class="td-gcp">Aplica automáticamente a cualquier VM en esa región que use esos recursos.</td><td class="td-gcp">Hasta <strong>57%</strong> vs. On-Demand</td></tr>
+          <tr><td class="tt">Spend-based CUD</td><td class="td-gcp">Comprometés un gasto mínimo en USD por hora para servicios específicos (Cloud SQL, Cloud Run, GKE, etc.).</td><td class="td-gcp">Más flexible — aplica sobre el gasto sin importar el tipo de recurso exacto.</td><td class="td-gcp">Hasta <strong>40%</strong> vs. On-Demand</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-gcp"><strong>Ventaja única de GCP:</strong> Los Sustained Use Discounts (automáticos) y los CUD no se excluyen mutuamente en todos los casos. Para VMs que corren full-time, es posible aprovechar SUD como base y agregar CUD encima para maximizar el ahorro total sin gestión manual.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_sp_hwc">
+    <div class="acc-h" onclick="T('a_sp_hwc')">
+      <div class="acc-hicon" style="background:var(--hwc);">🟥</div>
+      <div class="acc-meta">
+        <div class="acc-title">Huawei Cloud — Reserved Discounts y Savings Plans</div>
+        <div class="acc-sub">HWC combina prepago de instancias con planes de ahorro por gasto comprometido para workloads de LATAM.</div>
+      </div>
+      <span class="acc-tag" style="background:var(--hwc-l);color:var(--hwc-d);">HWC</span>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Modelo</th><th>Descripción</th><th>Ahorro</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Yearly/Monthly Prepay</td><td class="td-hwc">Pago mensual o anual anticipado por la instancia. Más simple que los modelos de AWS/Azure.</td><td class="td-hwc">Hasta 40% vs. pay-per-use</td></tr>
+          <tr><td class="tt">Spot ECS</td><td class="td-hwc">Instancias con capacidad sobrante. Ver sección de Spot.</td><td class="td-hwc">Hasta 90% vs. On-Demand</td></tr>
+          <tr><td class="tt">Savings Plans HWC</td><td class="td-hwc">Compromiso de gasto mínimo horario aplicable a ECS, CCE (Kubernetes) y BMS (Bare Metal).</td><td class="td-hwc">Hasta 60% con 3 años</td></tr>
+          <tr><td class="tt">Partner Credits</td><td class="td-hwc">Créditos adicionales disponibles para clientes que compran a través de Personal Tech como partner HWC.</td><td class="td-hwc">Variable según volumen</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-hwc"><strong>Diferencial de HWC para Argentina:</strong> Facturación en pesos, datacenters en Buenos Aires (latencia 20ms), soporte 7x24 en español. Los planes de ahorro de HWC en LATAM tienen precios más competitivos que AWS/Azure en algunas familias de instancias de propósito general.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C3: SPOT / PREEMPTIBLE ═══════════════════════════════ -->
+<div class="chap" id="c3">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--amber-l);">⚡</div>
+    <span class="chap-num">03</span>
+    <div class="chap-title">Spot / Preemptible Instances — hasta 90% de descuento con un tradeoff</div>
+    <span class="chap-badge" style="background:var(--amber-l);color:var(--amber-d);">Para cargas tolerantes a interrupción</span>
+  </div>
+
+  <div class="acc" id="a_spot_intro">
+    <div class="acc-h" onclick="T('a_spot_intro')">
+      <div class="acc-hicon" style="background:var(--amber);">⚡</div>
+      <div class="acc-meta">
+        <div class="acc-title">¿Qué son las Spot / Preemptible y cuándo NO usarlas?</div>
+        <div class="acc-sub">Capacidad sobrante del datacenter vendida con enorme descuento. El hyperscaler puede recuperarlas con 2 minutos de aviso.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">Los hyperscalers tienen siempre servidores encendidos y sin usar. Para monetizar esa capacidad ociosa, la venden a precio muy bajo bajo la condición de que si necesitan la capacidad para otro cliente, la recuperan — con un aviso previo muy corto (2 minutos en AWS, 30 segundos en GCP). <strong>El precio compensa el riesgo de interrupción.</strong></div>
+      <div class="g2">
+        <div>
+          <div class="card-title" style="margin-bottom:8px;font-size:13px;font-weight:700;">✅ IDEAL para Spot</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Procesamiento batch:</strong> reportes nocturnos, ETL, transformaciones de datos</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Backups y compresión:</strong> el proceso puede reiniciarse sin perder datos si se interrumpe</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Render de videos e imágenes:</strong> trabajo paralelizable y reanudable</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Entrenamiento de modelos ML:</strong> los checkpoints permiten continuar desde el punto de interrupción</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Testing y QA automatizado:</strong> si falla el runner, se relanza el test</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Web scraping y crawlers</strong></li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Simulaciones científicas</strong> con checkpointing habilitado</li>
+          </ul>
+        </div>
+        <div>
+          <div class="card-title" style="margin-bottom:8px;font-size:13px;font-weight:700;">❌ NO usar Spot para</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--hwc);"></span><strong>Bases de datos productivas</strong> (una interrupción durante una transacción es crítica)</li>
+            <li><span class="fdot" style="background:var(--hwc);"></span><strong>Servidores web de producción</strong> sin capa de orquestación que gestione la interrupción</li>
+            <li><span class="fdot" style="background:var(--hwc);"></span><strong>ERP o sistemas core</strong> del negocio</li>
+            <li><span class="fdot" style="background:var(--hwc);"></span><strong>Workloads stateful</strong> que no toleran perder el estado en memoria</li>
+            <li><span class="fdot" style="background:var(--hwc);"></span><strong>Sistemas de pagos y transacciones financieras</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_spot_table">
+    <div class="acc-h" onclick="T('a_spot_table')">
+      <div class="acc-hicon" style="background:var(--ink);">📊</div>
+      <div class="acc-meta">
+        <div class="acc-title">Comparativa Spot por hyperscaler — nombres, precios y comportamiento</div>
+        <div class="acc-sub">Cada vendor tiene su propio nombre y mecanismo de interrupción.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Aspecto</th><th class="th-aws">🟠 AWS Spot Instances</th><th class="th-az">🔵 Azure Spot VMs</th><th class="th-gcp">🔷 GCP Preemptible VMs / Spot VMs</th><th class="th-hwc">🟥 HWC Spot ECS</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Ahorro típico</td><td class="td-aws"><strong>60–90%</strong> vs. On-Demand</td><td class="td-az"><strong>60–90%</strong> vs. PAYG</td><td class="td-gcp">Preemptible: <strong>60–80%</strong><br>Spot VM: <strong>60–91%</strong></td><td class="td-hwc"><strong>50–80%</strong> vs. pay-per-use</td></tr>
+          <tr><td class="tt">Aviso de interrupción</td><td class="td-aws"><strong>2 minutos</strong> — Spot Instance Interruption Notice vía metadata</td><td class="td-az"><strong>30 segundos</strong> vía Scheduled Events</td><td class="td-gcp">Preemptible: <strong>30 segundos</strong>. Spot VM: variable.</td><td class="td-hwc"><strong>1 hora</strong> (diferencial vs. AWS/Azure)</td></tr>
+          <tr><td class="tt">Duración máxima</td><td class="td-aws">Sin límite (hasta que el precio suba o se necesite capacidad)</td><td class="td-az">Sin límite oficial</td><td class="td-gcp">Preemptible: máx. <strong>24 horas</strong>. Spot VM: sin límite.</td><td class="td-hwc">Sin límite</td></tr>
+          <tr><td class="tt">Mecanismo de precio</td><td class="td-aws">Precio variable por subasta de mercado. Se define un precio máximo a pagar.</td><td class="td-az">Precio fijo por región (no subasta). Se interrumpe cuando hay demanda de capacidad.</td><td class="td-gcp">Precio fijo (70% de descuento base). No hay subasta.</td><td class="td-hwc">Precio variable por oferta y demanda regional.</td></tr>
+          <tr><td class="tt">Herramienta de gestión</td><td class="td-aws">Spot Fleet (múltiples pools de instancias) + EC2 Auto Scaling con Spot</td><td class="td-az">Azure VMSS (Virtual Machine Scale Sets) con prioridad Spot</td><td class="td-gcp">MIG (Managed Instance Group) con mezcla On-Demand + Spot</td><td class="td-hwc">ECS Auto Scaling Groups con Spot ECS</td></tr>
+          <tr><td class="tt">Mejor para</td><td class="td-aws">Workloads batch a escala masiva. Spot Fleet permite mezclar tipos de instancia para maximizar disponibilidad.</td><td class="td-az">Workloads de CI/CD, render y ML en Azure. Eviction Policy configurable (Delete o Deallocate).</td><td class="td-gcp">ML training con TensorFlow/PyTorch. Checkpointing nativo en Vertex AI.</td><td class="td-hwc">Workloads de cómputo intensivo en LATAM con cobertura local.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-green"><strong>Estrategia híbrida recomendada:</strong> Usar On-Demand (o Reserved) para el nodo base que garantiza el mínimo de capacidad, y Spot para escalar horizontalmente ante picos de demanda. AWS Auto Scaling permite definir exactamente qué % de la capacidad debe ser On-Demand y qué % Spot (ej. 20/80).</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_spot_arch">
+    <div class="acc-h" onclick="T('a_spot_arch')">
+      <div class="acc-hicon" style="background:var(--green);">🏗</div>
+      <div class="acc-meta">
+        <div class="acc-title">Cómo diseñar una arquitectura tolerante a interrupciones Spot</div>
+        <div class="acc-sub">Patrones de diseño para aprovechar Spot sin asumir riesgo operativo.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g3">
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">💾</div>
+          <div class="card-title">Checkpointing</div>
+          <div class="card-text">Guardá el estado del proceso cada N minutos en S3/Blob/GCS. Ante una interrupción, el nuevo nodo Spot retoma desde el último checkpoint. Fundamental para ML training y render.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">🔀</div>
+          <div class="card-title">Multiple Instance Pools</div>
+          <div class="card-text">En AWS Spot Fleet / Azure VMSS, especificá múltiples tipos de instancia. Si se agota la capacidad de m5.large, automáticamente usa m4.large o c5.large. Reduce drásticamente el riesgo de interrupción masiva.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">📨</div>
+          <div class="card-title">Queue-based Decoupling</div>
+          <div class="card-text">Las tareas van a una cola (SQS/Service Bus/Pub-Sub). Los workers Spot consumen de la cola. Si un worker se interrumpe, el mensaje vuelve a la cola y otro worker lo retoma. Patrón más robusto para batch.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--aws);">
+          <div class="card-icon">🔔</div>
+          <div class="card-title">Interruption Handler</div>
+          <div class="card-text">Registrá un listener en el metadata endpoint de la instancia. Ante el aviso de 2 minutos (AWS) o 30 segundos (GCP), el handler dispara el guardado del checkpoint y drena el trabajo pendiente.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">Eviction Policy "Deallocate" (Azure)</div>
+          <div class="card-text">Configurar la Spot VM de Azure para que al interrumpirse quede en estado Deallocated (no eliminada). El disco se preserva y se puede reiniciar cuando haya capacidad sin perder datos.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-icon">⏰</div>
+          <div class="card-title">GCP Spot con Max-run-duration</div>
+          <div class="card-text">Las GCP Spot VMs permiten definir un tiempo máximo de ejecución. Útil para garantizar que el proceso termine antes de una posible interrupción planificada.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C4: THROUGHPUT & STORAGE ═══════════════════════════════ -->
+<div class="chap" id="c4">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--az-l);">📦</div>
+    <span class="chap-num">04</span>
+    <div class="chap-title">Throughput, Storage y Egress — los costos que nadie ve en el precio de lista</div>
+    <span class="chap-badge" style="background:var(--az-l);color:var(--az-d);">El "letra chica" del cloud</span>
+  </div>
+
+  <div class="acc" id="a_egress">
+    <div class="acc-h" onclick="T('a_egress')">
+      <div class="acc-hicon" style="background:var(--hwc);">🚪</div>
+      <div class="acc-meta">
+        <div class="acc-title">Egress Fees — el costo que los hyperscalers no publicitan</div>
+        <div class="acc-sub">Transferir datos hacia afuera del cloud (hacia Internet o entre regiones) tiene costo. Puede ser el ítem más alto de la factura.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose"><strong>Egress = datos que salen del cloud.</strong> Los hyperscalers cobran por TB de datos transferidos a Internet o entre sus propias regiones. Los datos que entran al cloud (ingress) son gratuitos. Este costo puede representar el 20–40% de una factura cloud en arquitecturas con mucho tráfico de red.</div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Tipo de tráfico</th><th class="th-aws">🟠 AWS</th><th class="th-az">🔵 Azure</th><th class="th-gcp">🔷 GCP</th><th class="th-hwc">🟥 HWC</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Ingress (hacia la nube)</td><td class="td-aws">Gratis</td><td class="td-az">Gratis</td><td class="td-gcp">Gratis</td><td class="td-hwc">Gratis</td></tr>
+          <tr><td class="tt">Egress a Internet (primeros TB)</td><td class="td-aws">Primeros 100GB/mes gratis, luego ~USD 0.09/GB</td><td class="td-az">Primeros 100GB/mes gratis, luego ~USD 0.087/GB</td><td class="td-gcp">Primeros 200GB/mes gratis, luego ~USD 0.12/GB (América)</td><td class="td-hwc">~USD 0.08/GB (menor que AWS/Azure)</td></tr>
+          <tr><td class="tt">Entre regiones (mismo vendor)</td><td class="td-aws">~USD 0.02/GB entre regiones (varía)</td><td class="td-az">~USD 0.02/GB entre regiones</td><td class="td-gcp">Gratis dentro de la misma zona, ~USD 0.01/GB entre zonas</td><td class="td-hwc">Gratis entre regiones HWC en LATAM</td></tr>
+          <tr><td class="tt">Entre availability zones</td><td class="td-aws">~USD 0.01/GB entre AZs</td><td class="td-az">Gratis en la misma región</td><td class="td-gcp">Gratis entre zonas de la misma región (para muchos servicios)</td><td class="td-hwc">Gratis entre AZs</td></tr>
+          <tr><td class="tt">Con Direct Connect / ExpressRoute</td><td class="td-aws">~USD 0.02/GB (vs 0.09 por internet)</td><td class="td-az">~USD 0.025/GB salida (metered circuit)</td><td class="td-gcp">~USD 0.02/GB con Cloud Interconnect</td><td class="td-hwc">Reducido con acceso dedicado</td></tr>
+        </tbody>
+      </table></div>
+      <div class="pitch">
+        <div class="pitch-eyebrow">Argumento Personal Tech — El egress que no se muestra en el precio de lista</div>
+        <div class="pitch-text">"Cuando AWS dice que su VM cuesta USD 50/mes, no muestra lo que vas a pagar cuando los datos de esa VM lleguen a tus sedes o a tus usuarios. <strong>Con Personal Tech, el MPLS termina en el mismo datacenter donde está tu workload.</strong> El tráfico entre tu cloud y tus sedes nunca sale a internet — no hay egress fees. Ese ítem que en AWS se paga por separado, en Personal Tech no existe porque la red y el cloud son del mismo proveedor."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_storage_tiers">
+    <div class="acc-h" onclick="T('a_storage_tiers')">
+      <div class="acc-hicon" style="background:var(--aws);">💾</div>
+      <div class="acc-meta">
+        <div class="acc-title">Tiers de almacenamiento — cómo bajar el costo del storage hasta 95%</div>
+        <div class="acc-sub">Los cuatro hyperscalers tienen múltiples clases de storage según la frecuencia de acceso. Usar el tier incorrecto es tirar dinero.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">El storage es frecuentemente el componente más subestimado del costo cloud. La regla es simple: <em>cuanto menos frecuente el acceso, más barato debe ser el tier de storage</em>. Pagar el tier "hot" por datos que solo se acceden una vez al año es el desperdicio más común.</div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Tier</th><th class="th-aws">🟠 AWS S3</th><th class="th-az">🔵 Azure Blob</th><th class="th-gcp">🔷 Cloud Storage</th><th>Precio aprox.</th><th>Tiempo de recuperación</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Hot / Standard</td><td class="td-aws">S3 Standard</td><td class="td-az">Hot</td><td class="td-gcp">Standard</td><td>~USD 0.023/GB/mes</td><td>Inmediato</td></tr>
+          <tr><td class="tt">Acceso infrecuente</td><td class="td-aws">S3 Standard-IA</td><td class="td-az">Cool</td><td class="td-gcp">Nearline</td><td>~USD 0.0125/GB/mes</td><td>Inmediato (con costo por recuperación)</td></tr>
+          <tr><td class="tt">Acceso muy infrecuente</td><td class="td-aws">S3 One Zone-IA</td><td class="td-az">Cold</td><td class="td-gcp">Coldline</td><td>~USD 0.004/GB/mes</td><td>Inmediato (mayor costo por recuperación)</td></tr>
+          <tr><td class="tt">Archivo (cold)</td><td class="td-aws">S3 Glacier Instant</td><td class="td-az">Archive</td><td class="td-gcp">Archive</td><td>~USD 0.0036/GB/mes</td><td>Milisegundos (Glacier Instant) o minutos/horas (Archive)</td></tr>
+          <tr><td class="tt">Archivo profundo</td><td class="td-aws">S3 Glacier Deep Archive</td><td class="td-az">—</td><td class="td-gcp">—</td><td><strong>~USD 0.00099/GB/mes</strong></td><td>12–48 horas</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-aws"><strong>S3 Intelligent-Tiering (AWS):</strong> Mueve automáticamente los objetos entre tiers basándose en el patrón de acceso real. Pequeño costo mensual de monitoreo (~USD 0.0025/1.000 objetos) pero ahorra el 40–90% en datos que se "enfrían" con el tiempo. Ideal para buckets con patrones de acceso mixtos o difíciles de predecir.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_throughput">
+    <div class="acc-h" onclick="T('a_throughput')">
+      <div class="acc-hicon" style="background:var(--gcp);">🚀</div>
+      <div class="acc-meta">
+        <div class="acc-title">Throughput de instancias — el ancho de banda de red entre VM y storage</div>
+        <div class="acc-sub">El tamaño de instancia define cuánto throughput de red y de disco podés usar. Sub-dimensionar el throughput es el cuello de botella más común en procesos batch.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">Cuando una instancia procesa datos (ej. un job de ETL leyendo de S3 y escribiendo en RDS), el límite de throughput define cuánto puede transferir por segundo. <strong>Un job que podría terminar en 1 hora tarda 6 horas si la instancia elegida tiene throughput insuficiente — y paga 6 horas en vez de 1.</strong></div>
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Tipo de Throughput</th><th>Qué limita</th><th>Cómo afecta el costo</th><th>Referencia</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Throughput de red de la instancia</td><td>MB/s de datos que pueden entrar/salir de la VM hacia Internet o servicios cloud</td><td>Una instancia con throughput bajo tarda más en leer de S3/Blob, extendiendo el tiempo de cómputo</td><td>t3.medium: ~0.5 Gbps | m5.4xlarge: ~10 Gbps</td></tr>
+          <tr><td class="tt">Throughput de EBS / Managed Disk</td><td>MB/s de lectura/escritura al disco adjunto</td><td>Un proceso I/O intensivo (base de datos, ETL) limitado por disco paga más tiempo de compute</td><td>gp3: hasta 1.000 MB/s | io2: hasta 4.000 MB/s</td></tr>
+          <tr><td class="tt">IOPS (operaciones/segundo)</td><td>Cantidad de operaciones de I/O pequeñas por segundo</td><td>Bases de datos con muchas transacciones pequeñas necesitan IOPS, no throughput. Sub-dimensionar IOPS causa latencia alta.</td><td>gp3: hasta 16.000 IOPS | io2: hasta 64.000 IOPS</td></tr>
+          <tr><td class="tt">Throughput de salida (egress)</td><td>MB/s de datos que salen del cloud hacia Internet</td><td>Además del tiempo, cada GB tiene costo. Un proceso que transfiere 10TB a Internet puede generar USD 900 solo en egress.</td><td>~USD 0.09/GB (AWS) después del free tier</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cl cl-green"><strong>Regla práctica:</strong> Para procesos batch intensivos en I/O (ETL, backup, compresión), elegí instancias optimizadas para almacenamiento (i3, i4, d3 en AWS; Lsv3 en Azure; n2-highmem en GCP). El costo por hora es mayor, pero el proceso termina en la mitad del tiempo — el costo total baja.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C5: VENTANAS HORARIAS ═══════════════════════════════ -->
+<div class="chap" id="c5">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--purple-l);">🕐</div>
+    <span class="chap-num">05</span>
+    <div class="chap-title">Ventanas horarias — cómo bajar costos con el reloj</div>
+    <span class="chap-badge" style="background:var(--purple-l);color:var(--purple);">Sin cambios de arquitectura</span>
+  </div>
+
+  <div class="acc" id="a_sched">
+    <div class="acc-h" onclick="T('a_sched')">
+      <div class="acc-hicon" style="background:var(--purple);">📅</div>
+      <div class="acc-meta">
+        <div class="acc-title">Apagado programado — el quick win más inmediato</div>
+        <div class="acc-sub">Apagar entornos de dev/test/staging fuera del horario laboral puede reducir hasta un 75% el costo de esas instancias.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">La mayoría de las empresas tienen entornos de desarrollo, testing y staging corriendo 24x7, aunque el equipo trabaja 8–10 horas al día, 5 días a la semana. <strong>Si nadie los usa de 18:00 a 08:00 ni los fines de semana, están pagando cómputo innecesario el 73% del tiempo.</strong></div>
+
+      <div class="timeline">
+        <div class="tl-row">
+          <div class="tl-time">00:00–07:59</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:35%;background:#DC2626;">Dev/Test ENCENDIDOS — sin uso</div>
+            <span class="tl-label">Costo puro sin producción</span>
+            <span class="tl-tag" style="background:#FEE2E2;color:#7F1D1D;">💸 Desperdicio</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">08:00–17:59</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:42%;background:var(--green);">Dev/Test ACTIVOS — uso real</div>
+            <span class="tl-label">Uso productivo del cómputo</span>
+            <span class="tl-tag" style="background:var(--green-l);color:var(--green-d);">✅ Justificado</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">18:00–23:59</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:25%;background:#DC2626;">Dev/Test ENCENDIDOS — sin uso</div>
+            <span class="tl-label">Fin de jornada laboral</span>
+            <span class="tl-tag" style="background:#FEE2E2;color:#7F1D1D;">💸 Desperdicio</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">Sab–Dom</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:55%;background:#DC2626;">Dev/Test ENCENDIDOS — sin uso (48h)</div>
+            <span class="tl-label">Fin de semana completo</span>
+            <span class="tl-tag" style="background:#FEE2E2;color:#7F1D1D;">💸 Desperdicio</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="savings-compare" style="margin-top:16px;">
+        <div class="sc-item" style="border-top:3px solid #DC2626;">
+          <div class="sc-label">Sin apagado programado</div>
+          <div class="sc-price" style="color:#DC2626;">168 h/semana</div>
+          <div class="sc-note">La instancia corre toda la semana, incluyendo noches, madrugadas y fin de semana. Costo base 100%.</div>
+        </div>
+        <div class="sc-item" style="border-top:3px solid var(--green);">
+          <div class="sc-label">Con apagado programado (lun-vie 8-18h)</div>
+          <div class="sc-price" style="color:var(--green);">50 h/semana</div>
+          <div class="sc-note">La instancia corre solo en horario laboral de lunes a viernes.</div>
+          <div class="sc-saving" style="background:var(--green-l);color:var(--green-d);">Ahorro: 70% del costo</div>
+        </div>
+      </div>
+
+      <div class="g3" style="margin-top:14px;">
+        <div class="card" style="border-top:3px solid var(--aws);">
+          <div class="card-title">AWS — Instance Scheduler</div>
+          <div class="card-text">Solución AWS oficial usando Lambda + DynamoDB. Define schedules por tag. También disponible vía EventBridge Scheduler para stop/start de instancias EC2 y RDS.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-title">Azure — Start/Stop VMs v2</div>
+          <div class="card-text">Solución nativa en Azure Automation. Define schedules por grupo de recursos o por tag. También se puede usar Azure Logic Apps o runbooks de Automation Account.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gcp);">
+          <div class="card-title">GCP — Instance Schedules</div>
+          <div class="card-text">Compute Engine permite definir schedules de start/stop directamente en la consola sin código adicional. También disponible vía Cloud Scheduler + Cloud Functions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_batch_timing">
+    <div class="acc-h" onclick="T('a_batch_timing')">
+      <div class="acc-hicon" style="background:var(--aws);">🌙</div>
+      <div class="acc-meta">
+        <div class="acc-title">Backups y procesos batch en ventana nocturna — diseño óptimo</div>
+        <div class="acc-sub">Mover los procesos pesados a la madrugada permite usar Spot/Preemptible, aprovechar menor latencia y reducir impacto en producción.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">Los procesos batch (backups, ETL, reportes, compresión, indexación) no necesitan correr en horario pico. Moverlos a la ventana nocturna tiene múltiples beneficios simultáneos: menor costo (Spot disponible), menor competencia por recursos de red, y sin impacto en la performance de los sistemas de producción.</div>
+
+      <div class="timeline">
+        <div class="tl-row">
+          <div class="tl-time">00:00–02:00</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:20%;background:var(--green);">🗄 Backup DB</div>
+            <span class="tl-label">Menor carga en DB de producción. Spot disponible.</span>
+            <span class="tl-tag" style="background:var(--green-l);color:var(--green-d);">Spot ✓</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">02:00–04:00</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:20%;background:var(--az);">📊 ETL / Reportes</div>
+            <span class="tl-label">Transformación de datos del día anterior. Spot o Reserved.</span>
+            <span class="tl-tag" style="background:var(--az-l);color:var(--az-d);">Spot ✓</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">04:00–06:00</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:20%;background:var(--gcp);">🗜 Compresión / Archive</div>
+            <span class="tl-label">Mover datos del tier Standard al Glacier/Archive.</span>
+            <span class="tl-tag" style="background:var(--gcp-l);color:var(--gcp-d);">Spot ✓</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">06:00–07:00</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:10%;background:var(--purple);">✅ Verificación</div>
+            <span class="tl-label">Validación de integridad del backup. Alertas si hay errores.</span>
+            <span class="tl-tag" style="background:var(--purple-l);color:var(--purple);">On-Demand (corto)</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-time">08:00–22:00</div>
+          <div class="tl-bar-wrap">
+            <div class="tl-bar" style="width:60%;background:var(--green);">🏢 Producción</div>
+            <span class="tl-label">Sistemas productivos operando sin competir con procesos batch.</span>
+            <span class="tl-tag" style="background:var(--green-l);color:var(--green-d);">On-Demand / Reserved</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="g2" style="margin-top:14px;">
+        <div class="card" style="border-top:3px solid var(--aws);">
+          <div class="card-title">AWS — Optimizando backup nocturno</div>
+          <div class="card-text"><strong>AWS Backup:</strong> Programa ventanas de backup en RDS, EBS, DynamoDB y EFS. La ventana default es 03:00–04:00 UTC (podés ajustar a la zona horaria local).<br><br><strong>S3 Lifecycle Policies:</strong> Define reglas automáticas que mueven objetos de Standard → IA → Glacier según su antigüedad. Ej: Standard 30 días → IA 60 días → Glacier 1 año.<br><br><strong>Snapshots EBS:</strong> Programar snapshots con EventBridge cron durante la ventana nocturna. El costo del snapshot es por GB almacenado, no por el tiempo que tarda.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--az);">
+          <div class="card-title">Azure — Optimizando backup nocturno</div>
+          <div class="card-text"><strong>Azure Backup:</strong> Define la ventana de backup en Recovery Services Vault. Recomendado: 23:00–03:00 local para bases de datos.<br><br><strong>Blob Lifecycle Management:</strong> Políticas automáticas para mover blobs entre Hot → Cool → Archive basadas en última modificación o último acceso.<br><br><strong>Azure Data Factory Triggers:</strong> Schedule trigger para que los pipelines ETL corran solo en la ventana nocturna usando Spot VMs o Azure Batch para el procesamiento.</div>
+        </div>
+      </div>
+      <div class="cl cl-green"><strong>Regla de oro del backup nocturno:</strong> El backup debe estar completo antes de que abra el negocio. Define la ventana con margen: si el backup de producción tarda 90 minutos, empezá a las 01:00 para que a las 06:00 esté verificado. Incluí alertas en caso de que el proceso se extienda más allá de la ventana esperada.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_rightsizing">
+    <div class="acc-h" onclick="T('a_rightsizing')">
+      <div class="acc-hicon" style="background:var(--green);">🎯</div>
+      <div class="acc-meta">
+        <div class="acc-title">Rightsizing — pagar por lo que realmente usás</div>
+        <div class="acc-sub">La mayoría de las instancias cloud están sobredimensionadas. El CPU promedio de producción suele estar por debajo del 20%.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">El patrón más común al migrar a la nube es llevar la instancia on-premise "tal cual" al cloud: si tenías un servidor de 32 vCPU y 128GB RAM, se crea una VM equivalente. El problema es que ese servidor on-premise también estaba sobredimensionado para absorber picos — y ahora estás pagando ese sobredimensionamiento por hora en la nube.</div>
+      <div class="g3">
+        <div class="card" style="border-top:3px solid #DC2626;">
+          <div class="card-icon">📉</div>
+          <div class="card-title">CPU utilization p95 &lt; 20%</div>
+          <div class="card-text">Si el percentil 95 de CPU en el último mes está por debajo del 20%, la instancia está sobredimensionada. Se puede reducir al 50% del tamaño actual sin riesgo.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--amber);">
+          <div class="card-icon">💾</div>
+          <div class="card-title">RAM utilization p95 &lt; 30%</div>
+          <div class="card-text">Si la memoria disponible supera el 70% en casi todo momento, se puede reducir a la mitad. La memoria idle en cloud no da ningún beneficio.</div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green);">
+          <div class="card-icon">💿</div>
+          <div class="card-title">Disco provisionado vs. usado</div>
+          <div class="card-text">Un disco EBS gp3 de 2TB pero con solo 200GB de datos está pagando 10x el costo necesario de almacenamiento. Reducir y usar S3 para el exceso.</div>
+        </div>
+      </div>
+      <div class="dtw" style="margin-top:14px;"><table class="dt">
+        <thead><tr><th>Herramienta de Rightsizing</th><th class="th-aws">🟠 AWS</th><th class="th-az">🔵 Azure</th><th class="th-gcp">🔷 GCP</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Nativa del vendor</td><td class="td-aws"><strong>AWS Compute Optimizer:</strong> analiza métricas de CloudWatch y recomienda el tipo óptimo de instancia. Gratuito. Ahorro estimado visible antes de aplicar.</td><td class="td-az"><strong>Azure Advisor:</strong> pestaña Cost. Recomienda rightsizing basado en métricas de Azure Monitor de los últimos 7 días (configurable hasta 60 días).</td><td class="td-gcp"><strong>Recommender (GCP):</strong> VM rightsizing recommendations en Compute Engine. Basado en métricas de Cloud Monitoring.</td></tr>
+          <tr><td class="tt">Herramientas de terceros</td><td class="td-aws">CloudHealth, Apptio Cloudability, Spot.io, Densify</td><td class="td-az">Cloudability, CloudHealth, Nerdio (para AVD)</td><td class="td-gcp">Spot.io, Densify, Apptio</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C6: FINOPS BUENAS PRÁCTICAS ═══════════════════════════════ -->
+<div class="chap" id="c6">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--green-l);">🏆</div>
+    <span class="chap-num">06</span>
+    <div class="chap-title">Buenas prácticas FinOps — el orden correcto de ataque</div>
+    <span class="chap-badge" style="background:var(--green-l);color:var(--green-d);">Framework operativo</span>
+  </div>
+
+  <div class="acc" id="a_finops_roadmap">
+    <div class="acc-h" onclick="T('a_finops_roadmap')">
+      <div class="acc-hicon" style="background:var(--green);">🗺</div>
+      <div class="acc-meta">
+        <div class="acc-title">El orden de ataque FinOps — de lo inmediato a lo estructural</div>
+        <div class="acc-sub">No todo da el mismo resultado con el mismo esfuerzo. Empezar por el ahorro rápido para financiar las mejoras estructurales.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div>
+          <div class="card" style="border-top:3px solid var(--green);margin-bottom:10px;">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">Semana 1–2: Quick wins (sin riesgo)</div>
+            <div class="card-text">
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--green);"></span>Identificar y apagar recursos no utilizados (instancias stopped pero no terminadas, EBS sin adjuntar, IPs estáticas sin uso)</li>
+                <li><span class="fdot" style="background:var(--green);"></span>Activar apagado programado en dev/test/staging</li>
+                <li><span class="fdot" style="background:var(--green);"></span>Activar S3 Intelligent-Tiering o lifecycle policies para datos históricos</li>
+                <li><span class="fdot" style="background:var(--green);"></span>Eliminar snapshots de disco más antiguos de 30 días (validar política)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--amber);">
+            <div class="card-icon">🎯</div>
+            <div class="card-title">Mes 1–3: Optimización de compute</div>
+            <div class="card-text">
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--amber);"></span>Rightsizing de instancias basado en métricas reales (AWS Compute Optimizer / Azure Advisor)</li>
+                <li><span class="fdot" style="background:var(--amber);"></span>Migrar procesos batch a Spot/Preemptible con checkpointing</li>
+                <li><span class="fdot" style="background:var(--amber);"></span>Activar Savings Plans o Reserved Instances para workloads estables (&gt;70% de uso)</li>
+                <li><span class="fdot" style="background:var(--amber);"></span>Implementar ventanas nocturnas para todos los procesos batch</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="border-top:3px solid var(--purple);margin-bottom:10px;">
+            <div class="card-icon">🏗</div>
+            <div class="card-title">Mes 3–6: Optimización arquitectural</div>
+            <div class="card-text">
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--purple);"></span>Implementar auto-scaling para ajustar capacidad a la demanda real</li>
+                <li><span class="fdot" style="background:var(--purple);"></span>Mover workloads stateless a serverless (Lambda, Azure Functions, Cloud Run)</li>
+                <li><span class="fdot" style="background:var(--purple);"></span>Revisar y optimizar egress: considerar CloudFront/CDN para contenido estático</li>
+                <li><span class="fdot" style="background:var(--purple);"></span>Implementar tagging 100% con showback/chargeback por área</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--ink);">
+            <div class="card-icon">📊</div>
+            <div class="card-title">Continuo: Gobernanza FinOps</div>
+            <div class="card-text">
+              <ul class="feat">
+                <li><span class="fdot" style="background:var(--ink3);"></span>Budget alerts configurados (AWS Budgets / Azure Budgets / GCP Billing Budgets)</li>
+                <li><span class="fdot" style="background:var(--ink3);"></span>Revisión mensual de Savings Plans coverage (objetivo: &gt;80%)</li>
+                <li><span class="fdot" style="background:var(--ink3);"></span>Revisión trimestral de Reserved Instances / CUDs que vencen</li>
+                <li><span class="fdot" style="background:var(--ink3);"></span>Dashboards de unit cost: costo por transacción, por usuario activo, por deployment</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_tagging">
+    <div class="acc-h" onclick="T('a_tagging')">
+      <div class="acc-hicon" style="background:var(--ink3);">🏷</div>
+      <div class="acc-meta">
+        <div class="acc-title">Tagging — sin esto, el FinOps es ciego</div>
+        <div class="acc-sub">Si no podés asignar cada dólar de gasto a un proyecto, equipo o entorno, no podés optimizar. El tagging es el primer paso no negociable.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="prose">El tagging es la práctica de etiquetar cada recurso cloud con metadatos que indican quién lo creó, para qué sirve y cómo debe gestionarse. Sin tags consistentes, es imposible saber qué área genera cada gasto ni tomar decisiones de optimización informadas.</div>
+      <div class="g2">
+        <div>
+          <div class="card-title" style="margin-bottom:8px;font-size:12.5px;font-weight:700;">Tags mínimos obligatorios</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Environment:</strong> prod / staging / dev / test</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Project:</strong> nombre del proyecto o producto</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>Owner:</strong> equipo o responsable del recurso</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>CostCenter:</strong> centro de costo para chargeback</li>
+            <li><span class="fdot" style="background:var(--green);"></span><strong>CreatedBy:</strong> usuario o pipeline que creó el recurso</li>
+          </ul>
+        </div>
+        <div>
+          <div class="card-title" style="margin-bottom:8px;font-size:12.5px;font-weight:700;">Política de enforcement</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--aws);"></span><strong>AWS:</strong> AWS Config Rule "required-tags" + Tag Policies en Organizations</li>
+            <li><span class="fdot" style="background:var(--az);"></span><strong>Azure:</strong> Azure Policy con efecto "Deny" para recursos sin los tags requeridos</li>
+            <li><span class="fdot" style="background:var(--gcp);"></span><strong>GCP:</strong> Organization Policy + Budget labels en proyectos</li>
+            <li><span class="fdot" style="background:var(--purple);"></span><strong>IaC:</strong> Terraform / Bicep con variables obligatorias de tags en todos los módulos</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cl cl-amber"><strong>Error frecuente:</strong> Implementar el tagging solo sobre recursos nuevos y dejar sin tagear todo lo existente. En una cuenta con años de uso, el 60% del gasto puede estar en recursos sin etiqueta. Usar AWS Cost Explorer / Azure Cost Analysis filtrado por "no etiquetado" para cuantificar el impacto antes de atacarlo.</div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_budgets">
+    <div class="acc-h" onclick="T('a_budgets')">
+      <div class="acc-hicon" style="background:var(--amber);">🔔</div>
+      <div class="acc-meta">
+        <div class="acc-title">Budgets y alertas — detener el gasto antes de que explote</div>
+        <div class="acc-sub">Configurar alertas en el 50%, 80% y 100% del presupuesto mensual para detectar anomalías antes de que sea tarde.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Herramienta</th><th class="th-aws">🟠 AWS Budgets</th><th class="th-az">🔵 Azure Budgets</th><th class="th-gcp">🔷 Cloud Billing Budgets</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Dónde configurar</td><td class="td-aws">AWS Cost Management → Budgets → Create budget</td><td class="td-az">Cost Management → Budgets → Add</td><td class="td-gcp">Billing → Budgets & Alerts → Create Budget</td></tr>
+          <tr><td class="tt">Tipos de alerta</td><td class="td-aws">% de gasto real, % de gasto previsto (forecast). Envía email o SNS.</td><td class="td-az">% de gasto real o forecast. Notificación por email o Action Group.</td><td class="td-gcp">% de gasto real o forecast. Email o Pub/Sub para automatización.</td></tr>
+          <tr><td class="tt">Umbrales recomendados</td><td class="td-aws">Alertas al 50%, 80% y 100% del presupuesto mensual. Adicional: alerta de forecast al 90%.</td><td class="td-az">Idem AWS. Azure agrega la posibilidad de vincular a Azure Automation para acciones automáticas.</td><td class="td-gcp">Idem AWS. El Pub/Sub permite ejecutar Cloud Functions para detener recursos automáticamente.</td></tr>
+          <tr><td class="tt">Acción automática</td><td class="td-aws">Budget Action: puede aplicar una IAM Policy para bloquear la creación de nuevos recursos al superar el límite.</td><td class="td-az">Action Group con Runbook: puede detener VMs o escalar un ticket de soporte automáticamente.</td><td class="td-gcp">Pub/Sub + Cloud Function: puede deshabilitar facturación del proyecto (detiene todos los recursos).</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ C7: COMPARATIVA FINAL ═══════════════════════════════ -->
+<div class="chap" id="c7">
+  <div class="chap-hd">
+    <div class="chap-icon" style="background:var(--bg3);">⚖️</div>
+    <span class="chap-num">07</span>
+    <div class="chap-title">Comparativa rápida — todos los modelos de ahorro en una tabla</div>
+    <span class="chap-badge" style="background:var(--bg3);color:var(--ink3);">Referencia</span>
+  </div>
+
+  <div class="acc open" id="a_comp">
+    <div class="acc-h" onclick="T('a_comp')">
+      <div class="acc-hicon" style="background:var(--ink);">📋</div>
+      <div class="acc-meta">
+        <div class="acc-title">Todos los modelos de ahorro comparados — cuándo usar cada uno</div>
+        <div class="acc-sub">Una tabla por workload type para responder "¿qué modelo le recomiendo a este cliente?"</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th style="width:160px;">Modelo de ahorro</th><th class="th-aws">🟠 AWS</th><th class="th-az">🔵 Azure</th><th class="th-gcp">🔷 GCP</th><th class="th-hwc">🟥 HWC</th><th style="width:100px;">Ahorro máx.</th><th style="width:90px;">Mejor para</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">On-Demand</td><td class="td-aws">On-Demand EC2</td><td class="td-az">Pay-as-you-go</td><td class="td-gcp">On-Demand</td><td class="td-hwc">Pay-per-use</td><td>0% (base)</td><td>Cargas impredecibles, PoCs</td></tr>
+          <tr><td class="tt">Reserved 1 año</td><td class="td-aws">RI Convertible 1yr</td><td class="td-az">Reserved VM 1yr</td><td class="td-gcp">CUD 1yr</td><td class="td-hwc">1-year prepay</td><td>~40%</td><td>Workloads estables, producción</td></tr>
+          <tr><td class="tt">Reserved 3 años</td><td class="td-aws">RI Standard 3yr all-upfront</td><td class="td-az">Reserved VM 3yr</td><td class="td-gcp">CUD 3yr</td><td class="td-hwc">3-year prepay</td><td>~72%</td><td>Workloads muy estables, largo plazo</td></tr>
+          <tr><td class="tt">Savings Plans 1 año</td><td class="td-aws">Compute SP 1yr</td><td class="td-az">Savings Plan for Compute 1yr</td><td class="td-gcp">Spend-based CUD 1yr</td><td class="td-hwc">Savings Plans</td><td>~37%</td><td>Workloads que evolucionan</td></tr>
+          <tr><td class="tt">Savings Plans 3 años</td><td class="td-aws">Compute SP 3yr</td><td class="td-az">Savings Plan for Compute 3yr</td><td class="td-gcp">Spend-based CUD 3yr</td><td class="td-hwc">Savings Plans 3yr</td><td>~66%</td><td>Plataforma estable en crecimiento</td></tr>
+          <tr><td class="tt">Sustained Use (auto)</td><td class="td-aws">N/A</td><td class="td-az">N/A</td><td class="td-gcp"><strong>SUD automático</strong></td><td class="td-hwc">N/A</td><td>~30% (efectivo)</td><td>Cualquier VM en GCP corriendo &gt;25% del mes</td></tr>
+          <tr><td class="tt">Hybrid Benefit</td><td class="td-aws">N/A</td><td class="td-az"><strong>AHB (Windows/SQL)</strong></td><td class="td-gcp">N/A</td><td class="td-hwc">N/A</td><td>~55%</td><td>Clientes con licencias Windows/SQL existentes</td></tr>
+          <tr><td class="tt">Spot / Preemptible</td><td class="td-aws">Spot Instances</td><td class="td-az">Spot VMs</td><td class="td-gcp">Preemptible / Spot VMs</td><td class="td-hwc">Spot ECS</td><td>~90%</td><td>Batch, ML, render, backups, ETL</td></tr>
+          <tr><td class="tt">Apagado programado</td><td class="td-aws">Instance Scheduler / EventBridge</td><td class="td-az">Start/Stop VMs v2 / Automation</td><td class="td-gcp">Instance Schedules nativo</td><td class="td-hwc">Auto-scaling schedules</td><td>~70%</td><td>Dev/test/staging fuera de horario laboral</td></tr>
+          <tr><td class="tt">Storage tiering</td><td class="td-aws">S3 Lifecycle + Intelligent-Tiering + Glacier</td><td class="td-az">Blob Lifecycle (Hot → Cool → Archive)</td><td class="td-gcp">Object Lifecycle (Standard → Nearline → Archive)</td><td class="td-hwc">OBS Storage Classes</td><td>~95%</td><td>Datos históricos, backups, logs, compliance</td></tr>
+          <tr><td class="tt">Rightsizing</td><td class="td-aws">Compute Optimizer</td><td class="td-az">Azure Advisor</td><td class="td-gcp">VM Recommender</td><td class="td-hwc">Cost Explorer HWC</td><td>~50%</td><td>Instancias sobredimensionadas en producción</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="acc" id="a_pt_diff">
+    <div class="acc-h" onclick="T('a_pt_diff')">
+      <div class="acc-hicon" style="background:var(--green);">🏢</div>
+      <div class="acc-meta">
+        <div class="acc-title">El modelo de costos de Personal Tech — cómo cambia el cálculo</div>
+        <div class="acc-sub">Cuando la conectividad y el cloud son del mismo proveedor, varios ítems del TCO desaparecen o se reducen drásticamente.</div>
+      </div>
+      <span class="acc-chv">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="dtw"><table class="dt">
+        <thead><tr><th>Ítem de costo</th><th>AWS / Azure / GCP directo</th><th style="background:var(--green-l);color:var(--green-d);font-weight:700;">Personal Tech Cloud</th></tr></thead>
+        <tbody>
+          <tr><td class="tt">Cómputo (VMs)</td><td>En USD, expuesto a tipo de cambio. Factura internacional.</td><td style="border-left:3px solid var(--green);">En pesos argentinos. Sin riesgo cambiario. Ajuste IPC.</td></tr>
+          <tr><td class="tt">Egress a sedes del cliente</td><td>Se cobra por GB (USD 0.08–0.12/GB) cuando los datos salen del cloud a las sedes.</td><td style="border-left:3px solid var(--green);">El MPLS termina en el mismo DC. El tráfico sede↔cloud es interno a la red. <strong>Sin egress fees.</strong></td></tr>
+          <tr><td class="tt">Conectividad sede → cloud</td><td>Requiere contratar Direct Connect / ExpressRoute a un partner de red. Costo adicional separado.</td><td style="border-left:3px solid var(--green);">MPLS de Personal Tech ya llega al DC de Pacheco donde está el cloud. <strong>Un solo contrato.</strong></td></tr>
+          <tr><td class="tt">Soberanía del dato</td><td>Dato en exterior. Para compliance (BCRA, salud), requiere contratos adicionales y due diligence legal.</td><td style="border-left:3px solid var(--green);">Dato en Argentina, en DC propio. <strong>Sin gestión legal adicional.</strong></td></tr>
+          <tr><td class="tt">Latencia sede → cloud</td><td>Depende de la conectividad a Internet o del Direct Connect contratado por separado.</td><td style="border-left:3px solid var(--green);">MPLS directo al DC. <strong>Latencia ≤5ms.</strong> Mejor que la latencia actual a un servidor on-premise mal conectado.</td></tr>
+          <tr><td class="tt">Soporte</td><td>En inglés, horario EE.UU. En español con plan Enterprise (costo adicional significativo).</td><td style="border-left:3px solid var(--green);">Soporte 24x7 en español por equipos locales en Argentina.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="pitch">
+        <div class="pitch-eyebrow">El argumento final del TCO completo</div>
+        <div class="pitch-text">"El precio de lista de AWS o Azure parece menor. Pero el TCO real incluye el egress que pagan cuando los datos viajan a sus sedes, el costo del Direct Connect o ExpressRoute que necesitan contratar aparte, el riesgo cambiario del dólar en la factura mensual, y el costo legal de compliance cuando el dato está en el exterior. <strong>Con Personal Tech, esos ítems no existen o están incluidos:</strong> el MPLS que ya usan llega al mismo DC donde está su cloud, el dato está en Argentina, la factura es en pesos y el soporte lo da alguien que atiende el teléfono en castellano. Eso es el TCO completo — no solo el precio de la VM."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Optimización de Costos Cloud — AWS · Azure · GCP · HWC · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const d = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent = d;
+document.getElementById('fecha2').textContent = d;
+
+function T(id){
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Active nav on scroll
+const chapters = document.querySelectorAll('.chap');
+const navLinks = document.querySelectorAll('.nl');
+window.addEventListener('scroll', function(){
+  const sy = window.scrollY + 60;
+  let cur = null;
+  chapters.forEach(c => { if(sy >= c.offsetTop) cur = c; });
+  navLinks.forEach(n => n.classList.remove('on'));
+  if(cur){
+    const a = document.querySelector('.nl[href="#'+cur.id+'"]');
+    if(a) a.classList.add('on');
+  }
+});
+
+// Open first acc in c7 by default
+document.getElementById('a_comp').classList.add('open');
+</script>
+</body>
+</html>

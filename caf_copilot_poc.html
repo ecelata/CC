@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAF Copilot — Demo Sistema Multiagente | Personal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pt:#0070F3;--pt-d:#004DBF;--pt-l:#EBF5FF;
+  --orch:#7C3AED;--orch-l:#EDE9FE;
+  --a1:#0891B2;--a1-l:#E0F7FB; /* Discovery */
+  --a2:#059669;--a2-l:#D1FAE5; /* Business Case */
+  --a3:#D97706;--a3-l:#FEF3C7; /* Architecture */
+  --a4:#DC2626;--a4-l:#FEE2E2; /* Governance/Sec */
+  --a5:#0070F3;--a5-l:#EBF5FF; /* Roadmap */
+  --a6:#374151;--a6-l:#F3F4F6; /* RAG */
+  --ink:#0D1117;--ink2:#1C2333;--ink3:#374151;
+  --muted:#6B7280;--faint:#9CA3AF;--line:#E5E7EB;
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;
+  --green:#059669;--green-l:#D1FAE5;
+  --r:10px;--r-sm:7px;
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04);
+  --sh-m:0 4px 20px rgba(0,0,0,.08),0 10px 40px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg2);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+.page{max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
+
+/* HEADER */
+.hdr{margin-bottom:24px;}
+.hdr-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orch);background:var(--orch-l);padding:4px 13px;border-radius:20px;margin-bottom:14px;}
+.hdr-title{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.4px;margin-bottom:8px;}
+.hdr-title span{color:var(--pt);}
+.hdr-sub{font-size:13.5px;color:var(--muted);max-width:680px;line-height:1.7;}
+
+/* DATA COLLECTION PANEL */
+.datapanel{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-bottom:18px;}
+.dp-head{margin-bottom:14px;}
+.dp-title{font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:5px;}
+.dp-sub{font-size:12px;color:var(--muted);line-height:1.6;max-width:760px;}
+.dp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.dp-cat{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 13px;}
+.dp-cat-head{font-size:11.5px;font-weight:700;color:var(--ink);margin-bottom:9px;display:flex;align-items:center;gap:6px;border-bottom:2px solid;padding-bottom:7px;}
+.dp-item{display:flex;align-items:flex-start;gap:7px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:11px;}
+.dp-item:last-child{border-bottom:none;}
+.dp-check{margin-top:2px;flex-shrink:0;cursor:pointer;}
+.dp-item-text{flex:1;min-width:0;color:var(--ink3);line-height:1.4;}
+.dp-src{display:block;font-size:9.5px;color:var(--faint);font-style:italic;margin-top:2px;}
+.dp-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--bg3);color:var(--muted);font-size:9px;font-weight:800;margin-right:4px;flex-shrink:0;}
+.dp-howto-btn{display:inline-block;margin-top:4px;background:none;border:none;font-family:inherit;font-size:9.5px;font-weight:700;color:var(--pt);cursor:pointer;padding:0;text-decoration:underline;}
+.dp-howto-btn:hover{color:var(--pt-d);}
+.dp-howto{display:none;margin-top:5px;padding:7px 9px;background:var(--pt-l);border-left:2px solid var(--pt);border-radius:4px;font-size:10px;color:var(--ink3);line-height:1.55;}
+.dp-howto.open{display:block;}
+
+/* TRACEABILITY TAGS */
+.data-used{display:flex;flex-wrap:wrap;gap:4px;padding:8px 13px 0;align-items:center;}
+.data-used-label{font-size:9.5px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-right:2px;}
+.data-tag{font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:10px;background:var(--bg3);color:var(--muted);border:1px solid var(--line);}
+.dp-footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+.dp-count{font-size:12px;font-weight:700;color:var(--ink);}
+.dp-btn-secondary{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer;color:var(--muted);transition:all .15s;}
+.dp-btn-secondary:hover{background:var(--bg3);}
+.dp-cat.complete{background:#F0FDFA;}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start;}
+
+/* AGENT SIDEBAR */
+.agents-panel{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:16px;position:sticky;top:20px;}
+.ap-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:12px;}
+.agent-card{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border-radius:var(--r-sm);margin-bottom:6px;border:1px solid transparent;transition:all .3s;}
+.agent-card.active{border-color:var(--accent);background:var(--accent-l);box-shadow:var(--sh);}
+.agent-card.done{opacity:.55;}
+.agent-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff;position:relative;}
+.agent-icon .pulse{position:absolute;inset:-3px;border-radius:50%;border:2px solid;opacity:0;}
+.agent-card.active .agent-icon .pulse{animation:pulse 1.4s infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:.6;}100%{transform:scale(1.5);opacity:0;}}
+.agent-meta{flex:1;}
+.agent-name{font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.3;}
+.agent-role{font-size:10px;color:var(--faint);line-height:1.4;margin-top:1px;}
+.agent-status{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;padding:1px 6px;border-radius:10px;display:inline-block;}
+.status-idle{background:var(--bg3);color:var(--faint);}
+.status-working{color:#fff;}
+.status-done{background:var(--green-l);color:#065F46;}
+
+/* CHAT PANEL */
+.chat-panel{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+.chat-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;background:var(--bg2);}
+.ch-dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+.ch-title{font-size:12.5px;font-weight:700;color:var(--ink);}
+.ch-sub{font-size:11px;color:var(--faint);margin-left:auto;}
+
+.chat-body{padding:20px;min-height:560px;max-height:680px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+
+/* MESSAGES */
+.msg{display:flex;gap:11px;animation:fadein .4s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff;}
+.msg-content{flex:1;}
+.msg-from{font-size:11.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.msg-from .role{font-weight:500;color:var(--faint);font-size:10.5px;}
+.msg-bubble{background:var(--bg2);border-radius:var(--r-sm);padding:11px 14px;font-size:12.5px;color:var(--ink3);line-height:1.65;border:1px solid var(--line);}
+.msg-bubble.user{background:var(--pt-l);border-color:var(--pt);}
+.msg-bubble strong{color:var(--ink);}
+
+/* USER MESSAGE (right aligned) */
+.msg.user-msg{flex-direction:row-reverse;}
+.msg.user-msg .msg-content{text-align:right;}
+.msg.user-msg .msg-bubble{display:inline-block;text-align:left;}
+
+/* AGENT OUTPUT CARDS */
+.output-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;margin-top:8px;}
+.oc-head{padding:9px 13px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:6px;}
+.oc-body{padding:12px 14px;background:var(--bg);}
+
+/* Maturity bars */
+.mbar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.mbar-label{font-size:11px;font-weight:600;color:var(--ink3);width:130px;flex-shrink:0;}
+.mbar-track{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;}
+.mbar-fill{height:100%;border-radius:4px;}
+.mbar-pct{font-size:10.5px;font-weight:700;width:80px;text-align:right;}
+
+/* Table mini */
+.mini-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px;}
+.mini-table th{padding:6px 9px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);border-bottom:1px solid var(--line);text-align:left;}
+.mini-table td{padding:7px 9px;border-bottom:1px solid var(--line);color:var(--muted);line-height:1.45;}
+.mini-table tr:last-child td{border-bottom:none;}
+.mini-table .tt{font-weight:700;color:var(--ink);}
+
+/* pills */
+.pill{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin:1px 2px 0 0;}
+
+/* Roadmap gantt-ish */
+.gantt{display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+.gantt-row{display:flex;align-items:center;gap:8px;}
+.gantt-label{font-size:10.5px;font-weight:600;color:var(--ink3);width:120px;flex-shrink:0;line-height:1.3;}
+.gantt-track{flex:1;height:18px;background:var(--bg3);border-radius:4px;position:relative;display:flex;align-items:center;}
+.gantt-bar{height:14px;border-radius:3px;margin:2px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:700;color:#fff;white-space:nowrap;}
+
+/* typing indicator */
+.typing{display:flex;gap:4px;padding:11px 14px;background:var(--bg2);border-radius:var(--r-sm);border:1px solid var(--line);width:fit-content;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:bounce 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-4px);opacity:1;}}
+
+/* INPUT BAR */
+.chat-input{border-top:1px solid var(--line);padding:14px 18px;display:flex;gap:10px;align-items:center;background:var(--bg2);}
+.input-box{flex:1;border:1px solid var(--line);border-radius:20px;padding:10px 16px;font-size:12.5px;background:var(--bg);color:var(--faint);}
+.send-btn{background:var(--pt);color:#fff;border:none;border-radius:20px;padding:10px 22px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.send-btn:hover{background:var(--pt-d);}
+.send-btn:disabled{background:var(--faint);cursor:not-allowed;}
+.restart-btn{background:var(--bg);color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:10px 18px;font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer;}
+.restart-btn:hover{background:var(--bg3);}
+
+/* PROGRESS BAR TOP */
+.progress-wrap{margin-bottom:18px;}
+.progress-track{height:6px;background:var(--line);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--pt),var(--orch));border-radius:3px;width:0%;transition:width .6s ease;}
+.progress-label{font-size:11px;color:var(--faint);margin-top:6px;display:flex;justify-content:space-between;}
+
+/* footer note */
+.demo-note{margin-top:24px;background:var(--ink);border-radius:var(--r);padding:18px 22px;font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.7;}
+.demo-note strong{color:#fff;}
+
+@media(max-width:820px){
+  .layout{grid-template-columns:1fr;}
+  .agents-panel{position:static;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="hdr">
+    <div class="hdr-eyebrow">🤖 PoC · Demo interactiva · Sistema Multiagente</div>
+    <div class="hdr-title"><span>CAF Copilot</span> — Asistente Agéntico de Adopción Cloud</div>
+    <div class="hdr-sub">Demo conceptual (datos hardcodeados) de un sistema multiagente pensado para empresas <strong>sin la madurez para tener su información ordenada y a disposición</strong>. El objetivo no es solo automatizar un CAF — es establecer una <strong>metodología de relevamiento basada en buenas prácticas</strong> (con técnicas alternativas cuando un dato no existe) que deje a la organización con todo lo necesario para migrar y, además, sentar las bases para ser <strong>IA-Ready</strong>.</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label"><span id="progressText">Esperando inicio del relevamiento...</span><span id="progressPct">0%</span></div>
+  </div>
+
+  <!-- DATA COLLECTION PANEL -->
+  <div class="datapanel" id="dataPanel">
+    <div class="dp-head">
+      <div class="dp-title">📋 Fase 0 — Metodología de relevamiento (para empresas sin la info ordenada)</div>
+      <div class="dp-sub">La mayoría de las empresas <strong>no tienen estos 16 puntos disponibles ni ordenados</strong> — esa es justamente la realidad que este MAS está pensado para abordar. Cada ítem incluye un enlace <strong>"¿Sin este dato? Cómo relevarlo"</strong> con la técnica de buenas prácticas para obtenerlo (proxy, entrevista, herramienta gratuita, taller) cuando no existe formalmente. El objetivo final no es solo "migrar" — es dejar a la empresa con el ordenamiento de información necesario para ser <strong>IA-Ready</strong>.</div>
+    </div>
+    <div class="dp-grid">
+
+      <div class="dp-cat">
+        <div class="dp-cat-head" style="border-color:#0F766E;"><span>💰</span> Financiero / Comercial</div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#1</span> Facturación actual de licencias VMware/Broadcom (últimas 3 renovaciones)<span class="dp-src">Fuente: Área Compras / Contratos</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no están ordenadas: pedir directamente al proveedor/reseller un histórico de facturación de los últimos 3 años (lo tienen disponible). Alternativa: revisar los 3 últimos comprobantes de pago en el área de Compras.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#2</span> Costos de energía, refrigeración y espacio del datacenter (CAPEX/OPEX)<span class="dp-src">Fuente: Facilities / Finanzas</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay prorrateo de costos: usar un estimador estándar (≈ USD 1.500-2.500/año por rack 'ocupado' incluyendo energía+refrigeración+espacio) y validarlo con la factura eléctrica total del edificio dividida por % estimado de consumo del DC.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#3</span> Headcount y costo del equipo IT que administra infraestructura<span class="dp-src">Fuente: RRHH / CIO</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay costeo formal: relevar en una entrevista de 15 minutos cuántas personas y qué % de su tiempo dedican a tareas de infraestructura (vs. desarrollo/soporte) y multiplicar por su costo full-time.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#4</span> Presupuesto IT aprobado y ciclo de aprobación de inversiones<span class="dp-src">Fuente: CFO</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no existe un presupuesto formal: preguntar directamente al CFO/CEO cuál fue el último monto aprobado para IT y cómo se aprobó (comité, directorio, informal) — esto define el formato de la propuesta.</div></div></div>
+      </div>
+
+      <div class="dp-cat">
+        <div class="dp-cat-head" style="border-color:#0891B2;"><span>🔍</span> Técnico / Infraestructura</div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#5</span> Inventario de VMs: CPU/RAM/storage asignado vs. uso real (P95 30 días)<span class="dp-src">Fuente: Discovery agentless (Matilda / RVTools)</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Es el dato más crítico y el que más falta. Si no hay discovery previo: instalar un agente liviano (Matilda, RVTools, o incluso scripts PowerCLI) durante 30 días — no requiere downtime ni cambios. Sin esto, cualquier sizing es una suposición.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#6</span> Mapa de dependencias entre aplicaciones (qué habla con qué)<span class="dp-src">Fuente: Network traffic analysis</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si nadie lo documentó: usar herramientas de network traffic analysis (NetFlow/sFlow) durante 2 semanas, o como mínimo, taller de 'whiteboard' con los administradores de sistemas dibujando las conexiones conocidas.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#7</span> Versiones de SO, bases de datos y licenciamiento (BYOL vs. incluido)<span class="dp-src">Fuente: CMDB / inventario manual</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay CMDB: el mismo agente de discovery (Matilda/RVTools) detecta SO y versiones automáticamente. Para licencias, contactar al proveedor de cada software con el listado de servidores para que confirme el tipo de licencia.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#8</span> Topología de red actual y conectividad entre sedes<span class="dp-src">Fuente: Diagramas de red / equipo NetOps</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay diagramas actualizados: pedir al proveedor de conectividad actual (factura/contrato) el detalle de enlaces contratados, y complementar con un 'traceroute' básico entre sedes para validar la topología real.</div></div></div>
+      </div>
+
+      <div class="dp-cat">
+        <div class="dp-cat-head" style="border-color:#7C3AED;"><span>🏢</span> Organizacional / Negocio</div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#9</span> Criticidad de cada aplicación (Tier 1/2/3) según el negocio<span class="dp-src">Fuente: Entrevistas con dueños de proceso</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si nunca se clasificó: taller de 1 hora con los dueños de proceso (no IT) usando una pregunta simple: '¿Qué pasa si este sistema no funciona durante 4 horas? ¿Y durante 24?' — la respuesta clasifica automáticamente el Tier.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#10</span> Madurez del equipo IT: certificaciones cloud existentes, experiencia previa<span class="dp-src">Fuente: Entrevista RRHH/CIO</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay registro: encuesta de 5 minutos al equipo (autoevaluación) + revisar perfiles de LinkedIn del equipo IT como proxy rápido de certificaciones y experiencia previa en cloud.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#11</span> Estructura de decisión: quién aprueba qué y con qué presupuesto<span class="dp-src">Fuente: Entrevista CIO/CFO</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no está formalizado: preguntar directamente '¿quién firmó la última compra de tecnología de más de USD 10K?' — la respuesta real (no el organigrama teórico) define el verdadero centro de decisión.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#12</span> Iniciativas de negocio que dependen de IT (expansión, nuevas plantas, IA)<span class="dp-src">Fuente: Entrevista C-level</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay un plan estratégico documentado: entrevista de 20 minutos con un C-level preguntando '¿qué planea la empresa para los próximos 18-24 meses que requiera más capacidad tecnológica?'</div></div></div>
+      </div>
+
+      <div class="dp-cat">
+        <div class="dp-cat-head" style="border-color:#DC2626;"><span>🔐</span> Compliance / Riesgo</div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#13</span> Regulaciones aplicables (BCRA, ENACOM, ISO, sector específico)<span class="dp-src">Fuente: Legal / Compliance</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si Legal no tiene un mapeo claro: identificar el sector de la empresa y aplicar la matriz sectorial estándar (banca→BCRA, telco→ENACOM, salud→Ley 25.326+HL7, etc.) como punto de partida, y validar con Legal.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#14</span> Última auditoría de seguridad y hallazgos abiertos<span class="dp-src">Fuente: CISO / Auditoría interna</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si nunca se hizo una auditoría formal: ejecutar un scan básico de vulnerabilidades/configuración (gratuito con herramientas como Lynis, AWS Trusted Advisor en modo free, o Microsoft Secure Score) como línea base.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#15</span> Política de backup actual y última prueba de DR realizada<span class="dp-src">Fuente: Equipo de Infraestructura</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si 'hacemos backup' pero nunca se probó restaurar: ese es el hallazgo en sí mismo. Proponer una prueba de restauración guiada de 1 sistema no crítico como parte del relevamiento — el resultado (funciona / no funciona / tarda X horas) es el dato.</div></div></div>
+        <div class="dp-item"><input type="checkbox" class="dp-check" onchange="updateDpCount()"><div class="dp-item-text"><span class="dp-num">#16</span> Restricciones de residencia de datos (qué no puede salir del país)<span class="dp-src">Fuente: Legal / Compliance</span><button class="dp-howto-btn" onclick="toggleHowto(this)">¿Sin este dato? Cómo relevarlo →</button><div class="dp-howto">Si no hay política escrita: aplicar la regla general por tipo de dato (datos personales de clientes → Ley 25.326, datos financieros regulados → BCRA si aplica, resto → sin restricción) y validar con Legal solo los casos grises.</div></div></div>
+      </div>
+
+    </div>
+    <div class="dp-footer">
+      <div class="dp-count"><span id="dpCountDone">0</span> / 16 ítems relevados</div>
+      <div class="dp-actions">
+        <button class="dp-btn-secondary" onclick="checkAllData()">✓ Marcar todo como relevado (simular)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- AGENTS SIDEBAR -->
+    <div class="agents-panel">
+      <div class="ap-title">Agentes activos</div>
+
+      <div class="agent-card" id="agent-a0" style="--accent:#0F766E;--accent-l:#F0FDFA;">
+        <div class="agent-icon" style="background:#0F766E;"><div class="pulse" style="border-color:#0F766E;"></div>📋</div>
+        <div class="agent-meta">
+          <div class="agent-name">Data Collection Agent</div>
+          <div class="agent-role">Relevamiento · Indagación activa</div>
+          <span class="agent-status status-idle" id="status-a0">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-orch" style="--accent:var(--orch);--accent-l:var(--orch-l);">
+        <div class="agent-icon" style="background:var(--orch);"><div class="pulse" style="border-color:var(--orch);"></div>🧭</div>
+        <div class="agent-meta">
+          <div class="agent-name">Orchestrator</div>
+          <div class="agent-role">Coordina y consolida</div>
+          <span class="agent-status status-idle" id="status-orch">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-a1" style="--accent:var(--a1);--accent-l:var(--a1-l);">
+        <div class="agent-icon" style="background:var(--a1);"><div class="pulse" style="border-color:var(--a1);"></div>🔍</div>
+        <div class="agent-meta">
+          <div class="agent-name">Discovery Agent</div>
+          <div class="agent-role">Madurez por dimensión</div>
+          <span class="agent-status status-idle" id="status-a1">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-a2" style="--accent:var(--a2);--accent-l:var(--a2-l);">
+        <div class="agent-icon" style="background:var(--a2);"><div class="pulse" style="border-color:var(--a2);"></div>💰</div>
+        <div class="agent-meta">
+          <div class="agent-name">Business Case Agent</div>
+          <div class="agent-role">TCO / ROI / Justificación</div>
+          <span class="agent-status status-idle" id="status-a2">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-a3" style="--accent:var(--a3);--accent-l:var(--a3-l);">
+        <div class="agent-icon" style="background:var(--a3);"><div class="pulse" style="border-color:var(--a3);"></div>🏗</div>
+        <div class="agent-meta">
+          <div class="agent-name">Architecture Agent</div>
+          <div class="agent-role">Landing Zone · 7R · Sizing</div>
+          <span class="agent-status status-idle" id="status-a3">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-a4" style="--accent:var(--a4);--accent-l:var(--a4-l);">
+        <div class="agent-icon" style="background:var(--a4);"><div class="pulse" style="border-color:var(--a4);"></div>🔐</div>
+        <div class="agent-meta">
+          <div class="agent-name">Governance &amp; Security</div>
+          <div class="agent-role">Políticas · Compliance</div>
+          <span class="agent-status status-idle" id="status-a4">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-a5" style="--accent:var(--a5);--accent-l:var(--a5-l);">
+        <div class="agent-icon" style="background:var(--a5);"><div class="pulse" style="border-color:var(--a5);"></div>🗺</div>
+        <div class="agent-meta">
+          <div class="agent-name">Roadmap Agent</div>
+          <div class="agent-role">Fases, olas, cronograma</div>
+          <span class="agent-status status-idle" id="status-a5">En espera</span>
+        </div>
+      </div>
+
+      <div class="agent-card" id="agent-a6" style="--accent:var(--a6);--accent-l:var(--a6-l);">
+        <div class="agent-icon" style="background:var(--a6);"><div class="pulse" style="border-color:var(--a6);"></div>📚</div>
+        <div class="agent-meta">
+          <div class="agent-name">Knowledge Retriever</div>
+          <div class="agent-role">RAG · AWS/Azure/GCP CAF + KB Personal Tech</div>
+          <span class="agent-status status-idle" id="status-a6">En espera</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="ch-dot"></div>
+        <div class="ch-title">CAF Copilot — Sesión de análisis</div>
+        <div class="ch-sub">Cliente demo: Industria manufacturera, 600 empleados</div>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="msg">
+          <div class="msg-avatar" style="background:var(--orch);">🧭</div>
+          <div class="msg-content">
+            <div class="msg-from">CAF Copilot <span class="role">· Orchestrator</span></div>
+            <div class="msg-bubble">¡Hola! Soy el orquestador del CAF Copilot. Antes de analizar nada, el <strong>Data Collection Agent</strong> ya relevó la información de la empresa (checklist de la izquierda — financiero, técnico, organizacional y compliance). Con esos 16 datos recopilados, voy a coordinar 5 agentes especializados para armar el análisis completo: madurez, business case, arquitectura, gobernanza/seguridad y roadmap. Tildá los ítems del relevamiento (o usá el botón de simular) y arrancamos.</div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <div class="input-box" id="inputBox">Industria manufacturera, 600 empleados, datacenter propio con licencias VMware, sin estrategia cloud formal. Buscamos evaluar migración.</div>
+        <button class="send-btn" id="sendBtn" onclick="startDemo()">▶ Iniciar análisis</button>
+        <button class="restart-btn" id="restartBtn" onclick="location.reload()" style="display:none;">↻ Reiniciar demo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="demo-note">
+    <strong>Nota sobre este PoC:</strong> Esta demo usa contenido <strong>100% hardcodeado</strong> para ilustrar el flujo conceptual del sistema multiagente — no hay LLMs ni orquestación real corriendo. Un PoC funcional requeriría: (1) un framework de orquestación tipo LangGraph/CrewAI/AutoGen, (2) una base de conocimiento RAG con la documentación de AWS/Azure/GCP CAF + el material interno de Personal Tech, (3) conectores a datos reales del cliente (CRM, facturación, discovery técnico tipo Matilda), y (4) una librería de "técnicas de relevamiento alternativo" (los hints "¿Sin este dato?") curada con casos reales para que el agente sugiera la mejor alternativa según el sector y madurez del cliente. La trazabilidad (tags #1-16) muestra de dónde sale cada número — clave para que la propuesta sea defendible ante el cliente, no una caja negra. Estimación de esfuerzo: 4–8 semanas para un piloto funcional con un cliente real.
+  </div>
+
+</div>
+
+<script>
+function toggleHowto(btn){
+  const box = btn.nextElementSibling;
+  box.classList.toggle('open');
+  btn.textContent = box.classList.contains('open') ? '▴ Ocultar' : '¿Sin este dato? Cómo relevarlo →';
+}
+function updateDpCount(){
+  const checks = document.querySelectorAll('.dp-check');
+  const done = document.querySelectorAll('.dp-check:checked').length;
+  document.getElementById('dpCountDone').textContent = done;
+  document.querySelectorAll('.dp-cat').forEach(cat=>{
+    const all = cat.querySelectorAll('.dp-check');
+    const checked = cat.querySelectorAll('.dp-check:checked');
+    cat.classList.toggle('complete', all.length===checked.length);
+  });
+  sendBtn.disabled = (done < checks.length);
+  sendBtn.textContent = (done < checks.length)
+    ? `▶ Relevá los ${checks.length-done} ítems restantes para iniciar`
+    : '▶ Iniciar análisis';
+}
+function checkAllData(){
+  document.querySelectorAll('.dp-check').forEach(c=>c.checked=true);
+  updateDpCount();
+}
+const chatBody = document.getElementById('chatBody');
+const sendBtn = document.getElementById('sendBtn');
+const restartBtn = document.getElementById('restartBtn');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const progressPct = document.getElementById('progressPct');
+
+updateDpCount();
+
+function setAgentStatus(id, status, color){
+  const card = document.getElementById('agent-'+id);
+  const badge = document.getElementById('status-'+id);
+  card.classList.remove('active','done');
+  badge.classList.remove('status-idle','status-working','status-done');
+  if(status==='working'){
+    card.classList.add('active');
+    badge.classList.add('status-working');
+    badge.style.background = color;
+    badge.textContent = 'Procesando...';
+  } else if(status==='done'){
+    card.classList.add('done');
+    badge.classList.add('status-done');
+    badge.textContent = '✓ Completado';
+  } else {
+    badge.classList.add('status-idle');
+    badge.textContent = 'En espera';
+  }
+}
+
+function updateProgress(pct, label){
+  progressFill.style.width = pct+'%';
+  progressPct.textContent = pct+'%';
+  progressText.textContent = label;
+}
+
+function appendMessage(html, scroll=true){
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  chatBody.appendChild(div.firstElementChild);
+  if(scroll) chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function appendTyping(agentColor, agentIcon){
+  const id = 'typing-'+Date.now();
+  appendMessage(`
+    <div class="msg" id="${id}">
+      <div class="msg-avatar" style="background:${agentColor};">${agentIcon}</div>
+      <div class="msg-content">
+        <div class="typing"><span></span><span></span><span></span></div>
+      </div>
+    </div>`);
+  return id;
+}
+
+function removeEl(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+async function startDemo(){
+  sendBtn.disabled = true;
+  sendBtn.textContent = '⏳ Analizando...';
+
+  // DATA COLLECTION AGENT — primero
+  setAgentStatus('a0','working','#0F766E');
+  let t0 = appendTyping('#0F766E','📋');
+  await sleep(1300);
+  removeEl(t0);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:#0F766E;">📋</div>
+      <div class="msg-content">
+        <div class="msg-from">Data Collection Agent <span class="role">· Relevamiento completado</span></div>
+        <div class="msg-bubble">Relevamiento finalizado — <strong>16/16 ítems recopilados</strong> en las 4 categorías (financiero, técnico, organizacional, compliance). Destaco lo que cambia el análisis:
+          <div class="output-card">
+            <div class="oc-head" style="background:#F0FDFA;color:#0F766E;">📥 Hallazgos clave del relevamiento</div>
+            <div class="oc-body">
+              <table class="mini-table">
+                <tr><td class="tt">Licencias VMware</td><td>3 renovaciones muestran aumento del 640% interanual post-Broadcom</td></tr>
+                <tr><td class="tt">Discovery técnico (Matilda)</td><td>45 VMs, P95 CPU promedio 22% — fuerte sobredimensionamiento</td></tr>
+                <tr><td class="tt">Equipo IT</td><td>4 personas, sin certificaciones cloud — confirma Epoch Tactical</td></tr>
+                <tr><td class="tt">Compliance</td><td>Sin regulación sectorial estricta, pero auditoría 2025 marcó falta de DR probado</td></tr>
+                <tr><td class="tt">Negocio</td><td>Proyecto de nueva planta en 18 meses — driver para escalabilidad</td></tr>
+              </table>
+            </div>
+          </div>
+          Paso esta información consolidada al Orchestrator para iniciar el análisis.
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a0','done');
+  await sleep(600);
+
+  // USER MESSAGE
+  appendMessage(`
+    <div class="msg user-msg">
+      <div class="msg-avatar" style="background:#374151;">👤</div>
+      <div class="msg-content">
+        <div class="msg-from">Edgardo <span class="role">· Consultor Personal Tech</span></div>
+        <div class="msg-bubble user">Industria manufacturera, 600 empleados, datacenter propio con licencias VMware (impacto Broadcom), sin estrategia cloud formal. Buscamos evaluar migración.</div>
+      </div>
+    </div>`);
+  await sleep(700);
+
+  // ORCHESTRATOR RESPONSE
+  setAgentStatus('orch','working','var(--orch)');
+  let t = appendTyping('var(--orch)','🧭');
+  await sleep(1100);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--orch);">🧭</div>
+      <div class="msg-content">
+        <div class="msg-from">CAF Copilot <span class="role">· Orchestrator</span></div>
+        <div class="msg-bubble">Perfecto. Detecté: <strong>sector manufactura</strong>, <strong>sin estrategia formal</strong> (probable Epoch Tactical) y <strong>contexto Broadcom/VMware</strong> como driver. Voy a activar al <strong>Discovery Agent</strong> para construir el perfil de madurez por dimensión, y en paralelo consultaré al <strong>Knowledge Retriever</strong> para traer la documentación relevante de migración VMware y el sector manufactura.</div>
+      </div>
+    </div>`);
+  await sleep(600);
+
+  // KNOWLEDGE RETRIEVER
+  setAgentStatus('a6','working','var(--a6)');
+  t = appendTyping('var(--a6)','📚');
+  await sleep(1300);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--a6);">📚</div>
+      <div class="msg-content">
+        <div class="msg-from">Knowledge Retriever <span class="role">· RAG</span></div>
+        <div class="msg-bubble">Recuperé 3 fuentes relevantes:
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--a6-l);color:var(--a6);">📄 Documentos recuperados</div><div class="data-used"><span class="data-used-label">Basado en:</span><span class="data-tag">Sector + Driver inicial</span></div>
+            <div class="oc-body">
+              <table class="mini-table">
+                <tr><td class="tt">vmware_veeam_matilda.html</td><td>Sección "Broadcom Impact" — alternativas y argumentario</td></tr>
+                <tr><td class="tt">migraciones_cloud_7r.html</td><td>Framework 7R + distribución típica de portfolio</td></tr>
+                <tr><td class="tt">playbook_vertical.html</td><td>Ficha sector Manufactura — pain points y casos</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a6','done');
+  await sleep(500);
+
+  // DISCOVERY AGENT
+  setAgentStatus('a1','working','var(--a1)');
+  t = appendTyping('var(--a1)','🔍');
+  await sleep(1400);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--a1);">🔍</div>
+      <div class="msg-content">
+        <div class="msg-from">Discovery Agent <span class="role">· Madurez por dimensión</span></div>
+        <div class="msg-bubble">Basándome en las 8 preguntas de diagnóstico y las respuestas del cliente, este es el perfil de madurez estimado (modelo Initial / Managed / Optimized):
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--a1-l);color:var(--a1);">📊 Perfil de madurez — Epoch: Tactical</div><div class="data-used"><span class="data-used-label">Basado en datos relevados:</span><span class="data-tag">#3</span><span class="data-tag">#4</span><span class="data-tag">#10</span><span class="data-tag">#11</span></div>
+            <div class="oc-body">
+              <div class="mbar-row"><span class="mbar-label">Business</span><div class="mbar-track"><div class="mbar-fill" style="width:30%;background:#D97706;"></div></div><span class="mbar-pct" style="color:#D97706;">Initial</span></div>
+              <div class="mbar-row"><span class="mbar-label">People</span><div class="mbar-track"><div class="mbar-fill" style="width:25%;background:#D97706;"></div></div><span class="mbar-pct" style="color:#D97706;">Initial</span></div>
+              <div class="mbar-row"><span class="mbar-label">Governance</span><div class="mbar-track"><div class="mbar-fill" style="width:35%;background:#D97706;"></div></div><span class="mbar-pct" style="color:#D97706;">Initial</span></div>
+              <div class="mbar-row"><span class="mbar-label">Platform</span><div class="mbar-track"><div class="mbar-fill" style="width:55%;background:#0891B2;"></div></div><span class="mbar-pct" style="color:#0891B2;">Managed</span></div>
+              <div class="mbar-row"><span class="mbar-label">Security</span><div class="mbar-track"><div class="mbar-fill" style="width:40%;background:#D97706;"></div></div><span class="mbar-pct" style="color:#D97706;">Initial</span></div>
+              <div class="mbar-row"><span class="mbar-label">Operations</span><div class="mbar-track"><div class="mbar-fill" style="width:30%;background:#D97706;"></div></div><span class="mbar-pct" style="color:#D97706;">Initial</span></div>
+            </div>
+          </div>
+          <strong>Conclusión:</strong> El driver Broadcom es una <em>oportunidad táctica</em>, pero la organización está en Epoch Tactical. La propuesta debe priorizar Governance + Platform antes de hablar de IA/Analytics.
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a1','done');
+  await sleep(500);
+
+  // BUSINESS CASE + ARCHITECTURE en paralelo (mensaje del orquestador)
+  setAgentStatus('orch','working','var(--orch)');
+  t = appendTyping('var(--orch)','🧭');
+  await sleep(800);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--orch);">🧭</div>
+      <div class="msg-content">
+        <div class="msg-from">CAF Copilot <span class="role">· Orchestrator</span></div>
+        <div class="msg-bubble">Con el perfil de madurez listo, activo en paralelo al <strong>Business Case Agent</strong> (para cuantificar el impacto Broadcom) y al <strong>Architecture Agent</strong> (para clasificar el portfolio con 7R).</div>
+      </div>
+    </div>`);
+  await sleep(500);
+
+  // BUSINESS CASE AGENT
+  setAgentStatus('a2','working','var(--a2)');
+  t = appendTyping('var(--a2)','💰');
+  await sleep(1500);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--a2);">💰</div>
+      <div class="msg-content">
+        <div class="msg-from">Business Case Agent <span class="role">· TCO / ROI</span></div>
+        <div class="msg-bubble">Generé el comparativo a 3 años usando los parámetros típicos del sector + el aumento Broadcom estimado (×8 en licencias VCF):
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--a2-l);color:var(--a2);">📈 TCO comparativo a 3 años (estimado)</div><div class="data-used"><span class="data-used-label">Basado en datos relevados:</span><span class="data-tag">#1</span><span class="data-tag">#2</span><span class="data-tag">#3</span><span class="data-tag">#4</span></div>
+            <div class="oc-body">
+              <table class="mini-table">
+                <tr><th>Escenario</th><th>Año 1</th><th>Año 2</th><th>Año 3</th><th>Total</th></tr>
+                <tr><td class="tt">Permanecer en VMware (post-Broadcom)</td><td>USD 145K</td><td>USD 152K</td><td>USD 160K</td><td class="tt" style="color:#DC2626;">USD 457K</td></tr>
+                <tr><td class="tt">Migrar a Personal Tech Cloud</td><td>USD 98K</td><td>USD 72K</td><td>USD 75K</td><td class="tt" style="color:#059669;">USD 245K</td></tr>
+              </table>
+              <div style="margin-top:8px;font-size:11.5px;color:var(--muted);">💡 <strong>Ahorro proyectado: USD 212K (46%)</strong> en 3 años. Payback estimado: <strong>14 meses</strong>. El Año 1 incluye costo de migración (~USD 35K).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a2','done');
+  await sleep(500);
+
+  // ARCHITECTURE AGENT
+  setAgentStatus('a3','working','var(--a3)');
+  t = appendTyping('var(--a3)','🏗');
+  await sleep(1500);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--a3);">🏗</div>
+      <div class="msg-content">
+        <div class="msg-from">Architecture Agent <span class="role">· Landing Zone · 7R</span></div>
+        <div class="msg-bubble">Clasificación preliminar del portfolio (45 VMs estimadas para este tamaño de empresa) usando el framework 7R:
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--a3-l);color:var(--a3);">🗂 Clasificación 7R del portfolio</div><div class="data-used"><span class="data-used-label">Basado en datos relevados:</span><span class="data-tag">#5</span><span class="data-tag">#6</span><span class="data-tag">#7</span><span class="data-tag">#8</span></div>
+            <div class="oc-body">
+              <table class="mini-table">
+                <tr><th>Estrategia</th><th>% del portfolio</th><th>Cant. VMs</th><th>Prioridad</th></tr>
+                <tr><td><span class="pill" style="background:#FEE2E2;color:#DC2626;">Retire</span></td><td>11%</td><td>5</td><td>Inmediata</td></tr>
+                <tr><td><span class="pill" style="background:#FEF3C7;color:#92400E;">Retain</span></td><td>9%</td><td>4</td><td>Revisión 90d</td></tr>
+                <tr><td><span class="pill" style="background:#EBF5FF;color:#004DBF;">Rehost</span></td><td>53%</td><td>24</td><td>Olas 1-3</td></tr>
+                <tr><td><span class="pill" style="background:#D1FAE5;color:#065F46;">Replatform</span></td><td>16%</td><td>7</td><td>Ola 2</td></tr>
+                <tr><td><span class="pill" style="background:#F0FDFA;color:#0F766E;">Repurchase</span></td><td>7%</td><td>3</td><td>Paralelo</td></tr>
+                <tr><td><span class="pill" style="background:#F5F3FF;color:#6D28D9;">Refactor</span></td><td>4%</td><td>2</td><td>Proyecto separado</td></tr>
+              </table>
+              <div style="margin-top:8px;font-size:11.5px;color:var(--muted);">🏗 <strong>Landing Zone recomendada:</strong> Cloud Pacheco con VPC dedicada + MPLS desde planta principal (latencia &lt;5ms para SAP/ERP). HCX habilitado para Rehost de VMs sin cambio de IP.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a3','done');
+  await sleep(500);
+
+  // GOVERNANCE & SECURITY AGENT
+  setAgentStatus('a4','working','var(--a4)');
+  t = appendTyping('var(--a4)','🔐');
+  await sleep(1400);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--a4);">🔐</div>
+      <div class="msg-content">
+        <div class="msg-from">Governance &amp; Security Agent <span class="role">· Políticas · Compliance</span></div>
+        <div class="msg-bubble">Como el perfil de madurez en Governance/Security es "Initial", generé el set de guardrails mínimos a implementar desde la Landing Zone:
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--a4-l);color:var(--a4);">🛡 Guardrails recomendados (Fase Ready)</div><div class="data-used"><span class="data-used-label">Basado en datos relevados:</span><span class="data-tag">#13</span><span class="data-tag">#14</span><span class="data-tag">#15</span><span class="data-tag">#16</span></div>
+            <div class="oc-body">
+              <table class="mini-table">
+                <tr><td class="tt">Tagging policy</td><td>Obligatorio: Proyecto, Entorno, CentroCosto, Owner — aplicado desde el primer recurso</td></tr>
+                <tr><td class="tt">Backup inmutable</td><td>Veeam + Object Lock (WORM) en Object Storage Pacheco — regla 3-2-1-1-0</td></tr>
+                <tr><td class="tt">Segmentación de red</td><td>Micro-segmentación NSX/SASE entre red de planta (OT) y red corporativa (IT)</td></tr>
+                <tr><td class="tt">IAM &amp; MFA</td><td>SSO con AD existente + MFA obligatorio para accesos administrativos cloud</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a4','done');
+  await sleep(500);
+
+  // ROADMAP AGENT
+  setAgentStatus('a5','working','var(--a5)');
+  t = appendTyping('var(--a5)','🗺');
+  await sleep(1500);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--a5);">🗺</div>
+      <div class="msg-content">
+        <div class="msg-from">Roadmap Agent <span class="role">· Fases y cronograma</span></div>
+        <div class="msg-bubble">Consolidé los outputs anteriores en un roadmap de 22 semanas:
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--a5-l);color:var(--a5-d, var(--a5));">📅 Roadmap de adopción — 22 semanas</div><div class="data-used"><span class="data-used-label">Consolida</span><span class="data-tag">Madurez</span><span class="data-tag">TCO</span><span class="data-tag">7R</span><span class="data-tag">Guardrails</span></div>
+            <div class="oc-body">
+              <div class="gantt">
+                <div class="gantt-row"><span class="gantt-label">Fase 0 · Fundaciones</span><div class="gantt-track"><div class="gantt-bar" style="width:18%;background:#7C3AED;">4 sem</div></div></div>
+                <div class="gantt-row"><span class="gantt-label">Ola 1 · No críticos</span><div class="gantt-track"><div class="gantt-bar" style="width:18%;margin-left:18%;background:#059669;">4 sem</div></div></div>
+                <div class="gantt-row"><span class="gantt-label">Ola 2 · Soporte</span><div class="gantt-track"><div class="gantt-bar" style="width:27%;margin-left:36%;background:#D97706;">6 sem</div></div></div>
+                <div class="gantt-row"><span class="gantt-label">Ola 3 · ERP/SAP core</span><div class="gantt-track"><div class="gantt-bar" style="width:36%;margin-left:63%;background:#DC2626;">8 sem</div></div></div>
+                <div class="gantt-row"><span class="gantt-label">Optimización FinOps</span><div class="gantt-track"><div class="gantt-bar" style="width:18%;margin-left:82%;background:#0891B2;">4 sem</div></div></div>
+              </div>
+              <div style="margin-top:10px;font-size:11.5px;color:var(--muted);">⚡ <strong>Quick win semana 1-2:</strong> Retire de las 5 VMs sin uso + apagado programado de Dev/Test = ahorro inmediato del 12% antes de migrar nada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('a5','done');
+  await sleep(700);
+
+  // ORCHESTRATOR FINAL SUMMARY
+  setAgentStatus('orch','working','var(--orch)');
+  t = appendTyping('var(--orch)','🧭');
+  await sleep(1300);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--orch);">🧭</div>
+      <div class="msg-content">
+        <div class="msg-from">CAF Copilot <span class="role">· Orchestrator</span></div>
+        <div class="msg-bubble">
+          Antes del resumen final, consolido el objetivo de fondo: no es solo migrar, es dejar a la empresa <strong>IA-Ready</strong>. Este scorecard muestra cada dimensión, su estado actual (según el relevamiento) y qué falta cerrar:
+          <div class="output-card">
+            <div class="oc-head" style="background:var(--orch-l);color:var(--orch);">🧠 IA-Ready Scorecard</div>
+            <div class="data-used"><span class="data-used-label">Basado en datos relevados</span><span class="data-tag">#5</span><span class="data-tag">#6</span><span class="data-tag">#7</span><span class="data-tag">#10</span><span class="data-tag">#13</span><span class="data-tag">#16</span></div>
+            <div class="oc-body">
+              <table class="mini-table">
+                <tr><th>Dimensión IA-Ready</th><th>Estado actual</th><th>Gap a cerrar</th></tr>
+                <tr><td class="tt">Calidad y catálogo de datos</td><td><span class="pill" style="background:#FEE2E2;color:#DC2626;">Bajo</span></td><td>Sin inventario de fuentes de datos ni catálogo. Necesario antes de cualquier caso de uso de IA.</td></tr>
+                <tr><td class="tt">Infraestructura de cómputo (GPU/escalable)</td><td><span class="pill" style="background:#FEF3C7;color:#92400E;">Medio</span></td><td>Cloud Pacheco soporta GPU on-demand — disponible una vez migrado el core.</td></tr>
+                <tr><td class="tt">Gobernanza de datos y compliance</td><td><span class="pill" style="background:#FEE2E2;color:#DC2626;">Bajo</span></td><td>Definir política de residencia y clasificación de datos (sensible/público) — base para qué datos pueden usarse en modelos.</td></tr>
+                <tr><td class="tt">Seguridad para entornos de IA</td><td><span class="pill" style="background:#FEF3C7;color:#92400E;">Medio</span></td><td>Guardrails de Fase Ready cubren la base; falta política específica de acceso a datos para modelos/agentes.</td></tr>
+                <tr><td class="tt">Skills del equipo (MLOps/Data)</td><td><span class="pill" style="background:#FEE2E2;color:#DC2626;">Bajo</span></td><td>Equipo sin experiencia en datos/IA — plan de capacitación o partner gestionado.</td></tr>
+                <tr><td class="tt">Casos de uso priorizados</td><td><span class="pill" style="background:#FEE2E2;color:#DC2626;">Sin definir</span></td><td>Taller con negocio (a partir de dato #12 — nueva planta) para identificar 2-3 casos de uso de IA de alto impacto.</td></tr>
+              </table>
+              <div style="margin-top:8px;font-size:11.5px;color:var(--muted);">💡 <strong>Recomendación:</strong> Incorporar al roadmap una <strong>Fase 5 — Fundaciones de datos para IA</strong> (4-6 semanas, en paralelo a la Ola 3) que deje el catálogo de datos, la política de gobernanza y 2-3 casos de uso priorizados listos para ejecutar post-migración.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  await sleep(700);
+
+  setAgentStatus('orch','working','var(--orch)');
+  t = appendTyping('var(--orch)','🧭');
+  await sleep(1300);
+  removeEl(t);
+  appendMessage(`
+    <div class="msg">
+      <div class="msg-avatar" style="background:var(--orch);">🧭</div>
+      <div class="msg-content">
+        <div class="msg-from">CAF Copilot <span class="role">· Orchestrator</span></div>
+        <div class="msg-bubble">
+          <strong>✅ Análisis consolidado.</strong> Resumen ejecutivo:
+          <ul style="margin:8px 0 8px 18px;line-height:1.7;">
+            <li>Cliente en <strong>Epoch Tactical</strong> — priorizar Governance + Platform antes de Analytics/IA</li>
+            <li><strong>Ahorro proyectado: USD 212K (46%)</strong> en 3 años vs. permanecer en VMware post-Broadcom</li>
+            <li><strong>53% del portfolio</strong> es candidato a Rehost rápido — quick wins en semanas 5-12</li>
+            <li>Guardrails de seguridad y backup inmutable definidos para la Landing Zone en Pacheco</li>
+            <li><strong>Roadmap de 22 semanas</strong> con quick win de ahorro inmediato del 12% en semana 2</li>
+            <li><strong>Plan IA-Ready:</strong> 4 de 6 dimensiones requieren trabajo de base — incluido como Fase 5 del roadmap</li>
+          </ul>
+          📄 Informe completo listo para exportar como propuesta comercial. ¿Querés que genere la presentación ejecutiva para el cliente?
+        </div>
+      </div>
+    </div>`);
+  setAgentStatus('orch','done');
+
+  updateProgress(100, '✅ Análisis completo — 6 agentes ejecutados');
+  sendBtn.style.display = 'none';
+  restartBtn.style.display = 'inline-block';
+}
+
+// Animate progress during demo
+const steps = [
+  [5,'Data Collection Agent consolidando relevamiento...'],
+  [15,'Orchestrator interpretando contexto...'],
+  [25,'Knowledge Retriever buscando documentación...'],
+  [38,'Discovery Agent evaluando madurez...'],
+  [50,'Business Case Agent calculando TCO/ROI...'],
+  [63,'Architecture Agent clasificando portfolio 7R...'],
+  [76,'Governance Agent generando guardrails...'],
+  [88,'Orchestrator armando IA-Ready Scorecard...'],
+  [96,'Roadmap Agent consolidando cronograma...'],
+];
+let stepIdx=0;
+function progressTicker(){
+  if(stepIdx < steps.length && sendBtn.disabled){
+    updateProgress(steps[stepIdx][0], steps[stepIdx][1]);
+    stepIdx++;
+    setTimeout(progressTicker, 1450);
+  }
+}
+const origStart = startDemo;
+startDemo = function(){
+  progressTicker();
+  origStart();
+};
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Template de Propuesta Comercial | Personal Tech</title>
+<style>
+:root {
+  /* Paleta principal */
+  --ink:#1A1A18;
+  --ink-sec:#4A4A45;
+  --ink-ter:#888780;
+  --paper:#FAFAF7;
+  --paper2:#F1EFE8;
+  --border:#DEDBD0;
+
+  /* Acento Personal Tech */
+  --pt-blue:#0C447C;
+  --pt-blue-m:#378ADD;
+  --pt-blue-l:#E6F1FB;
+  --pt-green:#085041;
+  --pt-green-m:#1D9E75;
+  --pt-green-l:#E1F5EE;
+  --pt-amber:#633806;
+  --pt-amber-m:#BA7517;
+  --pt-amber-l:#FAEEDA;
+  --pt-coral:#4A1B0C;
+  --pt-coral-m:#D85A30;
+  --pt-coral-l:#FAECE7;
+  --pt-red:#7B1A1A;
+  --pt-red-m:#C0392B;
+  --pt-red-l:#FDECEC;
+  --pt-purple:#26215C;
+  --pt-purple-m:#7F77DD;
+  --pt-purple-l:#EEEDFE;
+
+  --radius:8px;
+  --radius-sm:5px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:13.5px;
+  color:var(--ink);
+  background:var(--paper);
+  line-height:1.7;
+}
+
+/* ────── TOPBAR ────── */
+.topbar{
+  background:var(--ink);
+  color:#fff;
+  padding:0 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:2px solid var(--pt-blue-m);
+}
+.topbar-brand{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.12em;color:rgba(255,255,255,.5);
+  padding:13px 0;
+}
+.topbar-nav{display:flex;gap:0;overflow-x:auto;}
+.tnav{
+  font-size:10.5px;font-weight:700;padding:13px 11px;
+  white-space:nowrap;cursor:pointer;
+  border-bottom:2px solid transparent;
+  color:rgba(255,255,255,.4);
+  transition:all .18s;text-decoration:none;
+}
+.tnav:hover,.tnav.active{color:#fff;border-bottom-color:var(--pt-blue-m);}
+.topbar-actions{display:flex;gap:8px;padding:8px 0;flex-shrink:0;}
+.btn-sm{
+  font-size:10.5px;font-weight:700;padding:5px 12px;
+  border-radius:var(--radius-sm);border:none;cursor:pointer;
+  font-family:inherit;transition:all .15s;
+}
+.btn-ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);}
+.btn-ghost:hover{background:rgba(255,255,255,.15);color:#fff;}
+.btn-print{background:var(--pt-blue-m);color:#fff;}
+.btn-print:hover{background:var(--pt-blue);}
+
+/* ────── LAYOUT ────── */
+.page{max-width:980px;margin:0 auto;padding:36px 28px 80px;}
+
+/* ────── HERO / PORTADA ────── */
+.portada{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-bottom:36px;
+}
+.portada-top{
+  background:var(--pt-blue);
+  padding:36px 36px 28px;
+  position:relative;
+  overflow:hidden;
+}
+.portada-top::before{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:280px;height:280px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.portada-top::after{
+  content:'';position:absolute;right:40px;bottom:-80px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.03);
+}
+.portada-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.12em;color:rgba(255,255,255,.45);
+  margin-bottom:10px;
+}
+.portada-title{
+  font-size:28px;font-weight:700;color:#fff;
+  line-height:1.2;letter-spacing:-.4px;margin-bottom:6px;
+}
+.portada-title input{
+  font-size:28px;font-weight:700;color:#fff;
+  background:transparent;border:none;outline:none;
+  border-bottom:1.5px solid rgba(255,255,255,.25);
+  font-family:inherit;letter-spacing:-.4px;line-height:1.2;
+  width:100%;
+}
+.portada-title input::placeholder{color:rgba(255,255,255,.3);}
+.portada-sub{font-size:13px;color:rgba(255,255,255,.5);font-style:italic;}
+.portada-meta{
+  background:var(--paper2);
+  padding:20px 36px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:16px;
+}
+.meta-field{display:flex;flex-direction:column;gap:4px;}
+.meta-label{
+  font-size:9.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--ink-ter);
+}
+.meta-input{
+  font-size:13px;color:var(--ink);font-family:inherit;
+  border:none;border-bottom:.5px solid var(--border);
+  background:transparent;outline:none;padding:2px 0;
+  transition:border-color .18s;
+}
+.meta-input:focus{border-bottom-color:var(--pt-blue-m);}
+.meta-input::placeholder{color:var(--ink-ter);}
+
+/* ────── SECCIONES ────── */
+.prop-section{margin-bottom:32px;scroll-margin-top:56px;}
+.section-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:16px;padding-bottom:10px;
+  border-bottom:1.5px solid var(--ink);
+}
+.section-num{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--ink-ter);min-width:28px;
+}
+.section-title{font-size:17px;font-weight:700;color:var(--ink);flex:1;}
+.section-badge{
+  font-size:10px;font-weight:700;padding:2px 9px;
+  border-radius:20px;white-space:nowrap;
+}
+
+/* ────── EDITABLE BOXES ────── */
+.editable-box{
+  border:.5px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;background:#fff;margin-bottom:12px;
+  transition:border-color .15s;
+}
+.editable-box:focus-within{border-color:var(--pt-blue-m);}
+.eb-label{
+  font-size:9.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--ink-ter);margin-bottom:6px;
+}
+.eb-input{
+  width:100%;border:none;outline:none;font-family:inherit;
+  font-size:13px;color:var(--ink);line-height:1.7;
+  background:transparent;resize:none;min-height:42px;
+}
+.eb-input::placeholder{color:var(--border);font-style:italic;}
+
+/* ────── GRID FORMS ────── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+/* ────── DIAGNOSTIC TABLE ────── */
+.diag-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0;}
+.diag-table th{
+  padding:8px 12px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--ink-ter);
+  border-bottom:1.5px solid var(--border);text-align:left;background:var(--paper2);
+}
+.diag-table td{
+  padding:8px 12px;border-bottom:.5px solid var(--border);
+  vertical-align:top;
+}
+.diag-table tr:last-child td{border-bottom:none;}
+.diag-table td input{
+  width:100%;border:none;outline:none;font-family:inherit;
+  font-size:12.5px;color:var(--ink);background:transparent;padding:0;
+}
+.diag-table td input::placeholder{color:var(--border);font-style:italic;}
+.pill{
+  display:inline-block;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:20px;white-space:nowrap;
+}
+.pill-red{background:var(--pt-red-l);color:var(--pt-red);}
+.pill-amber{background:var(--pt-amber-l);color:var(--pt-amber);}
+.pill-green{background:var(--pt-green-l);color:var(--pt-green);}
+.pill-blue{background:var(--pt-blue-l);color:var(--pt-blue);}
+
+/* ────── BOM TABLE ────── */
+.bom-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0;}
+.bom-table th{
+  padding:8px 12px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--ink-ter);
+  border-bottom:1.5px solid var(--border);text-align:left;background:var(--paper2);
+}
+.bom-table td{
+  padding:8px 12px;border-bottom:.5px solid var(--border);vertical-align:top;
+}
+.bom-table tr:last-child td{border-bottom:none;}
+.bom-table td input{
+  width:100%;border:none;outline:none;font-family:inherit;
+  font-size:12.5px;color:var(--ink);background:transparent;padding:0;
+}
+.bom-table td input::placeholder{color:var(--border);font-style:italic;}
+.bom-section-row td{
+  background:var(--paper2);font-size:9.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--ink-ter);
+  padding:6px 12px;
+}
+.bom-total-row td{
+  background:var(--ink);color:#fff;font-weight:700;padding:10px 12px;
+}
+.bom-total-row td input{color:#fff;font-weight:700;}
+.right{text-align:right;}
+
+/* ────── ARCHITECTURE DIAGRAM ────── */
+.arch-canvas{
+  background:var(--paper2);border:.5px solid var(--border);
+  border-radius:var(--radius);padding:24px;margin:12px 0;
+  min-height:220px;
+}
+.arch-canvas-label{
+  font-size:9.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--ink-ter);margin-bottom:16px;
+}
+.arch-layers{display:flex;flex-direction:column;gap:10px;}
+.arch-layer{
+  border-radius:var(--radius-sm);padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.arch-layer-name{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;min-width:80px;
+}
+.arch-items{display:flex;gap:8px;flex-wrap:wrap;flex:1;}
+.arch-item{
+  font-size:11px;font-weight:700;padding:4px 11px;
+  border-radius:20px;border:.5px solid;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.arch-item:hover{opacity:.75;}
+.arch-item.selected{opacity:1;box-shadow:0 0 0 2px currentColor;}
+.arch-add-btn{
+  font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;border:.5px dashed var(--border);
+  background:transparent;color:var(--ink-ter);cursor:pointer;
+  font-family:inherit;transition:all .15s;
+}
+.arch-add-btn:hover{border-color:var(--pt-blue-m);color:var(--pt-blue-m);}
+
+/* ────── TCO SUMMARY ────── */
+.tco-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.tco-card{border-radius:var(--radius-sm);padding:14px 15px;border:.5px solid var(--border);}
+.tco-card-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-ter);margin-bottom:5px;}
+.tco-card-val{font-size:22px;font-weight:700;line-height:1.1;font-family:Georgia,serif;}
+.tco-card-sub{font-size:10.5px;color:var(--ink-ter);margin-top:3px;}
+
+/* ────── ROADMAP ────── */
+.roadmap-phases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+.rm-phase{border-radius:var(--radius-sm);border:.5px solid var(--border);overflow:hidden;}
+.rm-head{padding:12px 14px;display:flex;align-items:center;gap:8px;}
+.rm-num{
+  font-size:11px;font-weight:700;width:22px;height:22px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.rm-title{font-size:12.5px;font-weight:700;color:var(--ink);}
+.rm-period{font-size:10px;color:var(--ink-ter);}
+.rm-body{padding:8px 14px 14px;border-top:.5px solid var(--border);}
+.rm-item{font-size:12px;color:var(--ink-sec);padding:4px 0;border-bottom:.5px solid var(--paper2);display:flex;gap:8px;}
+.rm-item:last-child{border-bottom:none;}
+.rm-item input{
+  flex:1;border:none;outline:none;font-family:inherit;
+  font-size:12px;color:var(--ink-sec);background:transparent;
+}
+.rm-item input::placeholder{color:var(--border);font-style:italic;}
+.rm-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:8px;}
+
+/* ────── CONDITIONS ────── */
+.conditions-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+.cond-box{border-radius:var(--radius-sm);padding:14px 16px;border:.5px solid var(--border);}
+.cond-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.cond-item{font-size:12px;color:var(--ink-sec);padding:3px 0;display:flex;gap:8px;}
+.cond-item input{
+  flex:1;border:none;outline:none;font-family:inherit;
+  font-size:12px;color:var(--ink-sec);background:transparent;
+}
+.cond-item input::placeholder{color:var(--border);font-style:italic;}
+
+/* ────── SIGN BOXES ────── */
+.sign-area{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px;}
+.sign-box{display:flex;flex-direction:column;gap:6px;}
+.sign-line{height:1px;background:var(--ink);margin-top:40px;}
+.sign-label{font-size:10px;color:var(--ink-ter);text-align:center;}
+.sign-name{font-size:12px;font-weight:700;text-align:center;color:var(--ink);}
+
+/* ────── NOTES BOX ────── */
+.note-box{
+  background:var(--pt-amber-l);border-left:3px solid var(--pt-amber-m);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:12px 15px;margin:12px 0;font-size:12.5px;
+  color:var(--ink-sec);line-height:1.6;
+}
+.note-box strong{color:var(--pt-amber);}
+.info-box{
+  background:var(--pt-blue-l);border-left:3px solid var(--pt-blue-m);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:12px 15px;margin:12px 0;font-size:12.5px;
+  color:var(--ink-sec);line-height:1.6;
+}
+.info-box strong{color:var(--pt-blue);}
+
+/* ────── ADD ROW BTN ────── */
+.add-row-btn{
+  font-size:11px;font-weight:700;color:var(--pt-blue-m);
+  background:none;border:.5px dashed var(--pt-blue-m);
+  border-radius:var(--radius-sm);padding:5px 12px;cursor:pointer;
+  font-family:inherit;margin-top:6px;transition:all .15s;
+}
+.add-row-btn:hover{background:var(--pt-blue-l);}
+
+/* ────── FOOTER ────── */
+.prop-footer{
+  border-top:.5px solid var(--border);margin-top:48px;
+  padding-top:14px;font-size:10.5px;color:var(--ink-ter);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;
+}
+
+/* ────── PRINT ────── */
+@media print{
+  .topbar,.add-row-btn{display:none!important;}
+  body{font-size:12px;}
+  .page{padding:0;max-width:100%;}
+  .portada-title input,.meta-input,.eb-input,
+  .diag-table td input,.bom-table td input,
+  .rm-item input,.cond-item input{
+    border-color:transparent!important;
+  }
+  @page{margin:15mm;size:A4;}
+}
+
+@media(max-width:680px){
+  .portada-meta,.grid2,.grid3,.tco-cards,
+  .roadmap-phases,.conditions-grid,.sign-area{grid-template-columns:1fr;}
+  .topbar-actions{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">Personal Tech · Propuesta Comercial</div>
+  <nav class="topbar-nav">
+    <a class="tnav" href="#s1">01 Situación</a>
+    <a class="tnav" href="#s2">02 Dolor</a>
+    <a class="tnav" href="#s3">03 Arquitectura</a>
+    <a class="tnav" href="#s4">04 BOM</a>
+    <a class="tnav" href="#s5">05 TCO/ROI</a>
+    <a class="tnav" href="#s6">06 Hoja de ruta</a>
+    <a class="tnav" href="#s7">07 Condiciones</a>
+    <a class="tnav" href="#s8">08 Firma</a>
+  </nav>
+  <div class="topbar-actions">
+    <button class="btn-sm btn-ghost" onclick="clearAll()">🗑 Limpiar</button>
+    <button class="btn-sm btn-print" onclick="window.print()">🖨 Imprimir / PDF</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ══════ PORTADA ══════ -->
+  <div class="portada">
+    <div class="portada-top">
+      <div class="portada-label">Propuesta técnico-comercial confidencial — Personal Tech | Telecom Argentina</div>
+      <div class="portada-title">
+        <input type="text" id="prop-title" placeholder="Solución Cloud Híbrida para [Empresa Cliente]" autocomplete="off">
+      </div>
+      <div class="portada-sub" id="portada-sub">Infraestructura · Conectividad · Seguridad · Continuidad del negocio</div>
+    </div>
+    <div class="portada-meta">
+      <div class="meta-field">
+        <div class="meta-label">Cliente</div>
+        <input class="meta-input" id="meta-cliente" type="text" placeholder="Razón social">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Industria / Vertical</div>
+        <input class="meta-input" id="meta-industria" type="text" placeholder="Ej: Banca · Manufactura · Retail">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Contacto del cliente</div>
+        <input class="meta-input" id="meta-contacto" type="text" placeholder="Nombre y cargo">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Consultor Personal Tech</div>
+        <input class="meta-input" id="meta-consultor" type="text" placeholder="Edgardo Mauricio Celata" value="Edgardo Mauricio Celata">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Fecha de propuesta</div>
+        <input class="meta-input" id="meta-fecha" type="text">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Vigencia de la oferta</div>
+        <input class="meta-input" id="meta-vigencia" type="text" placeholder="30 días corridos">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">N° de propuesta</div>
+        <input class="meta-input" id="meta-nro" type="text" placeholder="PT-2025-001">
+      </div>
+      <div class="meta-field">
+        <div class="meta-label">Versión</div>
+        <input class="meta-input" id="meta-version" type="text" placeholder="v1.0">
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════ S1: SITUACIÓN ACTUAL ══════ -->
+  <div class="prop-section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">Situación actual del cliente</div>
+      <span class="section-badge" style="background:var(--pt-coral-l);color:var(--pt-coral);">Diagnóstico</span>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Resumen ejecutivo de la situación actual</div>
+      <textarea class="eb-input" placeholder="Describí en 3–5 oraciones la situación de infraestructura actual del cliente: qué tienen, dónde está alojado, cuántos servidores/usuarios, qué aplicaciones corren y cuál es el estado general. Este párrafo es el que el CEO/CFO va a leer primero.&#10;&#10;Ejemplo: '[Cliente] opera con 20 servidores físicos en sala propia ubicada en [sede principal], con aproximadamente 4 años de antigüedad promedio. La infraestructura soporta las aplicaciones críticas de [ERP/CRM/operaciones] para un total de [N] usuarios. El modelo actual no cuenta con un plan formal de Disaster Recovery y la disponibilidad real de los sistemas es del 99,4%.'" rows="6"></textarea>
+    </div>
+
+    <div class="note-box">
+      <strong>💡 Consejo:</strong> Completar este diagnóstico antes de la reunión de presentación. Que el cliente lo lea y diga "exacto, así estamos" — eso construye credibilidad y baja las defensas antes de hablar de la propuesta.
+    </div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-ter);margin:16px 0 10px;">Inventario de infraestructura relevada</div>
+    <table class="diag-table">
+      <thead>
+        <tr>
+          <th style="width:200px;">Componente</th>
+          <th>Detalle / Cantidad</th>
+          <th style="width:100px;">Antigüedad</th>
+          <th style="width:110px;">Estado</th>
+        </tr>
+      </thead>
+      <tbody id="inventory-body">
+        <tr>
+          <td><input type="text" placeholder="Servidores físicos"></td>
+          <td><input type="text" placeholder="Cantidad, marca, modelo, cores, RAM"></td>
+          <td><input type="text" placeholder="Ej: 4 años"></td>
+          <td>
+            <select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;">
+              <option value="">Estado</option>
+              <option>✅ OK</option>
+              <option>⚠️ En riesgo</option>
+              <option>🔴 Crítico</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Storage / NAS / SAN"></td>
+          <td><input type="text" placeholder="Capacidad total, tipo (SSD/HDD), marca"></td>
+          <td><input type="text" placeholder="Ej: 3 años"></td>
+          <td>
+            <select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;">
+              <option value="">Estado</option>
+              <option>✅ OK</option>
+              <option>⚠️ En riesgo</option>
+              <option>🔴 Crítico</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Virtualización"></td>
+          <td><input type="text" placeholder="Plataforma (VMware/HyperV), versión, licencias"></td>
+          <td><input type="text" placeholder=""></td>
+          <td>
+            <select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;">
+              <option value="">Estado</option>
+              <option>✅ OK</option>
+              <option>⚠️ En riesgo</option>
+              <option>🔴 Crítico</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Conectividad WAN"></td>
+          <td><input type="text" placeholder="Ancho de banda, tipo (fibra/ADSL/MPLS), proveedor"></td>
+          <td><input type="text" placeholder=""></td>
+          <td>
+            <select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;">
+              <option value="">Estado</option>
+              <option>✅ OK</option>
+              <option>⚠️ En riesgo</option>
+              <option>🔴 Crítico</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Backup / DR"></td>
+          <td><input type="text" placeholder="Solución, frecuencia, sitio alternativo, último test"></td>
+          <td><input type="text" placeholder=""></td>
+          <td>
+            <select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;">
+              <option value="">Estado</option>
+              <option>✅ OK</option>
+              <option>⚠️ En riesgo</option>
+              <option>🔴 Crítico</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Seguridad"></td>
+          <td><input type="text" placeholder="Firewall, antivirus, MFA, SIEM — qué tienen y qué falta"></td>
+          <td><input type="text" placeholder=""></td>
+          <td>
+            <select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;">
+              <option value="">Estado</option>
+              <option>✅ OK</option>
+              <option>⚠️ En riesgo</option>
+              <option>🔴 Crítico</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="add-row-btn" onclick="addInventoryRow()">+ Agregar componente</button>
+  </div>
+
+
+  <!-- ══════ S2: DOLOR Y OBJETIVOS ══════ -->
+  <div class="prop-section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">Dolores identificados y objetivos del proyecto</div>
+      <span class="section-badge" style="background:var(--pt-red-l);color:var(--pt-red-m);">Necesidades</span>
+    </div>
+
+    <div class="grid2">
+      <div class="editable-box">
+        <div class="eb-label">🔴 Principales dolores del cliente</div>
+        <textarea class="eb-input" placeholder="Listá los 3–5 problemas más importantes que el cliente manifestó o que detectaste en el relevamiento. Usá las palabras del cliente cuando puedas — que se reconozca en el problema.&#10;&#10;Ej:&#10;• Alta latencia en acceso remoto a aplicaciones críticas&#10;• Hardware próximo a vencer sin plan de renovación&#10;• Sin plan de DR real — último backup sin verificar&#10;• Costo de licencias VMware duplicado por Broadcom" rows="7"></textarea>
+      </div>
+      <div class="editable-box">
+        <div class="eb-label">🎯 Objetivos del proyecto</div>
+        <textarea class="eb-input" placeholder="Describí qué busca lograr el cliente con este proyecto. Deben ser objetivos medibles y verificables al finalizar.&#10;&#10;Ej:&#10;• Garantizar uptime ≥99.98% en aplicaciones críticas&#10;• Eliminar el riesgo de renovación de hardware en 2025&#10;• RTO ≤4hs y RPO ≤1hs en caso de desastre&#10;• Reducir el costo total de infraestructura en ≥25%&#10;• Habilitar el trabajo remoto seguro para todos los usuarios" rows="7"></textarea>
+      </div>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Restricciones y condicionantes relevados</div>
+      <textarea class="eb-input" placeholder="Anotá lo que limita el proyecto: budget máximo, plazo, restricciones regulatorias, aplicaciones que no pueden migrar, datos que no pueden salir del país, etc. Esta sección evita proponer algo que el cliente no puede aceptar.&#10;&#10;Ej: 'El cliente tiene restricción BCRA para almacenamiento de datos financieros fuera de Argentina. El ERP SAP no puede migrarse antes de Q4 2025 por contrato con el implementador local. Budget aprobado: USD 8.000/mes.'" rows="4"></textarea>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Métricas de éxito acordadas con el cliente</div>
+      <textarea class="eb-input" placeholder="Ej: Disponibilidad ≥99.98% verificable en el portal de Personal Tech. Reducción de costos totales de IT ≥20% a 12 meses. RTO ≤4hs demostrado en prueba de DR a los 90 días. 100% de usuarios remotos conectados sin incidentes de acceso en el primer mes." rows="3"></textarea>
+    </div>
+  </div>
+
+
+  <!-- ══════ S3: ARQUITECTURA PROPUESTA ══════ -->
+  <div class="prop-section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">Arquitectura de la solución propuesta</div>
+      <span class="section-badge" style="background:var(--pt-blue-l);color:var(--pt-blue);">Diseño técnico</span>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Descripción de la arquitectura</div>
+      <textarea class="eb-input" placeholder="Describí la solución en lenguaje técnico-ejecutivo: qué componentes incluye, cómo se conectan, por qué se tomaron esas decisiones de diseño y qué problemas resuelve cada capa.&#10;&#10;Ej: 'La solución propuesta consiste en una arquitectura de cloud híbrida alojada en el datacenter de Personal Tech en Pacheco, conectada a la sede del cliente mediante un enlace MPLS dedicado de 100 Mbps con SLA 99.95%. La carga de trabajo de producción corre en VMs sobre la nube privada de Personal Tech, con replicación automática hacia el DC de Hornos para DR. El acceso remoto de usuarios se implementa mediante ZTNA, eliminando la VPN tradicional y reduciendo la superficie de ataque.'" rows="6"></textarea>
+    </div>
+
+    <!-- DIAGRAMA INTERACTIVO -->
+    <div class="arch-canvas">
+      <div class="arch-canvas-label">Diagrama de arquitectura — hacé click en los bloques para seleccionarlos / editarlos</div>
+      <div class="arch-layers">
+
+        <div class="arch-layer" style="background:var(--pt-blue-l);border:.5px solid var(--pt-blue-m);">
+          <div class="arch-layer-name" style="color:var(--pt-blue);">Usuarios</div>
+          <div class="arch-items">
+            <div class="arch-item" style="background:var(--pt-blue-l);border-color:var(--pt-blue-m);color:var(--pt-blue);" onclick="toggleItem(this)">👤 Sede central</div>
+            <div class="arch-item" style="background:var(--pt-blue-l);border-color:var(--pt-blue-m);color:var(--pt-blue);" onclick="toggleItem(this)">🏠 Usuarios remotos</div>
+            <div class="arch-item" style="background:var(--pt-blue-l);border-color:var(--pt-blue-m);color:var(--pt-blue);" onclick="toggleItem(this)">🏢 Sucursales</div>
+            <button class="arch-add-btn" onclick="addArchItem(this,'var(--pt-blue-l)','var(--pt-blue-m)','var(--pt-blue)')">+ Add</button>
+          </div>
+        </div>
+
+        <div class="arch-layer" style="background:var(--pt-amber-l);border:.5px solid var(--pt-amber-m);">
+          <div class="arch-layer-name" style="color:var(--pt-amber);">Conectividad</div>
+          <div class="arch-items">
+            <div class="arch-item" style="background:var(--pt-amber-l);border-color:var(--pt-amber-m);color:var(--pt-amber);" onclick="toggleItem(this)">🔗 MPLS 100 Mbps</div>
+            <div class="arch-item" style="background:var(--pt-amber-l);border-color:var(--pt-amber-m);color:var(--pt-amber);" onclick="toggleItem(this)">📶 SD-WAN</div>
+            <div class="arch-item" style="background:var(--pt-amber-l);border-color:var(--pt-amber-m);color:var(--pt-amber);" onclick="toggleItem(this)">🌐 DIA (Backup)</div>
+            <button class="arch-add-btn" onclick="addArchItem(this,'var(--pt-amber-l)','var(--pt-amber-m)','var(--pt-amber)')">+ Add</button>
+          </div>
+        </div>
+
+        <div class="arch-layer" style="background:var(--pt-red-l);border:.5px solid var(--pt-red-m);">
+          <div class="arch-layer-name" style="color:var(--pt-red-m);">Seguridad</div>
+          <div class="arch-items">
+            <div class="arch-item" style="background:var(--pt-red-l);border-color:var(--pt-red-m);color:var(--pt-red-m);" onclick="toggleItem(this)">🔥 NGFW / FortiGate</div>
+            <div class="arch-item" style="background:var(--pt-red-l);border-color:var(--pt-red-m);color:var(--pt-red-m);" onclick="toggleItem(this)">🚫 ZTNA</div>
+            <div class="arch-item" style="background:var(--pt-red-l);border-color:var(--pt-red-m);color:var(--pt-red-m);" onclick="toggleItem(this)">🛡 DDoS Mitigation</div>
+            <div class="arch-item" style="background:var(--pt-red-l);border-color:var(--pt-red-m);color:var(--pt-red-m);" onclick="toggleItem(this)">🔐 MFA / IAM</div>
+            <button class="arch-add-btn" onclick="addArchItem(this,'var(--pt-red-l)','var(--pt-red-m)','var(--pt-red-m)')">+ Add</button>
+          </div>
+        </div>
+
+        <div class="arch-layer" style="background:var(--pt-green-l);border:.5px solid var(--pt-green-m);">
+          <div class="arch-layer-name" style="color:var(--pt-green);">Cloud Personal Tech</div>
+          <div class="arch-items">
+            <div class="arch-item" style="background:var(--pt-green-l);border-color:var(--pt-green-m);color:var(--pt-green);" onclick="toggleItem(this)">🖥 VMs Producción</div>
+            <div class="arch-item" style="background:var(--pt-green-l);border-color:var(--pt-green-m);color:var(--pt-green);" onclick="toggleItem(this)">💾 Object Storage</div>
+            <div class="arch-item" style="background:var(--pt-green-l);border-color:var(--pt-green-m);color:var(--pt-green);" onclick="toggleItem(this)">🗄 Base de datos</div>
+            <div class="arch-item" style="background:var(--pt-green-l);border-color:var(--pt-green-m);color:var(--pt-green);" onclick="toggleItem(this)">♻️ Backup automático</div>
+            <button class="arch-add-btn" onclick="addArchItem(this,'var(--pt-green-l)','var(--pt-green-m)','var(--pt-green)')">+ Add</button>
+          </div>
+        </div>
+
+        <div class="arch-layer" style="background:var(--pt-purple-l);border:.5px solid var(--pt-purple-m);">
+          <div class="arch-layer-name" style="color:var(--pt-purple);">DR / Redundancia</div>
+          <div class="arch-items">
+            <div class="arch-item" style="background:var(--pt-purple-l);border-color:var(--pt-purple-m);color:var(--pt-purple);" onclick="toggleItem(this)">🔄 Replicación DC Hornos</div>
+            <div class="arch-item" style="background:var(--pt-purple-l);border-color:var(--pt-purple-m);color:var(--pt-purple);" onclick="toggleItem(this)">📋 RTO ≤4hs / RPO ≤1hs</div>
+            <button class="arch-add-btn" onclick="addArchItem(this,'var(--pt-purple-l)','var(--pt-purple-m)','var(--pt-purple)')">+ Add</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="info-box"><strong>💡 Modo de uso del diagrama:</strong> Hacé click en cada bloque para seleccionarlo/deseleccionarlo según lo que incluye la propuesta. Usá el botón "+ Add" para agregar componentes específicos del cliente. Al imprimir, el diagrama se exporta tal como está configurado.</div>
+
+    <div class="editable-box" style="margin-top:12px;">
+      <div class="eb-label">Decisiones de diseño y justificación técnica</div>
+      <textarea class="eb-input" placeholder="Explicá por qué se eligió esta arquitectura y no otra. Esto es lo que diferencia una propuesta de un catálogo de precios.&#10;&#10;Ej: 'Se eligió nube privada de Personal Tech sobre hyperscaler público por tres razones: (1) el dato financiero no puede salir del territorio argentino según el compliance del cliente, (2) la latencia promedio de 5ms desde Pacheco vs. 35ms desde São Paulo es determinante para el ERP en tiempo real, y (3) el modelo de facturación en pesos elimina el riesgo cambiario que el CFO identificó como crítico.'" rows="5"></textarea>
+    </div>
+  </div>
+
+
+  <!-- ══════ S4: BOM ══════ -->
+  <div class="prop-section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">Bill of Materials (BOM) — Lista de materiales y servicios</div>
+      <span class="section-badge" style="background:var(--pt-green-l);color:var(--pt-green);">Pricing</span>
+    </div>
+
+    <div class="info-box"><strong>💡 Cómo usar esta tabla:</strong> Listá todos los ítems del servicio con su precio unitario y periodicidad. El total se calcula manualmente al pie. Al imprimir, esta tabla se convierte en el anexo de precios de la propuesta.</div>
+
+    <table class="bom-table">
+      <thead>
+        <tr>
+          <th>Ítem / Servicio</th>
+          <th>Descripción</th>
+          <th style="width:70px;text-align:center;">Cant.</th>
+          <th style="width:80px;text-align:center;">Unidad</th>
+          <th style="width:100px;text-align:right;">Precio unit.</th>
+          <th style="width:80px;text-align:center;">Período</th>
+          <th style="width:100px;text-align:right;">Subtotal/mes</th>
+        </tr>
+      </thead>
+      <tbody id="bom-body">
+        <!-- CLOUD -->
+        <tr class="bom-section-row"><td colspan="7">☁️ INFRAESTRUCTURA CLOUD</td></tr>
+        <tr>
+          <td><input type="text" placeholder="VMs de producción"></td>
+          <td><input type="text" placeholder="Ej: 8 vCPU, 32GB RAM, 500GB SSD — nivel enterprise"></td>
+          <td style="text-align:center;"><input type="text" placeholder="3" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="VMs" style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 800" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 2.400" style="text-align:right;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Object Storage"></td>
+          <td><input type="text" placeholder="Almacenamiento de objetos — compatible con API S3"></td>
+          <td style="text-align:center;"><input type="text" placeholder="10" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="TB" style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 120" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 1.200" style="text-align:right;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Backup gestionado"></td>
+          <td><input type="text" placeholder="Backup diario con retención 30 días + mensual 1 año"></td>
+          <td style="text-align:center;"><input type="text" placeholder="1" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Svc" style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 500" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 500" style="text-align:right;font-weight:700;"></td>
+        </tr>
+
+        <!-- CONECTIVIDAD -->
+        <tr class="bom-section-row"><td colspan="7">🔗 CONECTIVIDAD</td></tr>
+        <tr>
+          <td><input type="text" placeholder="MPLS dedicado"></td>
+          <td><input type="text" placeholder="Circuito privado punto a punto — SLA 99.95% — 100 Mbps simétrico"></td>
+          <td style="text-align:center;"><input type="text" placeholder="1" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Enlace" style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 800" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 800" style="text-align:right;font-weight:700;"></td>
+        </tr>
+
+        <!-- SEGURIDAD -->
+        <tr class="bom-section-row"><td colspan="7">🔐 SEGURIDAD</td></tr>
+        <tr>
+          <td><input type="text" placeholder="Firewall gestionado (FWaaS)"></td>
+          <td><input type="text" placeholder="FortiGate virtual — IPS + Web Filter + App Control + SSL Inspection"></td>
+          <td style="text-align:center;"><input type="text" placeholder="1" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Svc" style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 600" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 600" style="text-align:right;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="DDoS Mitigation"></td>
+          <td><input type="text" placeholder="Protección ante ataques volumétricos — scrubbing en red Telecom"></td>
+          <td style="text-align:center;"><input type="text" placeholder="1" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Svc" style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 400" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 400" style="text-align:right;font-weight:700;"></td>
+        </tr>
+
+        <!-- SERVICIOS PROFESIONALES -->
+        <tr class="bom-section-row"><td colspan="7">⚙️ SERVICIOS PROFESIONALES (CAPEX único)</td></tr>
+        <tr>
+          <td><input type="text" placeholder="Proyecto de migración"></td>
+          <td><input type="text" placeholder="Discovery + diseño + migración de VMs + testing + go-live"></td>
+          <td style="text-align:center;"><input type="text" placeholder="1" style="text-align:center;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Proj." style="text-align:center;"></td>
+          <td style="text-align:right;"><input type="text" placeholder="$ 25.000" style="text-align:right;"></td>
+          <td style="text-align:center;"><input type="text" placeholder="Único" style="text-align:center;"></td>
+          <td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 25.000" style="text-align:right;font-weight:700;"></td>
+        </tr>
+
+        <!-- TOTAL -->
+        <tr class="bom-total-row">
+          <td colspan="5" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">TOTAL MENSUAL RECURRENTE (OPEX)</td>
+          <td></td>
+          <td style="text-align:right;font-size:15px;"><input type="text" placeholder="$ 5.900 / mes" style="text-align:right;font-size:15px;color:#fff;font-weight:700;"></td>
+        </tr>
+        <tr class="bom-total-row">
+          <td colspan="5" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">INVERSIÓN INICIAL (CAPEX migración)</td>
+          <td></td>
+          <td style="text-align:right;font-size:15px;"><input type="text" placeholder="$ 25.000 único" style="text-align:right;font-size:15px;color:#fff;font-weight:700;"></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="add-row-btn" onclick="addBomRow()">+ Agregar ítem al BOM</button>
+  </div>
+
+
+  <!-- ══════ S5: TCO / ROI ══════ -->
+  <div class="prop-section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">Análisis TCO / ROI a 3 años</div>
+      <span class="section-badge" style="background:var(--pt-green-l);color:var(--pt-green);">Financiero</span>
+    </div>
+
+    <div class="tco-cards">
+      <div class="tco-card" style="background:var(--pt-coral-l);border-color:var(--pt-coral-m);">
+        <div class="tco-card-label">TCO On-Premise 3 años</div>
+        <div class="tco-card-val" style="color:var(--pt-coral);">
+          <input type="text" placeholder="$ 813.000" style="border:none;outline:none;font-family:Georgia;font-size:22px;font-weight:700;color:var(--pt-coral);background:transparent;width:100%;">
+        </div>
+        <div class="tco-card-sub">Costo total sin migrar</div>
+      </div>
+      <div class="tco-card" style="background:var(--pt-green-l);border-color:var(--pt-green-m);">
+        <div class="tco-card-label">TCO Cloud 3 años</div>
+        <div class="tco-card-val" style="color:var(--pt-green);">
+          <input type="text" placeholder="$ 292.000" style="border:none;outline:none;font-family:Georgia;font-size:22px;font-weight:700;color:var(--pt-green);background:transparent;width:100%;">
+        </div>
+        <div class="tco-card-sub">Costo total con Personal Tech</div>
+      </div>
+      <div class="tco-card" style="background:var(--ink);border-color:var(--ink);">
+        <div class="tco-card-label" style="color:rgba(255,255,255,.4);">Ahorro neto 3 años</div>
+        <div class="tco-card-val" style="color:#5ce89a;">
+          <input type="text" placeholder="+ $ 521.000" style="border:none;outline:none;font-family:Georgia;font-size:22px;font-weight:700;color:#5ce89a;background:transparent;width:100%;">
+        </div>
+        <div class="tco-card-sub" style="color:rgba(255,255,255,.35);">Cloud es más económico</div>
+      </div>
+      <div class="tco-card" style="background:var(--pt-blue-l);border-color:var(--pt-blue-m);">
+        <div class="tco-card-label">ROI / Payback</div>
+        <div class="tco-card-val" style="color:var(--pt-blue);">
+          <input type="text" placeholder="178% / 14 m" style="border:none;outline:none;font-family:Georgia;font-size:22px;font-weight:700;color:var(--pt-blue);background:transparent;width:100%;">
+        </div>
+        <div class="tco-card-sub">ROI 3 años / Payback en meses</div>
+      </div>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Tabla de evolución año por año</div>
+      <table class="diag-table" style="margin-top:0;">
+        <thead>
+          <tr>
+            <th>Período</th>
+            <th style="text-align:right;">TCO On-Premise</th>
+            <th style="text-align:right;">TCO Cloud Personal Tech</th>
+            <th style="text-align:right;">Diferencia (ahorro)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700;">Año 1</td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 287.000" style="text-align:right;color:var(--pt-coral-m);font-weight:700;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 119.000" style="text-align:right;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="+ $ 168.000" style="text-align:right;color:var(--pt-green-m);font-weight:700;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:700;">Año 2</td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 258.000" style="text-align:right;color:var(--pt-coral-m);font-weight:700;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 87.000" style="text-align:right;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="+ $ 171.000" style="text-align:right;color:var(--pt-green-m);font-weight:700;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:700;">Año 3</td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 268.000" style="text-align:right;color:var(--pt-coral-m);font-weight:700;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 86.000" style="text-align:right;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="+ $ 182.000" style="text-align:right;color:var(--pt-green-m);font-weight:700;"></td>
+          </tr>
+          <tr style="background:var(--paper2);font-weight:700;">
+            <td>TOTAL 3 AÑOS</td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 813.000" style="text-align:right;color:var(--pt-coral-m);font-weight:700;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="$ 292.000" style="text-align:right;font-weight:700;"></td>
+            <td style="text-align:right;"><input type="text" placeholder="+ $ 521.000" style="text-align:right;color:var(--pt-green-m);font-weight:700;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-box"><strong>💡 Para el CFO:</strong> Completar estos números con los datos reales de la Calculadora TCO/ROI antes de presentar. Los valores por defecto son orientativos — una propuesta con los números del cliente es 3× más efectiva. Usar siempre la misma moneda y aclarar si los valores son USD o USD equivalente.</div>
+
+    <div class="editable-box">
+      <div class="eb-label">Beneficios cuantificables adicionales (no incluidos en TCO)</div>
+      <textarea class="eb-input" placeholder="Listá los beneficios que tienen valor económico pero que no entraron en el modelo TCO:&#10;• Downtime evitado: 42 hs/año × $5.000/hs = $210.000/año&#10;• Personal IT redirigido a proyectos de valor: 1.5 personas × 12 meses = $67.500/año&#10;• Eliminación del costo de renovación de hardware año 3: $84.000&#10;• Reducción de primas de seguro cibernético: -15% estimado" rows="5"></textarea>
+    </div>
+  </div>
+
+
+  <!-- ══════ S6: HOJA DE RUTA ══════ -->
+  <div class="prop-section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title">Hoja de ruta de implementación</div>
+      <span class="section-badge" style="background:var(--pt-amber-l);color:var(--pt-amber);">Plan</span>
+    </div>
+
+    <div class="roadmap-phases">
+      <div class="rm-phase">
+        <div class="rm-head" style="background:var(--pt-blue-l);">
+          <div class="rm-num" style="background:var(--pt-blue);color:#fff;">1</div>
+          <div>
+            <div class="rm-title">Fase 1</div>
+            <div class="rm-period"><input type="text" placeholder="Semanas 1–2 · Discovery y diseño" style="border:none;outline:none;font-family:inherit;font-size:10px;color:var(--ink-ter);background:transparent;width:160px;"></div>
+          </div>
+        </div>
+        <div class="rm-body">
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-blue-m);"></div><input type="text" placeholder="Relevamiento técnico detallado"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-blue-m);"></div><input type="text" placeholder="Diseño de arquitectura cloud"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-blue-m);"></div><input type="text" placeholder="Plan de migración por olas"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-blue-m);"></div><input type="text" placeholder="Kick-off con equipo IT del cliente"></div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-head" style="background:var(--pt-amber-l);">
+          <div class="rm-num" style="background:var(--pt-amber-m);color:#fff;">2</div>
+          <div>
+            <div class="rm-title">Fase 2</div>
+            <div class="rm-period"><input type="text" placeholder="Semanas 3–6 · Migración" style="border:none;outline:none;font-family:inherit;font-size:10px;color:var(--ink-ter);background:transparent;width:160px;"></div>
+          </div>
+        </div>
+        <div class="rm-body">
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-amber-m);"></div><input type="text" placeholder="Aprovisionamiento de cloud"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-amber-m);"></div><input type="text" placeholder="Migración de sistemas no críticos"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-amber-m);"></div><input type="text" placeholder="Configuración de red y seguridad"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-amber-m);"></div><input type="text" placeholder="Testing y validación"></div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-head" style="background:var(--pt-green-l);">
+          <div class="rm-num" style="background:var(--pt-green-m);color:#fff;">3</div>
+          <div>
+            <div class="rm-title">Fase 3</div>
+            <div class="rm-period"><input type="text" placeholder="Semanas 7–8 · Go-Live" style="border:none;outline:none;font-family:inherit;font-size:10px;color:var(--ink-ter);background:transparent;width:160px;"></div>
+          </div>
+        </div>
+        <div class="rm-body">
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-green-m);"></div><input type="text" placeholder="Migración de sistemas críticos"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-green-m);"></div><input type="text" placeholder="Cutover y validación en producción"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-green-m);"></div><input type="text" placeholder="Prueba de DR documentada"></div>
+          <div class="rm-item"><div class="rm-dot" style="background:var(--pt-green-m);"></div><input type="text" placeholder="Capacitación al equipo IT"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Criterios de aceptación del proyecto (Definition of Done)</div>
+      <textarea class="eb-input" placeholder="Definí qué condiciones se deben cumplir para cerrar cada fase y el proyecto completo. Esto protege a Personal Tech y al cliente de malentendidos.&#10;&#10;Ej:&#10;• 100% de las VMs acordadas corriendo en cloud Personal Tech&#10;• Prueba de DR exitosa con RTO real ≤4hs documentada&#10;• Acceso de usuarios remotos funcionando sin VPN tradicional&#10;• Dashboard de monitoreo entregado y aceptado por el cliente&#10;• Informe de FinOps mensual automático configurado" rows="4"></textarea>
+    </div>
+  </div>
+
+
+  <!-- ══════ S7: CONDICIONES COMERCIALES ══════ -->
+  <div class="prop-section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title">Condiciones comerciales y SLA</div>
+      <span class="section-badge" style="background:var(--pt-purple-l);color:var(--pt-purple-m);">Contrato</span>
+    </div>
+
+    <div class="conditions-grid">
+      <div class="cond-box">
+        <div class="cond-title" style="color:var(--pt-blue);">📋 Condiciones generales</div>
+        <div class="cond-item"><input type="text" placeholder="Plazo de contrato: 24 meses"></div>
+        <div class="cond-item"><input type="text" placeholder="Moneda de facturación: pesos argentinos"></div>
+        <div class="cond-item"><input type="text" placeholder="Actualización: según índice IPC mensual"></div>
+        <div class="cond-item"><input type="text" placeholder="Forma de pago: factura mensual — 30 días"></div>
+        <div class="cond-item"><input type="text" placeholder="Factura: primeros 5 días hábiles del mes"></div>
+        <div class="cond-item"><input type="text" placeholder="Penalidad por cancelación anticipada: 3 meses"></div>
+      </div>
+      <div class="cond-box">
+        <div class="cond-title" style="color:var(--pt-green);">✅ SLA garantizados</div>
+        <div class="cond-item"><input type="text" placeholder="Disponibilidad: 99.982% mensual"></div>
+        <div class="cond-item"><input type="text" placeholder="RTO máximo: 4 horas"></div>
+        <div class="cond-item"><input type="text" placeholder="RPO máximo: 1 hora"></div>
+        <div class="cond-item"><input type="text" placeholder="Tiempo de respuesta soporte P1: 1 hora"></div>
+        <div class="cond-item"><input type="text" placeholder="Tiempo de respuesta soporte P2: 4 horas"></div>
+        <div class="cond-item"><input type="text" placeholder="Penalidad por incumplimiento SLA: crédito proporcional"></div>
+      </div>
+      <div class="cond-box">
+        <div class="cond-title" style="color:var(--pt-amber);">⚠️ Alcance y exclusiones</div>
+        <div class="cond-item"><input type="text" placeholder="Incluye: gestión de infraestructura 24/7"></div>
+        <div class="cond-item"><input type="text" placeholder="Incluye: monitoreo y alertas proactivas"></div>
+        <div class="cond-item"><input type="text" placeholder="Incluye: parches de OS y actualizaciones"></div>
+        <div class="cond-item"><input type="text" placeholder="No incluye: soporte de aplicaciones de negocio"></div>
+        <div class="cond-item"><input type="text" placeholder="No incluye: licencias de software de terceros"></div>
+        <div class="cond-item"><input type="text" placeholder="No incluye: tráfico WAN por fuera del acuerdo"></div>
+      </div>
+      <div class="cond-box">
+        <div class="cond-title" style="color:var(--pt-purple-m);">🔐 Seguridad y compliance</div>
+        <div class="cond-item"><input type="text" placeholder="Dato alojado en Argentina (Pacheco / Hornos)"></div>
+        <div class="cond-item"><input type="text" placeholder="Certificaciones: ISO 27001 / SOC 2 Type II"></div>
+        <div class="cond-item"><input type="text" placeholder="Cumplimiento BCRA: Comunicación A 7724"></div>
+        <div class="cond-item"><input type="text" placeholder="Auditoría de acceso mensual disponible"></div>
+        <div class="cond-item"><input type="text" placeholder="Datos cifrados en tránsito y en reposo (AES-256)"></div>
+        <div class="cond-item"><input type="text" placeholder="NDA vigente: sí / gestionar"></div>
+      </div>
+    </div>
+
+    <div class="editable-box" style="margin-top:8px;">
+      <div class="eb-label">Notas adicionales y condiciones especiales negociadas</div>
+      <textarea class="eb-input" placeholder="Anotá aquí cualquier condición especial que se acordó verbalmente en las reuniones y que debe quedar documentada en la propuesta antes de pasar a contrato.&#10;&#10;Ej: 'El cliente solicitó un período de prueba de 30 días sin costo para los primeros 3 VMs. Personal Tech acepta condicionado a la firma del contrato full en ese período. Incluir cláusula de reactivación de hardware on-premise sin penalidad si la prueba no es satisfactoria.'" rows="3"></textarea>
+    </div>
+  </div>
+
+
+  <!-- ══════ S8: CIERRE Y FIRMA ══════ -->
+  <div class="prop-section" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-title">Próximos pasos y aprobación</div>
+      <span class="section-badge" style="background:var(--ink);color:#fff;">Cierre</span>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Mensaje de cierre personalizado</div>
+      <textarea class="eb-input" placeholder="Un párrafo directo y humano que resume la propuesta y llama a la acción. No uses lenguaje corporativo genérico — que suene a vos.&#10;&#10;Ej: 'Esta propuesta representa la solución más directa al problema de disponibilidad y costo que [Cliente] enfrenta hoy. Estamos listos para comenzar la semana que viene con el relevamiento técnico, que no tiene costo y no genera ningún compromiso. El paso siguiente es una reunión de 45 minutos con los equipos técnicos de ambas partes para validar el inventario y afinar los números. ¿Cuándo podemos agendarla?'" rows="5"></textarea>
+    </div>
+
+    <div class="editable-box">
+      <div class="eb-label">Próximos pasos acordados</div>
+      <table class="diag-table" style="margin-top:0;">
+        <thead><tr><th style="width:40px;">#</th><th>Acción</th><th style="width:130px;">Responsable</th><th style="width:120px;">Fecha</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;color:var(--pt-blue);">1</td><td><input type="text" placeholder="Revisión de la propuesta por el equipo técnico del cliente"></td><td><input type="text" placeholder="[Cliente]"></td><td><input type="text" placeholder="DD/MM/AAAA"></td></tr>
+          <tr><td style="font-weight:700;color:var(--pt-blue);">2</td><td><input type="text" placeholder="Reunión de preguntas y ajustes finales"></td><td><input type="text" placeholder="Personal Tech + Cliente"></td><td><input type="text" placeholder="DD/MM/AAAA"></td></tr>
+          <tr><td style="font-weight:700;color:var(--pt-blue);">3</td><td><input type="text" placeholder="Aprobación del presupuesto por el directorio"></td><td><input type="text" placeholder="[Cliente]"></td><td><input type="text" placeholder="DD/MM/AAAA"></td></tr>
+          <tr><td style="font-weight:700;color:var(--pt-blue);">4</td><td><input type="text" placeholder="Firma del contrato de servicio"></td><td><input type="text" placeholder="Personal Tech + Cliente"></td><td><input type="text" placeholder="DD/MM/AAAA"></td></tr>
+          <tr><td style="font-weight:700;color:var(--pt-blue);">5</td><td><input type="text" placeholder="Kick-off del proyecto de migración"></td><td><input type="text" placeholder="Personal Tech"></td><td><input type="text" placeholder="DD/MM/AAAA"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sign-area">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-label">Firma y aclaración — Cliente</div>
+        <div class="sign-name"><input type="text" placeholder="Nombre · Cargo" style="border:none;outline:none;font-family:inherit;font-size:12px;font-weight:700;text-align:center;background:transparent;width:100%;"></div>
+        <div style="font-size:10.5px;color:var(--ink-ter);text-align:center;margin-top:3px;"><input type="text" placeholder="Fecha: ____/____/________" style="border:none;outline:none;font-family:inherit;font-size:10.5px;text-align:center;background:transparent;width:100%;color:var(--ink-ter);"></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-label">Firma y aclaración — Personal Tech</div>
+        <div class="sign-name"><input type="text" placeholder="Edgardo Mauricio Celata · Analista Sr. Cloud" style="border:none;outline:none;font-family:inherit;font-size:12px;font-weight:700;text-align:center;background:transparent;width:100%;" value="Edgardo Mauricio Celata · Analista Sr. Cloud"></div>
+        <div style="font-size:10.5px;color:var(--ink-ter);text-align:center;margin-top:3px;"><input type="text" placeholder="Fecha: ____/____/________" style="border:none;outline:none;font-family:inherit;font-size:10.5px;text-align:center;background:transparent;width:100%;color:var(--ink-ter);"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="prop-footer">
+    <span>Personal Tech · Telecom Argentina · Propuesta Confidencial</span>
+    <span id="footer-date"></span>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── INIT ──
+document.getElementById('meta-fecha').value = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('footer-date').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+// ── NAV ACTIVE ──
+var navLinks = document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sections = document.querySelectorAll('.prop-section');
+  var scrollY = window.scrollY + 80;
+  sections.forEach(function(s){
+    var top = s.offsetTop, bot = top + s.offsetHeight;
+    if(scrollY >= top && scrollY < bot){
+      navLinks.forEach(function(n){n.classList.remove('active');});
+      var a = document.querySelector('.tnav[href="#'+s.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+});
+
+// ── ARCH ITEMS ──
+function toggleItem(el){
+  el.classList.toggle('selected');
+  if(el.classList.contains('selected')){
+    el.style.opacity='1';
+  } else {
+    el.style.opacity='.55';
+  }
+}
+function addArchItem(btn, bg, border, color){
+  var name = prompt('Nombre del componente:','Nuevo componente');
+  if(!name) return;
+  var item = document.createElement('div');
+  item.className='arch-item';
+  item.style.cssText = 'background:'+bg+';border-color:'+border+';color:'+color+';';
+  item.textContent = name;
+  item.onclick = function(){toggleItem(this);};
+  btn.parentNode.insertBefore(item, btn);
+}
+
+// ── ADD INVENTORY ROW ──
+function addInventoryRow(){
+  var tbody = document.getElementById('inventory-body');
+  var row = document.createElement('tr');
+  row.innerHTML = '<td><input type="text" placeholder="Componente"></td>' +
+    '<td><input type="text" placeholder="Detalle"></td>' +
+    '<td><input type="text" placeholder="Antigüedad"></td>' +
+    '<td><select style="width:100%;border:none;outline:none;font-family:inherit;font-size:12.5px;color:var(--ink);background:transparent;"><option value="">Estado</option><option>✅ OK</option><option>⚠️ En riesgo</option><option>🔴 Crítico</option></select></td>';
+  tbody.appendChild(row);
+}
+
+// ── ADD BOM ROW ──
+function addBomRow(){
+  var tbody = document.getElementById('bom-body');
+  var totalRows = tbody.querySelectorAll('.bom-total-row');
+  var row = document.createElement('tr');
+  row.innerHTML = '<td><input type="text" placeholder="Nuevo ítem"></td>' +
+    '<td><input type="text" placeholder="Descripción"></td>' +
+    '<td style="text-align:center;"><input type="text" placeholder="1" style="text-align:center;"></td>' +
+    '<td style="text-align:center;"><input type="text" placeholder="Svc" style="text-align:center;"></td>' +
+    '<td style="text-align:right;"><input type="text" placeholder="$ 0" style="text-align:right;"></td>' +
+    '<td style="text-align:center;"><input type="text" placeholder="Mensual" style="text-align:center;"></td>' +
+    '<td style="text-align:right;font-weight:700;"><input type="text" placeholder="$ 0" style="text-align:right;font-weight:700;"></td>';
+  totalRows[0].parentNode.insertBefore(row, totalRows[0]);
+}
+
+// ── CLEAR ALL ──
+function clearAll(){
+  if(!confirm('¿Limpiar todos los campos de la propuesta para empezar desde cero?')) return;
+  document.querySelectorAll('input[type=text], textarea').forEach(function(el){
+    if(el.id !== 'meta-fecha' && el.value !== 'Edgardo Mauricio Celata' && el.value !== 'Edgardo Mauricio Celata · Analista Sr. Cloud'){
+      el.value='';
+    }
+  });
+}
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

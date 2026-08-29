@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De la Infraestructura a la Inteligencia | Personal Tech — Propuesta Estratégica</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Brand */
+  --pt:#0070F3; --pt-d:#0050B3; --pt-l:#EAF4FF;
+  /* Layers — each layer has its own identity */
+  --l1:#0070F3; --l1-l:#EAF4FF; /* Conectividad */
+  --l2:#0EA5A0; --l2-l:#E0F7F5; /* Cloud */
+  --l3:#7C3AED; --l3-l:#EDE9FE; /* Ciberseguridad */
+  --l4:#D97706; --l4-l:#FEF3C7; /* IoT/IIoT */
+  --l5:#059669; --l5-l:#D1FAE5; /* Analytics */
+  --l6:#DC2626; --l6-l:#FEE2E2; /* IA */
+  --l7:#374151; --l7-l:#F3F4F6; /* Desarrollo */
+  /* UI */
+  --text:#111827; --text-2:#374151; --text-3:#6B7280; --text-4:#9CA3AF;
+  --border:#E5E7EB; --bg:#FFFFFF; --bg2:#F9FAFB; --bg3:#F3F4F6;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.05);
+  --shadow-m:0 4px 16px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* ── NAV ─────────────────── */
+.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto;}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--pt);white-space:nowrap;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px;letter-spacing:-.2px;}
+.nav-link{font-size:12px;font-weight:500;padding:14px 12px;white-space:nowrap;cursor:pointer;color:var(--text-3);border-bottom:2px solid transparent;transition:all .15s;text-decoration:none;}
+.nav-link:hover,.nav-link.active{color:var(--text);border-bottom-color:var(--pt);}
+
+/* ── PAGE ─────────────────── */
+.page{max-width:1080px;margin:0 auto;padding:64px 32px 100px;}
+
+/* ── HERO ─────────────────── */
+.hero{text-align:center;padding:80px 40px 72px;margin-bottom:80px;position:relative;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(0,112,243,.07),transparent);pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--pt);background:var(--pt-l);padding:5px 14px;border-radius:20px;margin-bottom:22px;}
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:46px;font-weight:700;line-height:1.1;letter-spacing:-.8px;color:var(--text);margin-bottom:20px;max-width:800px;margin-left:auto;margin-right:auto;}
+.hero-title span{color:var(--pt);}
+.hero-sub{font-size:17px;color:var(--text-3);line-height:1.7;max-width:620px;margin:0 auto 36px;}
+.hero-premise{display:inline-block;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 28px;font-size:14px;color:var(--text-2);line-height:1.7;max-width:680px;text-align:left;}
+.hero-premise strong{color:var(--text);}
+
+/* ── SECTION LABEL ────────── */
+.sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-4);margin-bottom:10px;}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.3px;color:var(--text);margin-bottom:8px;}
+.sec-sub{font-size:14.5px;color:var(--text-3);line-height:1.65;max-width:680px;}
+.sec-divider{border:none;border-top:1px solid var(--border);margin:72px 0;}
+
+/* ── THE LOGIC — CHAIN VISUAL ─ */
+.chain-wrap{margin:48px 0;}
+.chain-intro{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:48px;}
+.ci-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px 26px;}
+.ci-icon{font-size:22px;margin-bottom:10px;}
+.ci-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.ci-text{font-size:13px;color:var(--text-3);line-height:1.6;}
+.ci-text strong{color:var(--text-2);}
+
+/* LAYER STACK */
+.layers{display:flex;flex-direction:column;gap:0;}
+.layer{border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:4px;cursor:pointer;transition:box-shadow .2s;}
+.layer:hover{box-shadow:var(--shadow);}
+.layer.open{box-shadow:var(--shadow-m);margin-bottom:16px;}
+.layer-head{display:flex;align-items:center;gap:16px;padding:18px 22px;background:var(--bg);}
+.layer-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.layer-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;flex-shrink:0;min-width:120px;}
+.layer-name{font-size:15px;font-weight:600;color:var(--text);flex:1;}
+.layer-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0;}
+.layer-arrow{font-size:12px;color:var(--text-4);flex-shrink:0;transition:transform .22s;}
+.layer.open .layer-arrow{transform:rotate(180deg);}
+.layer-body{display:none;border-top:1px solid var(--border);padding:24px 22px 26px;}
+.layer.open .layer-body{display:block;}
+
+.lb-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;}
+.lb-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 15px;}
+.lbc-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.lbc-text{font-size:12px;color:var(--text-3);line-height:1.55;}
+.lbc-text strong{color:var(--text-2);}
+
+.lb-connector{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg3);border-radius:var(--radius-sm);font-size:12.5px;color:var(--text-3);margin-top:12px;border-left:3px solid;}
+.lb-connector strong{color:var(--text);}
+
+/* ── COHERENCE SECTION ────── */
+.coherence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:32px;}
+.coh-card{border-radius:var(--radius);border:1px solid var(--border);padding:22px 22px 20px;position:relative;overflow:hidden;}
+.coh-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.coh-icon{font-size:20px;margin-bottom:10px;}
+.coh-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.coh-text{font-size:13px;color:var(--text-3);line-height:1.6;}
+.coh-text strong{color:var(--text-2);}
+
+/* ── MATURITY LADDER ────── */
+.maturity-wrap{margin:40px 0;overflow-x:auto;}
+.maturity{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.mat-col{border-right:1px solid var(--border);}
+.mat-col:last-child{border-right:none;}
+.mat-head{padding:14px 14px 10px;border-bottom:1px solid var(--border);}
+.mat-level{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.mat-title{font-size:13px;font-weight:700;color:var(--text);}
+.mat-body{padding:14px;}
+.mat-item{font-size:11.5px;color:var(--text-3);padding:5px 0;border-bottom:1px dashed var(--border);display:flex;gap:6px;align-items:flex-start;line-height:1.4;}
+.mat-item:last-child{border-bottom:none;}
+.mat-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.mat-pt{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;display:inline-block;margin-top:6px;}
+
+/* ── EXAMPLES ─────────────── */
+.examples-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:32px;}
+.ex-card{border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.ex-head{padding:18px 20px 14px;}
+.ex-industry{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.ex-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ex-sub{font-size:12.5px;color:var(--text-3);}
+.ex-body{border-top:1px solid var(--border);padding:16px 20px;}
+.ex-journey{display:flex;flex-direction:column;gap:0;}
+.ex-step{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--border);}
+.ex-step:last-child{border-bottom:none;}
+.ex-step-num{width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ex-step-content{flex:1;}
+.ex-step-layer{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+.ex-step-text{font-size:12px;color:var(--text-3);line-height:1.5;}
+.ex-step-text strong{color:var(--text-2);}
+.ex-roi{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin-top:12px;display:flex;gap:10px;align-items:flex-start;}
+.ex-roi-icon{font-size:14px;flex-shrink:0;}
+.ex-roi-text{font-size:12px;color:var(--text-3);line-height:1.5;}
+.ex-roi-text strong{color:var(--text);}
+
+/* ── WHY NOT GRABBING ─────── */
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px;}
+.rule-card{border-radius:var(--radius-sm);padding:18px 20px;border:1px solid var(--border);}
+.rule-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px;}
+.rule-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.rule-text{font-size:13px;color:var(--text-3);line-height:1.6;}
+.rule-text strong{color:var(--text-2);}
+
+/* ── PITCH ────────────────── */
+.pitch{background:var(--text);border-radius:var(--radius);padding:32px 36px;margin:48px 0;}
+.pitch-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:10px;}
+.pitch-text{font-size:17px;color:rgba(255,255,255,.87);line-height:1.75;font-style:italic;}
+.pitch-author{font-size:12px;color:rgba(255,255,255,.3);margin-top:14px;}
+
+/* ── NOTE ─────────────────── */
+.note{font-size:13px;padding:14px 18px;border-radius:var(--radius-sm);margin:16px 0;border-left:3px solid;line-height:1.65;color:var(--text-3);}
+.note strong{font-weight:700;}
+.note-blue{background:var(--pt-l);border-color:var(--pt);} .note-blue strong{color:var(--pt-d);}
+.note-green{background:var(--l5-l);border-color:var(--l5);} .note-green strong{color:var(--l5);}
+.note-amber{background:var(--l4-l);border-color:var(--l4);} .note-amber strong{color:var(--l4);}
+
+.footer{border-top:1px solid var(--border);margin-top:80px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:var(--text-4);flex-wrap:wrap;gap:8px;}
+
+@media(max-width:720px){
+  .page{padding:40px 20px 80px;}
+  .hero{padding:48px 20px 40px;}
+  .hero-title{font-size:30px;}
+  .lb-grid{grid-template-columns:1fr;}
+  .maturity{grid-template-columns:1fr;}
+  .mat-col{border-right:none;border-bottom:1px solid var(--border);}
+  .mat-col:last-child{border-bottom:none;}
+  .chain-intro,.rule-grid,.coherence-grid,.examples-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Personal Tech</div>
+  <a class="nav-link" href="#s1">La lógica</a>
+  <a class="nav-link" href="#s2">Las 7 capas</a>
+  <a class="nav-link" href="#s3">Por qué es coherente</a>
+  <a class="nav-link" href="#s4">Madurez del cliente</a>
+  <a class="nav-link" href="#s5">Casos reales</a>
+  <a class="nav-link" href="#s6">Lo que NO somos</a>
+  <a class="nav-link" href="#s7">El discurso</a>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">🏗 Propuesta estratégica de portafolio · Personal Tech</div>
+  <div class="hero-title">De la red al cerebro:<br>la evolución <span>coherente</span> de Personal Tech</div>
+  <div class="hero-sub">Cómo una empresa de infraestructura, cloud e IoT puede llegar a ofrecer soluciones de IA y desarrollo sin parecer que quiere abarcar todo — y sin que nadie lo cuestione.</div>
+  <div class="hero-premise">
+    <strong>La premisa central:</strong> Personal Tech no diversifica hacia IA y desarrollo por oportunismo. Lo hace porque <strong>la infraestructura que ya opera genera los datos que la IA necesita para funcionar</strong>, y porque las apps de IA no tienen sentido si no corren sobre una red confiable, un cloud soberano y una capa de seguridad robusta. Cada capa nueva hace que las anteriores valgan más.
+  </div>
+</div>
+
+
+<!-- ══════ S1: LA LÓGICA ══════ -->
+<div id="s1" style="scroll-margin-top:56px;">
+  <div class="sec-label">01 — La lógica de negocio</div>
+  <div class="sec-title">El hilo conductor: cada capa habilita la siguiente</div>
+  <div class="sec-sub">No es una estrategia de diversificación. Es una cadena de valor donde ningún eslabón funciona sin el anterior. Entender esto es la clave para explicarlo sin que suene a "queremos hacer de todo".</div>
+
+  <div class="chain-intro" style="margin-top:32px;">
+    <div class="ci-block">
+      <div class="ci-icon">🧵</div>
+      <div class="ci-title">El hilo que une todo: el dato industrial</div>
+      <div class="ci-text">Una fábrica genera millones de datos por día: temperatura de motores, consumo energético, velocidad de producción, defectos en línea. Esos datos son <strong>inútiles sin conectividad para transportarlos, cloud para almacenarlos, seguridad para protegerlos, IoT para capturarlos, analytics para analizarlos, IA para interpretarlos</strong> y una aplicación para que el operario actúe sobre ellos. Personal Tech puede dar las 7 capas.</div>
+    </div>
+    <div class="ci-block">
+      <div class="ci-icon">🚫</div>
+      <div class="ci-title">Por qué esto NO es "abarcar todo"</div>
+      <div class="ci-text">Una consultora de software que también "hace cloud e IoT" no tiene la credibilidad de una empresa que opera millones de líneas 24×7. Personal Tech parte desde la infraestructura — lo más difícil y de mayor barreras de entrada — y sube hacia la capa de inteligencia. <strong>Es el camino natural de quien ya tiene la red, no de quien quiere entrar a un mercado nuevo.</strong></div>
+    </div>
+  </div>
+
+  <div class="note note-blue"><strong>La regla de oro del portafolio coherente:</strong> Cada nuevo servicio que Personal Tech agrega debe responder una sola pregunta: <em>"¿Cómo hace este servicio que los servicios anteriores valgan más?"</em> Si la respuesta es clara, el servicio pertenece al portafolio. Si no, es una distracción.</div>
+</div>
+
+
+<hr class="sec-divider">
+
+
+<!-- ══════ S2: LAS 7 CAPAS ══════ -->
+<div id="s2" style="scroll-margin-top:56px;">
+  <div class="sec-label">02 — La cadena de valor</div>
+  <div class="sec-title">Las 7 capas — y por qué cada una necesita a la anterior</div>
+  <div class="sec-sub">Cada capa es una respuesta a un problema que surge de la capa anterior. No son productos independientes — son eslabones de la misma cadena.</div>
+
+  <div class="chain-wrap">
+    <div class="layers">
+
+      <!-- CAPA 1: CONECTIVIDAD -->
+      <div class="layer" id="lay1" onclick="toggleLayer('lay1')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l1);">1</div>
+          <span class="layer-label" style="color:var(--l1);">Conectividad</span>
+          <div class="layer-name">MPLS · 4G/5G · DIA · Satelital — la base de todo</div>
+          <span class="layer-status" style="background:var(--l1-l);color:var(--l1);">✓ Core del negocio</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">La red que mueve los datos de donde se generan (fábrica, campo, vehículo) a donde se procesan (cloud). Sin conectividad, ninguna capa superior existe.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">Los datos atrapados en silos locales no tienen valor. La conectividad los libera y los hace disponibles para el cloud, la seguridad y la IA.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>Ya lo hace a escala masiva.</strong> +24M líneas, MPLS propio, 5G líder en Argentina. No hay curva de aprendizaje — es el core del negocio desde hace 30 años.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l2);">
+            <span>🔗</span>
+            <div><strong>Habilita la siguiente capa:</strong> Los datos que viajan por la red necesitan un lugar donde vivir, procesarse y analizarse. Eso es el cloud. <span style="color:var(--l2);">→ Conectividad abre la puerta al Cloud.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPA 2: CLOUD -->
+      <div class="layer" id="lay2" onclick="toggleLayer('lay2')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l2);">2</div>
+          <span class="layer-label" style="color:var(--l2);">Cloud</span>
+          <div class="layer-name">Cloud Privada · Híbrida · Multi-cloud · DC Pacheco y Hornos</div>
+          <span class="layer-status" style="background:var(--l2-l);color:var(--l2);">✓ Core del negocio</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">La plataforma donde los datos se almacenan, procesan y sirven. IaaS, PaaS, SaaS. DCs propios en Argentina — Pacheco (5.400m²) y Hornos. Dato soberano, OPEX en pesos.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">El CAPEX de renovación de hardware en dólares. La gestión de infraestructura que distrae al equipo IT. La falta de DR. El compliance regulatorio (BCRA, ENACOM).</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>El cloud y la conectividad son del mismo dueño.</strong> SLA de red + SLA de cloud en un solo contrato. La latencia DC-cliente es 3ms porque el circuito MPLS termina en el mismo datacenter.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l3);">
+            <span>🔗</span>
+            <div><strong>Habilita la siguiente capa:</strong> Un cloud sin seguridad es una bodega con la puerta abierta. Los datos valiosos en cloud son el target preferido de los atacantes. <span style="color:var(--l3);">→ Cloud exige Ciberseguridad.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPA 3: CIBERSEGURIDAD -->
+      <div class="layer" id="lay3" onclick="toggleLayer('lay3')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l3);">3</div>
+          <span class="layer-label" style="color:var(--l3);">Ciberseguridad</span>
+          <div class="layer-name">SASE · Zero Trust · FortiGate · SOC · DR · Compliance</div>
+          <span class="layer-status" style="background:var(--l3-l);color:var(--l3);">✓ Core del negocio</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">La capa que protege los datos en tránsito (conectividad) y en reposo (cloud). Firewall gestionado, Zero Trust, detección de intrusiones, backup inmutable, DR documentado.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">Sin seguridad, el valor de los datos en cloud se convierte en riesgo. El ransomware, el robo de credenciales y la exposición regulatoria destruyen el negocio. La seguridad es el requisito habilitante.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>Defiende su propia red masiva todos los días.</strong> No vende seguridad como producto externo — la practica a escala industrial. La credibilidad viene de operar infraestructura crítica nacional.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l4);">
+            <span>🔗</span>
+            <div><strong>Habilita la siguiente capa:</strong> Red segura + cloud confiable = el entorno donde conectar los activos físicos del cliente. El IoT solo tiene valor si el canal de datos es seguro y el destino confiable. <span style="color:var(--l4);">→ Ciberseguridad abre la puerta al IoT.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPA 4: IOT/IIOT -->
+      <div class="layer" id="lay4" onclick="toggleLayer('lay4')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l4);">4</div>
+          <span class="layer-label" style="color:var(--l4);">IoT / IIoT</span>
+          <div class="layer-name">Sensores · APN privado · 5G Privado · LoRaWAN · Edge Computing · Domótica</div>
+          <span class="layer-status" style="background:var(--l4-l);color:var(--l4);">✓ Core del negocio</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">La capa que digitaliza el mundo físico. Sensores en máquinas, vehículos, edificios, campos y tuberías. El sistema nervioso de la Industria 4.0. El IIoT conecta la OT (operaciones) con la IT (software).</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">El 90% del mundo físico-industrial es "ciego" digitalmente. Las máquinas no hablan, los campos no reportan, los vehículos no se anticipan. IoT da voz a lo físico — convierte activos mudos en fuentes de datos.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>Tiene la SIM, la red, el APN privado y el cloud en el mismo contrato.</strong> Un proveedor IoT sin red propia necesita contratar la telco aparte. Personal Tech es la telco — elimina ese intermediario.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l5);">
+            <span>🔗</span>
+            <div><strong>Habilita la siguiente capa:</strong> Los sensores IoT generan torrentes de datos industriales. Sin analytics, esos datos son ruido. Con analytics, son inteligencia de negocio. <span style="color:var(--l5);">→ IoT genera los datos que Analytics procesa.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPA 5: ANALYTICS -->
+      <div class="layer" id="lay5" onclick="toggleLayer('lay5')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l5);">5</div>
+          <span class="layer-label" style="color:var(--l5);">Analytics</span>
+          <div class="layer-name">Data Lake · BI en tiempo real · ETL · Dashboards · Reportería operativa</div>
+          <span class="layer-status" style="background:var(--l5-l);color:var(--l5);">↑ Extensión natural</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">La capa que convierte datos en información accionable. Data Lake centralizado en Pacheco, dashboards en tiempo real para gerentes, ETL que unifica fuentes, reportería automática.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">El cliente tiene datos en silos (ERP, IoT, CRM, red) y ninguna vista unificada. Las decisiones se toman sobre intuición o sobre datos de la semana pasada. Analytics convierte el dato en visión de negocio en tiempo real.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>Los datos ya están en el cloud de Personal Tech</strong> (vienen de la conectividad, del IoT, de las VMs del cliente). Analytics es el paso natural — no hay que mover datos a ningún lado. El lago ya existe.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l6);">
+            <span>🔗</span>
+            <div><strong>Habilita la siguiente capa:</strong> Un Data Lake maduro con años de datos históricos es el combustible de los modelos de IA. Sin datos limpios y organizados, la IA no puede funcionar. <span style="color:var(--l6);">→ Analytics prepara el terreno para la IA.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPA 6: IA -->
+      <div class="layer" id="lay6" onclick="toggleLayer('lay6')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l6);">6</div>
+          <span class="layer-label" style="color:var(--l6);">Inteligencia Artificial</span>
+          <div class="layer-name">ML predictivo · IA Generativa · RAG sobre datos propios · Computer Vision · Agentes</div>
+          <span class="layer-status" style="background:var(--l6-l);color:var(--l6);">↑ Extensión natural</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">Modelos que aprenden de los datos del cliente para predecir, automatizar y optimizar. ML para mantenimiento predictivo. IA generativa sobre el Data Lake propio con RAG (sin datos al exterior). Computer Vision sobre cámaras industriales.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">Analytics describe el pasado. IA predice el futuro y automatiza la respuesta. El gerente de planta ya no mira el dashboard para entender qué pasó — recibe una alerta que dice qué va a pasar y qué hacer.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>La IA de Personal Tech corre sobre los datos del cliente que ya viven en Pacheco.</strong> Sin que salgan al exterior. Sin que alimenten modelos de terceros. IA soberana sobre data soberana — diferencial que ningún hyperscaler da en Argentina.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l7);">
+            <span>🔗</span>
+            <div><strong>Habilita la siguiente capa:</strong> Los modelos de IA necesitan una interfaz para que las personas los usen. Una predicción sin una app que la muestre y permita actuar no tiene valor operativo. <span style="color:var(--l7);">→ IA necesita Desarrollo para llegar al usuario final.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPA 7: DESARROLLO -->
+      <div class="layer" id="lay7" onclick="toggleLayer('lay7')">
+        <div class="layer-head">
+          <div class="layer-num" style="background:var(--l7);">7</div>
+          <span class="layer-label" style="color:var(--l7);">Desarrollo</span>
+          <div class="layer-name">Apps industriales · Portales IoT · Integraciones ERP · APIs · Microservicios · MVP</div>
+          <span class="layer-status" style="background:var(--l7-l);color:var(--l7);">↑ Extensión natural</span>
+          <span class="layer-arrow">▼</span>
+        </div>
+        <div class="layer-body">
+          <div class="lb-grid">
+            <div class="lb-card"><div class="lbc-title">¿Qué es?</div><div class="lbc-text">La capa de aplicación que pone la IA y los datos en manos de las personas. No desarrollo genérico — <strong>desarrollo específicamente para el stack de Personal Tech</strong>: apps que consumen el IoT, dashboards sobre el Data Lake, integraciones entre el ERP del cliente y los servicios de cloud.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Qué problema resuelve?</div><div class="lbc-text">El cliente tiene datos, tiene IA, tiene cloud — pero no tiene la interfaz para que el operario de planta o el gerente regional actúen sobre esa información. Desarrollo cierra el ciclo: del sensor a la pantalla del humano que toma la decisión.</div></div>
+            <div class="lb-card"><div class="lbc-title">¿Por qué Personal Tech?</div><div class="lbc-text"><strong>Nadie conoce mejor el stack sobre el que hay que desarrollar que quien lo opera.</strong> Un outsourcing de desarrollo genérico necesita meses para entender la arquitectura. El equipo de desarrollo de Personal Tech ya la conoce — es suya.</div></div>
+          </div>
+          <div class="lb-connector" style="border-color:var(--l1);">
+            <span>♻️</span>
+            <div><strong>Cierra el ciclo:</strong> El uso de la aplicación genera nuevos datos → que mejoran el IoT → que alimentan mejor la IA → que hacen la app más inteligente. <strong>El cliente que llegó a la Capa 7 ya no puede abandonar el stack — el valor es demasiado alto.</strong></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /layers -->
+  </div>
+</div>
+
+
+<hr class="sec-divider">
+
+
+<!-- ══════ S3: POR QUÉ ES COHERENTE ══════ -->
+<div id="s3" style="scroll-margin-top:56px;">
+  <div class="sec-label">03 — El argumento de coherencia</div>
+  <div class="sec-title">Por qué esto no es "querer abarcar todo"</div>
+  <div class="sec-sub">Hay una diferencia entre una empresa que diversifica por oportunismo y una que escala verticalmente por necesidad lógica del negocio. Personal Tech es la segunda.</div>
+
+  <div class="coherence-grid">
+    <div class="coh-card" style="border-top:3px solid var(--l1);">
+      <div class="coh-icon">⬆️</div>
+      <div class="coh-title">Expansión vertical, no horizontal</div>
+      <div class="coh-text">Personal Tech no entra a "hacer software" genérico ni a competir con SAP, Salesforce o una consultora de IT. Sube en la cadena de valor de su propio dato. <strong>Es la diferencia entre un acerería que empieza a fabricar autos y una que empieza a hacer piezas especiales con el acero que ya produce.</strong></div>
+    </div>
+    <div class="coh-card" style="border-top:3px solid var(--l4);">
+      <div class="coh-icon">🎯</div>
+      <div class="coh-title">Un cliente objetivo, no varios</div>
+      <div class="coh-text">Todo el portafolio sirve a un perfil de cliente: <strong>empresa mediana o grande que necesita digitalizar su operación física</strong> (manufactura, energía, logística, retail, banca). No hay mezcla de targets. El cliente que compra IoT es el mismo que necesita el cloud que necesita la IA.</div>
+    </div>
+    <div class="coh-card" style="border-top:3px solid var(--l5);">
+      <div class="coh-icon">🔄</div>
+      <div class="coh-title">Cada capa retiene al cliente para la siguiente</div>
+      <div class="coh-text">Un cliente con el MPLS de Personal Tech ya tiene un incentivo para poner el cloud en Pacheco (latencia mínima). Con el cloud, tiene incentivo para poner el IoT (APN privado). Con el IoT, tiene incentivo para el analytics. <strong>El churn baja cada vez que el cliente agrega una capa nueva.</strong></div>
+    </div>
+    <div class="coh-card" style="border-top:3px solid var(--l6);">
+      <div class="coh-icon">🏗</div>
+      <div class="coh-title">Parte de lo más difícil, no de lo más fácil</div>
+      <div class="coh-text">Cualquier startup puede ofrecer desarrollo de software o analítica. Nadie más puede ofrecer red propia 5G + datacenter Tier III en Argentina + APN privado + regulación ENACOM. <strong>Personal Tech parte desde la barrera de entrada más alta</strong> y sube hacia servicios más replicables — no al revés.</div>
+    </div>
+    <div class="coh-card" style="border-top:3px solid var(--l3);">
+      <div class="coh-icon">📊</div>
+      <div class="coh-title">El modelo de negocio se fortalece en cada capa</div>
+      <div class="coh-text">Conectividad: ARPU bajo, altísima escala. Cloud: ARPU medio, alta escala. IoT: ARPU medio-alto. Analytics: ARPU alto. IA: ARPU muy alto. Desarrollo: proyecto único + retención. <strong>Cada capa que se agrega aumenta el revenue por cliente sin aumentar el costo de adquisición</strong> — ya es cliente.</div>
+    </div>
+    <div class="coh-card" style="border-top:3px solid var(--l7);">
+      <div class="coh-icon">🛡</div>
+      <div class="coh-title">La IA y el desarrollo son "seguros" dentro del stack</div>
+      <div class="coh-text">La IA de Personal Tech no es IA genérica — es IA que corre sobre los datos del cliente en el cloud de Personal Tech, sobre la red de Personal Tech. <strong>No compite con OpenAI ni con Accenture. Compite con no tener IA</strong>. El mercado objetivo son los clientes que todavía no tienen ninguna capacidad de IA — que son el 90%.</div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="sec-divider">
+
+
+<!-- ══════ S4: MADUREZ DEL CLIENTE ══════ -->
+<div id="s4" style="scroll-margin-top:56px;">
+  <div class="sec-label">04 — El modelo de madurez</div>
+  <div class="sec-title">El cliente no compra las 7 capas a la vez</div>
+  <div class="sec-sub">La propuesta de Personal Tech se adapta al nivel de madurez digital del cliente. No se le vende IA a quien todavía no tiene conectividad estable. La escalera es la estrategia.</div>
+
+  <div class="maturity-wrap">
+    <div class="maturity">
+      <div class="mat-col">
+        <div class="mat-head" style="background:var(--l1-l);">
+          <div class="mat-level" style="color:var(--l1);">Nivel 1</div>
+          <div class="mat-title">Conectado</div>
+        </div>
+        <div class="mat-body">
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l1);"></span>MPLS o 4G estable</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l1);"></span>Comunicaciones unificadas</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l1);"></span>Sin nube o nube básica</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l1);"></span>Sin IoT</div>
+          <span class="mat-pt" style="background:var(--l1-l);color:var(--l1);">→ Proponer Cloud</span>
+        </div>
+      </div>
+      <div class="mat-col">
+        <div class="mat-head" style="background:var(--l2-l);">
+          <div class="mat-level" style="color:var(--l2);">Nivel 2</div>
+          <div class="mat-title">En la nube</div>
+        </div>
+        <div class="mat-body">
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l2);"></span>VMs en cloud privada</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l2);"></span>Backup automatizado</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l2);"></span>DR básico documentado</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l2);"></span>Sin IoT ni analytics</div>
+          <span class="mat-pt" style="background:var(--l3-l);color:var(--l3);">→ Proponer Ciber + IoT</span>
+        </div>
+      </div>
+      <div class="mat-col">
+        <div class="mat-head" style="background:var(--l4-l);">
+          <div class="mat-level" style="color:var(--l4);">Nivel 3</div>
+          <div class="mat-title">Conectado físico</div>
+        </div>
+        <div class="mat-body">
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l4);"></span>Sensores IoT activos</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l4);"></span>Datos fluyendo al cloud</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l4);"></span>APN privado activo</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l4);"></span>Sin analytics estructurado</div>
+          <span class="mat-pt" style="background:var(--l5-l);color:var(--l5);">→ Proponer Analytics</span>
+        </div>
+      </div>
+      <div class="mat-col">
+        <div class="mat-head" style="background:var(--l5-l);">
+          <div class="mat-level" style="color:var(--l5);">Nivel 4</div>
+          <div class="mat-title">Data-driven</div>
+        </div>
+        <div class="mat-body">
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l5);"></span>Data Lake operativo</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l5);"></span>Dashboards en tiempo real</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l5);"></span>KPIs automatizados</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l5);"></span>Decisiones basadas en datos</div>
+          <span class="mat-pt" style="background:var(--l6-l);color:var(--l6);">→ Proponer IA Predictiva</span>
+        </div>
+      </div>
+      <div class="mat-col">
+        <div class="mat-head" style="background:var(--l6-l);">
+          <div class="mat-level" style="color:var(--l6);">Nivel 5</div>
+          <div class="mat-title">Inteligente</div>
+        </div>
+        <div class="mat-body">
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l6);"></span>ML predicción de fallas</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l6);"></span>IA generativa interna</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l6);"></span>Computer Vision activa</div>
+          <div class="mat-item"><span class="mat-dot" style="background:var(--l6);"></span>Alertas autónomas</div>
+          <span class="mat-pt" style="background:var(--l7-l);color:var(--l7);">→ Proponer Apps + Dev</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note note-amber"><strong>Regla de venta:</strong> Siempre proponer la capa inmediatamente siguiente al nivel actual del cliente — no saltar niveles. Un cliente en Nivel 2 (cloud) no está listo para IA. Está listo para IoT y Ciberseguridad. Venderle IA antes es la receta para el fracaso del proyecto y la pérdida del cliente.</div>
+</div>
+
+
+<hr class="sec-divider">
+
+
+<!-- ══════ S5: CASOS REALES ══════ -->
+<div id="s5" style="scroll-margin-top:56px;">
+  <div class="sec-label">05 — Ejemplos concretos</div>
+  <div class="sec-title">Cómo se ve la cadena en la práctica por industria</div>
+  <div class="sec-sub">Tres casos que muestran cómo un cliente empieza con conectividad y termina con IA y apps personalizadas — de forma orgánica, sin que parezca que Personal Tech le vendió de todo.</div>
+
+  <div class="examples-grid">
+
+    <!-- CASO 1: MANUFACTURA -->
+    <div class="ex-card">
+      <div class="ex-head" style="background:var(--l4-l);">
+        <div class="ex-industry" style="color:var(--l4);">🏭 Manufactura automotriz</div>
+        <div class="ex-title">Planta de estampado, 800 empleados, 3 líneas de producción</div>
+        <div class="ex-sub">Comienza con MPLS para conectar sedes. Termina con IA que predice fallas antes de que ocurran.</div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-journey">
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l1);">1</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l1);">Conectividad · Año 1</div>
+              <div class="ex-step-text">MPLS conectando planta principal + depósito + casa central. <strong>El CTO necesitaba redundancia porque la VPN corporativa fallaba 2 veces por semana.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l2);">2</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l2);">Cloud · Año 1</div>
+              <div class="ex-step-text">Con MPLS activo, la latencia al DC de Pacheco es 4ms. El ERP se migra a VMs en Pacheco. <strong>Se elimina el servidor de sala que el equipo IT tenía que reiniciar cada lunes.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l4);">3</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l4);">IIoT · Año 2</div>
+              <div class="ex-step-text">Sensores LoRaWAN en las 12 prensas principales midiendo vibración, temperatura y corriente. APN privado — los datos van directo al cloud en Pacheco. <strong>Sin cableado de obra en la planta.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l5);">4</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l5);">Analytics · Año 2</div>
+              <div class="ex-step-text">Data Lake en Pacheco con 18 meses de histórico. Dashboard para el Gerente de Planta: OEE (eficiencia), consumo energético y productividad por línea en tiempo real.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l6);">5</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l6);">IA Predictiva · Año 3</div>
+              <div class="ex-step-text">Con 18 meses de datos de vibraciones, el modelo ML identifica el patrón de vibración que precede a una falla de rodamiento. <strong>Alerta automática 96hs antes de la falla.</strong> Mantenimiento preventivo en el turno nocturno sin parar producción.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l7);">6</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l7);">App · Año 3</div>
+              <div class="ex-step-text">App mobile para el técnico de mantenimiento: recibe la alerta de la IA, ve el historial de la máquina, registra la intervención. Cierra el ciclo: dato del sensor → alerta IA → acción del humano → nuevo dato.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-roi">
+          <div class="ex-roi-icon">💰</div>
+          <div class="ex-roi-text"><strong>ROI del caso completo:</strong> En el año 3, la IA evitó 3 paradas no planificadas. A $250K/hora × 4hs promedio = $3M ahorrados. El stack completo (capas 1–7) costó $240K en 3 años. <strong>ROI: 12.5×.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASO 2: BANCO -->
+    <div class="ex-card">
+      <div class="ex-head" style="background:var(--l1-l);">
+        <div class="ex-industry" style="color:var(--l1);">💳 Banco privado mediano</div>
+        <div class="ex-title">Banco con 45 sucursales, 200.000 clientes activos</div>
+        <div class="ex-sub">Comienza con DR regulatorio. Termina con un asistente IA para los analistas de crédito.</div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-journey">
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l3);">1</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l3);">Ciberseguridad + DR · Año 1</div>
+              <div class="ex-step-text">El CISO tiene una observación BCRA por falta de DR documentado. Personal Tech provee DR en Hornos con RTO 4hs y documentación para la auditoría. <strong>Problema regulatorio urgente resuelto en 6 semanas.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l2);">2</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l2);">Cloud híbrida · Año 1</div>
+              <div class="ex-step-text">Con el DR en Pacheco, la migración de workloads no regulados al cloud es el paso lógico. <strong>Las nuevas apps de banca digital se despliegan en cloud — sin tocar el core bancario.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l5);">3</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l5);">Analytics · Año 2</div>
+              <div class="ex-step-text">Data Lake unificando transacciones, canales digitales y datos de sucursales. El CFO tiene por primera vez el costo por transacción real, separado por canal (sucursal, app, web).</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l6);">4</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l6);">IA Generativa + ML · Año 3</div>
+              <div class="ex-step-text">RAG sobre el Data Lake bancario: el analista de crédito pregunta en lenguaje natural "¿cuál es la exposición a sector agropecuario?" y recibe el análisis en 8 segundos. <strong>Modelo de predicción de default sobre historial de 5 años de datos propios.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l7);">5</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l7);">App + Integración · Año 3</div>
+              <div class="ex-step-text">Portal interno para el equipo de riesgos con el asistente IA integrado. APIs que conectan el scoring de IA con el sistema de originación de créditos existente.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-roi">
+          <div class="ex-roi-icon">💰</div>
+          <div class="ex-roi-text"><strong>ROI del caso completo:</strong> El modelo de predicción de default mejoró la tasa de mora del portafolio 1.8 puntos porcentuales. Sobre un portafolio de $2.000M, eso representa $36M de menor exposición. <strong>El stack completo costó $180K en 3 años.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CASO 3: LOGÍSTICA -->
+    <div class="ex-card">
+      <div class="ex-head" style="background:var(--teal-l, #E0F7F5);">
+        <div class="ex-industry" style="color:var(--l2);">🚚 Operador logístico</div>
+        <div class="ex-title">300 camiones frigoríficos, distribución nacional</div>
+        <div class="ex-sub">Comienza con SIM + GPS. Termina con rutas optimizadas por IA y predicción de fallas de flota.</div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-journey">
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l4);">1</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l4);">IoT + Conectividad · Año 1</div>
+              <div class="ex-step-text">300 SIMs de Personal Tech en camiones con APN privado. GPS + sensor temperatura + datos CAN Bus. <strong>El dato de cada camión llega a Pacheco sin pasar por internet.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l3);">2</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l3);">Seguridad cadena de frío · Año 1</div>
+              <div class="ex-step-text">Alerta automática si la temperatura sube 0.5°C de lo permitido. Log inmutable de temperatura por viaje. <strong>Cumplimiento SENASA automático sin formularios manuales.</strong></div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l5);">3</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l5);">Analytics · Año 2</div>
+              <div class="ex-step-text">Dashboard en tiempo real: ubicación de cada unidad, estado de frío, horas de conducción, eficiencia de combustible. El CEO ve su flota completa desde el celular.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l6);">4</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l6);">IA Predictiva · Año 2</div>
+              <div class="ex-step-text">Con 12 meses de datos CAN Bus, el modelo detecta la firma de falla del compresor de frío 48hs antes. <strong>Cero incidentes de pérdida de carga fría en el año posterior a la implementación.</strong> Optimización de rutas por ML: ahorro 14% combustible.</div>
+            </div>
+          </div>
+          <div class="ex-step">
+            <div class="ex-step-num" style="background:var(--l7);">5</div>
+            <div class="ex-step-content">
+              <div class="ex-step-layer" style="color:var(--l7);">App + Integración ERP · Año 3</div>
+              <div class="ex-step-text">App para el conductor: ruta optimizada por IA, alertas de mantenimiento, registro de entrega con firma digital. Integración con el WMS del cliente: la guía de remisión se genera sola cuando el camión sale.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-roi">
+          <div class="ex-roi-icon">💰</div>
+          <div class="ex-roi-text"><strong>ROI del caso completo:</strong> 14% ahorro combustible = $840K/año. Cero pérdidas de carga fría = $0 de reclamos vs. $320K/año anterior. ROI total en 3 años: <strong>480%.</strong></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<hr class="sec-divider">
+
+
+<!-- ══════ S6: LO QUE NO SOMOS ══════ -->
+<div id="s6" style="scroll-margin-top:56px;">
+  <div class="sec-label">06 — Los límites del portafolio</div>
+  <div class="sec-title">Lo que Personal Tech NO es — y por qué eso es una fortaleza</div>
+  <div class="sec-sub">La coherencia no solo se define por lo que se incluye, sino por lo que se excluye conscientemente. Tener límites claros es más convincente que tener todo.</div>
+
+  <div class="rule-grid">
+    <div class="rule-card" style="border-left:3px solid var(--l6);">
+      <div class="rule-label" style="color:var(--l6);">❌ No somos</div>
+      <div class="rule-title">Una fábrica de software genérico</div>
+      <div class="rule-text">Personal Tech no compite con las factorías de software que desarrollan sistemas de gestión, ERPs a medida o plataformas e-commerce genéricas. <strong>El desarrollo de Personal Tech es específico para su stack:</strong> apps que consumen IoT, portales sobre el Data Lake, integraciones con el cloud de Pacheco. Si el desarrollo no tiene nada que ver con la infraestructura de Personal Tech, no lo hacemos.</div>
+    </div>
+    <div class="rule-card" style="border-left:3px solid var(--l6);">
+      <div class="rule-label" style="color:var(--l6);">❌ No somos</div>
+      <div class="rule-title">Un laboratorio de investigación en IA</div>
+      <div class="rule-text">Personal Tech no entrena LLMs propios ni compite con OpenAI, Google DeepMind o Anthropic. <strong>Usa los modelos existentes (Claude, Llama, Gemini) sobre los datos del cliente.</strong> La diferencia no está en el modelo — está en que el modelo corre sobre los datos propios del cliente en Pacheco, sin que esos datos salgan del país ni alimenten modelos externos.</div>
+    </div>
+    <div class="rule-card" style="border-left:3px solid var(--l3);">
+      <div class="rule-label" style="color:var(--l3);">❌ No somos</div>
+      <div class="rule-title">Una consultora de transformación digital</div>
+      <div class="rule-text">Personal Tech no vende "estrategia de transformación digital" como servicio independiente. <strong>Acompaña la transformación con productos concretos y medibles.</strong> El consultor de Personal Tech entra con preguntas de discovery, no con un framework metodológico de 200 diapositivas. El resultado se mide en uptime, reducción de paradas, costo por transacción y tiempo de respuesta.</div>
+    </div>
+    <div class="rule-card" style="border-left:3px solid var(--l7);">
+      <div class="rule-label" style="color:var(--l7);">✅ Sí somos</div>
+      <div class="rule-title">El integrador de la cadena completa</div>
+      <div class="rule-text">Personal Tech es el único proveedor en Argentina que puede <strong>ser responsable de toda la cadena</strong> desde el sensor en la máquina hasta la alerta en el celular del gerente, pasando por la red, el cloud, la seguridad, los datos y la IA. Esa responsabilidad end-to-end es el diferencial. No lo hace todo — hace todo lo que está conectado.</div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="sec-divider">
+
+
+<!-- ══════ S7: EL DISCURSO ══════ -->
+<div id="s7" style="scroll-margin-top:56px;">
+  <div class="sec-label">07 — El discurso ejecutivo</div>
+  <div class="sec-title">Cómo explicarlo en una reunión de directorio</div>
+
+  <div class="pitch">
+    <div class="pitch-label">Para el CEO / CFO / CTO que pregunta "¿y ahora también hacen IA?"</div>
+    <div class="pitch-text">"Somos una empresa de infraestructura. Siempre lo fuimos. La diferencia es que la infraestructura del siglo XXI tiene siete capas, no dos. Antes era red + servidores. Hoy es red + cloud + seguridad + sensores + datos + inteligencia + aplicaciones. Personal Tech recorre esas siete capas de abajo hacia arriba, empezando por donde tiene la mayor ventaja competitiva — la red que ya opera — y subiendo solo donde esa subida hace que la capa anterior valga más. No hacemos IA porque está de moda. La hacemos porque tenemos los datos, el cloud donde procesarlos, la red para transportarlos y la regulación para garantizar que no salen del país. Si la IA de un proveedor externo necesita que sus datos salgan a un servidor en Virginia, no tiene sentido. La nuestra corre en Pacheco."</div>
+    <div class="pitch-author">— Argumento de posicionamiento para reuniones ejecutivas</div>
+  </div>
+
+  <div class="pitch" style="background:var(--bg2);border:1px solid var(--border);">
+    <div class="pitch-label" style="color:var(--text-4);">Para el cliente que pregunta "¿por qué empezar con ustedes si tenemos AWS?"</div>
+    <div class="pitch-text" style="color:var(--text-2);">"AWS es excelente. Nosotros no competimos con AWS — somos su camino de entrada a AWS y su complemento soberano. El Direct Connect que conecta sus sedes a AWS pasa por nuestra red. El dato financiero que no puede salir del país vive en nuestro cloud en Pacheco. Los sensores de su planta transmiten por nuestro APN privado. Y cuando quieran entrenar un modelo de IA sobre sus datos sin que salgan a Virginia, ahí estamos. En cuatro frases: la red es nuestra, el cloud soberano es nuestro, los datos seguros son nuestros, la IA sobre esos datos también. AWS hace el resto."</div>
+    <div class="pitch-author" style="color:var(--text-4);">— Argumento de co-existencia con hyperscalers</div>
+  </div>
+</div>
+
+
+<div class="footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Propuesta estratégica de portafolio · <span id="fecha"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function toggleLayer(id){
+  var el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Nav active on scroll
+var navLinks=document.querySelectorAll('.nav-link');
+var sections=['s1','s2','s3','s4','s5','s6','s7'].map(function(id){return document.getElementById(id);});
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+80;
+  sections.forEach(function(s,i){
+    if(!s)return;
+    var next=sections[i+1];
+    var inView=sy>=s.offsetTop&&(!next||sy<next.offsetTop);
+    if(inView){
+      navLinks.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.nav-link[href="#'+s.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+
+// Open first layer by default
+document.getElementById('lay1').classList.add('open');
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

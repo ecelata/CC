@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEDDPICC · BANT · SPIN — Guía de Calificación Cloud | Personal Tech</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --red-light:#FFE8E8;--red-mid:#D63030;--red-dark:#7A0000;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body { font-family: Roboto, 'Roboto', serif; font-size: 16px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO FRAMEWORKS */
+.fw-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:32px;}
+.fw-card{border-radius:var(--radius);padding:18px 20px;border:.5px solid var(--border);}
+.fw-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;opacity:.7;}
+.fw-name{font-size:22px;font-weight:700;margin-bottom:4px;}
+.fw-desc{font-size:12px;line-height:1.55;opacity:.8;}
+.fw-use{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:8px;opacity:.55;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-sub{font-size:12px;color:var(--text-ter);font-style:italic;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* LETTER BADGE — MEDDPICC */
+.letter-badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;font-size:18px;font-weight:700;flex-shrink:0;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* QUESTION BOX */
+.q-list{display:flex;flex-direction:column;gap:8px;margin:10px 0;}
+.q-item{border-radius:var(--radius-sm);padding:11px 14px;border:.5px solid var(--border);background:var(--bg2);}
+.q-text{font-size:13px;color:var(--text);font-style:italic;margin-bottom:4px;}
+.q-hint{font-size:11px;color:var(--text-ter);}
+
+/* SCORE METER */
+.score-row{display:flex;align-items:center;gap:10px;margin:6px 0;}
+.score-label{font-size:12px;color:var(--text-sec);flex:1;}
+.score-dots{display:flex;gap:4px;}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--border);}
+.dot.filled-green{background:var(--green-mid);}
+.dot.filled-amber{background:var(--amber-mid);}
+.dot.filled-red{background:var(--coral-mid);}
+.score-val{font-size:11px;font-weight:700;color:var(--text-ter);min-width:30px;text-align:right;}
+
+/* SIGNAL TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+
+/* PITCH */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+
+/* NOTES */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--red-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--red-mid);line-height:1.6;}
+.warn-note strong{color:var(--red-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+
+/* SCORECARD */
+.scorecard{border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:14px 0;}
+.sc-head{background:var(--text);padding:12px 16px;color:#fff;}
+.sc-head-title{font-size:13px;font-weight:700;}
+.sc-head-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;}
+.sc-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.sc-row{display:grid;grid-template-columns:28px 1fr 80px 80px;gap:10px;align-items:center;}
+.sc-letter{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.sc-name{font-size:12.5px;font-weight:700;color:var(--text);}
+.sc-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-align:center;}
+.sc-action{font-size:11px;color:var(--text-ter);}
+.sc-divider{height:.5px;background:var(--border);}
+
+/* COMPARISON */
+.fw-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+.fw-col{border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.fw-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .fw-strip,.fw-compare,.grid2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🎯 Calificación Cloud</div>
+  <a class="tnav" href="#v0">00 Por qué calificar</a>
+  <a class="tnav" href="#v1">01 MEDDPICC</a>
+  <a class="tnav" href="#v2">02 M — Metrics</a>
+  <a class="tnav" href="#v3">03 E — Economic Buyer</a>
+  <a class="tnav" href="#v4">04 D — Decision Criteria</a>
+  <a class="tnav" href="#v5">05 D — Decision Process</a>
+  <a class="tnav" href="#v6">06 P — Paper Process</a>
+  <a class="tnav" href="#v7">07 I — Identify Pain</a>
+  <a class="tnav" href="#v8">08 C — Champion</a>
+  <a class="tnav" href="#v9">09 C — Competition</a>
+  <a class="tnav" href="#v10">10 BANT</a>
+  <a class="tnav" href="#v11">11 SPIN</a>
+  <a class="tnav" href="#v12">12 Cómo combinarlos</a>
+  <a class="tnav" href="#v13">13 Scorecard práctica</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">MEDDPICC · BANT · SPIN</div>
+    <div class="doc-sub">Guía de calificación de oportunidades cloud para ventas enterprise · Personal Tech</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO FRAMEWORKS -->
+<div class="fw-strip">
+  <div class="fw-card" style="background:var(--text);color:#fff;">
+    <div class="fw-label" style="color:rgba(255,255,255,.5);">Framework enterprise</div>
+    <div class="fw-name">MEDDPICC</div>
+    <div class="fw-desc">El framework más completo para ventas complejas y ciclos largos. Cubre todos los ángulos de una oportunidad enterprise — personas, procesos, métricas y competencia.</div>
+    <div class="fw-use" style="color:rgba(255,255,255,.4);">Usar en: proyectos >$50K USD · Ciclos >3 meses · Múltiples stakeholders</div>
+  </div>
+  <div class="fw-card" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="fw-label" style="color:var(--blue-dark);">Framework rápido</div>
+    <div class="fw-name" style="color:var(--blue-dark);">BANT</div>
+    <div class="fw-desc" style="color:var(--text-sec);">Calificación inicial en 4 variables clave. Simple, rápido, ideal para el primer contacto. Te dice si vale la pena invertir tiempo en profundizar.</div>
+    <div class="fw-use" style="color:var(--blue-mid);">Usar en: primer contacto · Leads del equipo comercial · Oportunidades nuevas sin información</div>
+  </div>
+  <div class="fw-card" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="fw-label" style="color:var(--green-dark);">Framework de descubrimiento</div>
+    <div class="fw-name" style="color:var(--green-dark);">SPIN</div>
+    <div class="fw-desc" style="color:var(--text-sec);">Técnica de preguntas en 4 etapas que lleva al cliente a articular su propio dolor y las consecuencias de no resolverlo. El cliente se convence a sí mismo.</div>
+    <div class="fw-use" style="color:var(--green-mid);">Usar en: reunión de discovery · Clientes que "no tienen urgencia" · Crear necesidad donde no la ven</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 00 POR QUÉ -->
+<div class="vertical" id="v0">
+  <div class="vert-header" onclick="toggleV('v0')">
+    <div class="vert-icon" style="background:var(--gray-light)">🧭</div>
+    <div>
+      <div class="vert-title">00 — Por qué calificar rigurosamente en ventas cloud</div>
+      <div class="vert-sub">El tiempo del consultor cloud es el recurso más escaso — gastarlo en oportunidades no calificadas es el error más caro</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v0">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v0">
+    <p class="vert-intro">En telefonía, el ciclo de venta es corto: preguntás presupuesto, comparás precio, cerrás. En cloud enterprise, el ciclo es de 3 a 9 meses, involucra 5-8 personas con veto y puede requerir 20+ horas de trabajo del consultor. <strong>Una oportunidad mal calificada que se cae en el mes 5 destruye el forecast y el tiempo.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pq1')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">El costo de no calificar</span>
+        <div class="acc-info"><div class="acc-name">Lo que pasa cuando el pipeline está lleno de oportunidades no calificadas</div><div class="acc-tag">El problema más común en equipos que escalan rápido</div></div>
+        <span class="acc-chv" id="achv-pq1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pq1">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--red-light);">
+              <div class="mc-title">❌ Pipeline sin calificar</div>
+              <div class="mc-text">Muchas oportunidades que se ven grandes pero ninguna avanza. El forecast dice $500K y al final del trimestre se cierra $80K. El consultor está ocupado en reuniones que no llevan a ningún lado.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-title">✅ Pipeline calificado con MEDDPICC</div>
+              <div class="mc-text">Menos oportunidades pero todas tienen un camino claro a cerrar. El consultor sabe exactamente qué falta en cada cuenta y cuál es el próximo paso. El forecast es predecible.</div>
+            </div>
+          </div>
+          <div class="warn-note"><strong>La trampa del "pipeline voluminoso":</strong> Gerardo lo dijo explícitamente — usa PowerQuery sobre Salesforce para ver las oportunidades con fecha de cierre vencida. Un pipeline grande con muchas oportunidades viejas que no avanzan es una señal de falta de calificación, no de abundancia de mercado.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pq2')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Cuándo usar cada uno</span>
+        <div class="acc-info"><div class="acc-name">BANT para el primer filtro · SPIN para crear urgencia · MEDDPICC para gestionar el ciclo completo</div><div class="acc-tag">Los tres se complementan — no son alternativos</div></div>
+        <span class="acc-chv" id="achv-pq2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pq2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Etapa de la venta</th><th>Framework</th><th>Objetivo</th><th>Duración típica</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">1er contacto / lead derivado</td><td><strong>BANT</strong></td><td>Decidir si vale la pena invertir tiempo. ¿Hay presupuesto, autoridad, necesidad y timing?</td><td>1 llamada · 20–30 min</td></tr>
+              <tr><td class="tn">Reunión de discovery</td><td><strong>SPIN</strong></td><td>Hacer que el cliente articule su propio dolor y sienta la urgencia de resolver. Crear la necesidad donde no está clara.</td><td>1–2 reuniones · 60–90 min</td></tr>
+              <tr><td class="tn">Gestión del ciclo completo</td><td><strong>MEDDPICC</strong></td><td>Mapear todos los factores que determinan si el negocio cierra. Actualizar en cada interacción.</td><td>Toda la vida de la oportunidad</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v0 -->
+
+
+<!-- ══════════════════════════════════════════════ 01 MEDDPICC OVERVIEW -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--text)">🎯</div>
+    <div>
+      <div class="vert-title">01 — MEDDPICC: el framework completo</div>
+      <div class="vert-sub">8 variables que determinan si una oportunidad enterprise se cierra o se pierde</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">MEDDPICC es el framework de calificación de ventas enterprise más usado en empresas de software y cloud a nivel global (Salesforce, ServiceNow, AWS usan variantes de este modelo). Cada letra es una variable crítica que, si no está resuelta, es un riesgo de que la oportunidad no cierre.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('med0')">
+        <span class="acc-badge" style="background:var(--text);color:#fff;">Las 8 letras</span>
+        <div class="acc-info"><div class="acc-name">Mapa completo de MEDDPICC — qué significa cada letra</div><div class="acc-tag">Vista rápida de referencia antes de profundizar en cada una</div></div>
+        <span class="acc-chv" id="achv-med0">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-med0">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Letra</th><th>Variable</th><th>La pregunta que responde</th><th>Riesgo si falta</th></tr></thead>
+            <tbody>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--blue-dark);">M</span></td><td class="tn">Metrics (Métricas)</td><td>¿Cuál es el ROI cuantificable de esta solución?</td><td>Sin ROI claro, el CFO no aprueba el gasto.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--green-dark);">E</span></td><td class="tn">Economic Buyer</td><td>¿Quién firma el cheque? ¿Lo conocemos?</td><td>Si el Economic Buyer no está involucrado, el deal se cae en la recta final.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--amber-dark);">D</span></td><td class="tn">Decision Criteria</td><td>¿Cuáles son los criterios con los que van a evaluar las opciones?</td><td>Perdés porque el competidor alineó su propuesta a los criterios y vos no.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--coral-dark);">D</span></td><td class="tn">Decision Process</td><td>¿Cuál es el proceso de toma de decisión y quiénes participan?</td><td>El deal entra a un comité que no conocés y muere ahí.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--purple-dark);">P</span></td><td class="tn">Paper Process</td><td>¿Cómo es el proceso legal, procurement y de contratos?</td><td>La firma técnica es SÍ pero procurement tarda 3 meses y pierde el presupuesto.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--teal-dark);">I</span></td><td class="tn">Identify Pain</td><td>¿Cuál es el dolor real y cuánto cuesta no resolverlo?</td><td>Sin dolor cuantificado, no hay urgencia y el proyecto se posterga indefinidamente.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--blue-mid);">C</span></td><td class="tn">Champion</td><td>¿Tenemos un defensor interno que venda por nosotros cuando no estamos?</td><td>Sin champion, la oportunidad muere en cualquier reunión interna a la que no fuiste invitado.</td></tr>
+              <tr><td><span style="font-size:18px;font-weight:700;color:var(--red-dark);">C</span></td><td class="tn">Competition</td><td>¿Contra quién competimos y cuál es nuestra estrategia de diferenciación?</td><td>Perdés porque no sabías cómo estaba posicionado el competidor.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ M — METRICS -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:#0C447C;color:#fff;font-weight:700;font-size:20px;">M</div>
+    <div>
+      <div class="vert-title">02 — M: Metrics — Las métricas que justifican el proyecto</div>
+      <div class="vert-sub">¿Cuál es el ROI cuantificable? · Sin número, el CFO no firma</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">Las Metrics son la razón financiera por la que el cliente debería comprar. No son beneficios generales — son <strong>números concretos y verificables</strong> que el Economic Buyer puede presentar para justificar la inversión.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Qué buscar</span>
+        <div class="acc-info"><div class="acc-name">Las métricas más poderosas en ventas cloud de Personal Tech</div><div class="acc-tag">Las que el CFO y el COO entienden sin traducción técnica</div></div>
+        <span class="acc-chv" id="achv-m1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Métrica</th><th>Cómo cuantificarla</th><th>Producto Personal Tech</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Ahorro en CAPEX de hardware</td><td>Costo de renovación evitada en 3 años.</td><td>Personal Cloud · VPS</td></tr>
+              <tr><td class="tn">Reducción de costo de personal IT</td><td>Horas/semana ahorradas × costo hora × personas.</td><td>Managed Cloud · Infraestructura gestionada</td></tr>
+              <tr><td class="tn">Costo de downtime evitado</td><td>Horas de caída/año × ingreso por hora. Mejorar de 99.5% a 99.98% = 42 horas menos de caída.</td><td>DRS · Cloud con SLA</td></tr>
+              <tr><td class="tn">Ahorro FinOps</td><td>20–35% del gasto cloud actual. Se documenta mes a mes.</td><td>FinOps Personal Tech</td></tr>
+              <tr><td class="tn">Eliminación de egress fees</td><td>Dato en Personal Cloud vs. AWS = 0 egress. Cuantificar el gasto actual en egress de AWS/Azure.</td><td>Personal Cloud</td></tr>
+              <tr><td class="tn">Reducción de incidentes de seguridad</td><td>Costo promedio de un incidente × probabilidad. 1 ransomware = $200K–$1M para una mediana.</td><td>SOC · EDR · Ciberseguridad</td></tr>
+              <tr><td class="tn">Time-to-market acelerado</td><td>De semanas a horas para lanzar nuevos ambientes. Cuantificar en proyectos perdidos o demorados.</td><td>Cloud ágil · DevOps</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="q-list" style="margin-top:12px;">
+            <div class="block-label">Preguntas para descubrir las métricas</div>
+            <div class="q-item">
+              <div class="q-text">"¿Cuánto gastaron en hardware de servidores en los últimos 3 años?"</div>
+              <div class="q-hint">→ Ancla el CAPEX que se puede reemplazar con OPEX cloud</div>
+            </div>
+            <div class="q-item">
+              <div class="q-text">"¿Cuántas horas de downtime tuvieron el año pasado y cuánto les costó cada hora?"</div>
+              <div class="q-hint">→ Cuantifica el riesgo de continuidad que el SLA cloud resuelve</div>
+            </div>
+            <div class="q-item">
+              <div class="q-text">"¿Cuánto pagan hoy por AWS o Azure? ¿Tienen visibilidad de dónde va ese gasto?"</div>
+              <div class="q-hint">→ Abre la conversación de FinOps y posible migración a Personal Cloud</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ E — ECONOMIC BUYER -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:#085041;color:#fff;font-weight:700;font-size:20px;">E</div>
+    <div>
+      <div class="vert-title">03 — E: Economic Buyer — Quién firma el cheque</div>
+      <div class="vert-sub">Sin acceso al que aprueba el presupuesto, el deal muere en la recta final</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">El Economic Buyer es la persona que puede decir SÍ aunque todos digan NO, y que puede decir NO aunque todos digan SÍ. <strong>No es necesariamente el CIO o el CTO — en muchas empresas es el CFO o el CEO.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('e1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Cómo identificarlo</span>
+        <div class="acc-info"><div class="acc-name">Las señales que revelan quién es el Economic Buyer real</div><div class="acc-tag">No siempre es quien dice serlo</div></div>
+        <span class="acc-chv" id="achv-e1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-e1">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Preguntá quién aprueba el presupuesto de IT:</strong> el CIO puede elegir la solución pero el CFO o CEO puede vetar el gasto. En empresas argentinas medianas, frecuentemente el dueño o el Directorio tienen voto sobre inversiones >$50K.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Observá quién apareció en la última reunión importante:</strong> si de repente aparece alguien que nunca había estado, probablemente es el Economic Buyer evaluando.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Preguntá directamente al champion:</strong> "¿Quién va a presentar esto al comité de aprobación? ¿Qué necesitan para decir SÍ?"</li>
+          </ul>
+          <div class="q-list" style="margin-top:10px;">
+            <div class="q-item">
+              <div class="q-text">"¿Quién más debería estar involucrado en esta decisión antes de avanzar?"</div>
+              <div class="q-hint">→ El champion te revela el mapa de poder sin que lo sepa</div>
+            </div>
+            <div class="q-item">
+              <div class="q-text">"Para proyectos de esta magnitud, ¿el área de finanzas o el directorio necesitan participar en la aprobación?"</div>
+              <div class="q-hint">→ Identifica si hay un nivel de aprobación por encima del CIO</div>
+            </div>
+          </div>
+          <div class="warn-note"><strong>La trampa más común en cloud enterprise:</strong> Pasar meses convenciendo al CTO sin saber que el CFO tiene que aprobar y tiene una visión completamente diferente del proyecto. Cuando el CTO va con la propuesta al CFO sin que vos hayas hablado con él antes, el deal muere.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ D — DECISION CRITERIA -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:#633806;color:#fff;font-weight:700;font-size:20px;">D</div>
+    <div>
+      <div class="vert-title">04 — D: Decision Criteria — Con qué vara van a medir</div>
+      <div class="vert-sub">Si no conocés los criterios de evaluación, estás presentando a ciegas</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">Los Decision Criteria son los factores con los que el cliente va a comparar las opciones. El objetivo no es solo conocerlos — es <strong>influenciar qué criterios priorizan</strong> para que Personal Tech gane.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dc1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Influir los criterios</span>
+        <div class="acc-info"><div class="acc-name">Cómo posicionar los criterios donde Personal Tech tiene ventaja estructural</div><div class="acc-tag">El juego real de la preventa consultiva</div></div>
+        <span class="acc-chv" id="achv-dc1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dc1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Criterio que Personal Tech gana</th><th>Cómo hacer que pese más</th><th>Cómo lo articula el champion</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Soberanía del dato</td><td>Preguntar por compliance BCRA/CNV antes de hablar de tecnología. El criterio regulatorio se vuelve no negociable.</td><td>"Necesitamos que el dato esté en Argentina — es un requisito legal, no una preferencia."</td></tr>
+              <tr><td class="tn">Un solo proveedor (SLA end-to-end)</td><td>Preguntar quién es responsable cuando la conectividad falla con su proveedor actual. Hacer visible el problema de los dos contratos.</td><td>"No podemos tener un proveedor que culpa a otro cuando algo falla."</td></tr>
+              <tr><td class="tn">Facturación en pesos</td><td>Preguntar al CFO cómo gestiona el riesgo cambiario en IT. Si no lo gestiona, hacerlo visible.</td><td>"El presupuesto de IT no puede quedar expuesto al tipo de cambio."</td></tr>
+              <tr><td class="tn">Soporte local 24/7</td><td>Preguntar qué pasó la última vez que llamaron a AWS o Azure con un problema crítico. El tiempo de espera y el idioma siempre incomodan.</td><td>"Necesitamos que alguien que habla castellano nos atienda de noche si algo se cae."</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip-note"><strong>La técnica clave:</strong> Hacer preguntas antes de presentar la solución para que el cliente defina criterios donde Personal Tech gana. Una vez que el cliente dijo "necesitamos dato en Argentina", es el criterio de ellos — no de Personal Tech. Eso cambia toda la conversación.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ D — DECISION PROCESS -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:#4A1B0C;color:#fff;font-weight:700;font-size:20px;">D</div>
+    <div>
+      <div class="vert-title">05 — D: Decision Process — Cómo toman la decisión</div>
+      <div class="vert-sub">El mapa de quiénes participan y en qué orden — para no ser sorprendido</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('dp1')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Mapear el proceso</span>
+        <div class="acc-info"><div class="acc-name">Las preguntas que revelan el proceso de decisión real</div><div class="acc-tag">Incluyendo el comité que aparece al final y que nadie mencionó antes</div></div>
+        <span class="acc-chv" id="achv-dp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-dp1">
+        <div class="ab-inner">
+          <div class="q-list">
+            <div class="q-item">
+              <div class="q-text">"¿Cómo tomaron la última decisión importante de tecnología en la empresa?"</div>
+              <div class="q-hint">→ El proceso pasado predice el proceso futuro — revelará si hay comités, qué rol juega IT vs. Finanzas, si participan asesores externos.</div>
+            </div>
+            <div class="q-item">
+              <div class="q-text">"¿Hay algún comité de aprobación de inversiones que necesite ver esto?"</div>
+              <div class="q-hint">→ Descubre el nivel ejecutivo que vos no conocés y que puede hundir el deal.</div>
+            </div>
+            <div class="q-item">
+              <div class="q-text">"¿Necesitan evaluar más de una opción formalmente? ¿Hay un RFP o un proceso de cotización?"</div>
+              <div class="q-hint">→ Si tienen un proceso de RFP, necesitás influir los criterios antes de que lo publiquen — no después.</div>
+            </div>
+            <div class="q-item">
+              <div class="q-text">"Asumiendo que la solución cumple técnicamente, ¿cuánto tiempo tarda el proceso de aprobación desde que alguien dice 'sí, lo hacemos'?"</div>
+              <div class="q-hint">→ Calibra el tiempo real de cierre. Muchos deals se "aprueban" y después tardan 4 meses en firmarse.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ P — PAPER PROCESS -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:#26215C;color:#fff;font-weight:700;font-size:20px;">P</div>
+    <div>
+      <div class="vert-title">06 — P: Paper Process — El proceso legal y de contratos</div>
+      <div class="vert-sub">El deal técnico puede estar cerrado y morir en procurement durante 3 meses</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pp1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Lo que hay que descubrir</span>
+        <div class="acc-info"><div class="acc-name">El proceso de procurement que nadie menciona hasta que ya es tarde</div><div class="acc-tag">Especialmente crítico en empresas grandes y sector público</div></div>
+        <span class="acc-chv" id="achv-pp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pp1">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>¿Tienen proveedores homologados?</strong> Muchas empresas grandes y bancos solo compran a vendors que están en su lista aprobada. Si Personal Tech no está homologado, hay que gestionar eso antes de presentar la propuesta final.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>¿Existe un umbral de licitación?</strong> En empresas corporativas o gobierno, montos >$X requieren licitación pública o proceso competitivo formal. Conocer el umbral permite estructurar la propuesta estratégicamente.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>¿Tienen presupuesto aprobado o hay que aprobarlo?</strong> Si el presupuesto ya existe para el año, es un deal factible. Si hay que crear el presupuesto, hay un ciclo adicional de aprobación.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>¿Quién es el equipo legal/procurement?</strong> Mapear a esas personas y tenerlas como aliadas antes del cierre acelera exponencialmente la firma.</li>
+          </ul>
+          <div class="q-list" style="margin-top:10px;">
+            <div class="q-item">
+              <div class="q-text">"Una vez que IT aprueba técnicamente la solución, ¿qué pasa después? ¿Quién maneja el contrato?"</div>
+              <div class="q-hint">→ Descubre el proceso de procurement sin preguntar directamente.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ I — IDENTIFY PAIN -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:#0A4040;color:#fff;font-weight:700;font-size:20px;">I</div>
+    <div>
+      <div class="vert-title">07 — I: Identify Pain — El dolor que justifica la urgencia</div>
+      <div class="vert-sub">Sin dolor cuantificado, no hay urgencia. Sin urgencia, el proyecto se posterga indefinidamente.</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">El Identify Pain es la variable más crítica de todo MEDDPICC. Si el cliente no siente el dolor, no hay urgencia de compra. <strong>Tu trabajo no es crear un dolor que no existe — es ayudar al cliente a ver y cuantificar un dolor que ya tiene pero no había medido.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ip1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Los 3 niveles del dolor</span>
+        <div class="acc-info"><div class="acc-name">Implícito → Explícito → Urgente — cómo evoluciona el dolor en la conversación</div><div class="acc-tag">El modelo que SPIN también usa para crear urgencia</div></div>
+        <span class="acc-chv" id="achv-ip1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ip1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Nivel</th><th>Cómo se manifiesta</th><th>Cómo responde el cliente</th><th>Tu acción</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">Implícito</td>
+                <td>El dolor existe pero el cliente no lo ha verbalizado. "Sí, los servidores son lentos pero estamos acostumbrados."</td>
+                <td>No compra. No siente urgencia. Pospone.</td>
+                <td>Hacer preguntas de situación y problema (SPIN) para que lo articule.</td>
+              </tr>
+              <tr>
+                <td class="tn">Explícito</td>
+                <td>El cliente verbalizó el problema. "Tuvimos 3 caídas este año y perdimos ventas." Lo reconoce pero no lo cuantificó.</td>
+                <td>Interesado. Escucha. No compra todavía.</td>
+                <td>Cuantificar el impacto económico del dolor. Preguntas de implicación (SPIN).</td>
+              </tr>
+              <tr>
+                <td class="tn">Urgente</td>
+                <td>El cliente cuantificó el dolor y siente que no puede seguir con el status quo. "Cada caída nos cuesta $50K y no podemos seguir así."</td>
+                <td>Busca activamente soluciones. Dispuesto a invertir. Pide propuesta.</td>
+                <td>Presentar la solución Personal Tech como la respuesta al dolor ya cuantificado.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La regla de oro:</strong> Nunca presentar la solución antes de que el dolor sea explícito y cuantificado. Si llegás con "tenemos cloud a $X/mes" antes de que el cliente sienta el dolor, estás vendiendo un commodity de precio. Si llegás después de que el cliente calculó que sus caídas le cuestan $200K/año, estás vendiendo una solución a un problema real.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ C — CHAMPION -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:#378ADD;color:#fff;font-weight:700;font-size:20px;">C</div>
+    <div>
+      <div class="vert-title">08 — C: Champion — Tu defensor interno</div>
+      <div class="vert-sub">El que vende por vos cuando no estás en la sala</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+    <p class="vert-intro">El Champion es la persona dentro del cliente que quiere que Personal Tech gane y tiene la influencia para ayudarte a lograrlo. <strong>Sin champion, el deal depende de que estés vos presente en cada reunión crítica — y eso es imposible.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ch1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Cómo construir un champion</span>
+        <div class="acc-info"><div class="acc-name">No se declara — se construye. Las acciones que convierten a un interesado en un defensor</div><div class="acc-tag">La variable más difícil de MEDDPICC porque depende de la relación, no de la tecnología</div></div>
+        <span class="acc-chv" id="achv-ch1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ch1">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Dales victorias internas:</strong> el champion necesita poder presentar a sus colegas algo valioso que vos le diste. Un análisis de TCO personalizado, un caso de éxito de su industria, una demostración técnica exitosa — son munición para que defienda la propuesta internamente.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Alineá su éxito con el del proyecto:</strong> si el proyecto sale bien, el champion tiene que ganar algo personalmente — reconocimiento, simplificación de su trabajo, menos incidentes que apagar. Su motivación personal es la que lo hace defender el deal cuando vos no estás.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Probá que tiene influencia:</strong> pedile un favor pequeño — que te presente a alguien, que te comparta información interna, que organice una reunión con el Economic Buyer. Si puede hacerlo, es un champion real. Si no puede, necesitás encontrar otro.</li>
+          </ul>
+          <div class="q-list" style="margin-top:10px;">
+            <div class="q-item">
+              <div class="q-text">"Si vos tuvieras que presentar esta solución al directorio mañana, ¿qué pregunta te harían que hoy no podrías responder?"</div>
+              <div class="q-hint">→ Revela las objeciones que el champion enfrenta internamente y te da la oportunidad de prepararle las respuestas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ C — COMPETITION -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:#7A0000;color:#fff;font-weight:700;font-size:20px;">C</div>
+    <div>
+      <div class="vert-title">09 — C: Competition — Contra quién competimos</div>
+      <div class="vert-sub">No solo los proveedores — también el status quo y el "lo hacemos internamente"</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('comp1')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Los 4 tipos de competencia</span>
+        <div class="acc-info"><div class="acc-name">Competidores directos + status quo + build interno + "esperamos el año que viene"</div><div class="acc-tag">Cada uno requiere una estrategia diferente</div></div>
+        <span class="acc-chv" id="achv-comp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-comp1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Tipo de competencia</th><th>Cómo se manifiesta</th><th>Estrategia Personal Tech</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">AWS / Azure directo</td>
+                <td>"Ya tenemos cuenta de AWS, ¿por qué contratar con Personal Tech?"</td>
+                <td>Soberanía del dato + conectividad integrada + soporte local + facturación en pesos. El hyperscaler no tiene red. Personal Tech sí.</td>
+              </tr>
+              <tr>
+                <td class="tn">Reseller de AWS/Azure</td>
+                <td>"Tenemos un partner de AWS que nos da soporte."</td>
+                <td>El reseller no tiene infraestructura propia. Si la conectividad falla, el reseller no puede resolverlo. Personal Tech tiene red + cloud + SLA end-to-end.</td>
+              </tr>
+              <tr>
+                <td class="tn">Status quo (on-premise)</td>
+                <td>"Nuestros servidores están amortizados, no hay urgencia."</td>
+                <td>TCO completo a 3 años. Mostrar el costo oculto: energía, licencias, personal, DR, downtime. El hardware amortizado no es gratis.</td>
+              </tr>
+              <tr>
+                <td class="tn">"Lo hacemos internamente"</td>
+                <td>"Tenemos equipo de IT que puede gestionar esto."</td>
+                <td>¿Cuántas horas por semana dedican a mantenimiento de infraestructura? Personal Tech libera ese tiempo para proyectos estratégicos. Cálculo de costo de oportunidad del equipo IT.</td>
+              </tr>
+              <tr>
+                <td class="tn">"Esperamos el año que viene"</td>
+                <td>"Interesante, lo vemos para el próximo presupuesto."</td>
+                <td>Calcular el costo de esperar: ¿cuánto pierde por cada mes sin la solución? (downtime, costo de hardware que sigue deprecando, licencias que siguen subiendo).</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 BANT -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--blue-light)">⚡</div>
+    <div>
+      <div class="vert-title">10 — BANT: el filtro rápido de primer contacto</div>
+      <div class="vert-sub">Budget · Authority · Need · Timeline — 4 preguntas para decidir si vale la pena invertir tiempo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+    <p class="vert-intro">BANT es el framework más simple de calificación. Tiene 20 años de historia y sigue siendo útil para el primer filtro: ¿tiene este lead las condiciones mínimas para ser una oportunidad real? <strong>Si falla 2 o más de las 4 variables, es mejor no invertir tiempo todavía.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('b1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Las 4 variables</span>
+        <div class="acc-info"><div class="acc-name">Budget · Authority · Need · Timeline con preguntas para cloud enterprise</div><div class="acc-tag">El checklist de primer contacto para leads derivados por los 200 vendedores</div></div>
+        <span class="acc-chv" id="achv-b1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-b1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th style="width:80px">Variable</th><th>Qué significa</th><th>Pregunta para cloud</th><th>Respuesta que califica</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--blue-dark);">B — Budget</td>
+                <td>¿Tienen presupuesto disponible o aprobable para este proyecto?</td>
+                <td>"¿Tienen algún presupuesto asignado para tecnología este año o estamos construyendo el caso para el próximo ejercicio?"</td>
+                <td>Presupuesto existente o aprobación en proceso. Riesgo si depende de un presupuesto futuro sin aprobación.</td>
+              </tr>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--green-dark);">A — Authority</td>
+                <td>¿Estamos hablando con alguien que puede aprobar o que influye en quién aprueba?</td>
+                <td>"¿Quién más participa en decisiones de tecnología de esta magnitud en la empresa?"</td>
+                <td>Hablar con el CIO, CTO, CFO, Director IT. Riesgo si el interlocutor es solo técnico sin acceso al decisor.</td>
+              </tr>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--amber-dark);">N — Need</td>
+                <td>¿Tienen una necesidad real y reconocida que la solución resuelve?</td>
+                <td>"¿Qué los hizo considerar buscar una solución cloud ahora? ¿Hubo algún evento o proyecto que generó la urgencia?"</td>
+                <td>Un problema concreto (caída, crecimiento, compliance, renovación hardware). Riesgo si es exploración sin necesidad real.</td>
+              </tr>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--coral-dark);">T — Timeline</td>
+                <td>¿Tienen un timing definido para tomar la decisión o implementar?</td>
+                <td>"Si encontraran la solución adecuada, ¿cuándo estarían en condiciones de avanzar? ¿Hay alguna fecha límite o evento que lo condicione?"</td>
+                <td>Tienen fecha concreta o evento que crea urgencia (vencimiento de contrato, auditoría, nuevo proyecto). Riesgo si no hay timeline definido.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="grid2" style="margin-top:12px;">
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-title">✅ Lead calificado BANT</div>
+              <div class="mc-text">Tiene presupuesto o puede generarlo + hay alguien con autoridad que está involucrado + la necesidad está articulada + hay un timing en mente. → Invertir tiempo. Pasar a SPIN + MEDDPICC.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-title">⚠️ Lead con 1 variable débil</div>
+              <div class="mc-text">Falta el budget pero hay necesidad urgente y authority → avanzar pero trabajar el caso de negocio. Falta timeline pero el resto está → identificar el evento que crea urgencia y trabajarlo con SPIN.</div>
+            </div>
+          </div>
+          <div class="warn-note"><strong>La limitación de BANT:</strong> BANT es bueno para filtrar pero no para gestionar el ciclo completo. Un deal puede pasar BANT y perderlo igual porque no tenés champion, no conocés el proceso de decisión o el competidor alineó mejor sus criterios. Por eso BANT es la puerta de entrada, no el framework de gestión.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 SPIN -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--green-light)">🌀</div>
+    <div>
+      <div class="vert-title">11 — SPIN: la técnica de preguntas que crea urgencia</div>
+      <div class="vert-sub">Situation · Problem · Implication · Need-Payoff — el cliente se convence a sí mismo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+    <p class="vert-intro">SPIN (desarrollado por Neil Rackham en los '80 con datos de 35.000 llamadas de ventas) es la técnica de preguntas que lleva al cliente a articular su propio dolor y sus propias consecuencias. <strong>La idea central: las personas se convencen más por sus propias conclusiones que por argumentos del vendedor.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sp1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Las 4 etapas</span>
+        <div class="acc-info"><div class="acc-name">Cómo aplicar SPIN en una reunión de discovery de cloud con Personal Tech</div><div class="acc-tag">Con ejemplos reales de preguntas para cada etapa</div></div>
+        <span class="acc-chv" id="achv-sp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sp1">
+        <div class="ab-inner">
+
+          <div style="border-left:3px solid var(--green-mid);padding-left:14px;margin-bottom:14px;">
+            <div class="block-label" style="color:var(--green-dark);">S — Situation: entender el contexto actual</div>
+            <p class="block-text" style="margin-bottom:8px;">Preguntas para mapear la situación actual — sin juzgar ni proponer. El objetivo es entender el punto de partida.</p>
+            <div class="q-list">
+              <div class="q-item"><div class="q-text">"¿Cuántos servidores tienen hoy y dónde están alojados?"</div></div>
+              <div class="q-item"><div class="q-text">"¿Qué sistemas críticos corren en esa infraestructura?"</div></div>
+              <div class="q-item"><div class="q-text">"¿Cuántas personas tiene el equipo IT que gestiona esa infraestructura?"</div></div>
+            </div>
+          </div>
+
+          <div style="border-left:3px solid var(--amber-mid);padding-left:14px;margin-bottom:14px;">
+            <div class="block-label" style="color:var(--amber-dark);">P — Problem: descubrir los problemas que tiene</div>
+            <p class="block-text" style="margin-bottom:8px;">Preguntas que llevan al cliente a verbalizar los problemas de su situación actual. El cliente los nombra — no vos.</p>
+            <div class="q-list">
+              <div class="q-item"><div class="q-text">"¿Con qué frecuencia tienen problemas de disponibilidad o lentitud en esos sistemas?"</div></div>
+              <div class="q-item"><div class="q-text">"¿Qué tan difícil es conseguir hardware nuevo cuando lo necesitan? ¿Cuánto tarda?"</div></div>
+              <div class="q-item"><div class="q-text">"¿Tienen algún proceso de DR probado? ¿Cuándo fue la última vez que lo ejecutaron?"</div></div>
+              <div class="q-item"><div class="q-text">"¿El equipo IT puede dedicar tiempo a proyectos de innovación o está todo el día apagando incendios?"</div></div>
+            </div>
+          </div>
+
+          <div style="border-left:3px solid var(--coral-mid);padding-left:14px;margin-bottom:14px;">
+            <div class="block-label" style="color:var(--coral-dark);">I — Implication: las consecuencias de no resolver</div>
+            <p class="block-text" style="margin-bottom:8px;">Preguntas que hacen visible el costo real de los problemas. Este es el paso que crea urgencia — el cliente calcula sus propias pérdidas.</p>
+            <div class="q-list">
+              <div class="q-item"><div class="q-text">"Cuando el sistema cae, ¿cuánto tarda en volver? ¿Y cuánto impacta eso en el negocio?"</div><div class="q-hint">→ El cliente calcula su propio costo de downtime</div></div>
+              <div class="q-item"><div class="q-text">"¿Cuántos proyectos de digitalización o innovación se frenaron este año porque IT no tenía capacidad?"</div><div class="q-hint">→ El cliente cuantifica el costo de oportunidad</div></div>
+              <div class="q-item"><div class="q-text">"Si tuvieran un incidente de ransomware hoy, ¿cuánto tiempo tardarían en recuperarse? ¿Qué perderían?"</div><div class="q-hint">→ El cliente imagina el peor escenario y su costo</div></div>
+              <div class="q-item"><div class="q-text">"¿Qué pasa con su posición competitiva si los competidores adoptan cloud y ustedes no pueden moverse igual de rápido?"</div><div class="q-hint">→ Introduce el riesgo de quedar atrás</div></div>
+            </div>
+          </div>
+
+          <div style="border-left:3px solid var(--blue-mid);padding-left:14px;">
+            <div class="block-label" style="color:var(--blue-dark);">N — Need-Payoff: el valor de resolver</div>
+            <p class="block-text" style="margin-bottom:8px;">Preguntas que llevan al cliente a describir el valor que tendría la solución — en sus propias palabras. Cuando el cliente lo dice, lo cree.</p>
+            <div class="q-list">
+              <div class="q-item"><div class="q-text">"Si pudieran garantizar que el sistema nunca cae más de 52 minutos al año, ¿cómo cambiaría la operación?"</div></div>
+              <div class="q-item"><div class="q-text">"Si el equipo IT dejara de administrar servidores y se enfocara en proyectos de negocio, ¿qué podrían hacer que hoy no pueden?"</div></div>
+              <div class="q-item"><div class="q-text">"Si el presupuesto de IT fuera predecible en pesos y sin sorpresas de tipo de cambio, ¿cómo afectaría la planificación financiera?"</div></div>
+            </div>
+          </div>
+
+          <div class="pitch" style="margin-top:14px;">
+            <div class="pitch-label">El momento de presentar la solución</div>
+            <div class="pitch-text">Solo después de que el cliente respondió las preguntas N (Need-Payoff) y articuló en sus propias palabras el valor de resolver, presentás la solución Personal Tech. En ese momento, tu propuesta está respondiendo exactamente lo que el cliente ya dijo que necesita — no es una venta, es una confirmación.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<!-- ══════════════════════════════════════════════ 12 CÓMO COMBINARLOS -->
+<div class="vertical" id="v12">
+  <div class="vert-header" onclick="toggleV('v12')">
+    <div class="vert-icon" style="background:var(--amber-light)">🔀</div>
+    <div>
+      <div class="vert-title">12 — Cómo combinar BANT + SPIN + MEDDPICC en una sola oportunidad</div>
+      <div class="vert-sub">El flujo completo desde que entra el lead hasta que se firma el contrato</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v12">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v12">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('comb1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">El flujo completo</span>
+        <div class="acc-info"><div class="acc-name">De lead derivado a contrato firmado — qué framework usar en cada etapa</div><div class="acc-tag">El mapa de navegación para oportunidades cloud enterprise</div></div>
+        <span class="acc-chv" id="achv-comb1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-comb1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Etapa</th><th>Duración típica</th><th>Framework</th><th>Output esperado</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Lead entra (derivado por vendedor o inbound)</td><td>Día 1</td><td><strong>BANT</strong></td><td>Decisión: ¿vale la pena invertir tiempo? SÍ o NO.</td></tr>
+              <tr><td class="tn">Primera reunión de discovery</td><td>Semana 1–2</td><td><strong>SPIN</strong> (Situation + Problem)</td><td>Mapear situación actual y hacer que el cliente verbalice sus problemas.</td></tr>
+              <tr><td class="tn">Segunda reunión — profundización</td><td>Semana 2–4</td><td><strong>SPIN</strong> (Implication + Need-Payoff)</td><td>El cliente cuantifica su dolor y articula el valor de resolver. Identificar el champion.</td></tr>
+              <tr><td class="tn">Apertura en Salesforce + calificación MEDDPICC</td><td>Semana 2</td><td><strong>MEDDPICC</strong></td><td>Scorecard completa. ¿Qué variables están sin resolver? Plan de acción.</td></tr>
+              <tr><td class="tn">Desarrollo de propuesta + presentación</td><td>Semana 4–8</td><td><strong>MEDDPICC</strong> (Metrics + Decision Criteria)</td><td>Propuesta alineada a las métricas y criterios del cliente. Economic Buyer involucrado.</td></tr>
+              <tr><td class="tn">Navegación del proceso de decisión</td><td>Semana 8–16</td><td><strong>MEDDPICC</strong> (Decision Process + Paper Process + Champion)</td><td>Todas las personas involucradas mapeadas. Champion activo. Paper process en marcha.</td></tr>
+              <tr><td class="tn">Cierre</td><td>Mes 3–6</td><td><strong>MEDDPICC</strong> completo revisado</td><td>Todas las 8 variables resueltas = deal cerrado con alta probabilidad.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip-note"><strong>La clave operativa:</strong> MEDDPICC no es solo un framework de análisis — es una rutina de gestión. Cada vez que actualizás Salesforce, debería reflejar el estado de cada variable. Gerardo lo dijo: "¿cuándo cerrás esta oportunidad?" — la respuesta tiene que estar basada en el estado de tus 8 variables, no en intuición.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v12 -->
+
+
+<!-- ══════════════════════════════════════════════ 13 SCORECARD -->
+<div class="vertical" id="v13">
+  <div class="vert-header" onclick="toggleV('v13')">
+    <div class="vert-icon" style="background:var(--green-light)">📋</div>
+    <div>
+      <div class="vert-title">13 — Scorecard práctica MEDDPICC — para usar en Salesforce</div>
+      <div class="vert-sub">El semáforo de cada oportunidad — qué variables están resueltas y cuáles son riesgo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v13">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v13">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sc1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Scorecard</span>
+        <div class="acc-info"><div class="acc-name">Cómo evaluar el estado de cada variable con semáforo verde / amarillo / rojo</div><div class="acc-tag">Para usar en la revisión semanal de pipeline con Gerardo</div></div>
+        <span class="acc-chv" id="achv-sc1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sc1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th style="width:28px;"></th><th>Variable</th><th style="background:var(--green-light);color:var(--green-dark)">🟢 Verde — bajo control</th><th style="background:var(--amber-light);color:var(--amber-dark)">🟡 Amarillo — trabajando</th><th style="background:var(--red-light);color:var(--red-dark)">🔴 Rojo — riesgo real</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700;color:var(--blue-dark);">M</td>
+                <td class="tn">Metrics</td>
+                <td>ROI cuantificado y aceptado por el Economic Buyer.</td>
+                <td>ROI calculado pero el Economic Buyer no lo vio todavía.</td>
+                <td>No hay métricas definidas. El cliente no cuantificó el valor.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--green-dark);">E</td>
+                <td class="tn">Economic Buyer</td>
+                <td>Tuvimos reunión directa con el Economic Buyer y está alineado.</td>
+                <td>Sabemos quién es pero no tuvimos acceso directo todavía.</td>
+                <td>No sabemos quién aprueba el presupuesto.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--amber-dark);">D</td>
+                <td class="tn">Decision Criteria</td>
+                <td>Conocemos los criterios y nuestros diferenciales están alineados.</td>
+                <td>Conocemos los criterios pero hay alguno donde competimos en desventaja.</td>
+                <td>No conocemos los criterios formales de evaluación.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--coral-dark);">D</td>
+                <td class="tn">Decision Process</td>
+                <td>Mapeamos todos los pasos, personas y timing del proceso.</td>
+                <td>Conocemos el proceso general pero hay pasos o personas que no conocemos.</td>
+                <td>No sabemos cómo toman la decisión ni quiénes participan.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--purple-dark);">P</td>
+                <td class="tn">Paper Process</td>
+                <td>Procurement está involucrado y el contrato está en proceso.</td>
+                <td>Sabemos el proceso pero no empezó todavía.</td>
+                <td>No sabemos si hay proceso de licitación o homologación requerida.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--teal-dark);">I</td>
+                <td class="tn">Identify Pain</td>
+                <td>El dolor está cuantificado y el cliente lo verbalizó.</td>
+                <td>El problema está identificado pero no cuantificado económicamente.</td>
+                <td>No hay dolor claro o el cliente no siente urgencia.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--blue-mid);">C</td>
+                <td class="tn">Champion</td>
+                <td>Tenemos champion activo que vende internamente por nosotros.</td>
+                <td>Hay alguien interesado pero no probamos su influencia todavía.</td>
+                <td>No tenemos ningún defensor interno identificado.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;color:var(--red-dark);">C</td>
+                <td class="tn">Competition</td>
+                <td>Conocemos a todos los competidores y tenemos estrategia para cada uno.</td>
+                <td>Sabemos que hay competidores pero no conocemos su posicionamiento.</td>
+                <td>No sabemos si están evaluando otras opciones o a quiénes.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note" style="margin-top:12px;"><strong>La regla de forecast:</strong> Una oportunidad con 6–8 variables en verde es cerrable en el trimestre. Con 4–5 verdes y el resto en amarillo, es para el próximo trimestre con trabajo activo. Con 3 o más rojas, no va al forecast — va al plan de acción primero.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v13 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Guía de calificación de oportunidades — uso interno — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

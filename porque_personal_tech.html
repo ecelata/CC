@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Por qué Personal Tech — Argumentario Completo</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO STRIP */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-sub{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+
+/* VS TABLE */
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.vs-col{border-radius:var(--radius-sm);padding:12px 15px;border:.5px solid var(--border);}
+.vs-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.vs-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.vs-list li{font-size:12px;line-height:1.5;display:flex;gap:6px;align-items:flex-start;}
+
+/* FEATURE LIST */
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* DIFFERENTIATOR HIGHLIGHT */
+.diff-box{border:1.5px solid var(--green-mid);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;background:var(--green-light);}
+.diff-box-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green-dark);margin-bottom:6px;}
+.diff-box-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.diff-box-text strong{color:var(--green-dark);}
+
+/* COMPETITOR TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.check{color:var(--green-dark);font-weight:700;}
+.cross{color:var(--coral-dark);font-weight:700;}
+.partial{color:var(--amber-dark);font-weight:700;}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+
+/* NOTES */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+
+/* PITCH BOX */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:14px 17px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.82);line-height:1.65;font-style:italic;}
+
+/* SEP / FOOTER */
+.sep{border:none;border-top:.5px solid var(--border);margin:14px 0;}
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media print{
+  .topnav{display:none;}
+  .vert-body,.acc-body{display:block!important;}
+  .vert-toggle,.acc-chv{display:none;}
+  .page{padding:16px;max-width:100%;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .vs-grid,.grid2,.grid3{grid-template-columns:1fr;}
+  .hero-strip{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">🏆 Por qué Personal Tech</div>
+  <a class="tnav" href="#v1">01 El diferenciador único</a>
+  <a class="tnav" href="#v2">02 Cloud soberana</a>
+  <a class="tnav" href="#v3">03 Multicloud partner</a>
+  <a class="tnav" href="#v4">04 Conectividad integrada</a>
+  <a class="tnav" href="#v5">05 Ciberseguridad</a>
+  <a class="tnav" href="#v6">06 IoT end-to-end</a>
+  <a class="tnav" href="#v7">07 Servicios profesionales</a>
+  <a class="tnav" href="#v8">08 Ecosistema de valor libre</a>
+  <a class="tnav" href="#v9">09 FinOps y optimización</a>
+  <a class="tnav" href="#v10">10 Por industria</a>
+  <a class="tnav" href="#v11">11 Argumentos de cierre</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Por qué Personal Tech — Argumentario Completo</div>
+    <div class="doc-sub">No solo por qué migrar a la nube — sino por qué hacerlo con Personal Tech específicamente</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <div class="hs" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="hs-icon">🇦🇷</div>
+    <div class="hs-val">Dato soberano en Argentina</div>
+    <div class="hs-sub">Dato en suelo argentino, jurisdicción local, cumple BCRA/CNV/PDPA sin arquitecturas adicionales.</div>
+  </div>
+  <div class="hs" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="hs-icon">🔗</div>
+    <div class="hs-val">Telco + Cloud en un contrato</div>
+    <div class="hs-sub">El único que vende el circuito, el cloud y el SLA en un solo contrato. AWS y Azure estructuralmente no pueden.</div>
+  </div>
+  <div class="hs" style="background:var(--amber-light);border-color:var(--amber-mid);">
+    <div class="hs-icon">💰</div>
+    <div class="hs-val">Facturación en pesos</div>
+    <div class="hs-sub">Sin exposición cambiaria. Personal Cloud se paga en ARS — único en el mercado entre proveedores enterprise.</div>
+  </div>
+  <div class="hs" style="background:var(--teal-light);border-color:var(--teal-mid);">
+    <div class="hs-icon">⚡</div>
+    <div class="hs-val">5–10 ms de latencia</div>
+    <div class="hs-sub">DC en Pacheco vs. 30–50 ms de AWS São Paulo. Para ERP, VDI y sistemas transaccionales, esa diferencia es crítica.</div>
+  </div>
+  <div class="hs" style="background:var(--coral-light);border-color:var(--coral-mid);">
+    <div class="hs-icon">🌐</div>
+    <div class="hs-val">AWS Advanced + Azure ExpressRoute</div>
+    <div class="hs-sub">Partner certificado de ambos hyperscalers. Ofrece acceso privado a AWS y Azure desde Argentina en un solo contrato.</div>
+  </div>
+  <div class="hs" style="background:var(--purple-light);border-color:var(--purple-mid);">
+    <div class="hs-icon">🛡</div>
+    <div class="hs-val">SOC 24/7 local</div>
+    <div class="hs-sub">Centro de Ciberdefensa en Argentina. Respuesta a incidentes en menos de 2 horas. Equipo que habla castellano.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 DIFERENCIADOR ÚNICO -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--blue-light)">🏆</div>
+    <div>
+      <div class="vert-title">01 — El diferenciador estructural único</div>
+      <div class="vert-sub">Lo que Personal Tech puede hacer que AWS, Azure y ningún reseller puede replicar</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">Hay argumentos que cualquier reseller de cloud puede dar. Y hay argumentos que solo Personal Tech puede dar porque son propiedades estructurales de la empresa — no configuraciones ni servicios que se pueden copiar. <strong>Esta sección es el corazón del argumentario.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('d1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Único en el mercado</span>
+        <div class="acc-info"><div class="acc-name">Telco + Cloud + SLA en un solo contrato — nadie más puede hacer esto</div><div class="acc-tag">La propuesta de valor que ningún competidor puede replicar estructuralmente</div></div>
+        <span class="acc-chv" id="achv-d1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-d1">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">El argumento en una frase</div>
+            <div class="pitch-text">"Personal Tech es el único proveedor en Argentina que puede venderle al cliente el circuito de red, la infraestructura cloud y el soporte en un solo contrato, con un solo número de teléfono y un solo responsable cuando algo falla. AWS y Azure, estructuralmente, no pueden hacer eso."</div>
+          </div>
+          <div class="block-label">Por qué esto importa</div>
+          <div class="vs-grid">
+            <div class="vs-col" style="background:var(--coral-light);">
+              <div class="vs-title" style="color:var(--coral-dark);">❌ Con AWS / Azure directo</div>
+              <ul class="vs-list">
+                <li style="color:var(--text-sec);">Contrato N°1: cloud con el hyperscaler.</li>
+                <li style="color:var(--text-sec);">Contrato N°2: conectividad con una telco aparte.</li>
+                <li style="color:var(--text-sec);">Problema: cuando algo falla, AWS culpa a la telco y la telco culpa a AWS. Nadie es dueño del problema end-to-end.</li>
+                <li style="color:var(--text-sec);">Soporte en inglés o con desfase horario. Ticketing internacional sin SLA local.</li>
+              </ul>
+            </div>
+            <div class="vs-col" style="background:var(--green-light);">
+              <div class="vs-title" style="color:var(--green-dark);">✅ Con Personal Tech</div>
+              <ul class="vs-list">
+                <li style="color:var(--text-sec);">Un solo contrato cubre cloud + red + soporte.</li>
+                <li style="color:var(--text-sec);">Un solo SLA end-to-end. Personal Tech es dueña del problema completo.</li>
+                <li style="color:var(--text-sec);">La fibra que conecta la sede al datacenter y las VMs que corren las aplicaciones son del mismo proveedor.</li>
+                <li style="color:var(--text-sec);">Soporte en castellano 24/7 con equipos que conocen el contexto regulatorio argentino.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ Por qué Personal Tech y no un reseller de AWS</div>
+            <div class="diff-box-text">Un reseller de AWS o Azure puede dar el cloud pero <strong>no tiene red propia</strong>. Si la conectividad del cliente falla, el reseller no tiene ninguna herramienta para resolverlo — depende de terceros. Personal Tech tiene ambas capas y opera como carrier nacional, lo que le permite garantizar el SLA de punta a punta.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('d2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Infraestructura nacional</span>
+        <div class="acc-info"><div class="acc-name">Backbone propio en todo el país + 5 datacenters + modelo edge</div><div class="acc-tag">La red física que ningún cloud puro puede tener</div></div>
+        <span class="acc-chv" id="achv-d2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-d2">
+        <div class="ab-inner">
+          <p class="block-text">Personal Tech (Telecom Argentina) opera uno de los backbones de fibra más grandes del país. Eso no es un servicio que se contrata — es infraestructura física que llevó décadas construir. Ningún hyperscaler ni reseller tiene esto.</p>
+          <div class="grid3">
+            <div class="mini-card">
+              <div class="mc-icon">🏭</div>
+              <div class="mc-title">DC Pacheco (EZE1)</div>
+              <div class="mc-text">5.400 m² de piso técnico. #1 de Buenos Aires por servicios activos. IXP anclado. Peering directo con AWS y Azure. 100% energía renovable.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🏙</div>
+              <div class="mc-title">4 DCs adicionales</div>
+              <div class="mc-text">Hornos (ex-Fibertel/Cablevisión), 2 en Córdoba, 1 en Corrientes. Geográficamente distribuidos para redundancia y continuidad.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🌐</div>
+              <div class="mc-title">Modelo edge nacional</div>
+              <div class="mc-text">Edificios Telecom en cada ciudad del interior ya tienen el backbone. Se pueden convertir en mini-DCs edge sin construir desde cero. Único en LATAM.</div>
+            </div>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ Argumento para sectores del interior</div>
+            <div class="diff-box-text">Si una empresa de Chaco, Tucumán o Mendoza necesita un datacenter local por latencia o compliance, <strong>Personal Tech puede desplegar infraestructura edge en edificios que Telecom ya tiene en esas ciudades con el backbone ya instalado</strong>. AWS tiene la región más cercana en São Paulo. No hay comparación posible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 CLOUD SOBERANA -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--green-light)">🇦🇷</div>
+    <div>
+      <div class="vert-title">02 — Personal Cloud: la nube soberana argentina</div>
+      <div class="vert-sub">El dato queda en Argentina · Compliance BCRA/CNV · Pesos · Latencia 5–10 ms · SLA 99.982%</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">Personal Cloud es infraestructura IaaS propia de Personal Tech en el Datacenter de Pacheco, Argentina. Autogestionada vía portal, con pago por uso en pesos argentinos y soporte local 24/7. <strong>Es el único cloud enterprise cuyo dato nunca sale de Argentina.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Soberanía del dato</span>
+        <div class="acc-info"><div class="acc-name">El dato nunca sale del país — argumento irrefutable para regulados</div><div class="acc-tag">BCRA · CNV · Salud · Gobierno · Datos personales Ley Argentina</div></div>
+        <span class="acc-chv" id="achv-s1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s1">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">Para el CISO o el área legal</div>
+            <div class="pitch-text">"Con AWS o Azure, tu dato viaja a São Paulo o a Irlanda, bajo jurisdicción extranjera y sujeto al CLOUD Act estadounidense. Con Personal Tech, el dato está en Pacheco, Argentina, bajo jurisdicción local, y cumple con la Comunicación A del BCRA, la normativa CNV y la Ley de Protección de Datos Personales sin necesidad de arquitecturas adicionales."</div>
+          </div>
+          <div class="block-label">Comparativa de soberanía</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Aspecto</th><th>Personal Cloud</th><th>AWS São Paulo</th><th>Azure Zona 1</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Ubicación física del dato</td><td class="check">✓ Argentina (Pacheco)</td><td class="cross">✗ Brasil</td><td class="cross">✗ Brasil / Europa</td></tr>
+              <tr><td class="tn">Jurisdicción legal</td><td class="check">✓ Derecho argentino</td><td class="cross">✗ CLOUD Act USA</td><td class="cross">✗ CLOUD Act USA</td></tr>
+              <tr><td class="tn">Compliance BCRA nativo</td><td class="check">✓ Sin configuración extra</td><td class="partial">~ Con arquitectura adicional</td><td class="partial">~ Con arquitectura adicional</td></tr>
+              <tr><td class="tn">Latencia desde CABA</td><td class="check">✓ 5–10 ms</td><td class="cross">✗ 30–50 ms</td><td class="cross">✗ 25–40 ms</td></tr>
+              <tr><td class="tn">Facturación en ARS</td><td class="check">✓ Pesos argentinos</td><td class="cross">✗ USD</td><td class="cross">✗ USD</td></tr>
+              <tr><td class="tn">Soporte en castellano</td><td class="check">✓ Equipo local 24/7</td><td class="partial">~ Soporte técnico internacional</td><td class="partial">~ Soporte técnico internacional</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ Por qué Personal Cloud y no AWS/Azure para datos regulados</div>
+            <div class="diff-box-text">En un banco, aseguradora o entidad de salud, la primera pregunta de la auditoría es <strong>"¿dónde está el dato?"</strong>. Con Personal Cloud la respuesta es inmediata y sin asteriscos: en Argentina, en Pacheco. Con AWS o Azure la respuesta requiere configuraciones adicionales, certificaciones propias y potencial riesgo de incumplimiento. El costo de resolver eso suele ser mayor que la diferencia de precio de los servicios.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Pesos + latencia</span>
+        <div class="acc-info"><div class="acc-name">Sin riesgo cambiario + latencia local — dos ventajas que se suman</div><div class="acc-tag">Para el CFO y el CTO al mismo tiempo</div></div>
+        <span class="acc-chv" id="achv-s2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s2">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">💰</div>
+              <div class="mc-title">Para el CFO: pago en ARS</div>
+              <div class="mc-text">Con AWS o Azure, el gasto de IT queda expuesto a la volatilidad del tipo de cambio. Si el dólar sube 30%, el costo de cloud sube 30%. Con Personal Cloud, el presupuesto de IT es predecible en pesos. Sin sorpresas en el P&L ni cobertura de tipo de cambio necesaria.</div>
+            </div>
+            <div class="mini-card" style="background:var(--teal-light);">
+              <div class="mc-icon">⚡</div>
+              <div class="mc-title">Para el CIO: 5–10 ms de latencia</div>
+              <div class="mc-text">Para ERP, VDI (escritorios remotos), sistemas transaccionales y aplicaciones donde el usuario interactúa en tiempo real, la latencia de 30–50 ms de São Paulo genera degradación perceptible. 5–10 ms desde Pacheco es la misma experiencia que tener el servidor en el edificio.</div>
+            </div>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">Argumento combinado para PyME y mediana empresa</div>
+            <div class="pitch-text">"Personal Cloud te da la misma tecnología de virtualización enterprise que AWS o Azure — VMware o OpenStack, según tu necesidad — pero con el dato en Argentina, el soporte en castellano, la latencia de un servidor a 30 km de distancia y la factura en pesos que cerrás con el mismo presupuesto de IT todos los meses."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('s3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">VPS y planes</span>
+        <div class="acc-info"><div class="acc-name">Planes VPS — desde Free hasta Proyecto — todos con SLA 99.982% y SSD</div><div class="acc-tag">El argumento de entry-level que abre la cuenta antes de migrar workloads críticos</div></div>
+        <span class="acc-chv" id="achv-s3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-s3">
+        <div class="ab-inner">
+          <p class="block-text">Los planes VPS son la puerta de entrada más baja del portfolio. Desde un SVP Free (1 vCPU, 1GB RAM, 40GB SSD, Ubuntu, sin costo) hasta SVP Proyecto (custom en todo), con todos los planes intermedios en SSD con hasta 600 IOPS.</p>
+          <div class="pitch">
+            <div class="pitch-label">Argumento de entrada para clientes que "no están seguros"</div>
+            <div class="pitch-text">"Si todavía no estás seguro de cloud, empezamos con el SVP Free — sin costo, sin compromiso. Probás la plataforma, el soporte y la latencia con tu propio workload. Cuando estés convencido, escalamos al plan que necesitás. El riesgo de empezar es cero."</div>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ SVP Free vs. Oracle Free Tier (el único competidor directo)</div>
+            <div class="diff-box-text">Oracle tiene el free tier más generoso del mercado a nivel global, pero el <strong>dato está en el exterior</strong>. SVP Free de Personal Tech tiene el dato en Argentina, el soporte en castellano y está respaldado por la misma infraestructura que los planes pagos. Para una empresa argentina con cualquier requisito de soberanía, SVP Free gana.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 MULTICLOUD PARTNER -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--purple-light)">☁️</div>
+    <div>
+      <div class="vert-title">03 — Multicloud: AWS Advanced Partner + Azure ExpressRoute Partner</div>
+      <div class="vert-sub">No es solo reventa — es acceso privado certificado a los dos hyperscalers más grandes del mundo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">Personal Tech no solo tiene cloud propio. Tiene alianzas certificadas con AWS (Advanced Partner) y Azure (ExpressRoute Partner) que permiten ofrecer acceso privado a ambos hyperscalers desde Argentina, combinado con Personal Cloud, en un único contrato integrado.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">AWS Advanced Partner</span>
+        <div class="acc-info"><div class="acc-name">Direct Connect AWS — conexión privada y dedicada sin pasar por internet</div><div class="acc-tag">Mayor estabilidad, seguridad y reducción de costos de red en AWS</div></div>
+        <span class="acc-chv" id="achv-m1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m1">
+        <div class="ab-inner">
+          <p class="block-text">AWS Direct Connect es un circuito privado entre la red de Personal Tech y los servidores de AWS. El tráfico no pasa por internet público: viaja por la fibra de Personal Tech directamente al PoP de AWS más cercano, con latencia predecible, menor costo de egress y mayor seguridad.</p>
+          <div class="block-label">Por qué Personal Tech como punto de acceso a AWS y no ir directamente</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Un solo contrato:</strong> el cliente no necesita gestionar por separado la conectividad con AWS y el acceso a Direct Connect. Personal Tech integra todo.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Soporte local:</strong> cuando algo falla con el Direct Connect, hay un equipo en Argentina que resuelve. Con AWS directo, el ticket va a soporte internacional.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Costos de egress reducidos:</strong> el tráfico que sale de AWS hacia Personal Tech por Direct Connect tiene menor costo de egress que el tráfico por internet público.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Acceso a créditos y programas exclusivos:</strong> como Advanced Partner, Personal Tech puede gestionar créditos de prueba y beneficios del programa AWS que no están disponibles para clientes directos.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Arquitectura híbrida:</strong> workloads regulados en Personal Cloud + workloads flexibles en AWS, conectados privadamente. Uno entra, el otro no puede hacer eso.</li>
+          </ul>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ El argumento definitivo sobre Direct Connect AWS</div>
+            <div class="diff-box-text"><strong>Personal Tech es Partner Advanced de AWS y tiene conexión Direct Connect certificada desde Argentina.</strong> Si el cliente quiere usar AWS pero necesita que el tráfico no pase por internet público (compliance, seguridad, latencia predecible), Personal Tech es la única empresa en Argentina que puede darlo integrado con su propia red y su propio cloud.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Azure ExpressRoute Partner</span>
+        <div class="acc-info"><div class="acc-name">ExpressRoute Azure — el circuito privado que las empresas reguladas necesitan para Azure</div><div class="acc-tag">Sin internet, latencia predecible, compliance demostrable ante reguladores</div></div>
+        <span class="acc-chv" id="achv-m2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m2">
+        <div class="ab-inner">
+          <p class="block-text">Azure ExpressRoute permite conectarse a Microsoft Azure sin pasar por internet público. Personal Tech es <strong>partner certificado de Azure ExpressRoute en Argentina</strong> — esto significa que puede establecer el circuito privado entre la empresa y Azure, combinado con Personal Cloud para los workloads regulados.</p>
+          <div class="block-label">Casos de uso donde ExpressRoute es obligatorio</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Banco con Microsoft 365 + Azure AD:</strong> el tráfico de autenticación y datos sensibles no puede ir por internet público. ExpressRoute es el camino.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Empresa con SAP en Azure:</strong> la conexión SAP requiere latencia garantizada y ancho de banda dedicado. ExpressRoute es el estándar de la industria.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Gobierno con datos en Microsoft Gov Cloud:</strong> acceso privado sin exposición a internet público para datos sensibles del estado.</li>
+          </ul>
+          <div class="pitch">
+            <div class="pitch-label">Para el cliente que ya usa Azure y tiene conectividad estándar</div>
+            <div class="pitch-text">"Hoy tu tráfico hacia Azure va por internet público — eso tiene variabilidad de latencia, riesgo de exposición y costo de egress. Con ExpressRoute a través de nuestra red, el tráfico viaja por un circuito privado dedicado. Y lo mejor: ese circuito lo integramos al mismo contrato de conectividad que ya tenés con nosotros."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('m3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Cloud Connect</span>
+        <div class="acc-info"><div class="acc-name">Cloud Connect — acceso privado a GCP, Azure, AWS y SAP desde un solo circuito</div><div class="acc-tag">Para empresas con estrategia multicloud real que necesitan conectividad privada a múltiples nubes</div></div>
+        <span class="acc-chv" id="achv-m3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-m3">
+        <div class="ab-inner">
+          <p class="block-text">Cloud Connect de Personal Tech es la conexión internacional segura y directa a múltiples nubes públicas simultáneamente: AWS, Azure, GCP y SAP, con baja latencia y alto rendimiento. Un solo circuito de Personal Tech da acceso privado a todos los hyperscalers que el cliente necesite.</p>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ El broker multicloud que ningún hyperscaler puede ser</div>
+            <div class="diff-box-text">AWS no puede darte acceso privado a Azure. Azure no puede darte acceso privado a GCP. <strong>Personal Tech puede darte acceso privado a todos los hyperscalers al mismo tiempo, desde un único circuito.</strong> Para empresas con arquitecturas genuinamente multicloud, esta es la única solución de conectividad integrada del mercado argentino.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 CONECTIVIDAD INTEGRADA -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--teal-light)">🔗</div>
+    <div>
+      <div class="vert-title">04 — Conectividad empresarial integrada con el cloud</div>
+      <div class="vert-sub">SD-WAN · MPLS · DIA · GPON · Satelital · 5G — todo del mismo proveedor que gestiona el cloud</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">Personal Tech ofrece un ecosistema completo de conectividad: internet simétrico y dedicado con fibra óptica, SD-WAN, comunicaciones unificadas y conectividad móvil con tecnología 5G — <strong>todo diseñado para integrar con las soluciones de cloud, IoT y ciberseguridad del mismo proveedor.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">SD-WAN</span>
+        <div class="acc-info"><div class="acc-name">SD-WAN — gestión inteligente de red para empresas con múltiples sedes</div><div class="acc-tag">Reducción de costos WAN + visibilidad unificada + failover automático</div></div>
+        <span class="acc-chv" id="achv-c1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c1">
+        <div class="ab-inner">
+          <p class="block-text">SD-WAN de Personal Tech gestiona de forma inteligente la red corporativa de todas las sedes, brindando flexibilidad, seguridad y mejor rendimiento. El tráfico se enruta automáticamente por el mejor camino disponible — fibra, 4G o satelital — con visibilidad centralizada desde un solo portal.</p>
+          <div class="pitch">
+            <div class="pitch-label">Para una empresa de retail con 50 sucursales</div>
+            <div class="pitch-text">"Con SD-WAN de Personal Tech, tu equipo de IT gestiona las 50 sedes desde un solo panel. Si una sucursal pierde el enlace de fibra, el tráfico cae automáticamente a 4G sin intervención manual. Y cuando el tráfico va al cloud, lo enviamos directo a nuestro datacenter sin salir a internet. Todo con una sola factura y un solo SLA."</div>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ SD-WAN + Cloud Personal Tech: el bundle que otros no tienen</div>
+            <div class="diff-box-text">La combinación SD-WAN + Personal Cloud con Cloud OnRamp integrado significa que <strong>el tráfico de las sucursales llega al cloud sin salir a internet en ningún momento</strong>. Ningún reseller de SD-WAN puede dar ese nivel de integración porque no tiene el cloud propio. Ningún cloud puede dar esa integración porque no tiene la red.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Internet Empresas + GPON</span>
+        <div class="acc-info"><div class="acc-name">Fibra óptica dedicada con SLA — la base de cualquier estrategia cloud seria</div><div class="acc-tag">Velocidad + estabilidad + SLA contractual para el acceso al cloud</div></div>
+        <span class="acc-chv" id="achv-c2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c2">
+        <div class="ab-inner">
+          <p class="block-text">Internet Empresas de Personal Tech ofrece conectividad estable y rápida con fibra óptica. GPON es la red de fibra óptica de alta capacidad que optimiza costos, mejora la eficiencia y asegura la continuidad operativa. <strong>Es el prerequisito técnico de cualquier solución cloud — y el mismo proveedor que da el acceso a internet da el cloud.</strong></p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Peering directo:</strong> Personal Tech tiene peering directo con AWS y Azure desde su red, lo que significa menor latencia y mayor estabilidad para acceder a los hyperscalers vs. un ISP genérico.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>SLA con penalidades:</strong> no es solo "internet" — es un servicio con SLA de disponibilidad y velocidad con penalidades económicas si no se cumple.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Backbone propio:</strong> el tráfico viaja por la red de Telecom Argentina antes de salir al exterior, lo que da mayor control y estabilidad que un ISP que solo tiene el último kilómetro.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('c3')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Satelital + 5G</span>
+        <div class="acc-info"><div class="acc-name">Conectividad satelital y 5G para donde nadie más llega</div><div class="acc-tag">Agro · Minería · Logística · Campo · Zonas remotas</div></div>
+        <span class="acc-chv" id="achv-c3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-c3">
+        <div class="ab-inner">
+          <p class="block-text">Personal Tech ofrece internet satelital para conectividad confiable en cualquier punto del país — zonas remotas, temporales o como respaldo estratégico. Combinado con 5G, cubre prácticamente todo el territorio nacional.</p>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ El argumento para agro, minería y logística</div>
+            <div class="diff-box-text">AWS, Azure y GCP no tienen ningún servicio de conectividad para el campo argentino. <strong>Personal Tech puede conectar un sensor en una explotación agrícola de la Patagonia con la misma plataforma IoT que monitorea la planta de manufactura en Buenos Aires.</strong> Eso no es multicloud — es infraestructura nacional con alcance real.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 CIBERSEGURIDAD -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--coral-light)">🛡</div>
+    <div>
+      <div class="vert-title">05 — Ciberseguridad end-to-end: del perímetro al cloud</div>
+      <div class="vert-sub">SOC 24/7 · DDoS · NGFW · EDR · ZTNA · eGRC — todo local, todo integrado</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">Personal Tech ofrece un portfolio completo de ciberseguridad que va desde la mitigación de ataques DDoS y firewalls de nueva generación hasta un SOC propio 24/7/365. <strong>El diferenciador: la seguridad está integrada con la red y el cloud del mismo proveedor — no es una capa adicional de terceros.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cs1')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">SOC propio</span>
+        <div class="acc-info"><div class="acc-name">Centro de Ciberdefensa propio — monitoreo 24/7 y respuesta en menos de 2 horas</div><div class="acc-tag">El argumento que ningún reseller de cloud puede dar</div></div>
+        <span class="acc-chv" id="achv-cs1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cs1">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">Para el CISO</div>
+            <div class="pitch-text">"Personal Tech tiene un Centro de Ciberdefensa (SOC) propio que monitorea eventos de seguridad 24/7/365. Ante un ciberataque crítico, activamos el servicio de Incident Response en menos de 2 horas con un equipo multidisciplinario en Argentina. Eso no es un ticket a soporte internacional — es un equipo local que conoce tu infraestructura y actúa."</div>
+          </div>
+          <ul class="feat" style="margin-top:12px;">
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>SOC 24/7/365:</strong> equipo de expertos que monitorea, analiza y responde en tiempo real a cualquier incidente.</li>
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>Incident Response en &lt;2 horas:</strong> ante un ataque crítico, equipo multidisciplinario activado en Argentina sin demoras de zona horaria.</li>
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>Integración nativa:</strong> el SOC ve el tráfico de la red Y del cloud del cliente — visibilidad completa que un SOC tercero no puede tener.</li>
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>eGRC:</strong> gestión de riesgos y cumplimientos con enfoque integral en gobernanza y control — para empresas con requisitos de compliance estrictos.</li>
+          </ul>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ SOC integrado con red y cloud vs. SOC de terceros</div>
+            <div class="diff-box-text">Un SOC de terceros ve los logs que el cliente le envía. El SOC de Personal Tech ve el tráfico de la red, los eventos del cloud y los dispositivos endpoint — <strong>todo integrado desde el mismo proveedor</strong>. La correlación de eventos es más rápida, la detección es más temprana y la respuesta es más efectiva porque no hay que coordinar entre múltiples vendors.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cs2')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Portfolio completo</span>
+        <div class="acc-info"><div class="acc-name">Mitigación DDoS · NGFW · EDR · MDM · Passwordless · Pentest · Análisis de vulnerabilidades</div><div class="acc-tag">Un solo proveedor para toda la postura de seguridad de la empresa</div></div>
+        <span class="acc-chv" id="achv-cs2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cs2">
+        <div class="ab-inner">
+          <div class="grid3">
+            <div class="mini-card">
+              <div class="mc-icon">🌊</div>
+              <div class="mc-title">Mitigación DDoS</div>
+              <div class="mc-text">Protección frente a ataques de denegación de servicio. Monitoreo y desvío de tráfico malicioso antes de que llegue a la infraestructura del cliente.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔥</div>
+              <div class="mc-title">Firewall NGFW</div>
+              <div class="mc-text">Firewalls de última generación con inspección profunda de paquetes (DPI), IPS/IDS y filtrado de aplicaciones. Gestionados por el equipo de Personal Tech.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">💻</div>
+              <div class="mc-title">Antivirus & EDR</div>
+              <div class="mc-text">Protección antivirus avanzada con detección en tiempo real y respuesta a nivel endpoint. Anti-ransomware, anti-phishing y aislamiento automático.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">📱</div>
+              <div class="mc-title">MDM — Gestión de Móviles</div>
+              <div class="mc-text">Gestión y seguridad de dispositivos móviles. Integra directamente con la flota de celulares corporativos que el cliente ya tiene con Personal/Telecom.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔑</div>
+              <div class="mc-title">Passwordless + MFA</div>
+              <div class="mc-text">Autenticación multifactor y acceso sin contraseña. Reduce drásticamente el riesgo de phishing y reutilización de credenciales.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔍</div>
+              <div class="mc-title">Pentest + Análisis de vuln.</div>
+              <div class="mc-text">Tests de penetración por expertos y análisis de vulnerabilidades para identificar y corregir brechas antes de que sean explotadas.</div>
+            </div>
+          </div>
+          <div class="diff-box" style="margin-top:10px;">
+            <div class="diff-box-title">✅ Seguridad integrada con red + cloud + dispositivos móviles</div>
+            <div class="diff-box-text">La propuesta de seguridad de Personal Tech tiene una ventaja estructural: <strong>los celulares corporativos que el cliente ya tiene con Telecom/Personal se pueden integrar con MDM, EDR y el SOC en una sola plataforma</strong>. Ningún proveedor de ciberseguridad puro puede hacer esa integración porque no tiene los dispositivos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cs3')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">Caso real</span>
+        <div class="acc-info"><div class="acc-name">Megatlon — biometría facial para accesos seguros y automatizados</div><div class="acc-tag">Historia de transformación documentada en el sitio de Personal Tech</div></div>
+        <span class="acc-chv" id="achv-cs3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cs3">
+        <div class="ab-inner">
+          <p class="block-text">Megatlon incorporó soluciones de Reconocimiento Facial de Personal Tech, logrando accesos más seguros, rápidos y automatizados en sus centros deportivos. <strong>El caso demuestra que la tecnología biométrica de Personal Tech está probada en producción en una cadena de gran escala.</strong></p>
+          <div class="pitch">
+            <div class="pitch-label">Para cualquier empresa con múltiples accesos físicos (retail, industria, salud)</div>
+            <div class="pitch-text">"Megatlon tiene decenas de centros en todo el país. Implementaron reconocimiento facial de Personal Tech para automatizar el acceso — sin tarjetas, sin PINs, sin colas. Si podemos hacer eso para una cadena de gimnasios con esa escala y esa velocidad de acceso, lo podemos hacer para tu empresa."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 IoT END-TO-END -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--amber-light)">📡</div>
+    <div>
+      <div class="vert-title">06 — IoT end-to-end: del sensor al cloud al dashboard</div>
+      <div class="vert-sub">M2M · Trazabilidad · Smart Cities · Monitoreo de activos · Industria 4.0 · Agro · Logística</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro">Personal Tech desarrolla soluciones IoT que van desde la conectividad M2M y plataformas de gestión de SIMs hasta sistemas de trazabilidad, monitoreo de activos y proyectos de industria 4.0. <strong>La diferencia es que Personal Tech provee la conectividad del sensor, la red y la plataforma cloud — todo en un solo proveedor.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">La ventaja IoT única</span>
+        <div class="acc-info"><div class="acc-name">Sensor + red + plataforma + cloud — todo del mismo proveedor</div><div class="acc-tag">El argumento que ninguna plataforma IoT pura puede dar</div></div>
+        <span class="acc-chv" id="achv-iot1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot1">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">El argumento estructural</div>
+            <div class="pitch-text">"AWS IoT o Azure IoT Hub son excelentes plataformas de procesamiento de datos de dispositivos. Pero el sensor necesita conectividad — y esa SIM la tenés que contratar con una telco por separado. Personal Tech te da el sensor, la SIM con APN privado, la conectividad 4G o satelital, y la plataforma cloud donde procesás los datos. Todo en una sola factura, con un solo interlocutor técnico."</div>
+          </div>
+          <div class="grid2" style="margin-top:12px;">
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">📦</div>
+              <div class="mc-title">Conectividad M2M con APN privado</div>
+              <div class="mc-text">Dispositivos IoT de bajo consumo sin configuración. El tráfico del sensor viaja por APN privado — nunca pasa por internet público. Ideal para sistemas de seguridad, alarmas y backup de conectividad.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">📍</div>
+              <div class="mc-title">Geoposicionamiento de flota</div>
+              <div class="mc-text">Aplicación mobile que consulta la posición geográfica en tiempo real de los dispositivos de la flota. Para empresas con vehículos, técnicos en campo o activos móviles.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">🌡</div>
+              <div class="mc-title">Monitoreo de cadena de frío</div>
+              <div class="mc-text">Sensores de temperatura en vehículos y almacenamiento. Alertas en tiempo real cuando la temperatura sale del rango. Para farmacéuticas, alimentos y logística refrigerada.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">🌆</div>
+              <div class="mc-title">Smart Cities</div>
+              <div class="mc-text">Soluciones para ciudades más conectadas y sostenibles: alumbrado inteligente, gestión de residuos, monitoreo de tráfico, recursos hídricos. Con sensores conectados vía 5G.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Caso real</span>
+        <div class="acc-info"><div class="acc-name">Ecosan S.A. — IoT para gestión inteligente y centralizada de activos críticos</div><div class="acc-tag">Historia de transformación documentada en el sitio de Personal Tech</div></div>
+        <span class="acc-chv" id="achv-iot2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot2">
+        <div class="ab-inner">
+          <p class="block-text">Ecosan S.A. integró soluciones IoT de Personal Tech para monitorear sus operaciones en tiempo real, optimizar recursos y mejorar la toma de decisiones con datos precisos y centralizados. <strong>El caso prueba que Personal Tech puede implementar IoT a escala empresarial en operaciones críticas.</strong></p>
+          <div class="pitch">
+            <div class="pitch-label">Para cualquier empresa con activos distribuidos o en campo</div>
+            <div class="pitch-text">"Ecosan tiene operaciones críticas distribuidas en múltiples puntos. Con IoT de Personal Tech centralizaron la visibilidad de todos sus activos en tiempo real — sin tener que visitar físicamente cada punto. Si lo hicieron ellos, podés hacerlo vos también, con la misma plataforma y el mismo equipo de implementación."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 SERVICIOS PROFESIONALES -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--purple-light)">🧠</div>
+    <div>
+      <div class="vert-title">07 — Servicios profesionales: el cliente no está solo</div>
+      <div class="vert-sub">Consultoría · Migración · DRS · Backup Veeam · FinOps · VDI · Seguridad · Managed Cloud</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">Personal Tech no solo vende infraestructura — acompaña al cliente en todo el ciclo: diseño, migración, operación y optimización. <strong>El cliente que compra cloud de Personal Tech tiene acceso a un equipo de especialistas certificados que conocen la plataforma desde adentro.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sp1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Cloud Backup + DRS</span>
+        <div class="acc-info"><div class="acc-name">Backup con Veeam + DRS en el DC de Personal Tech — continuidad garantizada</div><div class="acc-tag">Para el COO que necesita garantizar que el negocio no para ante ningún incidente</div></div>
+        <span class="acc-chv" id="achv-sp1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sp1">
+        <div class="ab-inner">
+          <p class="block-text">Cloud Backup de Personal Tech usa tecnología Veeam — el estándar de la industria para backup y replicación empresarial. DRS (Disaster Recovery Services) garantiza la recuperación rápida de sistemas ante incidentes con RTO contractual.</p>
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-icon">💾</div>
+              <div class="mc-title">Cloud Backup (Veeam)</div>
+              <div class="mc-text">Copias automatizadas en el DC de Pacheco para equipos on-premise. Cifrado en tránsito y en reposo. Retención configurable. El dato de backup queda en Argentina.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔄</div>
+              <div class="mc-title">DRS — Disaster Recovery</div>
+              <div class="mc-text">Replicación continua hacia el DC. Ante ransomware, incendio o falla, los sistemas levantan en minutos en la infraestructura de Personal Tech con RTO y RPO contractuales.</div>
+            </div>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ Backup y DR con dato en Argentina vs. AWS/Azure</div>
+            <div class="diff-box-text">Hacer backup en AWS o Azure implica que el dato de respaldo viaja al exterior, paga egress fees y está bajo jurisdicción extranjera. <strong>El backup en Personal Tech queda en Argentina, sin egress fees adicionales y bajo las mismas normas de compliance que el dato productivo.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sp2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">VDI + Pack Starter</span>
+        <div class="acc-info"><div class="acc-name">Escritorios Remotos (VDI) + Pack Starter Cloud — los servicios de entrada más rápidos</div><div class="acc-tag">Para empresas que necesitan una solución concreta en días sin un proyecto largo</div></div>
+        <span class="acc-chv" id="achv-sp2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sp2">
+        <div class="ab-inner">
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-icon">🖥</div>
+              <div class="mc-title">VDI — Escritorios Remotos</div>
+              <div class="mc-text">Escritorios Windows o Linux en el cloud de Personal Tech, listos en minutos. Ideal para call centers, empresas con trabajo remoto masivo y usuarios en múltiples ubicaciones. Escalabilidad garantizada — si entran 200 empleados nuevos, se agregan escritorios en horas.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔑</div>
+              <div class="mc-title">Pack Starter Cloud</div>
+              <div class="mc-text">Implementación de IAM (gestión de identidades) + MFA (autenticación multifactor). La primera capa de seguridad para empresas que recién migran a la nube. Entrada rápida con impacto inmediato en postura de seguridad.</div>
+            </div>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">Para una empresa que "no sabe por dónde empezar"</div>
+            <div class="pitch-text">"No hace falta migrar todo de golpe. El Pack Starter te da identidad + MFA en días — ya reducís el riesgo de phishing que es el 80% de los ataques. Y si necesitás escritorios remotos para tu equipo, los tenés listos en minutos con VDI. Dos servicios concretos, dos semanas de implementación, impacto inmediato."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 ECOSISTEMA FREE -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--green-light)">🎁</div>
+    <div>
+      <div class="vert-title">08 — El ecosistema de valor gratuito para clientes</div>
+      <div class="vert-sub">20+ herramientas SaaS gratuitas que ningún hyperscaler ni reseller ofrece</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+    <p class="vert-intro">Personal Tech ofrece más de 20 herramientas SaaS completamente gratuitas para sus clientes — desde ERP y RRHH hasta firma digital, CX, email marketing y automatización. <strong>Este ecosistema es un argumento de retención y diferenciación que ningún hyperscaler puede igualar.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('f1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">El argumento</span>
+        <div class="acc-info"><div class="acc-name">20+ herramientas gratuitas que generan stickiness — el cliente que las usa no se va</div><div class="acc-tag">Un diferenciador de retención que los hyperscalers estructuralmente no pueden tener</div></div>
+        <span class="acc-chv" id="achv-f1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-f1">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">Para cualquier decisor que compara Personal Tech con AWS/Azure</div>
+            <div class="pitch-text">"Con AWS, comprás lo que usás y pagás por cada servicio. Con Personal Tech, además de los servicios cloud que contratás, tenés acceso a un ecosistema de herramientas digitales gratuitas para tu empresa: ERP, RRHH, firma digital, gestión de clientes, email marketing. Todo incluido. Ningún hyperscaler hace eso."</div>
+          </div>
+          <div class="grid3" style="margin-top:12px;">
+            <div class="mini-card">
+              <div class="mc-icon">📊</div>
+              <div class="mc-title">ERP y Gestión</div>
+              <div class="mc-text">Odoo (Quilsoft), Contagram, TheEye Concilia, Braulio® (captura con IA), Codin (licitaciones). ERP completo sin costo adicional.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">👥</div>
+              <div class="mc-title">RRHH y Capital Humano</div>
+              <div class="mc-text">Napsis (nómina, legajos, firma digital), Clock (control de asistencia hasta 10 empleados gratis), WorkON (empleo geolocalizado), Hexis (capacitación corporativa).</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">✍️</div>
+              <div class="mc-title">Legal y Firma Digital</div>
+              <div class="mc-text">VaFirma (firma digital con validez jurídica en toda LATAM), VU Identity Link (verificación de identidad anti-fraude), Planexware (portal de proveedores).</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">💬</div>
+              <div class="mc-title">CX y Marketing</div>
+              <div class="mc-text">Smile CX (NPS, CSAT, text analytics con IA), Bamline (WhatsApp + Instagram + Messenger unificados), ClickExperts/MailtrackPro (email marketing masivo).</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">📍</div>
+              <div class="mc-title">Gestión de Campo</div>
+              <div class="mc-text">Geoposicionamiento Telecom (supervisión de equipos en campo en tiempo real), GEO Lite (presencia web para PyMEs), Full Audits (auditorías y calidad).</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🖥</div>
+              <div class="mc-title">Infraestructura de Entrada</div>
+              <div class="mc-text">VPS Free (1 vCPU, 1GB RAM, 40GB SSD, Ubuntu). El servidor cloud de entrada para empresas que quieren probar sin costo y sin riesgo.</div>
+            </div>
+          </div>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ Por qué esto genera retención real</div>
+            <div class="diff-box-text">Un cliente que usa Napsis para su nómina, VaFirma para sus contratos y Odoo como ERP — todo gratuitamente como parte del bundle de Personal Tech — no va a cambiar de proveedor de cloud fácilmente. <strong>El costo de cambio no es solo migrar las VMs — es dejar de usar 10 herramientas que ya están integradas en su operación diaria.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 FINOPS -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--blue-light)">💹</div>
+    <div>
+      <div class="vert-title">09 — FinOps: el cloud más económico es el que se gestiona bien</div>
+      <div class="vert-sub">Optimización continua del gasto cloud · Rightsizing · Recursos zombies · Reserved Instances</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <p class="vert-intro">FinOps de Personal Tech es gestión financiera especializada para optimizar y controlar costos en entornos cloud. <strong>Es el servicio que convierte al consultor cloud en el interlocutor favorito del CFO.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fo1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">El argumento FinOps</span>
+        <div class="acc-info"><div class="acc-name">Personal Tech no solo vende cloud — optimiza el gasto cloud del cliente</div><div class="acc-tag">El diferenciador que convierte la conversación de costo a valor</div></div>
+        <span class="acc-chv" id="achv-fo1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fo1">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">Para el CFO que pregunta "¿cómo sé que no me van a cobrar de más?"</div>
+            <div class="pitch-text">"Con Personal Tech tenés FinOps como servicio: un equipo dedicado que monitorea tu gasto cloud mes a mes, identifica recursos sobredimensionados, elimina lo que no usás y optimiza los compromisos de consumo para reducir el precio unitario. El ahorro típico en los primeros 3 meses está entre el 20% y el 35% del gasto cloud. Y lo mejor: lo documentamos en un informe mensual que podés llevar al directorio."</div>
+          </div>
+          <div class="block-label">Las 5 palancas de FinOps</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Rightsizing:</strong> identificar VMs sobredimensionadas que pagan por recursos que no usan. Una VM de 32GB que usa 8GB es dinero tirado.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Recursos zombies:</strong> servidores de desarrollo encendidos el fin de semana, snapshots de 18 meses, IPs reservadas sin asignar. En empresas medianas representa el 25-35% del gasto cloud.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Reserved Instances:</strong> comprometer un volumen mínimo de consumo a 1 o 3 años reduce el precio unitario hasta un 72% frente al precio on-demand.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Storage tiering:</strong> datos históricos que no se consultan en storage frío a una fracción del costo del storage estándar.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Dashboard ejecutivo:</strong> informe mensual de costos por proyecto, área o aplicación para el CFO y el CIO.</li>
+          </ul>
+          <div class="diff-box">
+            <div class="diff-box-title">✅ FinOps de Personal Tech vs. hacerlo internamente</div>
+            <div class="diff-box-text">Implementar FinOps internamente requiere herramientas específicas, expertise en optimización cloud y tiempo del equipo IT que generalmente ya está saturado. <strong>Personal Tech lo opera como servicio gestionado — el cliente recibe los ahorros sin tener que construir la capacidad internamente.</strong> El ROI de FinOps suele pagar su propio costo en el primer mes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 POR INDUSTRIA -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--teal-light)">🏭</div>
+    <div>
+      <div class="vert-title">10 — Argumentos por industria vertical</div>
+      <div class="vert-sub">El argumento correcto varía según quién compra — banca, retail, manufactura, agro, gobierno</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ind1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Banca y Finanzas</span>
+        <div class="acc-info"><div class="acc-name">Soberanía obligatoria + BCRA + ExpressRoute + SOC</div><div class="acc-tag">El cliente donde el argumento de Personal Tech es más fuerte</div></div>
+        <span class="acc-chv" id="achv-ind1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ind1">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Dato soberano por regulación:</strong> el BCRA exige que los datos de los clientes bancarios estén en territorio argentino. Con Personal Cloud, esto es de fábrica — no hay configuraciones adicionales.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>ExpressRoute para Office 365:</strong> el banco que usa Microsoft 365 y Azure AD necesita que el tráfico no pase por internet. Personal Tech da ExpressRoute como partner certificado.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>SOC 24/7 con Incident Response &lt;2hs:</strong> el incidente de seguridad en un banco tiene costo regulatorio, reputacional y económico en minutos. La respuesta en menos de 2 horas es no negociable.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>DRS con RTO contractual:</strong> la normativa bancaria exige continuidad operativa demostrable. El DRS de Personal Tech documenta el RTO con SLA.</li>
+          </ul>
+          <div class="pitch"><div class="pitch-label">Frase de apertura para bancos</div><div class="pitch-text">"En banca, la pregunta no es si podés ir al cloud — es cómo podés hacerlo cumpliendo con el BCRA. Personal Tech es la única opción del mercado que resuelve cloud + compliance + soberanía + conectividad privada en un solo contrato local."</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ind2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Retail</span>
+        <div class="acc-info"><div class="acc-name">SD-WAN multi-sucursal + escalado Hot Sale + IA de personalización</div><div class="acc-tag">El cliente donde el argumento de escalado automático es más poderoso</div></div>
+        <span class="acc-chv" id="achv-ind2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ind2">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>SD-WAN para 50-200 sucursales:</strong> un solo panel para toda la red. Failover automático sin intervención manual. El mismo proveedor que da las líneas corporativas da la red WAN.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Escalado automático Hot Sale:</strong> la infraestructura se triplica durante Hot Sale y vuelve al baseline cuando termina. Solo se paga el extra durante el evento.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>WiFi corporativo (caso Café Martínez):</strong> Personal Tech implementó WiFi6-HFC en todas las sucursales de Café Martínez, convirtiéndolas en hubs de coworking. Para cadenas de retail, gastronomía u hospitalidad, esto es replicable.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Facturación en pesos:</strong> en retail, los márgenes son ajustados. La volatilidad cambiaria en los costos de IT es un riesgo operativo real que Personal Cloud elimina.</li>
+          </ul>
+          <div class="pitch"><div class="pitch-label">Frase de apertura para retail</div><div class="pitch-text">"Cada vez que el sistema cae en Hot Sale, perdés ventas y ganás trending topics negativos. Personal Tech te da el cloud que escala automáticamente cuando lo necesitás, la red de sucursales con failover automático y la factura en pesos que no se mueve con el dólar. Todo del mismo proveedor con el que ya cerrás el mes."</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ind3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Manufactura e Industria</span>
+        <div class="acc-info"><div class="acc-name">IoT industrial + 5G + monitoreo predictivo + backbone nacional</div><div class="acc-tag">Industria 4.0 con infraestructura de telecomunicaciones propia</div></div>
+        <span class="acc-chv" id="achv-ind3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ind3">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>IoT industrial con APN privado:</strong> sensores de maquinaria que envían datos por la red privada de Telecom — nunca pasan por internet público.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>5G para fábricas inteligentes:</strong> Personal Tech despliega 5G privado en plantas industriales para conectar robots, AGVs y dispositivos de producción.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Edge computing en ciudades del interior:</strong> si la fábrica está en Córdoba, Tucumán o Mendoza, Personal Tech tiene edificios con backbone en esas ciudades para desplegar infraestructura edge.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Cadena de frío:</strong> sensores de temperatura en vehículos y almacenes con alertas en tiempo real para empresas de alimentos y farmacéuticas.</li>
+          </ul>
+          <div class="pitch"><div class="pitch-label">Frase de apertura para manufactura</div><div class="pitch-text">"Para implementar Industria 4.0 necesitás tres cosas: conectividad en la planta, una plataforma que procese los datos del sensor y un cloud donde analicés y actuás. Personal Tech te da las tres — con APN privado para que los datos de producción nunca salgan a internet, y la plataforma cloud con el dato soberano en Argentina."</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ind4')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Gobierno y Sector Público</span>
+        <div class="acc-info"><div class="acc-name">Cloud soberana + dato en Argentina + sin CLOUD Act + edge en cualquier ciudad</div><div class="acc-tag">El sector donde la soberanía del dato es un requisito legal no negociable</div></div>
+        <span class="acc-chv" id="achv-ind4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ind4">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Dato en Argentina bajo derecho argentino:</strong> los datos del Estado no pueden estar bajo CLOUD Act estadounidense. Personal Cloud es la única opción enterprise que lo garantiza.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Smart Cities:</strong> Personal Tech tiene casos reales de soluciones de ciudades inteligentes. Y tiene la infraestructura de telecomunicaciones en cada ciudad del país para desplegarlo.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Edge en municipios del interior:</strong> un municipio de Chaco o Corrientes que quiere modernizar puede tener un mini-DC en el edificio de Telecom que ya existe en su ciudad. Sin construir infraestructura nueva.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Factura en pesos sin complejidad cambiaria:</strong> para el sector público, comprar servicios en USD es un proceso burocrático complejo. Personal Cloud en pesos simplifica la gestión presupuestaria.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 ARGUMENTOS DE CIERRE -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--gray-light)">🎯</div>
+    <div>
+      <div class="vert-title">11 — Los 7 argumentos de cierre — para llevarlo a cualquier reunión</div>
+      <div class="vert-sub">El resumen ejecutivo que sintetiza todo en 7 frases de impacto</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cl1')">
+        <span class="acc-badge" style="background:var(--gray-light);color:var(--gray-dark);">Los 7 argumentos</span>
+        <div class="acc-info"><div class="acc-name">Por qué Personal Tech y no cualquier otro proveedor cloud</div><div class="acc-tag">Una hoja para llevar a cualquier reunión de cierre</div></div>
+        <span class="acc-chv" id="achv-cl1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cl1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Argumento</th><th>Por qué Personal Tech gana</th><th style="width:130px">Quién lo valora más</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">1</td>
+                <td class="tn">Dato soberano en Argentina</td>
+                <td>El único cloud enterprise con dato en suelo argentino, jurisdicción local, BCRA/CNV nativo. Sin configuraciones adicionales.</td>
+                <td>CISO · Legal · CFO en sectores regulados</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">2</td>
+                <td class="tn">Telco + Cloud en un contrato</td>
+                <td>El único proveedor que puede dar la red Y el cloud Y el soporte en un solo SLA. AWS y Azure estructuralmente no pueden.</td>
+                <td>COO · CIO · CFO</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">3</td>
+                <td class="tn">AWS Advanced + Azure ExpressRoute Partner</td>
+                <td>Si el cliente necesita AWS o Azure, Personal Tech puede darlo con acceso privado certificado desde Argentina — sin renunciar a los hyperscalers.</td>
+                <td>CIO · CTO</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">4</td>
+                <td class="tn">Latencia 5–10 ms + facturación en ARS</td>
+                <td>Para ERP, VDI y sistemas transaccionales, 5–10 ms vs. 30–50 ms de São Paulo es diferencia perceptible. Y sin riesgo cambiario.</td>
+                <td>CIO · CFO</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">5</td>
+                <td class="tn">SOC 24/7 + Incident Response &lt;2hs local</td>
+                <td>Equipo de ciberseguridad en Argentina que responde en horas, no en tickets internacionales. Integrado con red y cloud del mismo proveedor.</td>
+                <td>CISO · COO</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">6</td>
+                <td class="tn">IoT end-to-end: sensor + red + cloud</td>
+                <td>El único que provee la SIM del sensor, la red 4G/satelital y la plataforma cloud de analytics en un solo contrato. AWS/Azure no tienen red propia.</td>
+                <td>COO · CTO en agro, manufactura, logística</td>
+              </tr>
+              <tr>
+                <td style="font-size:16px;font-weight:700;">7</td>
+                <td class="tn">20+ herramientas gratuitas incluidas</td>
+                <td>ERP, RRHH, firma digital, CX, email marketing — sin costo adicional. Ningún hyperscaler ni reseller incluye esto. Genera retención y valor percibido.</td>
+                <td>CEO · CMO · RRHH</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="pitch" style="margin-top:14px;">
+            <div class="pitch-label">El cierre definitivo — para cualquier reunión C-Level</div>
+            <div class="pitch-text">"Hay muchas empresas que pueden venderle AWS o Azure. Pero Personal Tech es la única que puede combinar cloud soberano en Argentina, conectividad privada a los hyperscalers, IoT desde el sensor hasta el dashboard, ciberseguridad con SOC local, y todo en pesos con soporte en castellano. Eso no es un producto — es una propuesta de valor que ningún competidor puede replicar en Argentina."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Argumentario comercial interno — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Multi-Cloud Strategy</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud incluir en:</strong> Soluciones con soberanía de datos, regiones Latam, presupuesto optimizado (~20% menos compute).</p>
+</div>
+
+</body>
+</html>

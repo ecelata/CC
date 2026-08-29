@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT y Telemetría — Guía Técnica Completa | Personal Tech</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --red-light:#FFE8E8;--red-mid:#D63030;--red-dark:#7A0000;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --iot-orange:#FF6B2B;--iot-orange-l:#FFF0EA;--iot-orange-d:#8B2800;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1020px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:27px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* HERO STRIP */
+.hero-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:32px;}
+.hs{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.hs-icon{font-size:20px;margin-bottom:5px;}
+.hs-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.hs-sub{font-size:11px;color:var(--text-sec);margin-top:3px;line-height:1.4;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-sub{font-size:12px;color:var(--text-ter);font-style:italic;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+.ab-inner{padding:16px 18px 18px;}
+
+/* CONTENT */
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+.mini-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:.5px solid var(--border);}
+.mc-icon{font-size:17px;margin-bottom:4px;}
+.mc-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.mc-text{font-size:12px;color:var(--text-sec);line-height:1.55;}
+.mc-text strong{color:var(--text);}
+
+/* TECH CARDS — protocol cards */
+.proto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:12px 0;}
+.proto-card{border-radius:var(--radius-sm);border:.5px solid var(--border);overflow:hidden;}
+.proto-head{padding:12px 15px;display:flex;align-items:center;gap:10px;}
+.proto-badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;flex-shrink:0;}
+.proto-name{font-size:14px;font-weight:700;flex:1;}
+.proto-body{padding:10px 15px 14px;border-top:.5px solid var(--border);}
+.proto-desc{font-size:12px;color:var(--text-sec);line-height:1.6;margin-bottom:8px;}
+.proto-stats{display:flex;flex-wrap:wrap;gap:6px;}
+.proto-stat{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;border:.5px solid var(--border);background:var(--bg2);color:var(--text-sec);}
+
+/* PIPELINE DIAGRAM */
+.pipeline{display:flex;align-items:center;gap:0;margin:14px 0;flex-wrap:nowrap;overflow-x:auto;padding:12px 0;}
+.pipe-box{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;text-align:center;flex-shrink:0;min-width:100px;}
+.pipe-box-icon{font-size:20px;margin-bottom:4px;}
+.pipe-box-label{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;}
+.pipe-box-sub{font-size:10px;color:var(--text-ter);margin-top:2px;}
+.pipe-arrow{font-size:18px;color:var(--text-ter);padding:0 8px;flex-shrink:0;}
+
+/* DATA TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.check{color:var(--green-dark);font-weight:700;}
+.cross{color:var(--red-dark);font-weight:700;}
+.partial{color:var(--amber-dark);font-weight:700;}
+
+/* PITCH / NOTES */
+.pitch{background:var(--text);border-radius:var(--radius-sm);padding:13px 16px;margin:12px 0;}
+.pitch-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.35);margin-bottom:5px;}
+.pitch-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65;font-style:italic;}
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+.tip-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--blue-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--blue-mid);line-height:1.6;}
+.tip-note strong{color:var(--blue-dark);}
+.warn-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--amber-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--amber-mid);line-height:1.6;}
+.warn-note strong{color:var(--amber-dark);}
+
+/* ANALOGY BOX */
+.analogy{background:var(--iot-orange-l);border-left:3px solid var(--iot-orange);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin:10px 0;font-size:13px;color:var(--text-sec);line-height:1.65;}
+.analogy strong{color:var(--iot-orange-d);}
+
+/* SEP / DIVIDER */
+.section-divider{height:2px;background:linear-gradient(90deg,var(--text),transparent);margin:48px 0 36px;border-radius:1px;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .grid2,.grid3{grid-template-columns:1fr;}
+  .proto-grid{grid-template-columns:1fr;}
+  .pipeline{flex-wrap:wrap;gap:8px;}
+  .pipe-arrow{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">📡 IoT & Telemetría</div>
+  <a class="tnav" href="#v1">01 Qué es IoT</a>
+  <a class="tnav" href="#v2">02 Arquitectura IoT</a>
+  <a class="tnav" href="#v3">03 Telemetría</a>
+  <a class="tnav" href="#v4">04 Tipos de datos MELT</a>
+  <a class="tnav" href="#v5">05 Red vs. Negocio</a>
+  <a class="tnav" href="#v6">06 Protocolos IoT</a>
+  <a class="tnav" href="#v7">07 4G / 5G</a>
+  <a class="tnav" href="#v8">08 Satelital</a>
+  <a class="tnav" href="#v9">09 WiFi y corto alcance</a>
+  <a class="tnav" href="#v10">10 LPWAN</a>
+  <a class="tnav" href="#v11">11 Edge Computing</a>
+  <a class="tnav" href="#v12">12 Personal Tech IoT</a>
+  <a class="tnav" href="#v13">13 Por industria</a>
+</nav>
+
+<div class="page">
+
+<div class="doc-header">
+  <div>
+    <div class="doc-title">IoT y Telemetría — Guía Técnica Completa</div>
+    <div class="doc-sub">Qué son · Cómo funcionan · Protocolos · 4G · 5G · Satelital · LPWAN · Aplicación en Personal Tech</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+</div>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <div class="hs" style="background:var(--iot-orange-l);border-color:var(--iot-orange);">
+    <div class="hs-icon">📡</div>
+    <div class="hs-val">50B dispositivos IoT en 2030</div>
+    <div class="hs-sub">+190 millones de nuevos dispositivos conectados cada mes. El mercado más grande de la próxima década.</div>
+  </div>
+  <div class="hs" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="hs-icon">🌐</div>
+    <div class="hs-val">Red + Dato + Plataforma</div>
+    <div class="hs-sub">IoT son tres capas. La red mueve el dato. La plataforma lo procesa. Personal Tech puede dar las tres.</div>
+  </div>
+  <div class="hs" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="hs-icon">📊</div>
+    <div class="hs-val">Telemetría = decisiones en tiempo real</div>
+    <div class="hs-sub">De la temperatura de un motor a la ruta de un camión: el dato llega, se procesa y se actúa.</div>
+  </div>
+  <div class="hs" style="background:var(--amber-light);border-color:var(--amber-mid);">
+    <div class="hs-icon">📶</div>
+    <div class="hs-val">5G + Satelital + LoRa</div>
+    <div class="hs-sub">Cada caso de uso tiene el protocolo de conectividad correcto. No todo es WiFi ni 4G.</div>
+  </div>
+  <div class="hs" style="background:var(--purple-light);border-color:var(--purple-mid);">
+    <div class="hs-icon">🔌</div>
+    <div class="hs-val">APN privado</div>
+    <div class="hs-sub">Personal Tech da el sensor, la SIM con APN privado y la plataforma. Un solo proveedor, un solo contrato.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 QUÉ ES IoT -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--iot-orange-l)">📡</div>
+    <div>
+      <div class="vert-title">01 — ¿Qué es IoT? (Internet de las Cosas)</div>
+      <div class="vert-sub">La definición, la escala y por qué importa para cualquier empresa</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro"><strong>IoT (Internet of Things)</strong> es la conexión de millones de dispositivos inteligentes y sensores a internet. Estos dispositivos recopilan y comparten datos para que empresas, ciudades, gobiernos, hospitales y personas los usen y evalúen. Lo que era inanimado — una puerta, una lámpara, una válvula industrial — ahora puede tener un sensor inteligente que captura y transmite datos continuamente.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot1')">
+        <span class="acc-badge" style="background:var(--iot-orange-l);color:var(--iot-orange-d);">Definición</span>
+        <div class="acc-info"><div class="acc-name">IoT en términos simples — la analogía que todo cliente entiende</div><div class="acc-tag">Cómo explicarlo sin jerga técnica</div></div>
+        <span class="acc-chv" id="achv-iot1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot1">
+        <div class="ab-inner">
+          <div class="analogy"><strong>La analogía del termómetro:</strong> Un termómetro común te dice la temperatura cuando lo mirás. Un sensor IoT te dice la temperatura de forma continua, la envía a tu teléfono, la compara con la semana pasada, te avisa cuando supera un umbral y activa automáticamente el aire acondicionado. La diferencia no es la medición — es la conectividad y la inteligencia que la rodea.</div>
+          <div class="block-label">Los tres componentes clave de cualquier solución IoT</div>
+          <div class="grid3">
+            <div class="mini-card" style="background:var(--iot-orange-l);">
+              <div class="mc-icon">🔌</div>
+              <div class="mc-title">1. El Sensor / Actuador</div>
+              <div class="mc-text">El dispositivo físico que captura datos del mundo real (temperatura, presión, posición, humedad) o que ejecuta acciones (abrir una válvula, encender una luz). <strong>Es el punto de origen del dato.</strong></div>
+            </div>
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">📶</div>
+              <div class="mc-title">2. La Red / Conectividad</div>
+              <div class="mc-text">El medio por el cual el dato viaja desde el sensor hasta la plataforma: 4G, 5G, WiFi, LoRa, Bluetooth, satelital. <strong>Es el "tubo" que transporta el dato.</strong></div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">☁️</div>
+              <div class="mc-title">3. La Plataforma / Cloud</div>
+              <div class="mc-text">Donde el dato llega, se procesa, se almacena y se analiza. Genera alertas, dashboards y decisiones automatizadas. <strong>Es el cerebro que le da sentido al dato.</strong></div>
+            </div>
+          </div>
+          <div class="block-label">La escala real del mercado</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--iot-orange)"></span><strong>38.6 billones de dispositivos conectados en 2025</strong> — y 50 billones para 2030.</li>
+            <li><span class="fdot" style="background:var(--iot-orange)"></span><strong>190 millones de nuevos dispositivos conectados cada mes</strong> en el mundo.</li>
+            <li><span class="fdot" style="background:var(--iot-orange)"></span>Solo 1 de cada 3 dispositivos conectados son computadoras, teléfonos o tablets. Los otros 2 son sensores, actuadores y dispositivos inteligentes "nuevos".</li>
+            <li><span class="fdot" style="background:var(--iot-orange)"></span>Ejemplos ya existentes: termostatos inteligentes, medidores de agua en campo agrícola, medidores de aire en minas, marcapasos implantados, semáforos inteligentes, cargadores de autos eléctricos.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('iot2')">
+        <span class="acc-badge" style="background:var(--iot-orange-l);color:var(--iot-orange-d);">Beneficios por sector</span>
+        <div class="acc-info"><div class="acc-name">Cómo IoT impacta a cada tipo de organización — argumentos por vertical</div><div class="acc-tag">Para usar en la reunión de discovery por industria</div></div>
+        <span class="acc-chv" id="achv-iot2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-iot2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Sector</th><th>Lo que IoT resuelve</th><th>Ejemplo concreto</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">🏭 Manufactura</td><td>Predice fallas antes de que ocurran (mantenimiento predictivo). Mejora la programación del personal de servicio. Reduce tiempo de inactividad.</td><td>Sensores de vibración en una línea de producción avisan 48hs antes de que falle un rodamiento.</td></tr>
+              <tr><td class="tn">🏙 Ciudades / Gobierno</td><td>Controla patrones de tráfico, gestiona residuos, monitorea calidad del aire y agua. Optimiza el alumbrado público.</td><td>Contenedores de basura con sensor de nivel que optimizan la ruta del camión según llenado real.</td></tr>
+              <tr><td class="tn">🌾 Agro</td><td>Monitorea humedad del suelo, temperatura, niveles de fertilizante. Activa el riego automáticamente. Reduce el consumo de agua.</td><td>Sensor de humedad en campo que activa el riego solo cuando es necesario, reduciendo consumo de agua en 40%.</td></tr>
+              <tr><td class="tn">🏥 Salud</td><td>Monitorea signos vitales de pacientes a distancia. Controla temperatura de cadena de frío de medicamentos.</td><td>Marcapasos que envía datos cardíacos al médico en tiempo real sin que el paciente se mueva del hogar.</td></tr>
+              <tr><td class="tn">🚚 Logística</td><td>Rastreo de flota en tiempo real. Control de temperatura en refrigerados. Optimización de rutas.</td><td>Camión refrigerado que alerta al centro de control si la temperatura sube de 4°C durante el transporte.</td></tr>
+              <tr><td class="tn">🏘 Hogares y personas</td><td>Seguridad, eficiencia energética, salud familiar.</td><td>Sistema que limita la velocidad máxima del auto familiar cuando lo maneja un adolescente.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 ARQUITECTURA IoT -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--blue-light)">🏗</div>
+    <div>
+      <div class="vert-title">02 — Arquitectura de una solución IoT completa</div>
+      <div class="vert-sub">Del sensor físico al dashboard ejecutivo — el pipeline completo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">Una solución IoT es siempre un pipeline: el dato nace en el sensor, viaja por la red, llega a un controlador o gateway, sube a la nube para procesarse y finalmente se convierte en una decisión o alerta. <strong>Cada eslabón del pipeline puede ser un punto de falla o de diferenciación.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arch1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">El pipeline completo</span>
+        <div class="acc-info"><div class="acc-name">De sensor a decisión — las 6 capas de cualquier arquitectura IoT</div><div class="acc-tag">El framework de referencia para diseñar y evaluar cualquier solución IoT</div></div>
+        <span class="acc-chv" id="achv-arch1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arch1">
+        <div class="ab-inner">
+          <div class="pipeline">
+            <div class="pipe-box" style="border-color:var(--iot-orange);background:var(--iot-orange-l);">
+              <div class="pipe-box-icon">🌡</div>
+              <div class="pipe-box-label">Sensor / Actuador</div>
+              <div class="pipe-box-sub">Captura el dato físico</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--blue-mid);background:var(--blue-light);">
+              <div class="pipe-box-icon">📶</div>
+              <div class="pipe-box-label">Conectividad</div>
+              <div class="pipe-box-sub">4G · 5G · LoRa · Satelital</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--amber-mid);background:var(--amber-light);">
+              <div class="pipe-box-icon">🔀</div>
+              <div class="pipe-box-label">Gateway / Controller</div>
+              <div class="pipe-box-sub">Agrega y pre-procesa</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--teal-mid);background:var(--teal-light);">
+              <div class="pipe-box-icon">☁️</div>
+              <div class="pipe-box-label">Plataforma IoT</div>
+              <div class="pipe-box-sub">IoT Core · MQTT broker</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--purple-mid);background:var(--purple-light);">
+              <div class="pipe-box-icon">🧠</div>
+              <div class="pipe-box-label">Analytics / IA</div>
+              <div class="pipe-box-sub">Procesa · Predice · Alerta</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--green-mid);background:var(--green-light);">
+              <div class="pipe-box-icon">📊</div>
+              <div class="pipe-box-label">Dashboard / Acción</div>
+              <div class="pipe-box-sub">Decisión humana o automática</div>
+            </div>
+          </div>
+          <div class="block-label">Las 6 capas en detalle</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Capa</th><th>Qué hace</th><th>Tecnologías típicas</th><th>Personal Tech aquí</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="tn">Sensor / Actuador</td><td>Mide temperatura, presión, posición, humedad, movimiento. El actuador ejecuta la acción (abre válvula, enciende motor).</td><td>Sensores MEMS, GPS, RFID, PLCs, cámaras</td><td>Dispositivos IoT y sensores certificados disponibles en el portfolio</td></tr>
+              <tr><td>2</td><td class="tn">Conectividad / Red</td><td>Transporta el dato desde el sensor hasta el gateway o la nube. Es el eslabón más crítico en entornos remotos.</td><td>4G LTE, 5G, LoRa, NB-IoT, WiFi, Bluetooth LE, Satelital</td><td><strong>APN privado, 4G, 5G, Satelital — todo de Telecom/Personal</strong></td></tr>
+              <tr><td>3</td><td class="tn">Gateway / Controlador</td><td>Agrega datos de múltiples sensores, hace pre-procesamiento local (filtrado, compresión) y los envía a la nube.</td><td>Raspberry Pi, industrial gateways, Cisco IoT, AWS Greengrass edge</td><td>Compatible con cualquier gateway estándar</td></tr>
+              <tr><td>4</td><td class="tn">Plataforma IoT (Cloud)</td><td>Recibe, autentica y gestiona millones de mensajes de dispositivos. Almacena el dato y dispara reglas.</td><td>AWS IoT Core, Azure IoT Hub, GCP IoT, Personal Tech IoT Platform</td><td><strong>Plataforma IoT propia + alianzas con AWS y Azure</strong></td></tr>
+              <tr><td>5</td><td class="tn">Analytics / IA</td><td>Procesa el dato para generar insights: dashboards, alertas, predicciones, modelos de ML.</td><td>AWS Analytics, Azure Stream Analytics, Power BI, Grafana, Databricks</td><td>Compatible. FinOps + analytics como servicio gestionado</td></tr>
+              <tr><td>6</td><td class="tn">Aplicación / Acción</td><td>La decisión: una alerta al operador, una acción automática (actuar el actuador), un reporte al gerente.</td><td>Apps móviles, dashboards web, sistemas ERP/SCADA, correo electrónico</td><td>Integración con sistemas existentes del cliente</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('arch2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Sensor vs. Actuador</span>
+        <div class="acc-info"><div class="acc-name">La diferencia entre capturar y ejecutar — y por qué ambos son necesarios</div><div class="acc-tag">El par fundamental de todo sistema IoT</div></div>
+        <span class="acc-chv" id="achv-arch2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-arch2">
+        <div class="ab-inner">
+          <div class="analogy"><strong>Analogía perfecta:</strong> Un sensor de temperatura es el termómetro. Un actuador es el sistema de aire acondicionado que se enciende cuando el termómetro marca demasiado calor. Uno mide — el otro actúa. Un sistema IoT completo necesita los dos.</div>
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">🌡</div>
+              <div class="mc-title">Sensor — captura el dato</div>
+              <div class="mc-text">Lee el mundo físico y lo convierte en dato digital. Tipos: temperatura, presión, humedad, posición GPS, velocidad, nivel de líquido, vibración, CO2, luz, movimiento, corriente eléctrica.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">⚙️</div>
+              <div class="mc-title">Actuador — ejecuta la acción</div>
+              <div class="mc-text">Recibe la señal digital y la convierte en acción física. Tipos: electroválvulas, motores, relés, sistemas de refrigeración, cerraduras electrónicas, alarmas, luces.</div>
+            </div>
+          </div>
+          <p class="block-text" style="margin-top:10px;"><strong>Ejemplo de ciclo completo:</strong> Sensor detecta calor excesivo en una sala → dato sube por 4G al IoT Core → regla dispara → actuador enciende el aire acondicionado → confirmación de acción vuelve al dashboard → operador lo ve en tiempo real.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 TELEMETRÍA -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--teal-light)">📊</div>
+    <div>
+      <div class="vert-title">03 — Telemetría: el sistema nervioso del IoT</div>
+      <div class="vert-sub">Recopilación y transmisión automatizada de datos desde fuentes remotas hacia un sistema central</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro"><strong>La telemetría</strong> es la recopilación y transmisión automatizadas de datos y mediciones desde fuentes distribuidas o remotas a un sistema central para el monitoreo, el análisis y la optimización de recursos. Si IoT es el ecosistema de dispositivos conectados, la telemetría es el proceso continuo por el cual esos dispositivos reportan su estado al mundo.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tel1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Definición</span>
+        <div class="acc-info"><div class="acc-name">Cómo funciona el sistema de telemetría — desde el sensor físico hasta el análisis</div><div class="acc-tag">Basado en IBM Think · Octubre 2025</div></div>
+        <span class="acc-chv" id="achv-tel1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tel1">
+        <div class="ab-inner">
+          <div class="analogy"><strong>La analogía de la Fórmula 1:</strong> Un auto de F1 tiene más de 300 sensores que envían datos en tiempo real (temperatura de frenos, presión de neumáticos, posición del acelerador) al pit lane. El equipo los analiza en tiempo real y toma decisiones de estrategia. Eso es telemetría — la diferencia es que hoy cualquier empresa puede hacer lo mismo con sus activos.</div>
+          <div class="block-label">Los 5 pasos clave de la telemetría de IT (según IBM)</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Paso</th><th>Qué ocurre</th><th>Tecnologías</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="tn">Recopilar</td><td>Sensores físicos o agentes de software capturan métricas, eventos, logs y rastreos de fuentes remotas y distribuidas.</td><td>Sensores MEMS, agentes de software, SDKs, APIs personalizadas</td></tr>
+              <tr><td>2</td><td class="tn">Transmitir</td><td>Los datos viajan al sistema central vía WiFi, satélite, radio, 4G/5G u otro medio. Un multiplexor combina múltiples flujos en una señal eficiente.</td><td>MQTT, HTTP, gRPC, LoRa, NB-IoT, 5G</td></tr>
+              <tr><td>3</td><td class="tn">Procesar y organizar</td><td>El pipeline filtra ruido, agrega metadatos (geolocalización, entorno), enmascara datos sensibles. Los datos se estandarizan en JSON u OTLP.</td><td>AWS Kinesis, Azure Event Hubs, Apache Kafka, OpenTelemetry</td></tr>
+              <tr><td>4</td><td class="tn">Almacenar</td><td>Bases de datos de series temporales o data lakes mantienen el histórico para análisis futuros.</td><td>InfluxDB, TimescaleDB, AWS S3, Azure Data Lake</td></tr>
+              <tr><td>5</td><td class="tn">Analizar y visualizar</td><td>Plataformas de observabilidad generan dashboards, alertas y recomendaciones. Con IA: predicciones y acciones automáticas.</td><td>Grafana, Power BI, AWS QuickSight, Azure Monitor</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>Telemetría + IA = mantenimiento predictivo:</strong> Cuando la telemetría se combina con IA, no solo se sabe qué pasó (descriptivo) sino qué va a pasar (predictivo). "La vibración de este motor aumentó 15% en 3 semanas — probabilidad de falla en los próximos 10 días: 85%." Eso es el valor real de una plataforma de telemetría madura.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tel2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Sectores de uso</span>
+        <div class="acc-info"><div class="acc-name">Dónde se aplica la telemetría hoy — casos reales por industria</div><div class="acc-tag">Sanitario · Aeroespacial · Automotriz · Manufactura · TI</div></div>
+        <span class="acc-chv" id="achv-tel2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tel2">
+        <div class="ab-inner">
+          <div class="grid3">
+            <div class="mini-card">
+              <div class="mc-icon">🏥</div>
+              <div class="mc-title">Salud</div>
+              <div class="mc-text">Frecuencia cardíaca, presión arterial y niveles de oxígeno transmitidos en tiempo real desde el paciente al médico. Monitoreo remoto de crónicos sin hospitalización.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">✈️</div>
+              <div class="mc-title">Aeroespacial</div>
+              <div class="mc-text">Miles de sensores en un avión envían datos de motor, estructura y sistemas de vuelo en tiempo real al centro de control en tierra.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🚗</div>
+              <div class="mc-title">Automotriz</div>
+              <div class="mc-text">Telemetría de F1, pero también en vehículos comerciales: consumo, posición, temperatura de motor, comportamiento del conductor.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🌾</div>
+              <div class="mc-title">Agro e industria</div>
+              <div class="mc-text">Temperatura, presión del aire, movimiento, luz y nivel de agua en campo. Condiciones ambientales y estado de maquinaria en tiempo real.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🏭</div>
+              <div class="mc-title">Manufactura</div>
+              <div class="mc-text">Consumo de energía por máquina, control de calidad en línea, temperatura de hornos, vibración de motores. Mantenimiento predictivo y optimización de producción.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">💻</div>
+              <div class="mc-title">TI / Cloud</div>
+              <div class="mc-text">Métricas de infraestructura: uso de CPU, memoria, latencia, tasas de error. La telemetría de TI es la base de la observabilidad full-stack.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 TIPOS DE DATOS MELT -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--purple-light)">🔬</div>
+    <div>
+      <div class="vert-title">04 — Los tipos de datos de telemetría: MELT</div>
+      <div class="vert-sub">Métricas · Eventos · Logs · Trazas — los cuatro tipos que componen cualquier sistema de observabilidad</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">En IT, los tipos de telemetría más comunes son <strong>Métricas, Eventos, Logs y Trazas (MELT)</strong>. Cada uno captura una dimensión diferente del comportamiento del sistema. Las plataformas de observabilidad los combinan para dar una imagen completa.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('melt1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">MELT detallado</span>
+        <div class="acc-info"><div class="acc-name">Qué es cada tipo de dato, ejemplos concretos y para qué sirve</div><div class="acc-tag">La base de cualquier plataforma de observabilidad e IoT</div></div>
+        <span class="acc-chv" id="achv-melt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-melt1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Tipo</th><th>Qué es</th><th>Ejemplos</th><th>Para qué sirve</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--blue-dark);">M — Métricas</td>
+                <td>Medidas numéricas que indican el estado o rendimiento en un punto en el tiempo. Son cuantitativas y comparables.</td>
+                <td>Temperatura del motor: 78°C. Uso de CPU: 45%. Latencia de red: 12ms. Nivel de combustible: 60%. Presión de neumático: 2.3 bar.</td>
+                <td>Monitoreo continuo, alertas por umbral ("avisar si la temperatura supera 85°C"), dashboards de KPIs operativos.</td>
+              </tr>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--amber-dark);">E — Eventos</td>
+                <td>Sucesos discretos con marca de tiempo de inicio y fin. No continuos — ocurren en un momento específico.</td>
+                <td>Apertura de puerta a las 03:47hs. Falla de pago en checkout. Corte de suministro eléctrico. Actualización de firmware completada. Detección de intrusión.</td>
+                <td>Auditorías, alertas de seguridad, análisis de incidentes, correlación de eventos en el tiempo para detectar patrones.</td>
+              </tr>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--green-dark);">L — Logs (Registros)</td>
+                <td>Registro cronológico y continuo del comportamiento del sistema. A diferencia de los eventos, son un flujo continuo.</td>
+                <td>"2025-05-10 14:23:01 ERROR: Timeout en conexión DB". Historial de acceso a archivos. Pasos de ejecución de código. Reinicios del sistema.</td>
+                <td>Debugging y troubleshooting. Identificar el momento exacto en que ocurrió un error y el contexto que lo rodea.</td>
+              </tr>
+              <tr>
+                <td style="font-size:17px;font-weight:700;color:var(--purple-dark);">T — Trazas (Traces)</td>
+                <td>Flujo de extremo a extremo de una solicitud o transacción a través de un sistema distribuido, con timestamps en cada paso.</td>
+                <td>Una orden de compra que pasa por: frontend → API gateway → servicio de inventario → servicio de pagos → base de datos → confirmación.</td>
+                <td>Identificar cuellos de botella en sistemas distribuidos. Entender dónde se pierde tiempo en una transacción. Optimizar la experiencia de usuario.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="block-label">Tipos adicionales relevantes para IoT</div>
+          <div class="grid3">
+            <div class="mini-card">
+              <div class="mc-icon">📍</div>
+              <div class="mc-title">Telemetría de ubicación</div>
+              <div class="mc-text">GPS + sensores de posición. Rastreo de flotas, emergencias, vida silvestre, trabajadores en campo. Datos geoespaciales en tiempo real.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🌐</div>
+              <div class="mc-title">Telemetría de red</div>
+              <div class="mc-text">Uso de ancho de banda, pérdida de paquetes, rendimiento de APIs, datos SNMP de routers y switches. Para saber si el "tubo" está sano.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔐</div>
+              <div class="mc-title">Telemetría de seguridad</div>
+              <div class="mc-text">Logs de autenticación, registros de firewall, alertas IDS/IPS, datos EDR. Para detectar comportamiento sospechoso antes de que sea un incidente.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 RED vs NEGOCIO -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--amber-light)">🔀</div>
+    <div>
+      <div class="vert-title">05 — Telemetría de red vs. Telemetría de negocio</div>
+      <div class="vert-sub">La distinción clave entre Juniper/Cisco (el tubo) y AWS/Azure (el agua que fluye dentro)</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">Esta es una de las confusiones más frecuentes en clientes que ven soluciones IoT: ¿qué hace la red y qué hace la plataforma cloud? <strong>La red gestiona el "tubo" — la plataforma gestiona el "agua".</strong> Ambas son necesarias y no se sustituyen entre sí.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('rn1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">La distinción fundamental</span>
+        <div class="acc-info"><div class="acc-name">Juniper/Cisco vs. AWS/Azure — qué hace cada capa y por qué son complementarias</div><div class="acc-tag">El argumento que aclara la arquitectura para cualquier CTO o arquitecto</div></div>
+        <span class="acc-chv" id="achv-rn1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-rn1">
+        <div class="ab-inner">
+          <div class="analogy"><strong>La analogía del servicio postal:</strong> Juniper/Cisco son las rutas y camiones postales — garantizan que el paquete llegue de A a B. AWS/Azure son la empresa de logística que decide qué está en el paquete, lo cataloga, lo almacena y lo distribuye. Podés tener el mejor camión del mundo, pero si nadie gestiona el contenido del paquete, el servicio no sirve.</div>
+          <div class="dtable-wrap" style="margin-top:12px;">
+          <table class="dtable">
+            <thead><tr><th>Característica</th><th>Juniper / Cisco (Red)</th><th>AWS / Azure / GCP (Plataforma)</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">El foco es...</td><td>El hardware y su conexión. Que el paquete llegue.</td><td>El dato y su procesamiento. Qué hacer con lo que llegó.</td></tr>
+              <tr><td class="tn">Telemetría de...</td><td><strong>Salud técnica:</strong> señal WiFi (RSSI), latencia (ping), temperatura del router, errores de puerto, quién está conectado.</td><td><strong>Propósito / Negocio:</strong> temperatura de la sala, nivel de combustible, coordenadas GPS, vibración del motor.</td></tr>
+              <tr><td class="tn">Pregunta que responde</td><td>"¿Está el sensor en línea? ¿Llegó el dato a internet?"</td><td>"¿Qué valor reportó el sensor? ¿Qué debería hacer la aplicación con ese valor?"</td></tr>
+              <tr><td class="tn">Si falla...</td><td>El dispositivo queda <strong>desconectado</strong>. Nadie recibe nada.</td><td>El dispositivo está conectado, pero <strong>nadie recibe el dato útil</strong>.</td></tr>
+              <tr><td class="tn">Capas OSI</td><td>Capas bajas: red y transporte (L1–L4)</td><td>Capas altas: aplicación y datos (L5–L7)</td></tr>
+              <tr><td class="tn">¿Se puede reemplazar?</td><td>No. Sin red, el dato no llega a la nube. La nube no reemplaza al router.</td><td>No. Sin plataforma, el dato llega pero nadie lo procesa. La red no procesa datos.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>Por qué Personal Tech tiene ventaja aquí:</strong> La mayoría de los proveedores de IoT son solo plataforma (AWS IoT Core, Azure IoT Hub) o solo red (Cisco, Juniper). <strong>Personal Tech es el único proveedor en Argentina que puede dar la conectividad (APN privado, 4G, 5G, satelital) Y la plataforma IoT Y el cloud de procesamiento en un solo contrato.</strong> El cliente no tiene que coordinar dos proveedores cuando algo falla.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('rn2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Edge Computing</span>
+        <div class="acc-info"><div class="acc-name">Cuando la nube "baja" al dispositivo — procesamiento local antes de subir a la nube</div><div class="acc-tag">Azure IoT Edge · AWS Greengrass · Arquitecturas híbridas</div></div>
+        <span class="acc-chv" id="achv-rn2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-rn2">
+        <div class="ab-inner">
+          <p class="block-text">El <strong>Edge Computing</strong> es cuando la inteligencia de la plataforma cloud "baja" al gateway o al propio dispositivo para procesar datos localmente, antes de enviarlos a la nube. Esto reduce la latencia, el ancho de banda necesario y permite operar sin conexión continua.</p>
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">🟠</div>
+              <div class="mc-title">AWS Greengrass</div>
+              <div class="mc-text">Extiende Lambda al edge. El gateway puede ejecutar código AWS localmente aunque no tenga internet. Cuando reconecta, sincroniza los datos acumulados con AWS IoT Core.</div>
+            </div>
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">🔵</div>
+              <div class="mc-title">Azure IoT Edge</div>
+              <div class="mc-text">Despliega módulos Docker en el gateway. Corre modelos ML en el dispositivo. Ideal para plantas industriales con conectividad intermitente o donde la latencia de envío a la nube es crítica.</div>
+            </div>
+          </div>
+          <div class="analogy"><strong>Cuándo usar Edge:</strong> Si un sensor de maquinaria industrial necesita reaccionar en milisegundos ante una anomalía, no puede esperar el round-trip a la nube (que puede ser 50-200ms). El Edge procesa localmente y actúa de inmediato. La nube recibe el resumen después.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 PROTOCOLOS IoT -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--teal-light)">🔌</div>
+    <div>
+      <div class="vert-title">06 — Protocolos de comunicación IoT</div>
+      <div class="vert-sub">MQTT · MODBUS · OPC-UA · AMQP · CoAP · HTTP/REST — el lenguaje que hablan los dispositivos</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro">Los protocolos IoT son los lenguajes que usan los dispositivos para comunicarse entre sí y con la plataforma cloud. Elegir el protocolo correcto determina el consumo de energía, la latencia, la confiabilidad y el costo de la solución. <strong>No hay un protocolo universal — cada caso de uso tiene el protocolo correcto.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('prot1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Protocolos de mensajería</span>
+        <div class="acc-info"><div class="acc-name">MQTT · AMQP · CoAP · HTTP — cómo viajan los mensajes del sensor a la nube</div><div class="acc-tag">Los más usados en plataformas IoT cloud (AWS, Azure, GCP)</div></div>
+        <span class="acc-chv" id="achv-prot1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-prot1">
+        <div class="ab-inner">
+          <div class="proto-grid">
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--iot-orange-l);">
+                <div class="proto-badge" style="background:var(--iot-orange);color:#fff;">Más popular</div>
+                <div class="proto-name">MQTT</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>Message Queuing Telemetry Transport.</strong> Protocolo ligero de publicación/suscripción diseñado específicamente para IoT. Usa muy poco ancho de banda y batería. El estándar de facto en IoT sobre TCP/IP.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Overhead mínimo</span>
+                  <span class="proto-stat">TCP/IP</span>
+                  <span class="proto-stat">Pub/Sub</span>
+                  <span class="proto-stat">QoS 0, 1, 2</span>
+                  <span class="proto-stat">AWS IoT · Azure IoT · GCP</span>
+                </div>
+              </div>
+            </div>
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--blue-light);">
+                <div class="proto-badge" style="background:var(--blue-mid);color:#fff;">Web / API</div>
+                <div class="proto-name">HTTP / REST</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>Hypertext Transfer Protocol.</strong> El protocolo web estándar. Fácil de implementar pero más pesado que MQTT. Ideal para dispositivos con buena conectividad donde la simplicidad de integración importa más que el consumo.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Mayor overhead</span>
+                  <span class="proto-stat">Request/Response</span>
+                  <span class="proto-stat">Fácil integración</span>
+                  <span class="proto-stat">No para bajo consumo</span>
+                </div>
+              </div>
+            </div>
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--green-light);">
+                <div class="proto-badge" style="background:var(--green-mid);color:#fff;">Enterprise</div>
+                <div class="proto-name">AMQP</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>Advanced Message Queuing Protocol.</strong> Protocolo más robusto y seguro que MQTT, orientado a entornos enterprise. Soporta transacciones y garantías de entrega más estrictas. Usado en Azure Service Bus y RabbitMQ.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Enterprise-grade</span>
+                  <span class="proto-stat">Transacciones</span>
+                  <span class="proto-stat">Azure IoT Hub</span>
+                  <span class="proto-stat">Mayor consumo</span>
+                </div>
+              </div>
+            </div>
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--amber-light);">
+                <div class="proto-badge" style="background:var(--amber-mid);color:#fff;">Ultra liviano</div>
+                <div class="proto-name">CoAP</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>Constrained Application Protocol.</strong> Versión de HTTP para dispositivos con recursos extremadamente limitados (microcontroladores, sensores de batería pequeña). Usa UDP en lugar de TCP — más rápido pero menos confiable.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">UDP (no TCP)</span>
+                  <span class="proto-stat">Mínimos recursos</span>
+                  <span class="proto-stat">Microcontroladores</span>
+                  <span class="proto-stat">Sin garantías de entrega</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('prot2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Protocolos industriales</span>
+        <div class="acc-info"><div class="acc-name">MODBUS · OPC-UA · EtherNet/IP · PROFINET — los estándares de la industria 4.0</div><div class="acc-tag">Para clientes de manufactura, energía y automatización industrial</div></div>
+        <span class="acc-chv" id="achv-prot2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-prot2">
+        <div class="ab-inner">
+          <div class="proto-grid">
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--gray-light);">
+                <div class="proto-badge" style="background:var(--gray-dark);color:#fff;">Legacy vigente</div>
+                <div class="proto-name">MODBUS</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>El más antiguo y más usado de la industria.</strong> Creado en 1979, sigue siendo el estándar dominante en PLC, variadores de frecuencia y sistemas SCADA. Simple, robusto, sin autenticación (vulnerabilidad de seguridad). Variantes: RTU (serie), ASCII y TCP/IP.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Desde 1979</span>
+                  <span class="proto-stat">PLCs y SCADA</span>
+                  <span class="proto-stat">Modbus TCP/IP</span>
+                  <span class="proto-stat">Sin seguridad nativa</span>
+                </div>
+              </div>
+            </div>
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--blue-light);">
+                <div class="proto-badge" style="background:var(--blue-mid);color:#fff;">Estándar moderno</div>
+                <div class="proto-name">OPC-UA</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>OPC Unified Architecture.</strong> El estándar industrial moderno para Industria 4.0. Independiente de plataforma, seguro, con semántica de datos (los datos describen lo que son, no solo los valores). Permite comunicación M2M entre dispositivos de distintos fabricantes.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Industria 4.0</span>
+                  <span class="proto-stat">Multi-fabricante</span>
+                  <span class="proto-stat">Seguridad nativa</span>
+                  <span class="proto-stat">Semántico</span>
+                </div>
+              </div>
+            </div>
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--green-light);">
+                <div class="proto-badge" style="background:var(--green-mid);color:#fff;">Ethernet industrial</div>
+                <div class="proto-name">EtherNet/IP</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>Protocolo industrial de Allen-Bradley/Rockwell.</strong> Extiende Ethernet estándar para automatización industrial. Alta velocidad y determinismo. Muy común en plantas de manufactura con equipamiento Rockwell Automation y ControlLogix PLCs.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Rockwell / Allen-Bradley</span>
+                  <span class="proto-stat">Alta velocidad</span>
+                  <span class="proto-stat">Determinístico</span>
+                  <span class="proto-stat">Manufactura</span>
+                </div>
+              </div>
+            </div>
+            <div class="proto-card">
+              <div class="proto-head" style="background:var(--amber-light);">
+                <div class="proto-badge" style="background:var(--amber-mid);color:#fff;">Siemens</div>
+                <div class="proto-name">PROFINET</div>
+              </div>
+              <div class="proto-body">
+                <div class="proto-desc"><strong>Protocolo industrial de Siemens.</strong> El equivalente de EtherNet/IP pero en el ecosistema Siemens (PLCs S7, variadores SINAMICS). Muy común en plantas europeas y automotrices. Soporta comunicación en tiempo real con baja latencia.</div>
+                <div class="proto-stats">
+                  <span class="proto-stat">Siemens ecosystem</span>
+                  <span class="proto-stat">Tiempo real</span>
+                  <span class="proto-stat">Automotriz / Pharma</span>
+                  <span class="proto-stat">Alta penetración Europa</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tip-note"><strong>Para el consultor:</strong> Cuando un cliente industrial dice "tenemos PLCs Siemens" → PROFINET + OPC-UA. "Tenemos Allen-Bradley" → EtherNet/IP. "Es equipo viejo sin Ethernet" → MODBUS RTU con gateway que lo convierte a MQTT para subir a la nube. Estos gateways de conversión de protocolo son el punto de entrada de IoT en plantas legacy.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 4G / 5G -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--blue-light)">📶</div>
+    <div>
+      <div class="vert-title">07 — 4G LTE y 5G para IoT</div>
+      <div class="vert-sub">La conectividad celular que lleva el dato del campo a la nube — y por qué 5G cambia todo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">La conectividad celular es el backbone de IoT fuera de las plantas y edificios. Donde no llega el WiFi, llega el 4G. Donde el 4G no tiene suficiente capacidad, latencia o densidad, llega el 5G. <strong>Personal Tech (Telecom Argentina) tiene el despliegue de 5G más grande del país y el mayor parque de antenas en zonas clave como Vaca Muerta.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('4g1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">4G LTE para IoT</span>
+        <div class="acc-info"><div class="acc-name">El estándar actual — confiable, presente en casi todo el país, suficiente para la mayoría de los casos</div><div class="acc-tag">El 80% de los proyectos IoT actuales corren sobre 4G</div></div>
+        <span class="acc-chv" id="achv-4g1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-4g1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Aspecto</th><th>4G LTE estándar</th><th>LTE-M (Cat-M1)</th><th>NB-IoT</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Velocidad</td><td>Hasta 100 Mbps bajada</td><td>~1 Mbps</td><td>~250 kbps</td></tr>
+              <tr><td class="tn">Latencia</td><td>10–50 ms</td><td>10–15 ms</td><td>1.6–10 segundos</td></tr>
+              <tr><td class="tn">Consumo de batería</td><td>Alto</td><td>Muy bajo</td><td>Ultra bajo (10+ años de batería)</td></tr>
+              <tr><td class="tn">Alcance</td><td>Estándar celular</td><td>Mayor que LTE estándar</td><td>Excelente (penetración en subsuelo)</td></tr>
+              <tr><td class="tn">Caso de uso IoT</td><td>Cámaras, vehículos, paneles de control con alta tasa de datos</td><td>Rastreo de activos, wearables, medidores inteligentes</td><td>Sensores de agua, gas, electricidad en edificios y subsuelo</td></tr>
+              <tr><td class="tn">Ideal para</td><td>Telemetría de alta frecuencia, streaming de video</td><td>Balance consumo/velocidad para activos móviles</td><td>Millones de sensores que envían datos pocas veces al día</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('5g1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">5G — el cambio de paradigma</span>
+        <div class="acc-info"><div class="acc-name">Por qué 5G no es "4G más rápido" sino una tecnología completamente diferente para IoT</div><div class="acc-tag">Baja latencia · Ultra densidad de dispositivos · Network slicing · Edge nativo</div></div>
+        <span class="acc-chv" id="achv-5g1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-5g1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Característica</th><th>4G LTE</th><th>5G</th><th>Impacto para IoT</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Latencia</td><td>10–50 ms</td><td class="check">&lt;1 ms (URLLC)</td><td>Cirugía robótica remota, vehículos autónomos, control industrial en tiempo real.</td></tr>
+              <tr><td class="tn">Velocidad pico</td><td>100 Mbps</td><td class="check">Hasta 20 Gbps</td><td>Streaming de cámaras 4K desde drones, descarga de datos de flota.</td></tr>
+              <tr><td class="tn">Densidad de dispositivos</td><td>~100K/km²</td><td class="check">1 millón/km²</td><td>Ciudades inteligentes con millones de sensores en el mismo área sin saturación.</td></tr>
+              <tr><td class="tn">Network Slicing</td><td class="cross">No disponible</td><td class="check">Sí — redes virtuales dedicadas</td><td>Una "red privada 5G" solo para los sensores de la fábrica, con QoS garantizado.</td></tr>
+              <tr><td class="tn">Confiabilidad URLLC</td><td>99.9%</td><td class="check">99.9999%</td><td>Misión crítica: control de reactores, plantas de energía, cirugías.</td></tr>
+              <tr><td class="tn">Integración con Edge</td><td>Limitada</td><td class="check">Nativa (MEC)</td><td>Procesamiento en el borde de la red celular — latencia sub-ms sin ir a la nube.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="block-label">Los tres modos de 5G para diferentes casos de uso</div>
+          <div class="grid3">
+            <div class="mini-card" style="background:var(--blue-light);">
+              <div class="mc-icon">🚀</div>
+              <div class="mc-title">eMBB — Enhanced Mobile Broadband</div>
+              <div class="mc-text">Alta velocidad para smartphones y aplicaciones que consumen mucho ancho de banda. Streaming, realidad virtual, descarga masiva de datos de sensores.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-icon">⚡</div>
+              <div class="mc-title">URLLC — Ultra Reliable Low Latency</div>
+              <div class="mc-text">Latencia &lt;1ms con confiabilidad 99.9999%. Para control industrial en tiempo real, vehículos autónomos, cirugía remota. El 5G más difícil de desplegar.</div>
+            </div>
+            <div class="mini-card" style="background:var(--amber-light);">
+              <div class="mc-icon">📡</div>
+              <div class="mc-title">mMTC — Massive Machine-Type</div>
+              <div class="mc-text">Millones de dispositivos de bajo consumo en una misma área. Para Smart Cities, smart metering (agua, gas, electricidad), agricultura de precisión.</div>
+            </div>
+          </div>
+          <div class="pitch">
+            <div class="pitch-label">Por qué Personal Tech tiene ventaja en 5G para IoT</div>
+            <div class="pitch-text">"Telecom Argentina tiene el mayor despliegue de 5G del país. En Vaca Muerta, las mineras y las empresas de petróleo ya usan 5G privado de Personal Tech para telemetría de campo. Eso no es una capacidad futura — es una referencia que ya está en producción. Ningún competidor puede decir lo mismo."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('5g2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">APN privado</span>
+        <div class="acc-info"><div class="acc-name">Por qué el APN privado de Personal Tech es un diferenciador crítico para IoT enterprise</div><div class="acc-tag">El dato del sensor nunca toca internet público — máxima seguridad</div></div>
+        <span class="acc-chv" id="achv-5g2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-5g2">
+        <div class="ab-inner">
+          <p class="block-text">Un <strong>APN (Access Point Name) privado</strong> es como una autopista exclusiva dentro de la red celular de Personal Tech. Los dispositivos con SIM configurada en el APN privado envían datos directamente a la plataforma del cliente sin salir a internet público.</p>
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--red-light);">
+              <div class="mc-title">❌ Sin APN privado (internet estándar)</div>
+              <div class="mc-text">El sensor envía el dato por internet público → vulnerable a intercepción → el dato pasa por múltiples nodos de red que no controla el cliente → riesgo de seguridad en industrias reguladas.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-title">✅ Con APN privado Personal Tech</div>
+              <div class="mc-text">El sensor envía el dato por la red privada de Telecom → llega directamente a la plataforma del cliente sin tocar internet público → mismo nivel de seguridad que una VPN pero más simple y con SLA.</div>
+            </div>
+          </div>
+          <div class="win-note"><strong>Industrias donde el APN privado es obligatorio o muy valorado:</strong> Banca (datos financieros de terminales), Salud (datos de pacientes), Manufactura (datos de producción confidenciales), Minería y Oil &amp; Gas (telemetría de activos críticos en campo), Gobierno (infraestructura crítica).</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 SATELITAL -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--purple-light)">🛰</div>
+    <div>
+      <div class="vert-title">08 — Conectividad satelital para IoT</div>
+      <div class="vert-sub">Donde no llega el 4G ni el 5G — la solución para campo, mar y zonas remotas</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+    <p class="vert-intro">La conectividad satelital es la única opción viable para dispositivos IoT en zonas sin cobertura celular: campos agrícolas remotos, plataformas offshore, rutas de montaña, zonas mineras aisladas. <strong>Personal Tech ofrece internet satelital y puede integrar servicios como Starlink en su portfolio IoT.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sat1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Tipos de satélite</span>
+        <div class="acc-info"><div class="acc-name">GEO vs. MEO vs. LEO — las tres órbitas y sus diferencias críticas para IoT</div><div class="acc-tag">Starlink vs. Viasat vs. Inmarsat — cuándo usar cada uno</div></div>
+        <span class="acc-chv" id="achv-sat1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sat1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Tipo</th><th>Órbita</th><th>Latencia</th><th>Velocidad</th><th>Cobertura</th><th>Caso de uso IoT</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">GEO (Geoestacionario)</td>
+                <td>35,786 km</td>
+                <td>600–800 ms</td>
+                <td>25–50 Mbps</td>
+                <td>Global (excepto polos)</td>
+                <td>Monitoreo de datos no críticos en tiempo, datos climáticos, telemetría de baja frecuencia</td>
+                <td>Viasat, HughesNet, Inmarsat</td>
+              </tr>
+              <tr>
+                <td class="tn">MEO (Órbita media)</td>
+                <td>2,000–35,000 km</td>
+                <td>125–600 ms</td>
+                <td>Variable</td>
+                <td>Global</td>
+                <td>Tracking de embarcaciones, rastreo de activos transcontinentales</td>
+                <td>O3b (SES), GPS</td>
+              </tr>
+              <tr>
+                <td class="tn">LEO (Órbita baja)</td>
+                <td>200–2,000 km</td>
+                <td class="check">20–60 ms</td>
+                <td class="check">100–500 Mbps</td>
+                <td>Global en expansión</td>
+                <td>IoT de alta frecuencia, backup de conectividad, zonas remotas productivas</td>
+                <td><strong>Starlink (SpaceX)</strong>, OneWeb, Amazon Kuiper</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="block-label">Por qué Starlink (LEO) cambió el juego para IoT en campo</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Latencia de 20–60 ms vs. 600 ms de GEO:</strong> Para la primera vez, el satelital tiene latencia comparable al 4G. Esto habilita casos de uso que antes eran imposibles (videollamadas, control remoto de maquinaria).</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Sin instalación compleja:</strong> El terminal Starlink se autoorienta y se puede mover. Ideal para maquinaria agrícola, equipos mineros que se desplazan o campamentos temporales.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Failover automático:</strong> Personal Tech puede configurar que los dispositivos IoT en campo usen 4G como primario y satelital como backup automático si la cobertura celular cae.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('sat2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">IoT Satelital de bajo consumo</span>
+        <div class="acc-info"><div class="acc-name">Iridium · Globalstar · Astrocast — para sensores que envían muy poco y están en cualquier parte del mundo</div><div class="acc-tag">Cuando el dispositivo corre con batería por años y envía 100 bytes por día</div></div>
+        <span class="acc-chv" id="achv-sat2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-sat2">
+        <div class="ab-inner">
+          <p class="block-text">Para sensores remotos de muy bajo consumo (boya oceánica, sensor de nivel de río en la montaña, collar de ganado en zona sin cobertura), existen redes satelitales específicas para IoT que son extremadamente eficientes en energía pero solo transmiten mensajes pequeños.</p>
+          <div class="grid3">
+            <div class="mini-card">
+              <div class="mc-icon">🛰</div>
+              <div class="mc-title">Iridium SBD</div>
+              <div class="mc-text">Short Burst Data. 70 satélites en órbita polar, cobertura 100% global incluyendo polos. Mensajes de hasta 1.960 bytes. Para rastreo de embarcaciones, animales y activos en zonas extremas.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🌍</div>
+              <div class="mc-title">Globalstar SPOT</div>
+              <div class="mc-text">Cobertura casi global (no polos). Más económico que Iridium. Ideal para rastreo de activos y personal en trabajo remoto. Mensajes unidireccionales de bajo costo.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-icon">🔋</div>
+              <div class="mc-title">Astrocast / D4H</div>
+              <div class="mc-text">Nuevas redes LEO específicas para IoT de ultra bajo consumo. Batería que dura años. Ideal para boyas, monitoreo de ecosistemas, activos en zonas absolutamente remotas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 WIFI Y CORTO ALCANCE -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--green-light)">📶</div>
+    <div>
+      <div class="vert-title">09 — WiFi, Bluetooth LE y Zigbee para IoT</div>
+      <div class="vert-sub">Conectividad de corto y mediano alcance para interiores, edificios y entornos industriales</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('wifi1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Comparativa rápida</span>
+        <div class="acc-info"><div class="acc-name">WiFi 6 · Bluetooth LE · Zigbee · Z-Wave · Thread — cuándo usar cada protocolo de corto alcance</div><div class="acc-tag">La guía de selección de protocolo según el caso de uso</div></div>
+        <span class="acc-chv" id="achv-wifi1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-wifi1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Protocolo</th><th>Alcance</th><th>Velocidad</th><th>Consumo</th><th>Caso de uso ideal</th><th>No usar cuando</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">WiFi 6 (802.11ax)</td>
+                <td>30–100 m interior</td>
+                <td>Hasta 9.6 Gbps</td>
+                <td>Alto</td>
+                <td>Cámaras IP, paneles de control con UI, máquinas con alimentación eléctrica fija. El caso de Café Martínez (coworking).</td>
+                <td>Dispositivos con batería pequeña. En exterior con muchos nodos distantes.</td>
+              </tr>
+              <tr>
+                <td class="tn">Bluetooth LE (BLE)</td>
+                <td>10–100 m</td>
+                <td>2 Mbps</td>
+                <td>Ultra bajo</td>
+                <td>Wearables (pulseras de salud), beacons de localización indoor, sensores de temperatura en un edificio, tags de rastreo de activos.</td>
+                <td>Datos continuos de alta velocidad. No para grandes distancias sin gateway intermediario.</td>
+              </tr>
+              <tr>
+                <td class="tn">Zigbee (802.15.4)</td>
+                <td>10–100 m (mesh)</td>
+                <td>250 kbps</td>
+                <td>Muy bajo</td>
+                <td>Domótica y edificios inteligentes: iluminación, enchufes, sensores de apertura, termostatos. Red en malla (mesh) — un nodo retransmite al siguiente.</td>
+                <td>Alta velocidad de datos. Larga distancia sin amplificadores.</td>
+              </tr>
+              <tr>
+                <td class="tn">Z-Wave</td>
+                <td>30–100 m (mesh)</td>
+                <td>100 kbps</td>
+                <td>Muy bajo</td>
+                <td>Automatización del hogar y edificios. Menos interoperabilidad que Zigbee pero mayor alcance en malla. Frecuencia 900 MHz (menos interferencias que 2.4 GHz).</td>
+                <td>Industrial. Alta velocidad. Entornos con muchos nodos competidores.</td>
+              </tr>
+              <tr>
+                <td class="tn">Thread / Matter</td>
+                <td>30–100 m (mesh)</td>
+                <td>250 kbps</td>
+                <td>Bajo</td>
+                <td>El estándar emergente para smart home respaldado por Apple, Google y Amazon. IPv6 nativo. Preparado para el futuro del IoT doméstico.</td>
+                <td>Todavía madurando en aplicaciones industriales.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip-note"><strong>La regla de selección de protocolo de corto alcance:</strong> Dispositivo con alimentación eléctrica y datos frecuentes → WiFi. Dispositivo con batería pequeña en un edificio → BLE o Zigbee. Hogar inteligente → Zigbee o Thread/Matter. Industrial con PLCs → Modbus o OPC-UA sobre Ethernet industrial.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 LPWAN -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--amber-light)">📡</div>
+    <div>
+      <div class="vert-title">10 — LPWAN: el largo alcance con bajo consumo</div>
+      <div class="vert-sub">LoRa · LoRaWAN · Sigfox · NB-IoT — el sweet spot para millones de sensores en campo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+    <p class="vert-intro"><strong>LPWAN (Low Power Wide Area Network)</strong> es la familia de tecnologías de conectividad diseñadas específicamente para IoT: largo alcance (kilómetros), muy bajo consumo de energía (años de batería) y bajo costo. No son aptas para streaming ni datos continuos, pero son perfectas para sensores que envían datos pocas veces por hora.</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('lpwan1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">LoRa y LoRaWAN</span>
+        <div class="acc-info"><div class="acc-name">La tecnología LPWAN más adoptada en Argentina y LATAM — open standard, gran ecosistema</div><div class="acc-tag">Agro · Smart cities · Medición inteligente · Logística</div></div>
+        <span class="acc-chv" id="achv-lpwan1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-lpwan1">
+        <div class="ab-inner">
+          <div class="analogy"><strong>Analogía perfecta:</strong> LoRa es como el walkie-talkie del IoT. Con poca energía, puede enviar un mensaje pequeño a kilómetros de distancia. No es para enviar videos — es para decir "la temperatura del silo es 23°C" una vez por hora durante 10 años con la misma batería.</div>
+          <div class="grid2">
+            <div class="mini-card">
+              <div class="mc-title">LoRa — la capa física</div>
+              <div class="mc-text">Técnica de modulación de radio (Chirp Spread Spectrum) que permite alcanzar hasta 15 km en campo abierto y varios kilómetros en área urbana. Propietaria de Semtech pero licenciada ampliamente.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mc-title">LoRaWAN — el protocolo de red</div>
+              <div class="mc-text">El protocolo de red que corre sobre LoRa. Define cómo los dispositivos se comunican con los gateways y con el servidor de red. Gestionado por la LoRa Alliance. Open standard.</div>
+            </div>
+          </div>
+          <div class="block-label">Características clave</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Parámetro</th><th>Valor</th><th>Qué significa en la práctica</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Alcance</td><td>2–5 km urbano · 10–15 km rural</td><td>Un solo gateway cubre un área enorme. Para un campo de 1.000 ha, pueden bastar 1–3 gateways.</td></tr>
+              <tr><td class="tn">Vida de batería</td><td>5–10 años (dispositivo tipo AAA)</td><td>Sensor instalado en el campo sin mantenimiento de batería por una década.</td></tr>
+              <tr><td class="tn">Velocidad de datos</td><td>0.3 – 50 kbps</td><td>Solo para mensajes pequeños: temperatura, nivel de agua, posición GPS, ON/OFF. No para streaming.</td></tr>
+              <tr><td class="tn">Frecuencia en Argentina</td><td>915 MHz (ISM band)</td><td>Banda no licenciada — cualquier empresa puede desplegar sin pagar por el espectro.</td></tr>
+              <tr><td class="tn">Costo del módulo</td><td>$3–$15 USD por dispositivo</td><td>Viable para despliegues masivos de miles de sensores en campo.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>Personal Tech y LoRa:</strong> Personal Tech usa LoRa como parte de su portfolio IoT para casos de agro, smart cities y medición inteligente. La ventaja es que el gateway LoRa se puede conectar al backbone de Telecom via 4G, lo que elimina la necesidad de tender cable hasta el gateway en campo.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('lpwan2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Comparativa LPWAN</span>
+        <div class="acc-info"><div class="acc-name">LoRa vs. Sigfox vs. NB-IoT — cuándo usar cada uno</div><div class="acc-tag">La guía de selección de tecnología LPWAN según el proyecto</div></div>
+        <span class="acc-chv" id="achv-lpwan2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-lpwan2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th></th><th>LoRaWAN</th><th>Sigfox</th><th>NB-IoT</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Tipo de red</td><td>Pública o privada (el cliente puede montar su propia red)</td><td>Solo red de Sigfox (operador)</td><td>Red celular del operador (Personal Tech)</td></tr>
+              <tr><td class="tn">Infraestructura</td><td>Gateway propio o de terceros. Open ecosystem.</td><td>Operado por Sigfox — no podés montar la tuya</td><td>Usa las antenas 4G existentes de Personal Tech</td></tr>
+              <tr><td class="tn">Mensajes/día</td><td>Sin límite (dependiendo de la regulación de duty cycle)</td><td>140 mensajes/día subida (muy limitado)</td><td>Sin límite práctico</td></tr>
+              <tr><td class="tn">Alcance</td><td class="check">10–15 km rural</td><td class="check">10–40 km rural</td><td>Similar a 4G — ciudad y suburbios</td></tr>
+              <tr><td class="tn">Penetración indoor</td><td>Buena (900 MHz)</td><td>Excelente (868/902 MHz)</td><td class="check">Excelente (penetra subsuelo)</td></tr>
+              <tr><td class="tn">Bidireccional</td><td class="check">Sí (downlink limitado)</td><td class="partial">Limitado</td><td class="check">Sí, completo</td></tr>
+              <tr><td class="tn">Ideal para</td><td>Agro, smart cities, despliegues propios del cliente</td><td>Rastreo de activos de larga duración</td><td>Medición inteligente de agua/gas/luz, sensores en edificios</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 EDGE COMPUTING -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--teal-light)">🖥</div>
+    <div>
+      <div class="vert-title">11 — Edge Computing: el cloud que baja al campo</div>
+      <div class="vert-sub">Procesamiento local en el dispositivo o gateway — menos latencia, menos ancho de banda, más resiliencia</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+    <p class="vert-intro">El Edge Computing lleva la inteligencia de la nube al borde de la red — al gateway, al servidor industrial local o incluso al propio dispositivo IoT. <strong>Para casos donde la latencia es crítica, la conectividad es intermitente o el volumen de datos hace prohibitivo enviarlo todo a la nube, el Edge es la respuesta.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('edge1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">Cuándo usar Edge</span>
+        <div class="acc-info"><div class="acc-name">Los 4 casos donde el Edge es obligatorio — y cuándo la nube sola es suficiente</div></div>
+        <span class="acc-chv" id="achv-edge1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-edge1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Situación</th><th>Por qué Edge es necesario</th><th>Ejemplo real</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Latencia crítica (&lt;10ms)</td><td>El round-trip a la nube es demasiado lento para la decisión que se necesita.</td><td>Robot industrial que debe frenar en &lt;5ms si detecta un obstructor. La nube tardaría 20–50ms.</td></tr>
+              <tr><td class="tn">Conectividad intermitente</td><td>El dispositivo no siempre tiene conexión — debe procesar y almacenar localmente hasta que la recupere.</td><td>Sensor en maquinaria minera en zonas sin cobertura constante. Almacena datos localmente y sincroniza cuando pasa por zona con señal.</td></tr>
+              <tr><td class="tn">Volumen de datos prohibitivo</td><td>Enviar todos los datos crudos a la nube costaría demasiado en ancho de banda. El Edge filtra y envía solo lo relevante.</td><td>Cámara industrial que analiza 30 frames/seg localmente y solo sube alertas cuando detecta anomalías (1% del total de datos).</td></tr>
+              <tr><td class="tn">Privacidad / Compliance</td><td>Ciertos datos no pueden salir del edificio o del país por regulación.</td><td>Datos biométricos de empleados que deben procesarse localmente y solo enviar las alertas (no los datos crudos) a la nube.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="block-label">La arquitectura Cloud-Edge típica en Personal Tech</div>
+          <div class="pipeline">
+            <div class="pipe-box" style="border-color:var(--iot-orange);background:var(--iot-orange-l);">
+              <div class="pipe-box-icon">🌡</div>
+              <div class="pipe-box-label">Sensor</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--amber-mid);background:var(--amber-light);">
+              <div class="pipe-box-icon">🖥</div>
+              <div class="pipe-box-label">Edge Gateway</div>
+              <div class="pipe-box-sub">Filtra · Pre-procesa · Actúa</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--blue-mid);background:var(--blue-light);">
+              <div class="pipe-box-icon">📶</div>
+              <div class="pipe-box-label">4G / 5G Personal Tech</div>
+              <div class="pipe-box-sub">Solo los datos relevantes suben</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-box" style="border-color:var(--green-mid);background:var(--green-light);">
+              <div class="pipe-box-icon">☁️</div>
+              <div class="pipe-box-label">Cloud</div>
+              <div class="pipe-box-sub">Análisis · IA · Dashboard</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<!-- ══════════════════════════════════════════════ 12 PERSONAL TECH IoT -->
+<div class="vertical" id="v12">
+  <div class="vert-header" onclick="toggleV('v12')">
+    <div class="vert-icon" style="background:var(--green-light)">🏢</div>
+    <div>
+      <div class="vert-title">12 — Personal Tech IoT: el portfolio completo</div>
+      <div class="vert-sub">El único proveedor en Argentina que da sensor + red + plataforma + cloud en un contrato</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v12">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v12">
+    <p class="vert-intro">Personal Tech (Telecom Argentina) ofrece soluciones IoT de extremo a extremo integrando conectividad (4G/5G/satelital/LoRa), plataformas de gestión, analítica y cloud en un solo proveedor. <strong>Es el único en Argentina que puede ser el carrier Y la plataforma IoT Y el cloud de procesamiento.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Portfolio IoT</span>
+        <div class="acc-info"><div class="acc-name">Los servicios IoT concretos que Personal Tech comercializa hoy</div><div class="acc-tag">M2M · Geoposicionamiento · Trazabilidad · Monitoreo · Smart Cities</div></div>
+        <span class="acc-chv" id="achv-pt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Solución</th><th>Qué incluye</th><th>Industria principal</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Conectividad M2M con APN privado</td><td>SIMs sin configuración, APN privado para que el tráfico de los dispositivos nunca salga a internet público. Portal de gestión de SIMs.</td><td>Seguridad (alarmas, CCTV), manufactura, logística, banca (ATMs, terminales POS)</td></tr>
+              <tr><td class="tn">Geoposicionamiento de flota</td><td>App mobile + plataforma web. Posición en tiempo real de todos los vehículos/activos de la flota. Historial de recorridos, alertas de zona.</td><td>Transporte, logística, distribución, servicios de campo, minería</td></tr>
+              <tr><td class="tn">Monitoreo de cadena de frío</td><td>Sensores de temperatura en vehículos y almacenamiento. Alertas en tiempo real cuando se sale del rango. Registro para compliance regulatorio.</td><td>Farmacéutica, alimentos, distribución refrigerada</td></tr>
+              <tr><td class="tn">Trazabilidad de activos</td><td>Tags GPS/BLE en activos de alto valor. Posición en tiempo real + historial. Alertas de movimiento no autorizado.</td><td>Construcción, equipamiento médico, logística de alto valor</td></tr>
+              <tr><td class="tn">Smart Cities</td><td>Sensores de alumbrado inteligente, residuos, calidad del aire, gestión de tráfico. Plataforma de gestión municipal integrada.</td><td>Municipios, gobiernos provinciales, concesiones de servicios públicos</td></tr>
+              <tr><td class="tn">IoT Agro</td><td>Sensores de humedad de suelo, temperatura ambiental, nivel de silos, monitoreo de bombas de riego. Conectividad 4G/LoRa/satelital según la zona.</td><td>Agricultura, ganadería, agroindustria</td></tr>
+              <tr><td class="tn">IoT Industrial / Industria 4.0</td><td>Integración con PLCs y SCADA existentes. Sensores de vibración, temperatura, presión. Dashboard de mantenimiento predictivo.</td><td>Manufactura, energía, Oil &amp; Gas, minería</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">El argumento único</span>
+        <div class="acc-info"><div class="acc-name">Por qué contratar IoT con Personal Tech y no con AWS IoT + una telco por separado</div><div class="acc-tag">El diferenciador estructural que ningún competidor puede replicar</div></div>
+        <span class="acc-chv" id="achv-pt2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt2">
+        <div class="ab-inner">
+          <div class="pitch">
+            <div class="pitch-label">Para el COO o Director de Operaciones</div>
+            <div class="pitch-text">"Con AWS IoT o Azure IoT, tenés que contratar aparte a una telco para la SIM de cada sensor. Si la SIM falla, llamás a la telco. Si la plataforma falla, llamás a AWS. Y cuando las dos cosas fallan al mismo tiempo, nadie es dueño del problema. Con Personal Tech, la SIM, la red y la plataforma son del mismo proveedor. Un número, un SLA, un responsable."</div>
+          </div>
+          <div class="grid2">
+            <div class="mini-card" style="background:var(--red-light);">
+              <div class="mc-title">❌ Alternativa típica: 3 contratos</div>
+              <div class="mc-text"><strong>Proveedor de sensores</strong> → hardware y firmware.<br><strong>Telco</strong> → SIMs y conectividad.<br><strong>Cloud IoT</strong> → plataforma y analytics.<br>Cuando algo falla, tres llamadas, tres SLAs distintos, nadie se responsabiliza del todo.</div>
+            </div>
+            <div class="mini-card" style="background:var(--green-light);">
+              <div class="mc-title">✅ Personal Tech: 1 contrato</div>
+              <div class="mc-text"><strong>Personal Tech</strong> → sensores + SIM con APN privado + red 4G/5G/satelital + plataforma IoT + cloud analítico.<br>Un contrato. Un SLA end-to-end. Un equipo de soporte que ve toda la cadena.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v12 -->
+
+
+<!-- ══════════════════════════════════════════════ 13 POR INDUSTRIA -->
+<div class="vertical" id="v13">
+  <div class="vert-header" onclick="toggleV('v13')">
+    <div class="vert-icon" style="background:var(--amber-light)">🏭</div>
+    <div>
+      <div class="vert-title">13 — Guía de selección por industria</div>
+      <div class="vert-sub">Qué protocolo · qué conectividad · qué plataforma recomendar según el cliente</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v13">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v13">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ind1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Mapa de decisión</span>
+        <div class="acc-info"><div class="acc-name">Qué tecnología IoT recomendar según la industria del cliente</div><div class="acc-tag">La guía práctica para el consultor — de la reunión a la propuesta</div></div>
+        <span class="acc-chv" id="achv-ind1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ind1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Industria</th><th>Caso de uso típico</th><th>Conectividad recomendada</th><th>Protocolo</th><th>Plataforma</th><th>Argumento de apertura</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">🌾 Agro</td><td>Humedad de suelo, temperatura, nivel de silo, monitoreo de bomba de riego</td><td>LoRaWAN + 4G para gateway. Satelital en zonas sin cobertura.</td><td>MQTT sobre LoRaWAN</td><td>Personal Tech IoT + AWS/Azure analytics</td><td>"¿Cuántas veces por semana mandan a alguien al campo a leer datos que un sensor podría enviar automáticamente?"</td></tr>
+              <tr><td class="tn">🏭 Manufactura</td><td>Vibración de motores, temperatura de hornos, mantenimiento predictivo</td><td>WiFi industrial o Ethernet (planta). 4G para activos móviles dentro de la planta.</td><td>OPC-UA / MODBUS + MQTT a la nube</td><td>AWS IoT SiteWise o Azure IoT Hub + Personal Cloud</td><td>"¿Cuánto les costó la última parada no planificada de producción?"</td></tr>
+              <tr><td class="tn">🚚 Logística</td><td>Tracking de flota, temperatura de refrigerados, estado de contenedores</td><td>4G/LTE-M para vehículos. 5G para zonas de alta densidad. Satelital para rutas remotas.</td><td>MQTT + GPS NMEA</td><td>Personal Tech Geoposicionamiento + integración ERP/TMS</td><td>"¿Cuánto tiempo pierde su equipo de operaciones rastreando manualmente dónde están los camiones?"</td></tr>
+              <tr><td class="tn">🏙 Municipio</td><td>Alumbrado inteligente, contenedores, calidad del aire, estacionamiento</td><td>NB-IoT + LoRaWAN (malla urbana). 4G para gateways.</td><td>MQTT + CoAP</td><td>Personal Tech Smart Cities Platform</td><td>"¿Cuánto del presupuesto de alumbrado se va en energía de postes que nadie está usando a las 3am?"</td></tr>
+              <tr><td class="tn">⛏ Minería / O&G</td><td>Telemetría de pozo, monitoreo de equipos pesados, seguridad de personal</td><td>5G privado (Vaca Muerta). 4G. Satelital para pozos aislados.</td><td>MODBUS + OPC-UA + MQTT</td><td>Personal Tech IoT + cloud soberano (datos en Argentina)</td><td>"¿Cómo monitorean el estado de los equipos en los pozos más remotos hoy?"</td></tr>
+              <tr><td class="tn">🏥 Salud</td><td>Monitoreo de pacientes, cadena de frío de vacunas/medicamentos</td><td>WiFi hospitalaria para dispositivos internos. 4G/LTE-M para equipos móviles.</td><td>HL7 FHIR (salud) + MQTT</td><td>Azure IoT Hub + Personal Cloud (dato en Argentina)</td><td>"¿Qué pasa con sus vacunas si el freezer tiene una falla a las 2am y nadie lo detecta hasta la mañana?"</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v13 -->
+
+
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Basado en documentos de referencia IoT y Telemetría · <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open',b.classList.contains('open'));
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  b.classList.toggle('open');
+  c.classList.toggle('open',b.classList.contains('open'));
+}
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    if(sy>=v.offsetTop&&sy<v.offsetTop+v.offsetHeight){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+
+<!-- Huawei Cloud -->
+<div style="margin-top:40px; padding:20px; background:#FFE8E8; border-left:4px solid #FF6B35; border-radius:8px;">
+  <h3 style="color:#D85A30; margin-bottom:10px;">🔴 Huawei Cloud — Alternativa Multi-Cloud</h3>
+  <p style="font-size:12px; color:#1a1a18;"><strong>Huawei Cloud (HEC):</strong> Soberanía de datos BCRA, ~20% más barato que AWS, servicios equivalentes.</p>
+  <p style="font-size:11px; color:#633806; margin-top:8px;">Casos de uso: Cumplimiento regulatorio Argentina, presupuesto ajustado, ecosistema Huawei (5G, telecom).</p>
+</div>
+
+</body>
+</html>

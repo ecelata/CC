@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frameworks de Migración Cloud | AWS · Azure · GCP · Multi-Cloud</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --aws:#D97706;--aws-l:#FEF3C7;--aws-d:#78350F;
+  --azu:#0070F3;--azu-l:#EBF5FF;--azu-d:#004DBF;
+  --gcp:#059669;--gcp-l:#D1FAE5;--gcp-d:#065F46;
+  --hwc:#E2001A;--hwc-l:#FDE2E5;--hwc-d:#8B0000;
+  --mlt:#7C3AED;--mlt-l:#EDE9FE;--mlt-d:#4C1D95;
+  --con:#DC2626;--con-l:#FEE2E2;--con-d:#7F1D1D;
+  --ink:#0D1117;--ink2:#1C2333;--ink3:#374151;
+  --muted:#6B7280;--faint:#9CA3AF;--line:#E5E7EB;
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;
+  --r:10px;--r-sm:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+.topnav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px;overflow-x:auto;gap:0;}
+.tn-brand{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap;padding:13px 16px 13px 0;border-right:1px solid var(--line);margin-right:6px;}
+.tn{font-size:11px;font-weight:700;padding:14px 11px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--faint);transition:all .15s;text-decoration:none;}
+.tn:hover,.tn.active{color:var(--ink);border-bottom-color:var(--ink);}
+
+.page{max-width:1100px;margin:0 auto;padding:30px 24px 70px;}
+
+.hdr{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
+.hdr-title{font-size:25px;font-weight:800;letter-spacing:-.4px;line-height:1.15;color:var(--ink);}
+.hdr-sub{font-size:12.5px;color:var(--muted);margin-top:4px;}
+.hdr-meta{text-align:right;font-size:11px;color:var(--faint);}
+
+.intro-banner{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:22px;}
+.intro-banner-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.intro-banner-text{font-size:12.5px;color:var(--ink3);line-height:1.65;}
+.intro-banner-text strong{color:var(--ink);}
+
+.stats{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+.stat{flex:1;min-width:120px;border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;}
+.stat-val{font-size:20px;font-weight:800;color:var(--ink);line-height:1;}
+.stat-label{font-size:10.5px;color:var(--faint);margin-top:4px;}
+
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;padding:13px 15px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--line);}
+.legend-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);width:100%;margin-bottom:3px;}
+.lg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.lg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+.filterbar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;align-items:center;position:sticky;top:48px;z-index:150;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);}
+.search-box{flex:1;min-width:200px;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-family:'Montserrat',sans-serif;color:var(--ink3);}
+.search-box:focus{outline:none;border-color:var(--ink);}
+.tipo-pill{font-size:10.5px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.tipo-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.no-results{display:none;text-align:center;padding:40px 0;color:var(--faint);font-size:13px;}
+
+.vert{margin-bottom:36px;scroll-margin-top:100px;}
+.vert-hd{display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:17px;font-weight:800;color:var(--ink);flex:1;}
+.vert-count{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;}
+.vert-toggle{font-size:11px;color:var(--faint);transition:transform .2s;margin-left:4px;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-intro{font-size:12px;color:var(--muted);margin:8px 0 16px;line-height:1.6;}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+
+.subcat-group{margin-bottom:18px;}
+.subcat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:8px;padding-left:2px;}
+.prod-grid{display:flex;flex-direction:column;gap:8px;}
+
+.prod-card{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--bg);transition:border-color .15s;}
+.prod-card:hover{border-color:#c8cdd6;}
+.prod-card.hidden{display:none;}
+.pc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 15px;cursor:pointer;}
+.pc-head-main{display:flex;align-items:center;gap:10px;flex:1;min-width:0;flex-wrap:wrap;}
+.pc-name{font-weight:700;color:var(--ink);font-size:13px;}
+.pc-name-sub{font-size:11px;color:var(--faint);font-style:italic;}
+.tipo-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.pc-arrow{font-size:10px;color:var(--faint);transition:transform .2s;flex-shrink:0;}
+.pc-arrow.open{transform:rotate(180deg);}
+
+.pc-body{display:none;border-top:1px solid var(--line);padding:14px 15px 16px;background:var(--bg2);}
+.pc-body.open{display:block;}
+.pc-desc{font-size:12.5px;color:var(--ink3);line-height:1.65;margin-bottom:12px;}
+.pc-desc strong{color:var(--ink);}
+.pc-block{margin-bottom:12px;}
+.pc-block:last-child{margin-bottom:0;}
+.pc-block-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+.pc-list{list-style:none;padding:0;}
+.pc-list li{font-size:12px;color:var(--ink3);line-height:1.6;padding:3px 0 3px 16px;position:relative;}
+.pc-list li::before{content:'•';position:absolute;left:2px;color:var(--faint);}
+.pc-list li strong{color:var(--ink);}
+
+.spec-table{width:100%;border-collapse:collapse;margin-top:4px;}
+.spec-table td{padding:5px 8px;font-size:11.5px;border-bottom:1px solid var(--line);vertical-align:top;}
+.spec-table td:first-child{font-weight:700;color:var(--muted);width:38%;white-space:nowrap;}
+.spec-table tr:last-child td{border-bottom:none;}
+
+.pc-warn{font-size:11.5px;color:#7F1D1D;font-style:italic;padding:9px 12px;background:#FEE2E2;border-radius:var(--r-sm);border-left:3px solid #DC2626;line-height:1.6;margin-top:10px;}
+.pc-tip{font-size:11.5px;color:#065F46;font-style:italic;padding:9px 12px;background:#D1FAE5;border-radius:var(--r-sm);border-left:3px solid #059669;line-height:1.6;margin-top:10px;}
+.pc-note{font-size:11.5px;color:#004DBF;font-style:italic;padding:9px 12px;background:#EBF5FF;border-radius:var(--r-sm);border-left:3px solid #0070F3;line-height:1.6;margin-top:10px;}
+
+.matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;}
+.matrix-wrap table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:680px;}
+.matrix-wrap th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);padding:9px 10px;border-bottom:1.5px solid var(--line);text-align:left;background:var(--bg2);white-space:nowrap;}
+.matrix-wrap td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink3);vertical-align:top;}
+.matrix-wrap tr:last-child td{border-bottom:none;}
+.matrix-wrap tr:hover td{background:var(--bg2);}
+
+/* Phase timeline */
+.phase-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.phase-chip{flex:1;min-width:140px;border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;background:var(--bg);}
+.phase-chip-n{font-size:10px;font-weight:800;color:var(--faint);}
+.phase-chip-t{font-size:12px;font-weight:700;color:var(--ink);margin:2px 0;}
+.phase-chip-d{font-size:10.5px;color:var(--muted);line-height:1.4;}
+
+.doc-footer{border-top:1px solid var(--line);margin-top:50px;padding-top:14px;font-size:11px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+@media print{
+  .topnav,.filterbar{display:none;}
+  .vert-body{display:block!important;}
+  .vert-toggle{display:none;}
+  .pc-body{display:block!important;}
+  .pc-arrow{display:none;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:680px){
+  .hdr{flex-direction:column;align-items:flex-start;}
+  .hdr-meta{text-align:left;}
+  .stats{flex-direction:column;}
+  .pc-head{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="tn-brand">🚀 Migration Frameworks</div>
+  <a class="tn" href="#v-concepto">📖 Conceptos Base</a>
+  <a class="tn" href="#v-aws">🟧 AWS</a>
+  <a class="tn" href="#v-azure">🔷 Azure</a>
+  <a class="tn" href="#v-gcp">🟩 GCP</a>
+  <a class="tn" href="#v-hwc">🔴 Huawei Cloud</a>
+  <a class="tn" href="#v-multicloud">🟣 Multi-Cloud</a>
+  <a class="tn" href="#v-matriz">📊 Matriz</a>
+</nav>
+
+<div class="page">
+
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">Frameworks de Migración y Estimación de Costos</div>
+      <div class="hdr-sub">AWS · Azure · GCP — Programas, herramientas y metodologías para migrar de on-premise o legacy a cloud</div>
+    </div>
+    <div class="hdr-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+  </div>
+
+  <div class="intro-banner">
+    <div class="intro-banner-title">⚡ Por qué este documento existe</div>
+    <div class="intro-banner-text">
+      Cada hyperscaler tiene su propio stack de programas para acompañar una migración: uno para entender madurez organizacional, otro para revisar arquitectura técnica, otro para estimar costos con datos reales, y uno nuevo (con IA agéntica) para ejecutar la migración o modernización en sí. Mezclar estos programas o no saber cuál usar en qué momento es la causa más común de presupuestos mal armados en preventa. Este documento ordena el universo completo: <strong>qué hace cada programa, en qué fase del proyecto se usa, y qué entrega como resultado.</strong>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Hyperscalers cubiertos</div></div>
+    <div class="stat"><div class="stat-val">21</div><div class="stat-label">Programas / herramientas</div></div>
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Fases típicas de migración</div></div>
+    <div class="stat"><div class="stat-val">$2M</div><div class="stat-label">Funding máximo MAP (2024+)</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Categorías de programa</div>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--con);"></span> Framework / Metodología</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--aws);"></span> AWS</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--azu);"></span> Azure</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--gcp);"></span> GCP</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--hwc);"></span> Huawei Cloud</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--mlt);"></span> Multi-Cloud / Vendor-neutral</span>
+  </div>
+
+  <div class="filterbar">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar programa, fase o concepto..." oninput="filterProducts()">
+    <button class="tipo-pill active" data-tipo="all" onclick="setTipoFilter(this,'all')">Todos</button>
+    <button class="tipo-pill" data-tipo="Madurez" onclick="setTipoFilter(this,'Madurez')">Madurez Org.</button>
+    <button class="tipo-pill" data-tipo="Arquitectura" onclick="setTipoFilter(this,'Arquitectura')">Arquitectura</button>
+    <button class="tipo-pill" data-tipo="TCO" onclick="setTipoFilter(this,'TCO')">TCO / Costos</button>
+    <button class="tipo-pill" data-tipo="Ejecución" onclick="setTipoFilter(this,'Ejecución')">Ejecución / IA</button>
+    <button class="tipo-pill" data-tipo="Funding" onclick="setTipoFilter(this,'Funding')">Funding</button>
+    <button class="tipo-pill" onclick="expandAll()">⊕ Expandir todo</button>
+    <button class="tipo-pill" onclick="collapseAll()">⊖ Colapsar todo</button>
+  </div>
+
+  <div class="no-results" id="noResults">No se encontraron resultados con ese criterio de búsqueda.</div>
+
+  <!-- ══════════════ CONCEPTOS BASE ══════════════ -->
+  <div class="vert" id="v-concepto">
+    <div class="vert-hd" onclick="toggleVert('concepto')">
+      <div class="vert-icon" style="background:var(--con-l);">📖</div>
+      <div class="vert-title">Conceptos Base: Las 4 Fases y los 6/7 R's</div>
+      <span class="vert-count" style="background:var(--con-l);color:var(--con-d);">marco común</span>
+      <span class="vert-toggle open" id="vt-concepto">▼</span>
+    </div>
+    <div class="vert-intro">Antes de comparar herramientas, hay dos marcos conceptuales que comparten los tres hyperscalers y que conviene tener clarísimos: las fases del ciclo de migración, y las estrategias de disposición (los "R's") que se le asigna a cada workload.</div>
+    <div class="vert-body open" id="vb-concepto">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Las 4 Fases del Ciclo de Migración</div>
+        <div class="phase-row">
+          <div class="phase-chip"><div class="phase-chip-n">FASE 1</div><div class="phase-chip-t">Assess / Evaluar</div><div class="phase-chip-d">Descubrimiento, inventario, TCO, madurez organizacional</div></div>
+          <div class="phase-chip"><div class="phase-chip-n">FASE 2</div><div class="phase-chip-t">Mobilize / Movilizar</div><div class="phase-chip-d">Landing zone, gobernanza, capacitación, plan de oleadas</div></div>
+          <div class="phase-chip"><div class="phase-chip-n">FASE 3</div><div class="phase-chip-t">Migrate &amp; Modernize</div><div class="phase-chip-d">Ejecución por oleadas, aplicando el R-strategy de cada workload</div></div>
+          <div class="phase-chip"><div class="phase-chip-n">FASE 4</div><div class="phase-chip-t">Operate &amp; Optimize</div><div class="phase-chip-d">FinOps, rightsizing continuo, mejora de arquitectura post-migración</div></div>
+        </div>
+
+        <div class="prod-card" data-tipo="Madurez" data-search="fases ciclo migracion assess mobilize migrate operate cuatro etapas">
+          <div class="pc-head" onclick="toggleCard('pc-fases')">
+            <div class="pc-head-main">
+              <div class="pc-name">Detalle de las 4 fases</div>
+              <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Framework</span>
+            </div>
+            <div class="pc-arrow" id="arr-pc-fases">▼</div>
+          </div>
+          <div class="pc-body" id="pc-fases">
+            <div class="pc-desc">Este patrón de 4 fases (a veces comprimido en 3, fusionando Mobilize dentro de Assess) es prácticamente idéntico entre AWS, Azure y GCP, y es la estructura sobre la que se apoya casi cualquier propuesta comercial de migración seria. Cada fase tiene entregables específicos que la fase siguiente necesita como insumo.</div>
+            <div class="pc-block">
+              <div class="pc-block-title">📋 Entregables típicos por fase</div>
+              <ul class="pc-list">
+                <li><strong>Assess:</strong> inventario de aplicaciones con dueños, mapa de dependencias, TCO a 1 y 3 años, gaps de las 6 dimensiones de madurez (CAF)</li>
+                <li><strong>Mobilize:</strong> landing zone desplegada, cuentas/suscripciones/proyectos creados, política de tagging, equipo capacitado, plan de oleadas con dependencias</li>
+                <li><strong>Migrate &amp; Modernize:</strong> workloads movidos según su R-strategy asignada, validación funcional, cutover documentado</li>
+                <li><strong>Operate &amp; Optimize:</strong> rightsizing continuo, savings plans/reserved instances, gobernanza FinOps, decisiones de modernización adicional</li>
+              </ul>
+            </div>
+            <div class="pc-warn">⚠️ El error más común en preventa es saltar directo a cotizar la Fase 3 sin haber hecho un Assess real con datos de utilización — eso genera presupuestos basados en supuestos, no en consumo real, y casi siempre termina sobre-dimensionando recursos.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Las Estrategias de Disposición — Los "R's"</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Arquitectura" data-search="6 r's siete rehost replatform refactor repurchase retire retain relocate estrategia disposicion">
+            <div class="pc-head" onclick="toggleCard('pc-rs')">
+              <div class="pc-head-main">
+                <div class="pc-name">Los 6/7 R's de Migración</div>
+                <span class="pc-name-sub">común a los 3 hyperscalers</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Framework</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rs">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rs">
+              <div class="pc-desc">A cada workload identificado en el Assess se le asigna una de estas estrategias. La elección incorrecta de R-strategy es la causa número 1 de sobrecostos post-migración — migrar todo como "Rehost" cuando algunos workloads merecían "Retire" o "Repurchase" es dinero tirado en infraestructura que no debería existir.</div>
+              <table class="spec-table">
+                <tr><td>1. Rehost</td><td>"Lift &amp; shift" — mover la VM tal cual, sin cambios de código. El más rápido, el menos optimizado en costo a largo plazo.</td></tr>
+                <tr><td>2. Replatform</td><td>"Lift, tinker &amp; shift" — pequeños ajustes para aprovechar servicios gestionados (ej. mover de SQL Server en VM a RDS) sin reescribir la app.</td></tr>
+                <tr><td>3. Refactor / Re-architect</td><td>Rediseño profundo para arquitectura cloud-native (microservicios, serverless). El más lento y costoso de ejecutar, el más barato de operar después.</td></tr>
+                <tr><td>4. Repurchase</td><td>Reemplazar la aplicación legacy por un SaaS equivalente (ej. CRM propio → Salesforce).</td></tr>
+                <tr><td>5. Retire</td><td>Dar de baja la aplicación porque ya no aporta valor de negocio. Identificarlas reduce el alcance real de la migración.</td></tr>
+                <tr><td>6. Retain</td><td>Dejarla donde está (por ahora) — aplica a sistemas con dependencias regulatorias, contratos vigentes, o sin caso de negocio claro para migrar todavía.</td></tr>
+                <tr><td>7. Relocate (la séptima, agregada por AWS)</td><td>Mover infraestructura VMware completa a VMware Cloud on AWS sin cambios de hypervisor — variante especializada de Rehost.</td></tr>
+              </table>
+              <div class="pc-tip">💡 AWS Transform y AWS OLA, entre otras herramientas, ahora generan automáticamente recomendaciones de R-strategy por aplicación basadas en datos reales de uso, en lugar de depender solo del criterio manual de un arquitecto.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Cloud Adoption Framework vs Well-Architected Framework</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Madurez" data-search="caf waf diferencia cloud adoption framework well architected framework organizacional tecnico">
+            <div class="pc-head" onclick="toggleCard('pc-cafwaf')">
+              <div class="pc-head-main">
+                <div class="pc-name">CAF vs WAF — La diferencia que se confunde más</div>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Framework</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-cafwaf">▼</div>
+            </div>
+            <div class="pc-body" id="pc-cafwaf">
+              <div class="pc-desc">Estos dos frameworks se confunden constantemente porque ambos hyperscalers los publican con nombres similares, pero responden preguntas completamente distintas: <strong>el CAF evalúa si la organización está lista</strong> (personas, procesos, gobernanza); <strong>el WAF evalúa si una arquitectura técnica específica está bien diseñada</strong> (seguridad, confiabilidad, costos). Se usan en momentos distintos del proyecto y nunca se reemplazan entre sí.</div>
+              <table class="spec-table">
+                <tr><td>CAF — Cloud Adoption Framework</td><td>Evalúa madurez organizacional en 6 dimensiones: negocio, personas, gobernanza, plataforma, seguridad y operaciones. Se usa al inicio del proyecto, antes de tocar una sola VM.</td></tr>
+                <tr><td>WAF — Well-Architected Framework</td><td>Evalúa el diseño técnico de un workload específico ya desplegado o por desplegar, contra pilares como seguridad, confiabilidad y costos. Se aplica de forma rotativa, workload por workload.</td></tr>
+              </table>
+              <div class="pc-note">📌 En la práctica: el CAF se usa una vez al arrancar el programa de migración (o cuando cambia significativamente el contexto organizacional); el WAF se aplica repetidamente, cada vez que se revisa o diseña una arquitectura puntual.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ AWS ══════════════ -->
+  <div class="vert" id="v-aws">
+    <div class="vert-hd" onclick="toggleVert('aws')">
+      <div class="vert-icon" style="background:var(--aws-l);">🟧</div>
+      <div class="vert-title">AWS — El stack completo de migración</div>
+      <span class="vert-count" style="background:var(--aws-l);color:var(--aws-d);">7 programas</span>
+      <span class="vert-toggle open" id="vt-aws">▼</span>
+    </div>
+    <div class="vert-intro">AWS tiene el ecosistema más maduro y extenso de programas de migración del mercado, con piezas que cubren desde la evaluación de madurez hasta la ejecución asistida por IA agéntica. Ordenado según el momento del proyecto en que se usa cada uno.</div>
+    <div class="vert-body open" id="vb-aws">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Madurez y Arquitectura</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Madurez" data-search="aws cloud adoption framework caf 6 dimensiones madurez organizacional">
+            <div class="pc-head" onclick="toggleCard('pc-awscaf')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Cloud Adoption Framework (CAF)</div>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Madurez</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-awscaf">▼</div>
+            </div>
+            <div class="pc-body" id="pc-awscaf">
+              <div class="pc-desc">Framework de madurez organizacional de AWS, usado para identificar gaps de capacidad <strong>antes</strong> de iniciar la migración técnica. Es el primer paso recomendado por AWS para construir el modelo de TCO y entender qué tan preparada está la organización, no solo la infraestructura.</div>
+              <table class="spec-table">
+                <tr><td>Dimensiones evaluadas</td><td>Negocio, Personas, Gobernanza, Plataforma, Operaciones, Seguridad</td></tr>
+                <tr><td>Cuándo se usa</td><td>Al inicio del programa, en paralelo o antes del Assess técnico</td></tr>
+                <tr><td>Resultado</td><td>Mapa de gaps de capacidad por dimensión, insumo para el plan de Mobilize</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Arquitectura" data-search="aws well architected framework waf 6 pilares tool lenses">
+            <div class="pc-head" onclick="toggleCard('pc-awswaf')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Well-Architected Framework (WAF)</div>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Arquitectura</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-awswaf">▼</div>
+            </div>
+            <div class="pc-body" id="pc-awswaf">
+              <div class="pc-desc">El framework de revisión arquitectónica más detallado y tool-driven de los tres hyperscalers, con una biblioteca extensa de "Lenses" especializados por tipo de carga (Machine Learning, IoT, SaaS, Serverless). Se aplica workload por workload, nunca al ambiente completo de una vez.</div>
+              <table class="spec-table">
+                <tr><td>Pilares</td><td>Excelencia Operacional, Seguridad, Confiabilidad, Eficiencia de Rendimiento, Optimización de Costos, Sostenibilidad</td></tr>
+                <tr><td>Herramienta</td><td>AWS Well-Architected Tool — gratuita, en la consola</td></tr>
+                <tr><td>Diferencial</td><td>Lenses especializados por industria/tecnología — la mayor profundidad técnica del mercado</td></tr>
+              </table>
+              <div class="pc-tip">💡 Se usa tanto antes de migrar (validar el diseño objetivo) como después (revisión periódica de lo ya desplegado) — no es exclusivo de la fase de migración.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Descubrimiento y TCO (Assess)</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="TCO" data-search="aws application discovery service ads agentless agent based descubrimiento">
+            <div class="pc-head" onclick="toggleCard('pc-ads')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Application Discovery Service</div>
+                <span class="pc-name-sub">la fuente de datos</span>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-ads">▼</div>
+            </div>
+            <div class="pc-body" id="pc-ads">
+              <div class="pc-desc">Herramienta de descubrimiento que recolecta datos de configuración, utilización y dependencias de los servidores on-premise. Es el insumo de datos que alimenta tanto a Migration Evaluator como a AWS Transform — sin un buen discovery, cualquier estimación posterior es una suposición.</div>
+              <table class="spec-table">
+                <tr><td>Modos</td><td>Agentless (vía vCenter/Hyper-V) o Agent-based (instalado en cada servidor)</td></tr>
+                <tr><td>Datos recolectados</td><td>CPU, RAM, storage, red, procesos en ejecución y dependencias entre servidores</td></tr>
+                <tr><td>Costo</td><td>Sin costo — incluido como parte del proceso de Assess</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="TCO" data-search="aws migration evaluator tso logic tco quick insights right sizing">
+            <div class="pc-head" onclick="toggleCard('pc-me')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Migration Evaluator</div>
+                <span class="pc-name-sub">ex-TSO Logic</span>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-me">▼</div>
+            </div>
+            <div class="pc-body" id="pc-me">
+              <div class="pc-desc">Servicio gratuito de evaluación de TCO basado en datos reales de utilización (no en supuestos). Genera un <strong>Quick Insights</strong> de una sola página en 48 horas tras instalar el collector, y un reporte completo de business case con comparación a 1 y 3 años entre el costo on-premise actual y el costo proyectado en AWS, incluyendo análisis de licencias (BYOL vs. License Included).</div>
+              <table class="spec-table">
+                <tr><td>Tiempo a primer resultado</td><td>Quick Insights en 48 horas tras instalar el collector agentless</td></tr>
+                <tr><td>TCO cubierto on-premise</td><td>Servidores, storage, software/licencias/soporte, facilities (rack, energía, real estate)</td></tr>
+                <tr><td>TCO cubierto AWS</td><td>EC2, Reserved Instances, storage, bases de datos, VMware Cloud on AWS, licencias</td></tr>
+                <tr><td>Costo</td><td>Sin costo — servicio gratuito de AWS</td></tr>
+                <tr><td>Ideal para</td><td>Enterprises con infraestructura compleja que necesitan un business case formal y defendible</td></tr>
+              </table>
+              <div class="pc-note">📌 Migration Evaluator es el predecesor conceptual y complementario de AWS Transform: Evaluator se enfoca 100% en el business case de TCO; Transform además ejecuta la migración con IA agéntica.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="TCO" data-search="aws ola optimization licensing assessment windows sql server byol oracle">
+            <div class="pc-head" onclick="toggleCard('pc-ola')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Optimization and Licensing Assessment (OLA)</div>
+                <span class="pc-name-sub">foco en licenciamiento</span>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-ola">▼</div>
+            </div>
+            <div class="pc-body" id="pc-ola">
+              <div class="pc-desc">Programa gratuito enfocado específicamente en <strong>optimización de licenciamiento de software de terceros</strong> (Windows Server, SQL Server, Oracle, IBM DB2, RHEL) al migrar a AWS. Analiza uso real de recursos y dependencias de aplicación para modelar opciones de despliegue, recomendando el mix óptimo entre on-demand, spot, BYOL y savings plans.</div>
+              <table class="spec-table">
+                <tr><td>Ahorro promedio Windows Server</td><td>77% de reducción en costos de licencia (dato de AWS)</td></tr>
+                <tr><td>Ahorro promedio SQL Server</td><td>45% de reducción, vía consolidación, rightsizing de cores y optimización de edición</td></tr>
+                <tr><td>Quién lo lidera</td><td>Típicamente el CIO/CTO como Migration Sponsor, con Solution Architects, DBAs, ITAM y Procurement</td></tr>
+                <tr><td>Entregables</td><td>Executive Summary, Licensing Summary, Dedicated Host Mapping, SQL Optimization, estimación de costos optimizada</td></tr>
+                <tr><td>Caso real (Damart)</td><td>56% de reducción en licencias Oracle + 50% de reducción en infraestructura AWS</td></tr>
+              </table>
+              <div class="pc-tip">💡 OLA y Migration Evaluator no son excluyentes: Evaluator da el TCO general de infraestructura, OLA profundiza específicamente en la capa de licenciamiento de software — en proyectos con SQL Server u Oracle pesados, conviene corren ambos.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Ejecución y Modernización (Migrate)</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Ejecución" data-search="aws transform agentic ai mainframe windows vmware modernizacion kiro">
+            <div class="pc-head" onclick="toggleCard('pc-transform')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Transform</div>
+                <span class="pc-name-sub">IA agéntica — el más nuevo de todos</span>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Ejecución</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-transform">▼</div>
+            </div>
+            <div class="pc-body" id="pc-transform">
+              <div class="pc-desc">El primer servicio de IA agéntica de AWS para migración y modernización a gran escala. No es solo una herramienta de estimación: <strong>ejecuta activamente</strong> el análisis, planificación, documentación y transformación de aplicaciones Windows .NET, mainframes (COBOL/JCL) y entornos VMware completos, con agentes especializados que colaboran en un workspace compartido con el equipo humano.</div>
+              <table class="spec-table">
+                <tr><td>Velocidad declarada</td><td>Hasta 5x más rápido que modernización manual; casos de hasta 1.5M líneas de código analizadas por mes</td></tr>
+                <tr><td>Mainframe</td><td>Extrae lógica de negocio de COBOL/JCL, genera microservicios, con integración nativa a Kiro para especificación y generación de código</td></tr>
+                <tr><td>VMware → AWS</td><td>Descubre el entorno on-premise, prioriza apps por negocio, mapea dependencias, migra Windows/Linux x86, hypervisors (VMware, Hyper-V, Nutanix, KVM) y bare-metal</td></tr>
+                <tr><td>TCO integrado</td><td>Genera business case de TCO en minutos a partir de exports de RVTools, Migration Evaluator agentless collector o formato MPA (ModelizeIT/Cloudamize)</td></tr>
+                <tr><td>Modo de trabajo</td><td>Human-in-the-loop obligatorio — el código y las especificaciones generadas por IA se validan siempre por expertos humanos</td></tr>
+                <tr><td>Caso real (aerolínea)</td><td>80% de reducción en tiempo y costo estimado en modernización de miles de funciones Lambda</td></tr>
+              </table>
+              <div class="pc-warn">⚠️ AWS Transform es una herramienta de ejecución asistida, no un sustituto del juicio de un arquitecto senior — el "human in the loop" no es opcional en mainframe ni en transformaciones de lógica de negocio crítica.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Ejecución" data-search="aws migration hub orquestacion seguimiento progreso panel central">
+            <div class="pc-head" onclick="toggleCard('pc-hub')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Migration Hub</div>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Ejecución</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-hub">▼</div>
+            </div>
+            <div class="pc-body" id="pc-hub">
+              <div class="pc-desc">Panel central gratuito que orquesta y centraliza el seguimiento del progreso de todas las migraciones, integrando datos de Application Discovery Service y de las herramientas de migración (MGN, DMS) en una sola vista. No estima costos — coordina y trackea ejecución.</div>
+              <table class="spec-table">
+                <tr><td>Función principal</td><td>Visibilidad centralizada del progreso de migración across múltiples herramientas y cuentas</td></tr>
+                <tr><td>Costo</td><td>Sin costo — se paga solo por los recursos AWS subyacentes consumidos</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Funding y Aceleración</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Funding" data-search="aws map migration acceleration program funding credits assess mobilize migrate modernize ARR">
+            <div class="pc-head" onclick="toggleCard('pc-map')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Migration Acceleration Program (MAP)</div>
+                <span class="pc-name-sub">la billetera del programa</span>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Funding</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-map">▼</div>
+            </div>
+            <div class="pc-body" id="pc-map">
+              <div class="pc-desc">El programa estructurado de financiamiento de AWS para migraciones, ejecutado siempre a través de un AWS Partner con competencia de Migración. No es una herramienta técnica — es el mecanismo que convierte el trabajo de Assess, Mobilize y Migrate en créditos reales que reducen el costo del proyecto. Tuvo un cambio mayor en julio 2024 que amplió significativamente su alcance.</div>
+              <table class="spec-table">
+                <tr><td>Fases</td><td>Assess → Mobilize (~20% de ARR proyectado) → Migrate &amp; Modernize (15-25% de ARR, mayor para SAP/mainframe/VMware)</td></tr>
+                <tr><td>Funding máximo (post jul. 2024)</td><td>Hasta $2.000.000 USD en funding de partner, antes el tope era $460.000</td></tr>
+                <tr><td>MAP Lite (entrada mid-market)</td><td>Disponible desde $100.000 USD de ARR (antes el mínimo era $250.000) — 15% de ARR en fases tempranas + 10% adicional en migración</td></tr>
+                <tr><td>Requisito clave</td><td>Tagging correcto de los recursos migrados es obligatorio para que el spend cuente como elegible para créditos</td></tr>
+                <tr><td>Cómo se accede</td><td>Exclusivamente a través de un AWS Partner con AWS Migration Competency (200+ partners certificados globalmente)</td></tr>
+                <tr><td>Forma del funding</td><td>Créditos de servicios AWS otorgados al Partner, no efectivo directo al cliente final</td></tr>
+              </table>
+              <div class="pc-tip">💡 El funding de MAP se paga contra hitos documentados y consumo real, no contra un contrato firmado — cada fase requiere entregables aprobados por AWS antes de liberar el siguiente tramo.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ AZURE ══════════════ -->
+  <div class="vert" id="v-azure">
+    <div class="vert-hd" onclick="toggleVert('azure')">
+      <div class="vert-icon" style="background:var(--azu-l);">🔷</div>
+      <div class="vert-title">Microsoft Azure</div>
+      <span class="vert-count" style="background:var(--azu-l);color:var(--azu-d);">3 programas</span>
+      <span class="vert-toggle open" id="vt-azure">▼</span>
+    </div>
+    <div class="vert-intro">El stack de Azure es más compacto que el de AWS, con fuerte foco en entornos Microsoft-céntricos (Windows Server, SQL Server, .NET) y en escenarios híbridos.</div>
+    <div class="vert-body open" id="vb-azure">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Framework y Arquitectura</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Arquitectura" data-search="azure well architected framework waf 5 pilares workload centric confiabilidad">
+            <div class="pc-head" onclick="toggleCard('pc-azwaf')">
+              <div class="pc-head-main">
+                <div class="pc-name">Azure Well-Architected Framework</div>
+                <span class="tipo-badge" style="background:var(--azu-l);color:var(--azu-d);">Arquitectura</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-azwaf">▼</div>
+            </div>
+            <div class="pc-body" id="pc-azwaf">
+              <div class="pc-desc">Explícitamente <strong>workload-centric</strong>: se aplica a una aplicación o plataforma específica, nunca al tenant completo de la organización. Restructurado en 2023 de 6 a 5 pilares, absorbiendo sostenibilidad dentro de los pilares existentes en lugar de tratarla como categoría separada.</div>
+              <table class="spec-table">
+                <tr><td>Pilares</td><td>Confiabilidad, Seguridad, Optimización de Costos, Excelencia Operacional, Eficiencia de Rendimiento</td></tr>
+                <tr><td>Diferencial</td><td>Fuerte en gobernanza y soporte de escenarios híbridos (Azure Arc, Azure Local)</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Descubrimiento y TCO</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="TCO" data-search="azure migrate hub centralizado descubrimiento agentless windows sql tco business case">
+            <div class="pc-head" onclick="toggleCard('pc-azmig')">
+              <div class="pc-head-main">
+                <div class="pc-name">Azure Migrate</div>
+                <span class="pc-name-sub">el equivalente a Migration Evaluator + Discovery</span>
+                <span class="tipo-badge" style="background:var(--azu-l);color:var(--azu-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-azmig">▼</div>
+            </div>
+            <div class="pc-body" id="pc-azmig">
+              <div class="pc-desc">Hub centralizado de Microsoft que combina descubrimiento, assessment y migración en una sola plataforma. Usa discovery agentless para inventariar VMware, Hyper-V y servidores físicos sin instalar software en cada guest, y genera automáticamente business cases de TCO con métricas de sostenibilidad incluidas — algo que ni AWS ni GCP destacan tanto en sus reportes.</div>
+              <table class="spec-table">
+                <tr><td>Discovery</td><td>Agentless — sin instalación en servidores individuales, vía vCenter/Hyper-V/físicos</td></tr>
+                <tr><td>Fortaleza distintiva</td><td>Entornos Windows Server y SQL Server — el estándar de facto para migrar a Azure</td></tr>
+                <tr><td>Apps soportadas</td><td>Discovery y assessment de apps .NET y Java, con recomendaciones de rightsizing basadas en historial de performance</td></tr>
+                <tr><td>Costos</td><td>Discovery y assessment gratuitos; migración de servidor gratis los primeros 180 días por máquina, luego cargo modesto por instancia; BD y apps web migran gratis siempre</td></tr>
+                <tr><td>Limitación reconocida</td><td>Optimizado para stack Microsoft — menor profundidad en entornos heavy-Linux o con bases de datos no-Microsoft</td></tr>
+              </table>
+              <div class="pc-note">📌 Azure Migrate tiene un ecosistema rico de herramientas de terceros integradas (Cloudamize fue una de las primeras, desde 2019), aunque su escalabilidad nativa es más cómoda en rangos de 5-50 VMs que en migraciones masivas de 1000+.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Funding" data-search="azure hybrid benefit licencias propias byol windows sql server ahorro">
+            <div class="pc-head" onclick="toggleCard('pc-ahb')">
+              <div class="pc-head-main">
+                <div class="pc-name">Azure Hybrid Benefit</div>
+                <span class="tipo-badge" style="background:var(--azu-l);color:var(--azu-d);">Funding</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-ahb">▼</div>
+            </div>
+            <div class="pc-body" id="pc-ahb">
+              <div class="pc-desc">El equivalente Azure a la lógica BYOL de AWS OLA: permite reutilizar licencias on-premise de Windows Server y SQL Server con Software Assurance (o suscripciones equivalentes) directamente en Azure, evitando pagar el costo de licencia incluida sobre el cómputo.</div>
+              <table class="spec-table">
+                <tr><td>Aplica a</td><td>Windows Server y SQL Server con Software Assurance vigente</td></tr>
+                <tr><td>Beneficio</td><td>Reducción directa del costo de cómputo al no pagar licencia incluida sobre el VM/instancia</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ GCP ══════════════ -->
+  <div class="vert" id="v-gcp">
+    <div class="vert-hd" onclick="toggleVert('gcp')">
+      <div class="vert-icon" style="background:var(--gcp-l);">🟩</div>
+      <div class="vert-title">Google Cloud Platform</div>
+      <span class="vert-count" style="background:var(--gcp-l);color:var(--gcp-d);">2 programas</span>
+      <span class="vert-toggle open" id="vt-gcp">▼</span>
+    </div>
+    <div class="vert-intro">El stack más chico de los tres en cantidad de programas formales, con sesgo natural hacia cargas de datos y Machine Learning — coherente con el origen de Google como compañía de datos.</div>
+    <div class="vert-body open" id="vb-gcp">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Descubrimiento y TCO</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="TCO" data-search="gcp migration center migrate for compute engine descubrimiento tco assessment">
+            <div class="pc-head" onclick="toggleCard('pc-gcpmc')">
+              <div class="pc-head-main">
+                <div class="pc-name">Google Cloud Migration Center</div>
+                <span class="pc-name-sub">ex-"Migrate for Compute Engine"</span>
+                <span class="tipo-badge" style="background:var(--gcp-l);color:var(--gcp-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-gcpmc">▼</div>
+            </div>
+            <div class="pc-body" id="pc-gcpmc">
+              <div class="pc-desc">Herramienta unificada de Google para descubrimiento, planificación de migración y estimación de costos, con foco declarado en velocidad y mínimo downtime. Automatiza el proceso de planificación de forma similar a Azure Migrate, pero con integración nativa hacia BigQuery y Vertex AI para cargas que terminan en analítica o ML.</div>
+              <table class="spec-table">
+                <tr><td>Función principal</td><td>Discovery, assessment de costos y planificación de migración de VMs a Compute Engine</td></tr>
+                <tr><td>Fortaleza distintiva</td><td>Workloads de datos y ML — integración natural con BigQuery, Vertex AI, Dataflow</td></tr>
+                <tr><td>Modelo de costos GCP</td><td>Egress reducido significativamente en 2025-2026 frente a AWS/Azure — relevante para cargas con alta transferencia saliente</td></tr>
+              </table>
+              <div class="pc-tip">💡 Para organizaciones con foco en datos y analítica más que en cómputo tradicional, GCP Migration Center suele requerir menos trabajo adicional de modernización post-migración, porque el destino natural ya es BigQuery/Vertex AI.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ HUAWEI CLOUD ══════════════ -->
+  <div class="vert" id="v-hwc">
+    <div class="vert-hd" onclick="toggleVert('hwc')">
+      <div class="vert-icon" style="background:var(--hwc-l);">🔴</div>
+      <div class="vert-title">Huawei Cloud</div>
+      <span class="vert-count" style="background:var(--hwc-l);color:var(--hwc-d);">3 programas</span>
+      <span class="vert-toggle open" id="vt-hwc">▼</span>
+    </div>
+    <div class="vert-intro">El cuarto hyperscaler relevante en LATAM (incluyendo Argentina, vía Personal Tech). Tiene un framework propio de adopción con assessments de madurez, y una herramienta de migración (Migration Center) con una particularidad única: puede leer directamente el billing de AWS para construir el TCO comparativo.</div>
+    <div class="vert-body open" id="vb-hwc">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Framework de Madurez</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Madurez" data-search="huawei cloud adoption framework caf maturity assessments devops landing zone seguridad">
+            <div class="pc-head" onclick="toggleCard('pc-hwccaf')">
+              <div class="pc-head-main">
+                <div class="pc-name">Huawei Cloud Adoption Framework (CAF)</div>
+                <span class="tipo-badge" style="background:var(--hwc-l);color:var(--hwc-d);">Madurez</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-hwccaf">▼</div>
+            </div>
+            <div class="pc-body" id="pc-hwccaf">
+              <div class="pc-desc">Framework propio de Huawei, estructurado de forma similar al de AWS/Azure pero con <strong>7 maturity assessments específicos</strong> ejecutados directamente desde la consola de Migration Center: DevOps, Landing Zone, Seguridad, Big Data, Base de Datos, Modernización de Aplicaciones y Cloud-Native. Cada assessment es un cuestionario guiado que termina en un reporte exportable en PDF con sugerencias de mejora.</div>
+              <table class="spec-table">
+                <tr><td>Los 7 assessments</td><td>DevOps · Landing Zone · Seguridad · Big Data · Base de Datos · Modernización de Apps · Cloud-Native</td></tr>
+                <tr><td>Formato</td><td>Cuestionario por rol (las preguntas cambian según el perfil de quien responde)</td></tr>
+                <tr><td>Resultado</td><td>Reporte de madurez con sugerencias de mejora y acceso a servicios profesionales relacionados</td></tr>
+              </table>
+              <div class="pc-note">📌 A diferencia de AWS y Azure, Huawei integra estos assessments de madurez directamente dentro de la misma consola de Migration Center — no son un programa separado con su propia herramienta.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Discovery, TCO y Ejecución</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="TCO" data-search="huawei migration center mgc discovery tco cross cloud billing aws credenciales">
+            <div class="pc-head" onclick="toggleCard('pc-mgc')">
+              <div class="pc-head-main">
+                <div class="pc-name">Migration Center (MgC)</div>
+                <span class="pc-name-sub">discovery + TCO + ejecución, todo en uno</span>
+                <span class="tipo-badge" style="background:var(--hwc-l);color:var(--hwc-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-mgc">▼</div>
+            </div>
+            <div class="pc-body" id="pc-mgc">
+              <div class="pc-desc">La plataforma central de migración de Huawei Cloud, equivalente conceptual a Azure Migrate o GCP Migration Center. Su rasgo más distintivo: el módulo de <strong>TCO Analysis para migración cross-cloud</strong> permite compartir credenciales de solo lectura de la cuenta AWS del cliente, y MgC analiza directamente el billing real para identificar qué recursos se están usando y mapearlos a sus equivalentes en Huawei Cloud — sin necesidad de exportar manualmente el inventario.</div>
+              <table class="spec-table">
+                <tr><td>TCO cross-cloud</td><td>Lee billing real de AWS vía credenciales compartidas; actualmente soporta AWS como origen para el análisis automatizado</td></tr>
+                <tr><td>Mapeo de servicios</td><td>Empareja automáticamente recursos del cloud origen (ej. EC2, RDS) con sus equivalentes en Huawei Cloud (ECS, RDS)</td></tr>
+                <tr><td>Servicios destacados monitoreados</td><td>ECS (cómputo), EIP, RDS for MySQL, EVS (storage en bloque), MRS (MapReduce/Big Data)</td></tr>
+                <tr><td>Maturity Assessments</td><td>Los 7 assessments del CAF de Huawei se ejecutan desde esta misma consola</td></tr>
+              </table>
+              <div class="pc-tip">💡 Para un cliente que ya está en AWS y evalúa Huawei Cloud como alternativa (relevante en Argentina por el contexto de precios en pesos y datacenter local), este análisis de billing real es más persuasivo en una propuesta que un comparativo de lista de precios genérico.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Ejecución" data-search="huawei sms drs oms cdm server migration service data replication object storage cloud data migration herramientas ejecucion">
+            <div class="pc-head" onclick="toggleCard('pc-hwctools')">
+              <div class="pc-head-main">
+                <div class="pc-name">Suite de Ejecución: SMS, DRS, OMS, CDM</div>
+                <span class="tipo-badge" style="background:var(--hwc-l);color:var(--hwc-d);">Ejecución</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-hwctools">▼</div>
+            </div>
+            <div class="pc-body" id="pc-hwctools">
+              <div class="pc-desc">A diferencia de AWS (que concentra ejecución en Transform + MGN + DMS) o Azure (todo dentro de Azure Migrate), Huawei separa la ejecución en 4 servicios especializados según el tipo de dato a mover, cada uno con su propia herramienta dedicada.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Las 4 herramientas de ejecución</div>
+                <ul class="pc-list">
+                  <li><strong>SMS (Server Migration Service):</strong> replicación a nivel de bloque de VMs Windows/Linux hacia ECS o Flexus, equivalente a AWS MGN</li>
+                  <li><strong>DRS (Data Replication Service):</strong> migración online de bases de datos (MySQL, PostgreSQL, SQL Server, Oracle, MongoDB) con downtime mínimo, equivalente a AWS DMS</li>
+                  <li><strong>OMS (Object Storage Migration):</strong> transferencia masiva hacia OBS desde S3, NAS on-premise u otros object stores</li>
+                  <li><strong>CDM (Cloud Data Migration):</strong> migración especializada para data lakes y data warehouses</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Arquitectura" data-search="huawei cloud euleros hce sistema operativo migracion os centos rhel compatibilidad">
+            <div class="pc-head" onclick="toggleCard('pc-hce')">
+              <div class="pc-head-main">
+                <div class="pc-name">Huawei Cloud EulerOS (HCE)</div>
+                <span class="pc-name-sub">migración a nivel de sistema operativo</span>
+                <span class="tipo-badge" style="background:var(--hwc-l);color:var(--hwc-d);">Arquitectura</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-hce">▼</div>
+            </div>
+            <div class="pc-body" id="pc-hce">
+              <div class="pc-desc">Capa adicional que no tiene un equivalente directo tan formalizado en AWS/Azure/GCP: una herramienta dedicada (x2hce) para migrar el propio sistema operativo de instancias existentes (CentOS, EulerOS de versiones anteriores) hacia HCE, el Linux empresarial propio de Huawei, sin necesidad de recrear la instancia desde cero.</div>
+              <table class="spec-table">
+                <tr><td>OS soportados como origen</td><td>CentOS 8, EulerOS 2.9 / 2.10</td></tr>
+                <tr><td>Qué se preserva</td><td>IP, dirección MAC y el disco de datos permanecen sin cambios durante la migración de OS</td></tr>
+                <tr><td>Relevancia</td><td>Especialmente útil dado el fin de soporte de CentOS — ofrece una ruta de migración de OS sin re-provisionar la VM completa</td></tr>
+              </table>
+              <div class="pc-warn">⚠️ El tipo de disco del sistema no puede cambiarse después de la migración de OS, y el cambio de BIOS a UEFI no está soportado — son restricciones a verificar antes de comprometerse con esta ruta en una propuesta.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════ MULTI-CLOUD ══════════════ -->
+  <div class="vert" id="v-multicloud">
+    <div class="vert-hd" onclick="toggleVert('multicloud')">
+      <div class="vert-icon" style="background:var(--mlt-l);">🟣</div>
+      <div class="vert-title">Herramientas Multi-Cloud / Vendor-Neutral</div>
+      <span class="vert-count" style="background:var(--mlt-l);color:var(--mlt-d);">3 herramientas</span>
+      <span class="vert-toggle open" id="vt-multicloud">▼</span>
+    </div>
+    <div class="vert-intro">Cuando el cliente todavía no decidió a qué cloud va, o cuando el destino es explícitamente híbrido/multi-cloud, estas herramientas alimentan de datos a cualquiera de los tres hyperscalers por igual.</div>
+    <div class="vert-body open" id="vb-multicloud">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Discovery y TCO Vendor-Neutral</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="TCO" data-search="rvtools vmware export discovery formato estandar insumo">
+            <div class="pc-head" onclick="toggleCard('pc-rvtools')">
+              <div class="pc-head-main">
+                <div class="pc-name">RVTools</div>
+                <span class="pc-name-sub">el formato de exportación estándar</span>
+                <span class="tipo-badge" style="background:var(--mlt-l);color:var(--mlt-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rvtools">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rvtools">
+              <div class="pc-desc">Herramienta gratuita y muy difundida que extrae inventario detallado de un entorno VMware vCenter (VMs, hosts, datastores, redes, snapshots). Su export en Excel se volvió un formato cuasi-estándar de la industria: tanto AWS Transform como otras herramientas de assessment aceptan directamente archivos RVTools como insumo de discovery.</div>
+              <table class="spec-table">
+                <tr><td>Costo</td><td>Gratuito</td></tr>
+                <tr><td>Alcance</td><td>Exclusivamente entornos VMware vCenter</td></tr>
+                <tr><td>Uso típico</td><td>Primer paso rápido de inventario antes de instalar herramientas de discovery más pesadas</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="TCO" data-search="cloudamize tco multicloud comparacion aws azure gcp analitica">
+            <div class="pc-head" onclick="toggleCard('pc-cloudamize')">
+              <div class="pc-head-main">
+                <div class="pc-name">Cloudamize</div>
+                <span class="tipo-badge" style="background:var(--mlt-l);color:var(--mlt-d);">TCO</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-cloudamize">▼</div>
+            </div>
+            <div class="pc-body" id="pc-cloudamize">
+              <div class="pc-desc">Plataforma de analítica de alta precisión para planificación de migración. Calcula requerimientos de cómputo, storage y red, generando comparaciones de TCO detalladas <strong>simultáneas entre AWS, Azure y GCP</strong> — útil específicamente cuando el cliente todavía está decidiendo el proveedor destino.</div>
+              <table class="spec-table">
+                <tr><td>Diferencial</td><td>Comparación de TCO multi-cloud en un solo reporte, sin sesgo hacia un hyperscaler</td></tr>
+                <tr><td>Integración</td><td>Fue una de las primeras herramientas de terceros integradas al ecosistema de Azure Migrate (desde 2019)</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Movilidad Híbrida VMware</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Ejecución" data-search="vmware hcx movilidad hibrida vmware cloud aws azure vmware solution google cloud vmware engine">
+            <div class="pc-head" onclick="toggleCard('pc-hcx')">
+              <div class="pc-head-main">
+                <div class="pc-name">VMware HCX</div>
+                <span class="pc-name-sub">clave para escenarios híbridos VMware</span>
+                <span class="tipo-badge" style="background:var(--mlt-l);color:var(--mlt-d);">Ejecución</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-hcx">▼</div>
+            </div>
+            <div class="pc-body" id="pc-hcx">
+              <div class="pc-desc">Herramienta de movilidad de aplicaciones e hibridez de infraestructura de VMware. Es la pieza clave cuando el destino es <strong>VMware Cloud on AWS</strong>, <strong>Azure VMware Solution</strong> o <strong>Google Cloud VMware Engine</strong> — permite migrar VMs en vivo entre el datacenter on-premise y cualquiera de esos tres destinos sin cambiar de hypervisor ni reconfigurar IPs.</div>
+              <table class="spec-table">
+                <tr><td>Función de assessment</td><td>Evalúa compatibilidad de workloads para el movimiento hacia los tres destinos VMware-en-cloud mencionados</td></tr>
+                <tr><td>Ventaja clave</td><td>Migración en caliente sin re-IP, manteniendo el mismo hypervisor — reduce drásticamente el riesgo de migración</td></tr>
+                <tr><td>Contexto post-Broadcom</td><td>Relevante para organizaciones que migran a cloud para escapar del nuevo modelo de licenciamiento per-core sin perder su inversión en VMware</td></tr>
+              </table>
+              <div class="pc-note">📌 Esta es la herramienta puente para clientes con alta inversión en VMware que quieren ir a cloud público sin reconstruir toda su infraestructura desde cero.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ MATRIZ ══════════════ -->
+  <div class="vert" id="v-matriz">
+    <div class="vert-hd" onclick="toggleVert('matriz')">
+      <div class="vert-icon" style="background:var(--con-l);">📊</div>
+      <div class="vert-title">Matriz Comparativa — Qué usar y cuándo</div>
+      <span class="vert-count" style="background:var(--con-l);color:var(--con-d);">vista rápida</span>
+      <span class="vert-toggle open" id="vt-matriz">▼</span>
+    </div>
+    <div class="vert-intro">Para tener todo de un vistazo, sin desplegar cada card: qué programa corresponde a cada fase del proyecto, por hyperscaler.</div>
+    <div class="vert-body open" id="vb-matriz">
+
+      <div class="matrix-wrap">
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>AWS</th><th>Azure</th><th>GCP</th><th>Huawei Cloud</th><th>Multi-Cloud</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Madurez Org.</strong></td><td>AWS CAF</td><td>Cloud Adoption Framework (Azure)</td><td>Equivalente sin marca propia destacada</td><td>Huawei CAF — 7 maturity assessments en MgC</td><td>—</td></tr>
+            <tr><td><strong>Arquitectura</strong></td><td>AWS Well-Architected (6 pilares + Lenses)</td><td>Azure Well-Architected (5 pilares, workload-centric)</td><td>Enfoque equivalente, sesgo a datos/ML</td><td>Maturity Assessment de Cloud-Native (en MgC)</td><td>—</td></tr>
+            <tr><td><strong>Discovery</strong></td><td>Application Discovery Service</td><td>Azure Migrate (agentless)</td><td>Migration Center</td><td>Migration Center (MgC) — RDA (Resource Discovery)</td><td>RVTools (solo VMware)</td></tr>
+            <tr><td><strong>TCO / Business Case</strong></td><td>Migration Evaluator (gratuito, 48hs)</td><td>Azure Migrate (incluye sostenibilidad)</td><td>Migration Center</td><td>MgC — único con lectura directa de billing AWS para TCO cross-cloud</td><td>Cloudamize (compara los 3 a la vez)</td></tr>
+            <tr><td><strong>Optimización Licencias</strong></td><td>AWS OLA (Windows, SQL, Oracle, DB2, RHEL)</td><td>Azure Hybrid Benefit (Windows/SQL con SA)</td><td>No tiene programa equivalente formal</td><td>No tiene programa equivalente formal</td><td>—</td></tr>
+            <tr><td><strong>Ejecución / IA</strong></td><td>AWS Transform (agéntica, mainframe/Windows/VMware)</td><td>Sin equivalente agéntico de la misma magnitud (2026)</td><td>Sin equivalente agéntico de la misma magnitud (2026)</td><td>SMS, DRS, OMS, CDM (sin orquestación agéntica)</td><td>—</td></tr>
+            <tr><td><strong>Orquestación</strong></td><td>AWS Migration Hub</td><td>Azure Migrate (hub integrado)</td><td>Migration Center (hub integrado)</td><td>Migration Center (hub integrado)</td><td>—</td></tr>
+            <tr><td><strong>Funding</strong></td><td>MAP — hasta $2M USD, 15-25% de ARR</td><td>Programas de funding vía partner (caso a caso)</td><td>Programas de funding vía partner (caso a caso)</td><td>Programas de funding vía partner local (caso a caso)</td><td>—</td></tr>
+            <tr><td><strong>Híbrido VMware</strong></td><td>VMware Cloud on AWS + HCX</td><td>Azure VMware Solution + HCX</td><td>Google Cloud VMware Engine + HCX</td><td>Sin oferta VMware-nativa equivalente</td><td>VMware HCX (la misma herramienta para los 3 mayores)</td></tr>
+            <tr><td><strong>Migración de OS</strong></td><td>Sin herramienta dedicada equivalente</td><td>Sin herramienta dedicada equivalente</td><td>Sin herramienta dedicada equivalente</td><td>x2hce — migra el OS in-place (CentOS/EulerOS → HCE)</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prod-card" style="margin-top:14px;" data-tipo="Madurez" data-search="conclusion resumen impacto preventa cliente conversacion orden correcto">
+        <div class="pc-head" onclick="toggleCard('pc-concl')">
+          <div class="pc-head-main">
+            <div class="pc-name">📌 El orden correcto para una propuesta sólida</div>
+            <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Conclusión</span>
+          </div>
+          <div class="pc-arrow" id="arr-pc-concl">▼</div>
+        </div>
+        <div class="pc-body" id="pc-concl">
+          <div class="pc-desc">Cuando un cliente pide "una cotización de migración a AWS/Azure/GCP" sin más contexto, el orden recomendado para que el número final sea defendible es:</div>
+          <ul class="pc-list">
+            <li><strong>1.</strong> Evaluar madurez organizacional (CAF) — identifica si faltan capacidades antes de tocar infraestructura</li>
+            <li><strong>2.</strong> Descubrimiento real de datos (Discovery / Migration Evaluator / Azure Migrate / Migration Center) — nunca estimar sobre supuestos</li>
+            <li><strong>3.</strong> Asignar R-strategy por workload — no todo es Rehost, y mezclar mal las estrategias infla el costo</li>
+            <li><strong>4.</strong> Si hay licenciamiento de terceros pesado (Windows, SQL, Oracle), correr OLA o Azure Hybrid Benefit en paralelo</li>
+            <li><strong>5.</strong> Validar el diseño técnico final contra el Well-Architected Framework correspondiente</li>
+            <li><strong>6.</strong> Recién ahí, calcular si aplica funding (MAP u otros) para reducir el costo neto al cliente</li>
+          </ul>
+          <div class="pc-tip">💡 Saltar el paso 2 (discovery real) es el error más frecuente en preventa — cotizar "a ojo" sobre lo que el cliente cree que tiene, en lugar de lo que realmente está usando, es la principal causa de presupuestos que después no cierran en la ejecución.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+    <span>Fuentes: documentación oficial AWS, Microsoft y Google — Verificado junio 2026</span>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function toggleVert(id){
+  const b = document.getElementById('vb-'+id);
+  const t = document.getElementById('vt-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open', b.classList.contains('open'));
+}
+
+function toggleCard(id){
+  const body = document.getElementById(id);
+  const arrow = document.getElementById('arr-'+id);
+  body.classList.toggle('open');
+  arrow.classList.toggle('open', body.classList.contains('open'));
+}
+
+function expandAll(){
+  document.querySelectorAll('.pc-body').forEach(b=>b.classList.add('open'));
+  document.querySelectorAll('.pc-arrow').forEach(a=>a.classList.add('open'));
+}
+function collapseAll(){
+  document.querySelectorAll('.pc-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.pc-arrow').forEach(a=>a.classList.remove('open'));
+}
+
+let activeTipo = 'all';
+
+function setTipoFilter(btn, tipo){
+  document.querySelectorAll('.tipo-pill[data-tipo]').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  activeTipo = tipo;
+  filterProducts();
+}
+
+function filterProducts(){
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  let anyVisible = false;
+
+  document.querySelectorAll('.vert').forEach(vert=>{
+    let vertHasVisible = false;
+
+    vert.querySelectorAll('.subcat-group').forEach(group=>{
+      let groupHasVisible = false;
+      group.querySelectorAll('.prod-card').forEach(card=>{
+        const text = card.getAttribute('data-search') || '';
+        const tipo = card.getAttribute('data-tipo') || '';
+        const labelEl = group.querySelector('.subcat-label');
+        const matchesSearch = !q || text.includes(q) || (labelEl && labelEl.textContent.toLowerCase().includes(q));
+        const matchesTipo = activeTipo==='all' || tipo.includes(activeTipo);
+        const visible = matchesSearch && matchesTipo;
+        card.classList.toggle('hidden', !visible);
+        if(visible){ groupHasVisible = true; vertHasVisible = true; anyVisible = true; }
+      });
+      group.style.display = groupHasVisible ? '' : 'none';
+    });
+
+    vert.querySelectorAll(':scope > .vert-body > .prod-card').forEach(card=>{
+      const text = card.getAttribute('data-search') || '';
+      const tipo = card.getAttribute('data-tipo') || '';
+      const matchesSearch = !q || text.includes(q);
+      const matchesTipo = activeTipo==='all' || tipo.includes(activeTipo);
+      const visible = matchesSearch && matchesTipo;
+      card.classList.toggle('hidden', !visible);
+      if(visible){ vertHasVisible = true; anyVisible = true; }
+    });
+
+    if(q || activeTipo!=='all'){
+      const body = vert.querySelector('.vert-body');
+      const tog = vert.querySelector('.vert-toggle');
+      if(vertHasVisible){ body.classList.add('open'); tog.classList.add('open'); }
+    }
+  });
+
+  document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+}
+
+const verts = document.querySelectorAll('.vert');
+const navs = document.querySelectorAll('.tn');
+window.addEventListener('scroll', function(){
+  const sy = window.scrollY + 110;
+  verts.forEach(v=>{
+    if(sy >= v.offsetTop && sy < v.offsetTop + v.offsetHeight){
+      navs.forEach(n=>n.classList.remove('active'));
+      const a = document.querySelector('.tn[href="#'+v.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infraestructura vs Ciberseguridad vs Continuidad de Negocio | DR en Cloud</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --inf:#0070F3;--inf-l:#EBF5FF;--inf-d:#004DBF;
+  --seg:#DC2626;--seg-l:#FEE2E2;--seg-d:#7F1D1D;
+  --bcp:#059669;--bcp-l:#D1FAE5;--bcp-d:#065F46;
+  --aws:#D97706;--aws-l:#FEF3C7;--aws-d:#78350F;
+  --azu:#0070F3;--azu-l:#EBF5FF;--azu-d:#004DBF;
+  --gcp:#059669;--gcp-l:#D1FAE5;--gcp-d:#065F46;
+  --hwc:#E2001A;--hwc-l:#FDE2E5;--hwc-d:#8B0000;
+  --vmw:#7C3AED;--vmw-l:#EDE9FE;--vmw-d:#4C1D95;
+  --con:#6B21A8;--con-l:#F3E8FF;--con-d:#581C87;
+  --ink:#0D1117;--ink2:#1C2333;--ink3:#374151;
+  --muted:#6B7280;--faint:#9CA3AF;--line:#E5E7EB;
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;
+  --r:10px;--r-sm:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink3);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+.topnav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px;overflow-x:auto;gap:0;}
+.tn-brand{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap;padding:13px 16px 13px 0;border-right:1px solid var(--line);margin-right:6px;}
+.tn{font-size:11px;font-weight:700;padding:14px 11px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--faint);transition:all .15s;text-decoration:none;}
+.tn:hover,.tn.active{color:var(--ink);border-bottom-color:var(--ink);}
+
+.page{max-width:1100px;margin:0 auto;padding:30px 24px 70px;}
+
+.hdr{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
+.hdr-title{font-size:25px;font-weight:800;letter-spacing:-.4px;line-height:1.15;color:var(--ink);}
+.hdr-sub{font-size:12.5px;color:var(--muted);margin-top:4px;}
+.hdr-meta{text-align:right;font-size:11px;color:var(--faint);}
+
+.intro-banner{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:22px;}
+.intro-banner-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.intro-banner-text{font-size:12.5px;color:var(--ink3);line-height:1.65;}
+.intro-banner-text strong{color:var(--ink);}
+
+.stats{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+.stat{flex:1;min-width:120px;border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;}
+.stat-val{font-size:20px;font-weight:800;color:var(--ink);line-height:1;}
+.stat-label{font-size:10.5px;color:var(--faint);margin-top:4px;}
+
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;padding:13px 15px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--line);}
+.legend-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);width:100%;margin-bottom:3px;}
+.lg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.lg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+.filterbar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;align-items:center;position:sticky;top:48px;z-index:150;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);}
+.search-box{flex:1;min-width:200px;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-family:'Montserrat',sans-serif;color:var(--ink3);}
+.search-box:focus{outline:none;border-color:var(--ink);}
+.tipo-pill{font-size:10.5px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.tipo-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.no-results{display:none;text-align:center;padding:40px 0;color:var(--faint);font-size:13px;}
+
+.vert{margin-bottom:36px;scroll-margin-top:100px;}
+.vert-hd{display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:17px;font-weight:800;color:var(--ink);flex:1;}
+.vert-count{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;}
+.vert-toggle{font-size:11px;color:var(--faint);transition:transform .2s;margin-left:4px;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-intro{font-size:12px;color:var(--muted);margin:8px 0 16px;line-height:1.6;}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+
+.subcat-group{margin-bottom:18px;}
+.subcat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:8px;padding-left:2px;}
+.prod-grid{display:flex;flex-direction:column;gap:8px;}
+
+.prod-card{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--bg);transition:border-color .15s;}
+.prod-card:hover{border-color:#c8cdd6;}
+.prod-card.hidden{display:none;}
+.pc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 15px;cursor:pointer;}
+.pc-head-main{display:flex;align-items:center;gap:10px;flex:1;min-width:0;flex-wrap:wrap;}
+.pc-name{font-weight:700;color:var(--ink);font-size:13px;}
+.pc-name-sub{font-size:11px;color:var(--faint);font-style:italic;}
+.tipo-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.pc-arrow{font-size:10px;color:var(--faint);transition:transform .2s;flex-shrink:0;}
+.pc-arrow.open{transform:rotate(180deg);}
+
+.pc-body{display:none;border-top:1px solid var(--line);padding:14px 15px 16px;background:var(--bg2);}
+.pc-body.open{display:block;}
+.pc-desc{font-size:12.5px;color:var(--ink3);line-height:1.65;margin-bottom:12px;}
+.pc-desc strong{color:var(--ink);}
+.pc-block{margin-bottom:12px;}
+.pc-block:last-child{margin-bottom:0;}
+.pc-block-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+.pc-list{list-style:none;padding:0;}
+.pc-list li{font-size:12px;color:var(--ink3);line-height:1.6;padding:3px 0 3px 16px;position:relative;}
+.pc-list li::before{content:'•';position:absolute;left:2px;color:var(--faint);}
+.pc-list li strong{color:var(--ink);}
+
+.spec-table{width:100%;border-collapse:collapse;margin-top:4px;}
+.spec-table td{padding:5px 8px;font-size:11.5px;border-bottom:1px solid var(--line);vertical-align:top;}
+.spec-table td:first-child{font-weight:700;color:var(--muted);width:34%;white-space:nowrap;}
+.spec-table tr:last-child td{border-bottom:none;}
+
+.pc-warn{font-size:11.5px;color:#7F1D1D;font-style:italic;padding:9px 12px;background:#FEE2E2;border-radius:var(--r-sm);border-left:3px solid #DC2626;line-height:1.6;margin-top:10px;}
+.pc-tip{font-size:11.5px;color:#065F46;font-style:italic;padding:9px 12px;background:#D1FAE5;border-radius:var(--r-sm);border-left:3px solid #059669;line-height:1.6;margin-top:10px;}
+.pc-note{font-size:11.5px;color:#004DBF;font-style:italic;padding:9px 12px;background:#EBF5FF;border-radius:var(--r-sm);border-left:3px solid #0070F3;line-height:1.6;margin-top:10px;}
+
+.matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;}
+.matrix-wrap table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:760px;}
+.matrix-wrap th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);padding:9px 10px;border-bottom:1.5px solid var(--line);text-align:left;background:var(--bg2);white-space:nowrap;}
+.matrix-wrap td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink3);vertical-align:top;}
+.matrix-wrap tr:last-child td{border-bottom:none;}
+.matrix-wrap tr:hover td{background:var(--bg2);}
+
+/* RACI grid */
+.raci-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;}
+.raci-wrap table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:560px;}
+.raci-wrap th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);padding:9px 10px;border-bottom:1.5px solid var(--line);text-align:center;background:var(--bg2);}
+.raci-wrap th:first-child{text-align:left;}
+.raci-wrap td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:center;font-weight:700;font-size:11px;}
+.raci-wrap td:first-child{text-align:left;font-weight:600;color:var(--ink3);}
+.raci-wrap tr:last-child td{border-bottom:none;}
+.r-r{color:#fff;background:var(--ink);border-radius:4px;padding:2px 0;}
+.r-a{color:#fff;background:var(--seg);border-radius:4px;padding:2px 0;}
+.r-c{color:var(--muted);}
+.r-i{color:var(--faint);}
+
+.doc-footer{border-top:1px solid var(--line);margin-top:50px;padding-top:14px;font-size:11px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+@media print{
+  .topnav,.filterbar{display:none;}
+  .vert-body{display:block!important;}
+  .vert-toggle{display:none;}
+  .pc-body{display:block!important;}
+  .pc-arrow{display:none;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:680px){
+  .hdr{flex-direction:column;align-items:flex-start;}
+  .hdr-meta{text-align:left;}
+  .stats{flex-direction:column;}
+  .pc-head{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="tn-brand">🧭 Roles &amp; DR</div>
+  <a class="tn" href="#v-roles">🧭 Quién hace qué</a>
+  <a class="tn" href="#v-raci">📋 Matriz RACI</a>
+  <a class="tn" href="#v-5fases">🗺️ Las 5 Fases del DR</a>
+  <a class="tn" href="#v-conceptos-dr">📖 Conceptos DR</a>
+  <a class="tn" href="#v-vmware">🟣 VMware on-prem</a>
+  <a class="tn" href="#v-aws-dr">🟧 AWS</a>
+  <a class="tn" href="#v-azure-dr">🔷 Azure</a>
+  <a class="tn" href="#v-gcp-dr">🟩 GCP</a>
+  <a class="tn" href="#v-hwc-dr">🔴 Huawei Cloud</a>
+  <a class="tn" href="#v-matriz-dr">📊 Matriz DR</a>
+</nav>
+
+<div class="page">
+
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">Infraestructura · Ciberseguridad · Continuidad de Negocio</div>
+      <div class="hdr-sub">Quién hace qué en Backup y DR — y cómo cambia el Disaster Recovery entre VMware on-premise y cada hyperscaler</div>
+    </div>
+    <div class="hdr-meta">Edgardo Mauricio Celata<br>Analista Sr. Infraestructura y Cloud<br><span id="fecha"></span></div>
+  </div>
+
+  <div class="intro-banner">
+    <div class="intro-banner-title">⚡ Por qué este documento existe</div>
+    <div class="intro-banner-text">
+      Infraestructura/Cloud, Ciberseguridad y Continuidad de Negocio manejan los mismos activos — datos y servidores — pero con objetivos distintos: <strong>Ciberseguridad protege contra ataques</strong> (confidencialidad e integridad), <strong>Continuidad de Negocio asegura que la operación no se detenga</strong> ante cualquier evento (disponibilidad), e <strong>Infraestructura/Cloud ejecuta técnicamente</strong> lo que las otras dos áreas definieron. La fricción aparece porque las tres áreas tocan Backup y DR constantemente. Además, la forma de implementar ese DR cambió radicalmente: <strong>en VMware on-premise el DR significaba comprar y mantener hardware duplicado; en cualquier hyperscaler es, en esencia, una configuración.</strong>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">3</div><div class="stat-label">Áreas con fricción típica</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">Fases del Plan de DR</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">Plataformas comparadas en DR</div></div>
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Estrategias DR (Pilot Light → Multi-Site)</div></div>
+    <div class="stat"><div class="stat-val">seg.</div><div class="stat-label">RPO mínimo alcanzable hoy en cloud</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Categorías</div>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--inf);"></span> Infraestructura / Cloud</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--seg);"></span> Ciberseguridad</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--bcp);"></span> Continuidad de Negocio (BCP/DR)</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--vmw);"></span> VMware / On-Premise</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--aws);"></span> AWS</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--azu);"></span> Azure</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--gcp);"></span> GCP</span>
+    <span class="lg-item"><span class="lg-dot" style="background:var(--hwc);"></span> Huawei Cloud</span>
+  </div>
+
+  <div class="filterbar">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar concepto, plataforma o servicio..." oninput="filterProducts()">
+    <button class="tipo-pill active" data-tipo="all" onclick="setTipoFilter(this,'all')">Todos</button>
+    <button class="tipo-pill" data-tipo="Rol" onclick="setTipoFilter(this,'Rol')">Roles</button>
+    <button class="tipo-pill" data-tipo="Concepto" onclick="setTipoFilter(this,'Concepto')">Conceptos</button>
+    <button class="tipo-pill" data-tipo="Servicio" onclick="setTipoFilter(this,'Servicio')">Servicios DR</button>
+    <button class="tipo-pill" data-tipo="Estrategia" onclick="setTipoFilter(this,'Estrategia')">Estrategias</button>
+    <button class="tipo-pill" onclick="expandAll()">⊕ Expandir todo</button>
+    <button class="tipo-pill" onclick="collapseAll()">⊖ Colapsar todo</button>
+  </div>
+
+  <div class="no-results" id="noResults">No se encontraron resultados con ese criterio de búsqueda.</div>
+
+  <!-- ══════════════ QUIÉN HACE QUÉ ══════════════ -->
+  <div class="vert" id="v-roles">
+    <div class="vert-hd" onclick="toggleVert('roles')">
+      <div class="vert-icon" style="background:var(--inf-l);">🧭</div>
+      <div class="vert-title">Quién hace qué: Infra/Cloud vs Ciberseguridad vs BCP</div>
+      <span class="vert-count" style="background:var(--inf-l);color:var(--inf-d);">3 roles</span>
+      <span class="vert-toggle open" id="vt-roles">▼</span>
+    </div>
+    <div class="vert-intro">La separación de responsabilidades por objetivo, no por activo: las tres áreas tocan backup y DR, pero cada una responde una pregunta distinta.</div>
+    <div class="vert-body open" id="vb-roles">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Las 3 áreas</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Rol" data-search="ciberseguridad guardia seguridad cifrado inmutabilidad acceso politicas">
+            <div class="pc-head" onclick="toggleCard('pc-rol-seg')">
+              <div class="pc-head-main">
+                <div class="pc-name">🛡️ Ciberseguridad — "El Guardia de Seguridad"</div>
+                <span class="tipo-badge" style="background:var(--seg-l);color:var(--seg-d);">Rol</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rol-seg">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rol-seg">
+              <div class="pc-desc">Su foco es proteger, detectar y responder ante amenazas humanas o lógicas. <strong>Dicta las reglas de seguridad</strong>, no las de negocio.</div>
+              <table class="spec-table">
+                <tr><td>En Backup</td><td>Define políticas de cifrado, quién tiene acceso a las copias y exige inmutabilidad (protección contra ransomware)</td></tr>
+                <tr><td>En DR</td><td>Evalúa el riesgo de que el sitio secundario sea vulnerable y define qué hacer si el desastre fue provocado por un hackeo</td></tr>
+                <tr><td>Entregable</td><td>Políticas de cumplimiento, análisis de vulnerabilidades, monitoreo de accesos</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Rol" data-search="continuidad negocio bcp diseñador emergencias rpo rto plan">
+            <div class="pc-head" onclick="toggleCard('pc-rol-bcp')">
+              <div class="pc-head-main">
+                <div class="pc-name">🔄 Continuidad de Negocio / DR — "El Diseñador de Emergencias"</div>
+                <span class="tipo-badge" style="background:var(--bcp-l);color:var(--bcp-d);">Rol</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rol-bcp">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rol-bcp">
+              <div class="pc-desc">Su foco es la resiliencia del negocio ante cualquier evento (terremoto, caída de AWS, hackeo). <strong>Dicta las reglas del negocio</strong>: cuánta pérdida de datos y cuánto tiempo caído son tolerables.</div>
+              <table class="spec-table">
+                <tr><td>En Backup</td><td>Define el RPO (cuánta información se permite perder) y el RTO (cuánto tiempo puede estar caído el sistema)</td></tr>
+                <tr><td>En DR</td><td>Diseña la estrategia macro de recuperación de la empresa y coordina simulacros con líderes de cada departamento</td></tr>
+                <tr><td>Entregable</td><td>El Plan de Continuidad del Negocio (BCP) y los objetivos de tiempo (RTO/RPO)</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Rol" data-search="infraestructura cloud constructor operador ejecucion tecnica disponibilidad">
+            <div class="pc-head" onclick="toggleCard('pc-rol-inf')">
+              <div class="pc-head-main">
+                <div class="pc-name">☁️ Infraestructura y Cloud — "El Constructor y Operador"</div>
+                <span class="pc-name-sub">tu rol</span>
+                <span class="tipo-badge" style="background:var(--inf-l);color:var(--inf-d);">Rol</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rol-inf">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rol-inf">
+              <div class="pc-desc">Su foco es la ejecución técnica y la disponibilidad. <strong>Implementa y opera</strong> lo que las otras dos áreas definieron — no decide el "cuándo" ni el "qué tan seguro", decide el "cómo se hace técnicamente".</div>
+              <table class="spec-table">
+                <tr><td>En Backup</td><td>Configura los jobs de respaldo, crea las bóvedas en la nube, asegura espacio de almacenamiento y ejecuta restauraciones</td></tr>
+                <tr><td>En DR</td><td>Crea la arquitectura técnica (regiones espejo, replicación de BDs), configura la automatización del failover y ejecuta el encendido de servidores</td></tr>
+                <tr><td>Entregable</td><td>Infraestructura redundante activa, respaldos ejecutados diariamente, validación técnica de que el RTO/RPO se puede cumplir</td></tr>
+              </table>
+              <div class="pc-tip">💡 Para resolver el conflicto del día a día: tu área nunca debería definir "cada cuánto" respaldar (eso es BCP) ni "qué tan cifrado" debe estar (eso es Ciberseguridad) — tu área define cómo se construye técnicamente para cumplir esos números.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ MATRIZ RACI ══════════════ -->
+  <div class="vert" id="v-raci">
+    <div class="vert-hd" onclick="toggleVert('raci')">
+      <div class="vert-icon" style="background:var(--seg-l);">📋</div>
+      <div class="vert-title">Matriz RACI — Backup, DR y Pruebas</div>
+      <span class="vert-count" style="background:var(--seg-l);color:var(--seg-d);">resumen ejecutivo</span>
+      <span class="vert-toggle open" id="vt-raci">▼</span>
+    </div>
+    <div class="vert-intro">De un vistazo: quién es Responsable (ejecuta), Asegurador/Accountable (define el qué/cuándo), Consultado o solo Informado en cada tarea típica.</div>
+    <div class="vert-body open" id="vb-raci">
+
+      <div class="raci-wrap">
+        <table>
+          <thead>
+            <tr><th>Tarea</th><th>🛡️ Ciberseguridad</th><th>🔄 Continuidad de Negocio</th><th>☁️ Infraestructura/Cloud</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Definir frecuencia de backup</td><td class="r-c">C</td><td class="r-a">A</td><td class="r-r">R</td></tr>
+            <tr><td>Definir RTO/RPO por sistema</td><td class="r-c">C</td><td class="r-a">A</td><td class="r-c">C</td></tr>
+            <tr><td>Exigir cifrado e inmutabilidad</td><td class="r-a">A</td><td class="r-i">I</td><td class="r-r">R</td></tr>
+            <tr><td>Configurar jobs de backup</td><td class="r-i">I</td><td class="r-i">I</td><td class="r-r">R</td></tr>
+            <tr><td>Diseñar arquitectura de DR (Multi-AZ, replicación)</td><td class="r-c">C</td><td class="r-c">C</td><td class="r-r">R</td></tr>
+            <tr><td>Declarar inicio de un simulacro / DR drill</td><td class="r-i">I</td><td class="r-a">A</td><td class="r-r">R</td></tr>
+            <tr><td>Ejecutar el failover técnico</td><td class="r-i">I</td><td class="r-i">I</td><td class="r-r">R</td></tr>
+            <tr><td>Monitorear brechas de seguridad durante DR</td><td class="r-r">R</td><td class="r-i">I</td><td class="r-c">C</td></tr>
+            <tr><td>Validar restauración de datos limpios (sin malware)</td><td class="r-r">R</td><td class="r-i">I</td><td class="r-c">C</td></tr>
+            <tr><td>Aprobar presupuesto de DR/BCP</td><td class="r-i">I</td><td class="r-a">A</td><td class="r-c">C</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prod-card" data-tipo="Concepto" data-search="raci leyenda responsable accountable consultado informado">
+        <div class="pc-head" onclick="toggleCard('pc-raci-leg')">
+          <div class="pc-head-main">
+            <div class="pc-name">📌 Leyenda RACI y cómo usarla en tu equipo</div>
+            <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+          </div>
+          <div class="pc-arrow" id="arr-pc-raci-leg">▼</div>
+        </div>
+        <div class="pc-body" id="pc-raci-leg">
+          <ul class="pc-list">
+            <li><strong>R (Responsable):</strong> quien ejecuta la tarea — siempre debería haber solo 1 por fila idealmente</li>
+            <li><strong>A (Accountable / Asegurador):</strong> quien rinde cuentas del resultado final y tiene poder de decisión sobre el qué/cuándo</li>
+            <li><strong>C (Consultado):</strong> aporta opinión antes de decidir, pero no decide</li>
+            <li><strong>I (Informado):</strong> se entera del resultado, no participa de la decisión ni ejecución</li>
+          </ul>
+          <div class="pc-tip">💡 Proponer esta matriz formalmente a tu equipo resuelve el conflicto de raíz: tu área (Infra/Cloud) es R en casi todo lo técnico, pero nunca A en el "cuándo" o "qué tan seguro" — eso corta de plano cualquier discusión sobre si te corresponde decidir la frecuencia de backup o el nivel de cifrado.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ LAS 5 FASES DEL DR ══════════════ -->
+  <div class="vert" id="v-5fases">
+    <div class="vert-hd" onclick="toggleVert('5fases')">
+      <div class="vert-icon" style="background:var(--bcp-l);">🗺️</div>
+      <div class="vert-title">Cómo organizar un Plan de DR — Las 5 Fases</div>
+      <span class="vert-count" style="background:var(--bcp-l);color:var(--bcp-d);">metodología completa</span>
+      <span class="vert-toggle open" id="vt-5fases">▼</span>
+    </div>
+    <div class="vert-intro">El DR no nace en la tecnología — nace en las necesidades financieras y operativas de la empresa. Esta es la secuencia correcta para que cada área haga su parte en el momento que le corresponde, sin que la carga completa caiga sobre Infraestructura/Cloud.</div>
+    <div class="vert-body open" id="vb-5fases">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Las 5 fases en orden</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Concepto" data-search="fase 1 bia business impact analysis continuidad negocio tier criticas clasificacion aplicaciones rto rpo legal">
+            <div class="pc-head" onclick="toggleCard('pc-fase1')">
+              <div class="pc-head-main">
+                <div class="pc-name">Fase 1 — El BIA (Business Impact Analysis)</div>
+                <span class="pc-name-sub">Responsable: Continuidad de Negocio</span>
+                <span class="tipo-badge" style="background:var(--bcp-l);color:var(--bcp-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-fase1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-fase1">
+              <div class="pc-desc">Antes de tocar una sola línea de código en la nube, se debe hacer el <strong>Análisis de Impacto al Negocio</strong>. Continuidad de Negocio se sienta con los gerentes (Finanzas, Ventas, Operaciones) y les pregunta: "Si este sistema se cae, ¿cuánto dinero perdemos por hora?".</div>
+              <table class="spec-table">
+                <tr><td>Entregable de negocio</td><td>Clasificación de aplicaciones en Tier 1 (Críticas), Tier 2 (Medias), Tier 3 (No críticas)</td></tr>
+                <tr><td>Resultado técnico</td><td>El negocio define legalmente los objetivos RTO y RPO para cada sistema, por tier</td></tr>
+              </table>
+              <div class="pc-note">📌 Este es el insumo que todo lo demás necesita — sin BIA, cualquier RTO/RPO que se use después es una suposición técnica, no una decisión de negocio formalizada.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="fase 2 estrategia dr ciberseguridad continuidad backup restore pilot light warm standby active active cifrado aislamiento">
+            <div class="pc-head" onclick="toggleCard('pc-fase2')">
+              <div class="pc-head-main">
+                <div class="pc-name">Fase 2 — Definición de la Estrategia de DR</div>
+                <span class="pc-name-sub">Responsable: Ciberseguridad y Continuidad</span>
+                <span class="tipo-badge" style="background:var(--bcp-l);color:var(--bcp-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-fase2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-fase2">
+              <div class="pc-desc">Sabiendo cuánto tiempo permite el negocio estar abajo (de la Fase 1), se elige la estrategia técnica adecuada. Cada estrategia impacta directamente en el costo y en la carga de trabajo de Infraestructura/Cloud.</div>
+              <table class="spec-table">
+                <tr><td>Backup &amp; Restore</td><td>RTO de días/horas. Se levanta todo desde backups ante desastre. Barato pero lento.</td></tr>
+                <tr><td>Pilot Light</td><td>RTO de horas/minutos. Bases de datos replicadas en tiempo real en la nube secundaria; servidores de aplicación apagados, se encienden solo en la crisis.</td></tr>
+                <tr><td>Warm Standby / Active-Active</td><td>RTO de minutos/segundos. Todo duplicado y encendido en otra región. Muy costoso, casi sin interrupción.</td></tr>
+              </table>
+              <div class="pc-block">
+                <div class="pc-block-title">🛡️ El rol específico de Ciberseguridad en esta fase</div>
+                <ul class="pc-list">
+                  <li>Valida que el sitio de DR cumpla con el cifrado de datos requerido</li>
+                  <li>Confirma que los accesos al sitio DR estén limitados igual o más que en producción</li>
+                  <li>Verifica que un atacante no pueda saltar del sitio principal al sitio de DR fácilmente (aislamiento entre sitios)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="fase 3 arquitectura implementacion sspp proyecto infraestructura cloud vpc red espejo vpn terraform infraestructura como codigo">
+            <div class="pc-head" onclick="toggleCard('pc-fase3')">
+              <div class="pc-head-main">
+                <div class="pc-name">Fase 3 — Arquitectura e Implementación (Proyecto SSPP)</div>
+                <span class="pc-name-sub">Responsable: Infraestructura / Cloud — acá entrás tú</span>
+                <span class="tipo-badge" style="background:var(--inf-l);color:var(--inf-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-fase3">▼</div>
+            </div>
+            <div class="pc-body" id="pc-fase3">
+              <div class="pc-desc">Recién aquí entra Infraestructura/Cloud de manera fuerte. Tomando el RTO/RPO de la Fase 1 y la estrategia elegida en la Fase 2, se diseñan e implementan los "fierros" lógicos en la nube.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Tareas técnicas de esta fase</div>
+                <ul class="pc-list">
+                  <li>Configurar VPCs, redes espejo y VPNs entre sitio principal y sitio DR</li>
+                  <li>Configurar las herramientas de replicación (AWS Elastic Disaster Recovery, Azure Site Recovery, Veeam, etc.)</li>
+                  <li>Automatizar el proceso con scripts o Infraestructura como Código (Terraform), para que el levantamiento no dependa de tareas manuales propensas a error</li>
+                </ul>
+              </div>
+              <div class="pc-tip">💡 Esta es la fase donde se materializa todo lo visto en las secciones de AWS/Azure/GCP/Huawei de este documento — el "cómo" técnico que solo tiene sentido si las Fases 1 y 2 ya definieron el "qué" y el "por qué".</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="fase 4 operacion monitoreo ssaa servicio administrado dia a dia replicas lag agentes alertas">
+            <div class="pc-head" onclick="toggleCard('pc-fase4')">
+              <div class="pc-head-main">
+                <div class="pc-name">Fase 4 — Operación y Monitoreo (Servicio Administrado SSAA)</div>
+                <span class="pc-name-sub">Responsable: Infraestructura / Cloud</span>
+                <span class="tipo-badge" style="background:var(--inf-l);color:var(--inf-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-fase4">▼</div>
+            </div>
+            <div class="pc-body" id="pc-fase4">
+              <div class="pc-desc">Una vez que el DR está construido y entregado, pasa a la capa de Servicio Administrado (SSAA) para el mantenimiento del día a día.</div>
+              <div class="pc-block">
+                <div class="pc-block-title">📋 Tareas de operación continua</div>
+                <ul class="pc-list">
+                  <li>Monitorear que las réplicas de datos no tengan lag (retraso) respecto al sitio principal</li>
+                  <li>Asegurar que los agentes de replicación o backup en los servidores estén activos</li>
+                  <li>Resolver alertas técnicas cotidianas de almacenamiento o conectividad entre regiones cloud</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="fase 5 pruebas simulacros tres areas conjunto drill rto real failover">
+            <div class="pc-head" onclick="toggleCard('pc-fase5')">
+              <div class="pc-head-main">
+                <div class="pc-name">Fase 5 — Pruebas y Simulacros</div>
+                <span class="pc-name-sub">Responsable: Las Tres Áreas en conjunto</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-fase5">▼</div>
+            </div>
+            <div class="pc-body" id="pc-fase5">
+              <div class="pc-desc">Un DR que no se prueba, no existe. Se organizan simulacros periódicos (semestrales o anuales), y en esta fase las tres áreas trabajan simultáneamente, cada una en su rol.</div>
+              <table class="spec-table">
+                <tr><td>🔄 Continuidad de Negocio</td><td>Declara el inicio del simulacro, avanza el reloj y coordina a los usuarios finales para que prueben la aplicación en el sitio de DR</td></tr>
+                <tr><td>🛡️ Ciberseguridad</td><td>Audita que durante la prueba no se abran brechas de seguridad por las apuradas de levantar los sistemas</td></tr>
+                <tr><td>☁️ Infraestructura/Cloud</td><td>Presiona el botón de failover, asiste técnicamente si algo falla en el arranque, y mide el tiempo real que tardó todo para verificar si se cumplió el RTO técnico</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Por qué esto desarma el conflicto</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Concepto" data-search="conclusion conflicto oficina fases 3 4 dueño dependencia fases 1 2 raiz problema">
+            <div class="pc-head" onclick="toggleCard('pc-conflicto')">
+              <div class="pc-head-main">
+                <div class="pc-name">📌 Dónde está realmente el conflicto</div>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-conflicto">▼</div>
+            </div>
+            <div class="pc-body" id="pc-conflicto">
+              <div class="pc-desc">Mirando el flujo completo de 5 fases, queda claro: Infraestructura/Cloud es dueño de las <strong>Fases 3 y 4</strong> (el cómo), pero depende totalmente de que Continuidad y Ciberseguridad hagan bien las <strong>Fases 1 y 2</strong> (el qué y el por qué).</div>
+              <div class="pc-warn">⚠️ Si hoy genera fricción la planificación del DR, lo más probable es que la empresa se haya saltado las Fases 1 y 2 — y le estén pidiendo a Infraestructura que configure un DR (Fase 3) sin haber definido formalmente el RTO/RPO del negocio ni las políticas de aislamiento que exige Ciberseguridad.</div>
+              <div class="pc-tip">💡 La forma más directa de resolverlo no es discutir tarea por tarea, sino pedir formalmente que se complete el BIA (Fase 1) y la definición de estrategia (Fase 2) antes de seguir avanzando en cualquier configuración técnica — el orden de las fases es, en sí mismo, el argumento.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ CONCEPTOS DR ══════════════ -->
+  <div class="vert" id="v-conceptos-dr">
+    <div class="vert-hd" onclick="toggleVert('conceptos-dr')">
+      <div class="vert-icon" style="background:var(--con-l);">📖</div>
+      <div class="vert-title">Conceptos Base de DR: RTO, RPO y las 4 Estrategias</div>
+      <span class="vert-count" style="background:var(--con-l);color:var(--con-d);">marco común</span>
+      <span class="vert-toggle open" id="vt-conceptos-dr">▼</span>
+    </div>
+    <div class="vert-intro">Antes de comparar plataformas, el marco conceptual que es idéntico en VMware, AWS, Azure, GCP y Huawei: dos métricas y cuatro estrategias de arquitectura, ordenadas de menor a mayor costo.</div>
+    <div class="vert-body open" id="vb-conceptos-dr">
+
+      <div class="subcat-group">
+        <div class="subcat-label">RTO y RPO</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Concepto" data-search="rto recovery time objective tiempo caido downtime futuro">
+            <div class="pc-head" onclick="toggleCard('pc-rto')">
+              <div class="pc-head-main">
+                <div class="pc-name">RTO — Recovery Time Objective</div>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rto">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rto">
+              <div class="pc-desc">El tiempo máximo permitido que un sistema puede estar caído antes de causar un impacto inaceptable para el negocio. <strong>Mira hacia el futuro:</strong> mide desde el momento del fallo hasta que el servicio vuelve a estar operativo.</div>
+              <div class="pc-note">📌 Si el RTO es 2 horas, tu equipo de Infraestructura/Cloud tiene un máximo de 2 horas para ejecutar el failover completo: levantar instancias, replicar lo que falte, cambiar DNS y validar que el sitio DR esté 100% operando.</div>
+            </div>
+          </div>
+          <div class="prod-card" data-tipo="Concepto" data-search="rpo recovery point objective perdida datos pasado backup frecuencia">
+            <div class="pc-head" onclick="toggleCard('pc-rpo')">
+              <div class="pc-head-main">
+                <div class="pc-name">RPO — Recovery Point Objective</div>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-rpo">▼</div>
+            </div>
+            <div class="pc-body" id="pc-rpo">
+              <div class="pc-desc">La cantidad de datos que la empresa se puede permitir perder, medida en tiempo. <strong>Mira hacia el pasado:</strong> define hasta qué punto atrás hay que poder recuperar los datos. No define cuánta data se pierde en volumen, solo el tiempo de la ventana perdida.</div>
+              <div class="pc-note">📌 Si el RPO es 4 horas y el sistema falla a las 2pm, como máximo se habrá perdido la información generada desde las 10am — la frecuencia de tus backups o replicación debe garantizar ese número.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subcat-group">
+        <div class="subcat-label">Las 4 Estrategias de DR (de menor a mayor costo)</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Estrategia" data-search="backup restore estrategia mas barata rto alto rpo alto">
+            <div class="pc-head" onclick="toggleCard('pc-est1')">
+              <div class="pc-head-main">
+                <div class="pc-name">1. Backup &amp; Restore</div>
+                <span class="pc-name-sub">la más económica</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Estrategia</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-est1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-est1">
+              <div class="pc-desc">Los datos se respaldan periódicamente; ante un desastre, se restaura desde el backup y se reconstruye el ambiente desde cero. Sin infraestructura corriendo en el sitio DR la mayor parte del tiempo.</div>
+              <table class="spec-table">
+                <tr><td>RTO típico</td><td>4–24 horas</td></tr>
+                <tr><td>RPO típico</td><td>1–24 horas</td></tr>
+                <tr><td>Costo relativo</td><td>Bajo (+10–20% del gasto base)</td></tr>
+                <tr><td>Uso recomendado</td><td>Workloads no críticos, ambientes de dev/test</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Estrategia" data-search="pilot light estrategia core minimo encendido escalar">
+            <div class="pc-head" onclick="toggleCard('pc-est2')">
+              <div class="pc-head-main">
+                <div class="pc-name">2. Pilot Light</div>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Estrategia</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-est2">▼</div>
+            </div>
+            <div class="pc-body" id="pc-est2">
+              <div class="pc-desc">Una versión mínima del ambiente (típicamente solo los datos core, replicados) está siempre activa en el sitio DR, pero el resto de los recursos están apagados o no desplegados. Ante el desastre, hay que "encender" servidores y escalar antes de poder procesar tráfico.</div>
+              <table class="spec-table">
+                <tr><td>RTO típico</td><td>30–60 minutos</td></tr>
+                <tr><td>RPO típico</td><td>Minutos</td></tr>
+                <tr><td>Costo relativo</td><td>Medio (+40–60% del gasto base)</td></tr>
+                <tr><td>Diferencia con Warm Standby</td><td>Pilot Light no puede procesar tráfico sin acción adicional; Warm Standby sí, de inmediato y a capacidad reducida</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Estrategia" data-search="warm standby estrategia capacidad reducida desplegado escalar">
+            <div class="pc-head" onclick="toggleCard('pc-est3')">
+              <div class="pc-head-main">
+                <div class="pc-name">3. Warm Standby</div>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Estrategia</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-est3">▼</div>
+            </div>
+            <div class="pc-body" id="pc-est3">
+              <div class="pc-desc">Una versión reducida pero <strong>completamente desplegada y funcionando</strong> del ambiente corre todo el tiempo en el sitio DR. Ante el desastre, solo hace falta escalar la capacidad y redirigir el tráfico — no hay que encender nada desde cero.</div>
+              <table class="spec-table">
+                <tr><td>RTO típico</td><td>5–15 minutos</td></tr>
+                <tr><td>RPO típico</td><td>Segundos</td></tr>
+                <tr><td>Costo relativo</td><td>Alto (+70–90% del gasto base)</td></tr>
+                <tr><td>Uso recomendado</td><td>Workloads de cara al cliente con SLAs agresivos</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Estrategia" data-search="multi site active active estrategia mas cara zero downtime simultaneo">
+            <div class="pc-head" onclick="toggleCard('pc-est4')">
+              <div class="pc-head-main">
+                <div class="pc-name">4. Multi-Site Active/Active</div>
+                <span class="pc-name-sub">la más cara y rápida</span>
+                <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Estrategia</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-est4">▼</div>
+            </div>
+            <div class="pc-body" id="pc-est4">
+              <div class="pc-desc">El tráfico se sirve simultáneamente desde múltiples regiones/sitios activos al mismo tiempo. Cualquier sitio individual puede fallar sin downtime, porque los demás ya están sirviendo tráfico real, no en espera.</div>
+              <table class="spec-table">
+                <tr><td>RTO típico</td><td>Segundos</td></tr>
+                <tr><td>RPO típico</td><td>Cercano a cero</td></tr>
+                <tr><td>Costo relativo</td><td>Muy alto (~2x del gasto base)</td></tr>
+                <tr><td>Uso recomendado</td><td>Fintech, salud, e-commerce — donde el downtime es directamente pérdida de ingresos</td></tr>
+              </table>
+              <div class="pc-warn">⚠️ Requiere manejo cuidadoso de consistencia distribuida y resolución de conflictos cuando ambos sitios escriben datos simultáneamente — no es solo "prender más servidores", es complejidad real de arquitectura.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ VMWARE ON-PREMISE ══════════════ -->
+  <div class="vert" id="v-vmware">
+    <div class="vert-hd" onclick="toggleVert('vmware')">
+      <div class="vert-icon" style="background:var(--vmw-l);">🟣</div>
+      <div class="vert-title">VMware On-Premise — El DR del hardware duplicado</div>
+      <span class="vert-count" style="background:var(--vmw-l);color:var(--vmw-d);">el punto de partida</span>
+      <span class="vert-toggle open" id="vt-vmware">▼</span>
+    </div>
+    <div class="vert-intro">El modelo clásico contra el que se comparan todos los hyperscalers: para tener un sitio DR, había que comprarlo, instalarlo y mantenerlo físicamente duplicado.</div>
+    <div class="vert-body open" id="vb-vmware">
+
+      <div class="subcat-group">
+        <div class="subcat-label">El modelo tradicional</div>
+        <div class="prod-grid">
+          <div class="prod-card" data-tipo="Servicio" data-search="vmware site recovery manager srm hardware duplicado datacenter secundario sitio dr">
+            <div class="pc-head" onclick="toggleCard('pc-vmw1')">
+              <div class="pc-head-main">
+                <div class="pc-name">VMware Site Recovery Manager (SRM)</div>
+                <span class="pc-name-sub">requiere un segundo datacenter físico</span>
+                <span class="tipo-badge" style="background:var(--vmw-l);color:var(--vmw-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-vmw1">▼</div>
+            </div>
+            <div class="pc-body" id="pc-vmw1">
+              <div class="pc-desc">Para tener DR en un entorno VMware on-premise tradicional, la receta es: <strong>comprar un segundo set de servidores físicos</strong> (idealmente igual de potentes que los de producción), instalarlos en otro datacenter o sala, licenciar vSphere y SRM en ese sitio también, configurar storage replicado (array-based o vSphere Replication) y mantener todo ese hardware funcionando — aunque esté "esperando" sin uso real la mayor parte del tiempo.</div>
+              <table class="spec-table">
+                <tr><td>Inversión inicial</td><td>CapEx alto: servidores físicos, storage, switches, licencias — duplicados</td></tr>
+                <tr><td>Tiempo de aprovisionamiento</td><td>Semanas a meses (compra, instalación física, configuración)</td></tr>
+                <tr><td>Capacidad ociosa</td><td>El hardware DR no genera valor mientras no hay desastre — es seguro puro, sin retorno productivo</td></tr>
+                <tr><td>RTO típico</td><td>Horas (arranque manual o semi-automatizado de VMs, validación de red)</td></tr>
+                <tr><td>RPO típico</td><td>Minutos a horas, según frecuencia de replicación de storage configurada</td></tr>
+                <tr><td>Mantenimiento</td><td>Parches, renovación de hardware y de licencias en ambos sitios — el doble de superficie a mantener</td></tr>
+              </table>
+              <div class="pc-warn">⚠️ El problema estructural de este modelo no es solo el costo — es que cada vez que se actualiza el datacenter principal (CPU, storage, versión de vSphere), hay que replicar el cambio en el sitio DR para que el failback funcione, o arriesgarse a incompatibilidades el día del desastre real.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ AWS DR ══════════════ -->
+  <div class="vert" id="v-aws-dr">
+    <div class="vert-hd" onclick="toggleVert('aws-dr')">
+      <div class="vert-icon" style="background:var(--aws-l);">🟧</div>
+      <div class="vert-title">AWS — DR como configuración</div>
+      <span class="vert-count" style="background:var(--aws-l);color:var(--aws-d);">4 servicios</span>
+      <span class="vert-toggle open" id="vt-aws-dr">▼</span>
+    </div>
+    <div class="vert-intro">No hay que comprar nada físico: Multi-AZ, replicación de bases de datos y un servicio dedicado de DR se activan con configuración, no con hardware.</div>
+    <div class="vert-body open" id="vb-aws-dr">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Servicios clave</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Servicio" data-search="aws elastic disaster recovery drs replicacion bloque rpo segundos rto minutos cloudendure">
+            <div class="pc-head" onclick="toggleCard('pc-awsdrs')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Elastic Disaster Recovery (DRS)</div>
+                <span class="pc-name-sub">ex-CloudEndure — el servicio dedicado de DR</span>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-awsdrs">▼</div>
+            </div>
+            <div class="pc-body" id="pc-awsdrs">
+              <div class="pc-desc">Replicación continua a nivel de bloque desde cualquier origen (físico, VMware, Hyper-V, otro cloud) hacia un staging area de bajo costo en AWS. Ante un failover, convierte automáticamente esos discos en instancias EC2 nativas que bootean en minutos. <strong>El reemplazo directo y conceptual del hardware duplicado de VMware SRM, pero sin comprar nada.</strong></div>
+              <table class="spec-table">
+                <tr><td>RPO</td><td>Consistente por bloque, de segundos — el agente replica cada escritura casi en tiempo real</td></tr>
+                <tr><td>RTO</td><td>5–20 minutos — depende del boot del OS (Linux ~5 min, Windows ~20 min)</td></tr>
+                <tr><td>Costo en standby</td><td>Solo storage económico + una pequeña instancia de réplica — sin pagar por cómputo completo hasta el failover real</td></tr>
+                <tr><td>Orígenes soportados</td><td>Físicos, VMware vSphere, Microsoft Hyper-V, y otros cloud providers</td></tr>
+                <tr><td>Pruebas (drills)</td><td>No disruptivas — se puede testear el failover completo sin tocar producción</td></tr>
+                <tr><td>Caso real</td><td>VP Bank protege 78 workloads críticos con plan de escalar a 500</td></tr>
+              </table>
+              <div class="pc-tip">💡 Esta es la respuesta literal a "en VMware el DR requería hardware duplicado, en AWS es una configuración": DRS usa una estrategia de Pilot Light internamente — mantiene una copia de los datos y recursos "apagados" en una VPC de staging, sin que el cliente deba aprovisionar ni un solo servidor físico.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Servicio" data-search="aws multi az multi region rds aurora global database replicacion sincrona">
+            <div class="pc-head" onclick="toggleCard('pc-awsmultiaz')">
+              <div class="pc-head-main">
+                <div class="pc-name">Multi-AZ y Multi-Region (RDS, Aurora)</div>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-awsmultiaz">▼</div>
+            </div>
+            <div class="pc-body" id="pc-awsmultiaz">
+              <div class="pc-desc">Para bases de datos, el DR no es un servicio separado a configurar — es un <strong>checkbox al crear el recurso</strong>. RDS Multi-AZ replica de forma síncrona a una instancia standby en otra Availability Zone, con failover automático. Aurora Global Database extiende esto a réplicas cross-region con promoción de la región secundaria en menos de 60 segundos.</div>
+              <table class="spec-table">
+                <tr><td>RDS Multi-AZ</td><td>Replicación síncrona, failover automático, RPO mínimo por diseño</td></tr>
+                <tr><td>Aurora Global Database</td><td>Réplica de lectura cross-region con promoción a primaria en &lt;60 segundos</td></tr>
+                <tr><td>DynamoDB Global Tables</td><td>Tablas activas en múltiples regiones simultáneamente, replicación multi-maestro</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Servicio" data-search="aws backup s3 cross region replication route 53 failover dns global accelerator">
+            <div class="pc-head" onclick="toggleCard('pc-awsbackup')">
+              <div class="pc-head-main">
+                <div class="pc-name">AWS Backup + S3 CRR + Route 53</div>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-awsbackup">▼</div>
+            </div>
+            <div class="pc-body" id="pc-awsbackup">
+              <div class="pc-desc">El combo que cubre backup tradicional + replicación de objetos + enrutamiento de tráfico, todo configuración: <strong>AWS Backup</strong> automatiza y centraliza backups cross-región de múltiples servicios; <strong>S3 Cross-Region Replication</strong> mantiene copias de objetos sincronizadas; <strong>Route 53</strong> redirige tráfico automáticamente vía health checks cuando detecta un sitio caído.</div>
+              <table class="spec-table">
+                <tr><td>AWS Backup</td><td>Diferencia clave: foco en retención de largo plazo y restauración de puntos específicos, no en uptime operacional continuo (eso es DRS)</td></tr>
+                <tr><td>Route 53</td><td>Routing por latencia, failover o geolocalización con health checks automáticos</td></tr>
+              </table>
+              <div class="pc-note">📌 AWS distingue formalmente AWS Backup (retención y restauración de datos puntuales) de AWS Disaster Recovery/DRS (restauración rápida de sistemas completos y continuidad operacional) — son complementarios, no sustitutos.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Concepto" data-search="aws caso real conflicto bahrain uae marzo 2026 me-central-1 desastre fisico region">
+            <div class="pc-head" onclick="toggleCard('pc-awscase')">
+              <div class="pc-head-main">
+                <div class="pc-name">Caso real: el desastre físico de marzo 2026</div>
+                <span class="tipo-badge" style="background:var(--aws-l);color:var(--aws-d);">Concepto</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-awscase">▼</div>
+            </div>
+            <div class="pc-body" id="pc-awscase">
+              <div class="pc-desc">En marzo de 2026, un evento de conflicto físico afectó un datacenter de AWS en Medio Oriente (región me-central-1), provocando la caída de una AZ y posteriormente de una región completa por daño físico real — no un error de configuración ni una falla de software. Es el recordatorio más reciente de por qué Multi-Region (no solo Multi-AZ) sigue siendo necesario para workloads verdaderamente críticos.</div>
+              <div class="pc-warn">⚠️ "Diseñamos para falla de hardware. No diseñamos para conflicto físico" — la frase que circuló entre arquitectos cloud tras el evento resume por qué ningún nivel de redundancia dentro de una sola región sustituye a una estrategia multi-región real para sistemas de misión crítica.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ AZURE DR ══════════════ -->
+  <div class="vert" id="v-azure-dr">
+    <div class="vert-hd" onclick="toggleVert('azure-dr')">
+      <div class="vert-icon" style="background:var(--azu-l);">🔷</div>
+      <div class="vert-title">Azure — DRaaS nativo más maduro</div>
+      <span class="vert-count" style="background:var(--azu-l);color:var(--azu-d);">2 servicios</span>
+      <span class="vert-toggle open" id="vt-azure-dr">▼</span>
+    </div>
+    <div class="vert-intro">Microsoft fue el primero en empaquetar DR como un producto DRaaS completo y nombrado, en lugar de un conjunto de piezas a ensamblar.</div>
+    <div class="vert-body open" id="vb-azure-dr">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Servicios clave</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Servicio" data-search="azure site recovery asr draas replicacion continua rpo segundos failover hyper-v vmware">
+            <div class="pc-head" onclick="toggleCard('pc-asr')">
+              <div class="pc-head-main">
+                <div class="pc-name">Azure Site Recovery (ASR)</div>
+                <span class="pc-name-sub">el DRaaS más empaquetado del mercado</span>
+                <span class="tipo-badge" style="background:var(--azu-l);color:var(--azu-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-asr">▼</div>
+            </div>
+            <div class="pc-body" id="pc-asr">
+              <div class="pc-desc">Replica VMs físicas y virtuales (Windows, Linux, VMware, Hyper-V) hacia una región secundaria de Azure, con failover automático cuando detecta una interrupción en el sitio primario y failback automático cuando el sitio principal se recupera. Es, junto con AWS DRS, el servicio DRaaS nativo más directamente comparable al SRM de VMware — pero sin comprar ni mantener el sitio secundario físicamente.</div>
+              <table class="spec-table">
+                <tr><td>RPO</td><td>Tan bajo como segundos, gracias a replicación casi continua</td></tr>
+                <tr><td>SLA</td><td>99.9% con soporte 24x7</td></tr>
+                <tr><td>Orígenes soportados</td><td>VMs físicas y virtuales — Windows, Linux, VMware, Hyper-V</td></tr>
+                <tr><td>Failback</td><td>Automático una vez restaurado el sitio principal</td></tr>
+              </table>
+              <div class="pc-tip">💡 Azure es, según varias comparativas independientes, el hyperscaler que "va más allá" de AWS y GCP al ofrecer un producto DRaaS completamente empaquetado y nombrado como tal — los otros dos requieren ensamblar varios servicios para lograr el mismo resultado.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Servicio" data-search="azure backup rpo frecuencia respaldo diferencia site recovery">
+            <div class="pc-head" onclick="toggleCard('pc-azbackup')">
+              <div class="pc-head-main">
+                <div class="pc-name">Azure Backup</div>
+                <span class="tipo-badge" style="background:var(--azu-l);color:var(--azu-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-azbackup">▼</div>
+            </div>
+            <div class="pc-body" id="pc-azbackup">
+              <div class="pc-desc">La pieza de respaldo puntual, complementaria a ASR: el RPO de Azure Backup está determinado directamente por la frecuencia de backup configurada — si se respalda una vez por hora, el RPO es 60 minutos. Distinto a ASR, donde la replicación casi continua permite RPO de segundos.</div>
+              <table class="spec-table">
+                <tr><td>RPO</td><td>= frecuencia de backup configurada (ej. backup cada hora → RPO de 60 min)</td></tr>
+                <tr><td>Diferencia clave con ASR</td><td>Backup protege puntos de restauración en el tiempo; ASR mantiene continuidad operacional con failover activo</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ GCP DR ══════════════ -->
+  <div class="vert" id="v-gcp-dr">
+    <div class="vert-hd" onclick="toggleVert('gcp-dr')">
+      <div class="vert-icon" style="background:var(--gcp-l);">🟩</div>
+      <div class="vert-title">GCP — Live Migration y Backup and DR Service</div>
+      <span class="vert-count" style="background:var(--gcp-l);color:var(--gcp-d);">2 capacidades</span>
+      <span class="vert-toggle open" id="vt-gcp-dr">▼</span>
+    </div>
+    <div class="vert-intro">GCP tiene una capacidad que ni AWS ni Azure ofrecen de la misma forma: Live Migration, que evita el downtime de mantenimiento sin necesidad de failover.</div>
+    <div class="vert-body open" id="vb-gcp-dr">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Capacidades clave</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Servicio" data-search="gcp live migration unica caracteristica mantenimiento sin reboot patching">
+            <div class="pc-head" onclick="toggleCard('pc-gcplm')">
+              <div class="pc-head-main">
+                <div class="pc-name">Live Migration</div>
+                <span class="pc-name-sub">único entre los 3 grandes hyperscalers</span>
+                <span class="tipo-badge" style="background:var(--gcp-l);color:var(--gcp-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-gcplm">▼</div>
+            </div>
+            <div class="pc-body" id="pc-gcplm">
+              <div class="pc-desc">Capacidad que permite a Google mover VMs en ejecución entre hosts físicos para mantenimiento, patching o reparación de hardware <strong>sin ningún reboot</strong>. No es estrictamente DR (no protege contra un desastre regional), pero elimina una categoría completa de downtime planificado que en VMware on-premise o en otros clouds sí puede requerir ventanas de mantenimiento.</div>
+              <table class="spec-table">
+                <tr><td>Qué resuelve</td><td>Mantenimiento de infraestructura subyacente sin afectar disponibilidad de la VM del cliente</td></tr>
+                <tr><td>Diferencial</td><td>Ni AWS ni Azure ofrecen una capacidad equivalente y transparente al mismo nivel</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Servicio" data-search="gcp backup and dr service cloud sql restore point in time">
+            <div class="pc-head" onclick="toggleCard('pc-gcpbdr')">
+              <div class="pc-head-main">
+                <div class="pc-name">Google Cloud Backup and DR Service</div>
+                <span class="tipo-badge" style="background:var(--gcp-l);color:var(--gcp-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-gcpbdr">▼</div>
+            </div>
+            <div class="pc-body" id="pc-gcpbdr">
+              <div class="pc-desc">Servicio gestionado de backup y recuperación con foco fuerte en Cloud SQL y workloads de datos, coherente con el ADN de GCP. Permite calcular y validar objetivos de RTO/RPO por tipo de workload, con restauración a un punto específico en el tiempo (point-in-time recovery).</div>
+              <table class="spec-table">
+                <tr><td>Sin cargo de setup</td><td>GCP no cobra un fee separado por configurar DR, igual que AWS — se paga por recursos consumidos</td></tr>
+                <tr><td>Interconexión dedicada</td><td>Carrier Interconnect: uplink dedicado de 1 Gbps desde $1.700/mes para replicación de baja latencia</td></tr>
+              </table>
+              <div class="pc-note">📌 Una ventaja operativa de GCP frecuentemente citada: es más simple convertir imágenes de VM de otros proveedores al formato de Compute Engine que el proceso equivalente en AWS — relevante para escenarios de DR cross-cloud.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ HUAWEI CLOUD DR ══════════════ -->
+  <div class="vert" id="v-hwc-dr">
+    <div class="vert-hd" onclick="toggleVert('hwc-dr')">
+      <div class="vert-icon" style="background:var(--hwc-l);">🔴</div>
+      <div class="vert-title">Huawei Cloud — SDRS y BRS</div>
+      <span class="vert-count" style="background:var(--hwc-l);color:var(--hwc-d);">2 servicios</span>
+      <span class="vert-toggle open" id="vt-hwc-dr">▼</span>
+    </div>
+    <div class="vert-intro">El cuarto hyperscaler relevante en LATAM tiene su propia nomenclatura para DR: SDRS para replicación de servidores, BRS para el servicio de continuidad de negocio.</div>
+    <div class="vert-body open" id="vb-hwc-dr">
+
+      <div class="subcat-group">
+        <div class="subcat-label">Servicios clave</div>
+        <div class="prod-grid">
+
+          <div class="prod-card" data-tipo="Servicio" data-search="huawei sdrs storage disaster recovery service rto rpo failover ecs">
+            <div class="pc-head" onclick="toggleCard('pc-sdrs')">
+              <div class="pc-head-main">
+                <div class="pc-name">SDRS — Storage Disaster Recovery Service</div>
+                <span class="tipo-badge" style="background:var(--hwc-l);color:var(--hwc-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-sdrs">▼</div>
+            </div>
+            <div class="pc-body" id="pc-sdrs">
+              <div class="pc-desc">Servicio de replicación de almacenamiento entre sitios para DR de instancias ECS (las VMs de Huawei Cloud). Define explícitamente el RTO como el tiempo desde que se ejecuta un failover (planificado o no) hasta que las ECS arrancan en Huawei Cloud — <strong>sin contar</strong> el tiempo de configuración manual, redes o scripts posteriores.</div>
+              <table class="spec-table">
+                <tr><td>RTO típico</td><td>Menor a 30 minutos (excluye tareas manuales de configuración posteriores al arranque)</td></tr>
+                <tr><td>Condición para el RTO</td><td>Solo aplica si la sincronización inicial o diferencial está completa antes del failover</td></tr>
+                <tr><td>Switchover planificado</td><td>Requiere asegurar que los datos en caché del OS estén volcados a disco antes de ejecutar</td></tr>
+              </table>
+              <div class="pc-warn">⚠️ Huawei es explícito en su documentación: el RTO de 30 minutos es un piso técnico, no incluye el tiempo real de validación operacional — un dato a aclarar siempre en una propuesta para no generar expectativas de "30 minutos y listo" sin matices.</div>
+            </div>
+          </div>
+
+          <div class="prod-card" data-tipo="Servicio" data-search="huawei brs business recovery service replicacion continuidad negocio">
+            <div class="pc-head" onclick="toggleCard('pc-brs')">
+              <div class="pc-head-main">
+                <div class="pc-name">BRS — Business Recovery Service</div>
+                <span class="tipo-badge" style="background:var(--hwc-l);color:var(--hwc-d);">Servicio</span>
+              </div>
+              <div class="pc-arrow" id="arr-pc-brs">▼</div>
+            </div>
+            <div class="pc-body" id="pc-brs">
+              <div class="pc-desc">El servicio de continuidad de negocio de Huawei Cloud, con foco en replicación entre sitios para proteger contra interrupciones a nivel de aplicación, no solo de infraestructura. Comparte la misma lógica de RPO condicionado a sincronización completa que SDRS.</div>
+              <table class="spec-table">
+                <tr><td>RPO</td><td>No garantizado si la sincronización inicial o diferencial no está completa al momento del evento</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ MATRIZ DR ══════════════ -->
+  <div class="vert" id="v-matriz-dr">
+    <div class="vert-hd" onclick="toggleVert('matriz-dr')">
+      <div class="vert-icon" style="background:var(--con-l);">📊</div>
+      <div class="vert-title">Matriz Comparativa — DR por Configuración vs DR por Hardware</div>
+      <span class="vert-count" style="background:var(--con-l);color:var(--con-d);">vista rápida</span>
+      <span class="vert-toggle open" id="vt-matriz-dr">▼</span>
+    </div>
+    <div class="vert-intro">De un vistazo: cómo cambia el modelo de DR entre el mundo on-premise y cada hyperscaler.</div>
+    <div class="vert-body open" id="vb-matriz-dr">
+
+      <div class="matrix-wrap">
+        <table>
+          <thead>
+            <tr><th>Dimensión</th><th>VMware On-Prem</th><th>AWS</th><th>Azure</th><th>GCP</th><th>Huawei Cloud</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Servicio principal</strong></td><td>SRM + hardware físico duplicado</td><td>Elastic DR (DRS)</td><td>Site Recovery (ASR)</td><td>Backup and DR Service</td><td>SDRS / BRS</td></tr>
+            <tr><td><strong>Qué hay que comprar</strong></td><td>Servidores, storage, switches, licencias — todo duplicado</td><td>Nada físico — solo configurar</td><td>Nada físico — solo configurar</td><td>Nada físico — solo configurar</td><td>Nada físico — solo configurar</td></tr>
+            <tr><td><strong>RTO típico</strong></td><td>Horas</td><td>5–20 minutos</td><td>Minutos (con SLA 99.9%)</td><td>Minutos a horas según servicio</td><td>&lt;30 minutos (excluye config manual)</td></tr>
+            <tr><td><strong>RPO típico</strong></td><td>Minutos a horas</td><td>Segundos (crash-consistent)</td><td>Segundos (con ASR) / según frecuencia (Backup)</td><td>Minutos, point-in-time recovery</td><td>Condicionado a sincronización completa</td></tr>
+            <tr><td><strong>Capacidad ociosa en standby</strong></td><td>Alta — hardware completo esperando</td><td>Mínima — solo storage + réplica liviana</td><td>Mínima — replicación gestionada</td><td>Mínima — gestionado</td><td>Mínima — gestionado</td></tr>
+            <tr><td><strong>Tiempo de aprovisionar el sitio DR</strong></td><td>Semanas a meses</td><td>Horas (configuración)</td><td>Horas (configuración)</td><td>Horas (configuración)</td><td>Horas (configuración)</td></tr>
+            <tr><td><strong>Capacidad distintiva</strong></td><td>Control total del hardware físico</td><td>Drills no disruptivos + conversión automática a EC2 nativo</td><td>DRaaS más empaquetado / nombrado del mercado</td><td>Live Migration (sin downtime de mantenimiento)</td><td>Lectura de billing AWS para TCO comparativo (en MgC)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prod-card" style="margin-top:14px;" data-tipo="Concepto" data-search="conclusion resumen impacto preventa cliente conversacion mensaje clave">
+        <div class="pc-head" onclick="toggleCard('pc-conclfin')">
+          <div class="pc-head-main">
+            <div class="pc-name">📌 El mensaje central para la conversación con el cliente</div>
+            <span class="tipo-badge" style="background:var(--con-l);color:var(--con-d);">Conclusión</span>
+          </div>
+          <div class="pc-arrow" id="arr-pc-conclfin">▼</div>
+        </div>
+        <div class="pc-body" id="pc-conclfin">
+          <div class="pc-desc">El cambio de paradigma completo, en una frase: <strong>en VMware on-premise el DR es un proyecto de CapEx que tarda meses en estar listo; en cualquier hyperscaler es un proyecto de configuración que tarda horas o días.</strong> Eso no significa que sea gratis ni trivial — sigue requiriendo definir bien RTO/RPO, elegir la estrategia correcta (de Backup &amp; Restore a Multi-Site Active/Active) y testear regularmente. Pero el cuello de botella deja de ser "cuánto hardware puedo comprar" y pasa a ser "qué tan bien diseñé la arquitectura".</div>
+          <ul class="pc-list">
+            <li>Para un cliente con presupuesto ajustado y workloads no críticos: Backup &amp; Restore es suficiente y barato en cualquier cloud</li>
+            <li>Para un cliente con sistemas de cara al cliente: Pilot Light o Warm Standby balancean costo y velocidad de recuperación</li>
+            <li>Para banca, salud o e-commerce de alto volumen: Multi-Site Active/Active, sabiendo que el costo es real y la complejidad de consistencia de datos también</li>
+            <li>El evento de marzo 2026 en AWS me-central-1 es el recordatorio concreto de que ninguna nube es inmune a desastres físicos reales — Multi-Region no es un lujo para sistemas verdaderamente críticos</li>
+          </ul>
+          <div class="pc-tip">💡 Esta es la línea argumental más fuerte en una propuesta: "no estás comprando hardware de respaldo que se deprecia sin usarse — estás comprando una configuración que escala con tu negocio y se prueba sin riesgo, las veces que quieras."</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+    <span>Fuentes: documentación oficial AWS, Microsoft, Google y Huawei — Verificado junio 2026</span>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function toggleVert(id){
+  const b = document.getElementById('vb-'+id);
+  const t = document.getElementById('vt-'+id);
+  b.classList.toggle('open');
+  t.classList.toggle('open', b.classList.contains('open'));
+}
+
+function toggleCard(id){
+  const body = document.getElementById(id);
+  const arrow = document.getElementById('arr-'+id);
+  body.classList.toggle('open');
+  arrow.classList.toggle('open', body.classList.contains('open'));
+}
+
+function expandAll(){
+  document.querySelectorAll('.pc-body').forEach(b=>b.classList.add('open'));
+  document.querySelectorAll('.pc-arrow').forEach(a=>a.classList.add('open'));
+}
+function collapseAll(){
+  document.querySelectorAll('.pc-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.pc-arrow').forEach(a=>a.classList.remove('open'));
+}
+
+let activeTipo = 'all';
+
+function setTipoFilter(btn, tipo){
+  document.querySelectorAll('.tipo-pill[data-tipo]').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  activeTipo = tipo;
+  filterProducts();
+}
+
+function filterProducts(){
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  let anyVisible = false;
+
+  document.querySelectorAll('.vert').forEach(vert=>{
+    let vertHasVisible = false;
+
+    vert.querySelectorAll('.subcat-group').forEach(group=>{
+      let groupHasVisible = false;
+      group.querySelectorAll('.prod-card').forEach(card=>{
+        const text = card.getAttribute('data-search') || '';
+        const tipo = card.getAttribute('data-tipo') || '';
+        const labelEl = group.querySelector('.subcat-label');
+        const matchesSearch = !q || text.includes(q) || (labelEl && labelEl.textContent.toLowerCase().includes(q));
+        const matchesTipo = activeTipo==='all' || tipo.includes(activeTipo);
+        const visible = matchesSearch && matchesTipo;
+        card.classList.toggle('hidden', !visible);
+        if(visible){ groupHasVisible = true; vertHasVisible = true; anyVisible = true; }
+      });
+      group.style.display = groupHasVisible ? '' : 'none';
+    });
+
+    vert.querySelectorAll(':scope > .vert-body > .prod-card').forEach(card=>{
+      const text = card.getAttribute('data-search') || '';
+      const tipo = card.getAttribute('data-tipo') || '';
+      const matchesSearch = !q || text.includes(q);
+      const matchesTipo = activeTipo==='all' || tipo.includes(activeTipo);
+      const visible = matchesSearch && matchesTipo;
+      card.classList.toggle('hidden', !visible);
+      if(visible){ vertHasVisible = true; anyVisible = true; }
+    });
+
+    if(q || activeTipo!=='all'){
+      const body = vert.querySelector('.vert-body');
+      const tog = vert.querySelector('.vert-toggle');
+      if(vertHasVisible){ body.classList.add('open'); tog.classList.add('open'); }
+    }
+  });
+
+  document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+}
+
+const verts = document.querySelectorAll('.vert');
+const navs = document.querySelectorAll('.tn');
+window.addEventListener('scroll', function(){
+  const sy = window.scrollY + 110;
+  verts.forEach(v=>{
+    if(sy >= v.offsetTop && sy < v.offsetTop + v.offsetHeight){
+      navs.forEach(n=>n.classList.remove('active'));
+      const a = document.querySelector('.tn[href="#'+v.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

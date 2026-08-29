@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glosario Técnico — Personal Tech | Edgardo Celata</title>
+<style>
+  :root {
+    --blue-light: #E6F1FB; --blue-mid: #378ADD; --blue-dark: #0C447C;
+    --green-light: #E1F5EE; --green-mid: #1D9E75; --green-dark: #085041;
+    --amber-light: #FAEEDA; --amber-mid: #BA7517; --amber-dark: #633806;
+    --coral-light: #FAECE7; --coral-mid: #D85A30; --coral-dark: #4A1B0C;
+    --purple-light: #EEEDFE; --purple-mid: #7F77DD; --purple-dark: #26215C;
+    --gray-light: #F1EFE8; --gray-mid: #888780; --gray-dark: #2C2C2A;
+    --text: #1a1a18; --text-sec: #5f5e5a; --text-ter: #888780;
+    --border: #e0ded6; --bg: #ffffff; --bg2: #f7f5f0;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 14px; color: var(--text); background: var(--bg); line-height: 1.7; }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+
+  /* Header */
+  .doc-header { border-bottom: 2px solid var(--text); padding-bottom: 20px; margin-bottom: 36px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .doc-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+  .doc-sub { font-size: 13px; color: var(--text-sec); margin-top: 4px; font-style: italic; }
+  .doc-meta { text-align: right; font-size: 12px; color: var(--text-ter); }
+
+  /* Section */
+  .section { margin-bottom: 52px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-ter); border-bottom: 0.5px solid var(--border); padding-bottom: 6px; margin-bottom: 24px; }
+
+  /* Concept cards */
+  .concept { border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+  .concept-header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--bg2); cursor: pointer; }
+  .concept-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; margin-top: 3px; flex-shrink: 0; }
+  .concept-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .concept-tagline { font-size: 13px; color: var(--text-sec); margin-top: 2px; font-style: italic; }
+  .toggle-btn { font-size: 12px; color: var(--text-ter); transition: transform .25s; margin-top: 4px; flex-shrink: 0; }
+  .toggle-btn.open { transform: rotate(180deg); }
+  .concept-body { display: none; padding: 20px 18px 18px; border-top: 0.5px solid var(--border); }
+  .concept-body.open { display: block; }
+
+  /* Inside concept body */
+  .analogy { background: var(--bg2); border-left: 3px solid var(--border); padding: 12px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 16px; font-size: 13px; color: var(--text-sec); line-height: 1.65; }
+  .analogy strong { color: var(--text); font-weight: 700; }
+  .def-block { margin-bottom: 16px; }
+  .def-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-ter); margin-bottom: 6px; }
+  .def-text { font-size: 13px; color: var(--text-sec); line-height: 1.65; }
+  .def-text strong { color: var(--text); font-weight: 700; }
+
+  /* Mini diagram */
+  .diagram { border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; background: var(--bg); overflow-x: auto; }
+  .diagram-row { display: flex; align-items: center; gap: 0; margin: 6px 0; flex-wrap: nowrap; }
+  .dbox { font-size: 11.5px; font-weight: 600; padding: 7px 12px; border-radius: var(--radius-sm); text-align: center; white-space: nowrap; flex-shrink: 0; }
+  .darrow { font-size: 13px; color: var(--text-ter); padding: 0 6px; flex-shrink: 0; }
+  .darrow.red { color: var(--coral-mid); }
+  .darrow.green { color: var(--green-mid); }
+  .diagram-label { font-size: 11px; color: var(--text-ter); margin-top: 8px; font-style: italic; }
+  .diagram-vs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .diagram-vs-col { }
+  .diagram-vs-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+
+  /* Pill tags */
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; margin: 2px 3px 2px 0; }
+
+  /* How it works steps */
+  .steps { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+  .steps li { display: flex; gap: 10px; font-size: 13px; color: var(--text-sec); line-height: 1.55; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  /* Differentiator grid */
+  .diff-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 4px; }
+  .diff-card { background: var(--bg2); border-radius: var(--radius-sm); padding: 14px; border: 0.5px solid var(--border); }
+  .diff-card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+  .diff-icon { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+  .diff-card p { font-size: 12.5px; color: var(--text-sec); line-height: 1.6; }
+  .diff-card .vs-note { font-size: 11.5px; color: var(--text-ter); margin-top: 7px; padding-top: 7px; border-top: 0.5px solid var(--border); font-style: italic; }
+
+  /* Sep */
+  .sep { border: none; border-top: 0.5px solid var(--border); margin: 14px 0; }
+
+  /* Footer */
+  .doc-footer { border-top: 0.5px solid var(--border); margin-top: 48px; padding-top: 16px; font-size: 11px; color: var(--text-ter); display: flex; justify-content: space-between; }
+
+  @media print {
+    .concept-body { display: block !important; }
+    .toggle-btn { display: none; }
+    .concept-header { cursor: default; }
+    @page { margin: 15mm; size: A4; }
+  }
+  @media (max-width: 600px) {
+    .doc-header { flex-direction: column; gap: 10px; }
+    .doc-meta { text-align: left; }
+    .diff-grid { grid-template-columns: 1fr; }
+    .diagram-vs { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <div>
+      <div class="doc-title">Glosario Técnico — Personal Tech</div>
+      <div class="doc-sub">Conceptos de conectividad, cloud y diferenciadores de negocio</div>
+    </div>
+    <div class="doc-meta">
+      Edgardo Mauricio Celata<br>
+      Solutions Manager | Pre-Sales<br>
+      <span id="fecha"></span>
+    </div>
+  </div>
+
+
+  <!-- SECCIÓN 1: DIFERENCIADORES -->
+  <div class="section">
+    <div class="section-title">01 — Diferenciadores de Personal Tech vs AWS / Azure</div>
+
+    <!-- SOBERANÍA DEL DATO -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('c1')">
+        <span class="concept-badge" style="background:var(--blue-light);color:var(--blue-dark);">Diferenciador</span>
+        <div style="flex:1">
+          <div class="concept-title">Soberanía del dato</div>
+          <div class="concept-tagline">El dato no sale del país. Nunca.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-c1">▼</span>
+      </div>
+      <div class="concept-body open" id="c1">
+        <div class="analogy"><strong>La analogía:</strong> Imaginá que tu información más sensible es como el dinero de una caja fuerte. Con AWS o Azure, esa caja fuerte está en un edificio de Estados Unidos o Irlanda — vos tenés la llave, pero el edificio no es tuyo y está bajo leyes extranjeras. Con Personal Tech, la caja fuerte está en Argentina, en un datacenter físico en Pacheco, bajo jurisdicción argentina.</div>
+        <div class="def-block">
+          <div class="def-label">Qué significa en la práctica</div>
+          <div class="def-text">Cuando una empresa almacena datos en AWS o Azure, esos datos físicamente residen en servidores en el exterior. Esto crea tres problemas concretos: <strong>regulatorio</strong> (el BCRA, la CNV y otras entidades exigen que ciertos datos de clientes argentinos no salgan del país), <strong>legal</strong> (los datos quedan sujetos al CLOUD Act de EE.UU., que permite al gobierno americano acceder a información almacenada por empresas americanas) y <strong>de control</strong> (si hay un conflicto legal o geopolítico, el acceso a los datos puede verse afectado).</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Por qué esto le importa al CIO o al CFO</div>
+          <div class="def-text">Bancos, aseguradoras, empresas de salud y organismos de gobierno tienen <strong>obligación legal</strong> de mantener datos en territorio argentino. No es una preferencia — es compliance. Personal Tech les resuelve eso de fábrica. AWS y Azure lo resuelven solo parcialmente con zonas adicionales que tienen costo extra y complejidad técnica mayor.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Cómo lo usás en una conversación de ventas</div>
+          <div class="def-text">"¿Tienen datos de clientes, transacciones o información médica? ¿Conocen los requisitos de la Comunicación A del BCRA / resolución de la CNV sobre resguardo de datos? Con Personal Tech eso viene resuelto en el contrato — no hay que montar arquitecturas adicionales ni pagar extra por regiones locales."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LATENCIA -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('c2')">
+        <span class="concept-badge" style="background:var(--green-light);color:var(--green-dark);">Diferenciador</span>
+        <div style="flex:1">
+          <div class="concept-title">Latencia</div>
+          <div class="concept-tagline">La velocidad de respuesta entre el usuario y el sistema.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-c2">▼</span>
+      </div>
+      <div class="concept-body open" id="c2">
+        <div class="analogy"><strong>La analogía:</strong> La latencia es como el tiempo que tarda en llegar una carta. Si tu servidor está en São Paulo o en Virginia (EE.UU.), cada vez que un empleado en Buenos Aires accede a una aplicación, la "carta" viaja miles de kilómetros de ida y vuelta. Si el servidor está en Pacheco (30 km de CABA), la carta llega en segundos.</div>
+        <div class="def-block">
+          <div class="def-label">Los números concretos</div>
+          <div class="def-text">
+            <strong>AWS región São Paulo:</strong> 30–50 ms desde Buenos Aires.<br>
+            <strong>AWS región Virginia (EE.UU.):</strong> 130–180 ms desde Buenos Aires.<br>
+            <strong>Personal Tech DC Pacheco:</strong> 5–10 ms desde Buenos Aires.<br><br>
+            Para la mayoría de aplicaciones de oficina esto no se nota. Pero para <strong>bases de datos transaccionales, sistemas de trading, aplicaciones en tiempo real, videollamadas o VDI (escritorios virtuales)</strong>, esa diferencia es la diferencia entre una experiencia fluida y una aplicación que "va lenta".
+          </div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Por qué le importa al cliente</div>
+          <div class="def-text">Si el cliente tiene 500 empleados trabajando con una aplicación hosteada en la nube (ERP, CRM, escritorios virtuales), <strong>cada milisegundo de latencia se multiplica por cada acción de cada usuario todo el día</strong>. El impacto en productividad es real y medible. Personal Tech tiene este argumento ganado por geografía, sin importar cuánto invierta AWS en infraestructura.</div>
+        </div>
+        <div class="diagram">
+          <div class="diagram-vs">
+            <div class="diagram-vs-col">
+              <div class="diagram-vs-title" style="color:var(--coral-mid);">AWS / Azure (región más cercana)</div>
+              <div class="diagram-row">
+                <div class="dbox" style="background:var(--blue-light);color:var(--blue-dark);">Usuario CABA</div>
+                <div class="darrow red">→→→→→</div>
+                <div class="dbox" style="background:var(--coral-light);color:var(--coral-dark);">Servidor São Paulo</div>
+              </div>
+              <div class="diagram-label">~30–50 ms · viaje internacional de datos</div>
+            </div>
+            <div class="diagram-vs-col">
+              <div class="diagram-vs-title" style="color:var(--green-mid);">Personal Tech</div>
+              <div class="diagram-row">
+                <div class="dbox" style="background:var(--blue-light);color:var(--blue-dark);">Usuario CABA</div>
+                <div class="darrow green">→</div>
+                <div class="dbox" style="background:var(--green-light);color:var(--green-dark);">DC Pacheco</div>
+              </div>
+              <div class="diagram-label">~5–10 ms · tráfico local</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLA CON SOPORTE LOCAL -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('c3')">
+        <span class="concept-badge" style="background:var(--amber-light);color:var(--amber-dark);">Diferenciador</span>
+        <div style="flex:1">
+          <div class="concept-title">SLA con soporte local</div>
+          <div class="concept-tagline">Un número de teléfono en Argentina cuando algo se rompe.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-c3">▼</span>
+      </div>
+      <div class="concept-body open" id="c3">
+        <div class="analogy"><strong>La analogía:</strong> Un SLA (Service Level Agreement) es el contrato donde el proveedor se compromete a que su servicio va a estar disponible X% del tiempo, y que si no lo cumple, te compensa. Con AWS o Azure el SLA existe, pero el soporte de nivel empresarial cuesta una fortuna adicional y está operado desde el exterior. Con Personal Tech, el equipo técnico que responde está en Argentina, habla español y conoce el contexto regulatorio local.</div>
+        <div class="def-block">
+          <div class="def-label">Qué es un SLA en términos simples</div>
+          <div class="def-text">El SLA define tres cosas clave: <strong>disponibilidad</strong> (ej: 99.95% uptime garantizado = máximo ~4 horas de caída por año), <strong>tiempo de respuesta ante incidentes</strong> (cuánto tarda en atenderte el soporte según la severidad del problema) y <strong>penalidades</strong> (si no cumplen, te devuelven plata o dan créditos). El problema con los hyperscalers es que el SLA de soporte técnico serio (respuesta en menos de 1 hora para problemas críticos) tiene un costo adicional muy alto — el soporte "Enterprise" de AWS arranca en varios miles de dólares por mes.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">El argumento de ventas</div>
+          <div class="def-text">Personal Tech incluye el soporte técnico local en el mismo contrato de servicio. No hay que pagar un tier adicional para tener un técnico que te atienda en menos de una hora cuando el sistema productivo está caído. Para un banco o una empresa de retail en época de alta demanda, esto vale muchísimo más de lo que parece en papel.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONECTIVIDAD INTEGRADA -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('c4')">
+        <span class="concept-badge" style="background:var(--purple-light);color:var(--purple-dark);">Diferenciador</span>
+        <div style="flex:1">
+          <div class="concept-title">Conectividad integrada</div>
+          <div class="concept-tagline">El único proveedor que vende el cable y el servidor en el mismo contrato.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-c4">▼</span>
+      </div>
+      <div class="concept-body open" id="c4">
+        <div class="analogy"><strong>La analogía:</strong> Imaginá que querés instalar un aire acondicionado. Con AWS, comprás el aparato en una tienda (el cloud) pero necesitás contratar a un electricista aparte (el proveedor de conectividad) para hacer la instalación. Si algo falla, la tienda dice "el problema es del electricista" y el electricista dice "el problema es del aparato". Con Personal Tech, la misma empresa te vende el aparato Y hace la instalación. Si algo falla, hay un solo responsable.</div>
+        <div class="def-block">
+          <div class="def-label">Por qué esto es un diferenciador real</div>
+          <div class="def-text">AWS y Azure son proveedores de <strong>cloud puro</strong>. No tienen red de telecomunicaciones propia en Argentina. Para que la empresa llegue a sus servicios cloud necesita un proveedor de conectividad separado (una telco). Personal Tech es ambas cosas: <strong>telco + cloud provider</strong>. Eso significa un solo contrato, un solo SLA que cubre todo el camino desde la oficina del cliente hasta el servidor, y una sola llamada cuando algo no funciona.</div>
+        </div>
+        <div class="diagram">
+          <div class="diagram-vs">
+            <div class="diagram-vs-col">
+              <div class="diagram-vs-title" style="color:var(--coral-mid);">Con AWS</div>
+              <div class="diagram-row" style="flex-wrap:wrap;gap:4px;">
+                <div class="dbox" style="background:var(--gray-light);color:var(--gray-dark);font-size:10.5px;">Sede cliente</div>
+                <div class="darrow">→</div>
+                <div class="dbox" style="background:var(--coral-light);color:var(--coral-dark);font-size:10.5px;">Telco A (contrato 1)</div>
+                <div class="darrow">→</div>
+                <div class="dbox" style="background:var(--coral-light);color:var(--coral-dark);font-size:10.5px;">AWS (contrato 2)</div>
+              </div>
+              <div class="diagram-label">2 proveedores · 2 contratos · nadie es dueño del problema completo</div>
+            </div>
+            <div class="diagram-vs-col">
+              <div class="diagram-vs-title" style="color:var(--green-mid);">Con Personal Tech</div>
+              <div class="diagram-row" style="flex-wrap:wrap;gap:4px;">
+                <div class="dbox" style="background:var(--gray-light);color:var(--gray-dark);font-size:10.5px;">Sede cliente</div>
+                <div class="darrow green">→</div>
+                <div class="dbox" style="background:var(--green-light);color:var(--green-dark);font-size:10.5px;">Personal Tech (contrato único)</div>
+              </div>
+              <div class="diagram-label">1 proveedor · 1 contrato · 1 SLA end-to-end</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SECCIÓN 2: TECNOLOGÍAS DE CONECTIVIDAD -->
+  <div class="section">
+    <div class="section-title">02 — Tecnologías de conectividad: cómo funcionan</div>
+
+    <!-- MPLS -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('t1')">
+        <span class="concept-badge" style="background:var(--blue-light);color:var(--blue-dark);">WAN privada</span>
+        <div style="flex:1">
+          <div class="concept-title">MPLS</div>
+          <div class="concept-tagline">Una autopista privada que solo vos usás.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-t1">▼</span>
+      </div>
+      <div class="concept-body open" id="t1">
+        <div class="analogy"><strong>La analogía:</strong> Pensá en la diferencia entre una ruta nacional pública (internet) y una autopista privada exclusiva para tu empresa. En la ruta pública, el tráfico comparte el camino con todos — puede haber congestionamiento, accidentes, gente mirando lo que llevás en el camión. En la autopista privada, sos el único usuario, el camino es tuyo, nadie puede ver tu carga y siempre está despejada.</div>
+        <div class="def-block">
+          <div class="def-label">Cómo funciona</div>
+          <div class="def-text">MPLS significa <strong>Multi-Protocol Label Switching</strong>. En vez de que cada paquete de datos "pregunte el camino" en cada paso de la red (como lo hace internet), en MPLS a cada paquete se le pone una <strong>etiqueta</strong> al entrar a la red y esa etiqueta define exactamente por dónde va a viajar. Es como ponerle un sticker de destino a un paquete en una fábrica de distribución — el paquete no decide nada, va directo al lugar indicado por la etiqueta, sin pasar por internet público en ningún momento.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">MPLS termina en el DC del carrier que hostea el cloud</div>
+          <div class="def-text">Cuando decimos esto, significa que el "camino privado" de MPLS no termina en un edificio de oficinas — termina <strong>directamente dentro del datacenter de Personal Tech</strong>, donde vive el cloud del cliente. El paquete de datos sale de la sede de la empresa, viaja por la red privada MPLS y llega al servidor en el DC sin haber tocado internet en ningún momento del recorrido. Esto es lo que garantiza seguridad, latencia fija y SLA contractual.</div>
+        </div>
+        <div class="diagram">
+          <div class="diagram-row" style="flex-wrap:wrap;gap:4px;">
+            <div class="dbox" style="background:var(--gray-light);color:var(--gray-dark);">Sede A (CABA)</div>
+            <div class="darrow">—</div>
+            <div class="dbox" style="background:var(--blue-light);color:var(--blue-dark);">Red MPLS privada</div>
+            <div class="darrow">—</div>
+            <div class="dbox" style="background:var(--gray-light);color:var(--gray-dark);">Sede B (Córdoba)</div>
+          </div>
+          <div style="margin:8px 0 4px;font-size:11px;color:var(--text-ter);text-align:center;">↓</div>
+          <div class="diagram-row" style="justify-content:center;">
+            <div class="dbox" style="background:var(--green-light);color:var(--green-dark);">DC Personal Tech (cloud + datos)</div>
+          </div>
+          <div class="diagram-label">El tráfico nunca toca internet público. Un solo proveedor gestiona toda la red.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Para qué clientes</div>
+          <div class="def-text">Banca, seguros, gobierno, industria con datos críticos o requisitos de compliance. Cualquier empresa que necesite <strong>garantizar que su tráfico interno jamás viaja por internet</strong>, con latencia predecible y SLA contractual.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SD-WAN -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('t2')">
+        <span class="concept-badge" style="background:var(--green-light);color:var(--green-dark);">WAN por software</span>
+        <div style="flex:1">
+          <div class="concept-title">SD-WAN</div>
+          <div class="concept-tagline">Un director de tráfico inteligente que elige el mejor camino en tiempo real.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-t2">▼</span>
+      </div>
+      <div class="concept-body open" id="t2">
+        <div class="analogy"><strong>La analogía:</strong> Imaginá que tenés tres caminos para llegar al trabajo: autopista, ruta nacional y una calle por el barrio. Normalmente usás la autopista (MPLS), pero si hay un accidente podés tomar la ruta (fibra broadband) o el camino del barrio (4G/LTE). SD-WAN es como un GPS inteligente que en tiempo real monitorea los tres caminos, sabe cuál está congestionado o cortado, y manda el tráfico de tu empresa por el mejor disponible en cada momento, sin que nadie tenga que hacer nada manualmente.</div>
+        <div class="def-block">
+          <div class="def-label">Qué significa "abstraer el transporte subyacente"</div>
+          <div class="def-text">Esta frase técnica significa que SD-WAN <strong>separa la lógica del tráfico de la red física</strong>. La empresa no necesita saber si en este momento está usando MPLS, fibra o 4G — SD-WAN lo gestiona automáticamente. Las reglas se definen una vez ("el tráfico de videoconferencias siempre va por el link con menos latencia", "los backups van por el link más barato") y el software las ejecuta sin intervención humana.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Orquestación centralizada</div>
+          <div class="def-text">Significa que <strong>todo se configura y monitorea desde un solo panel de control</strong>, aunque la empresa tenga 50 sucursales en distintas provincias. El administrador de red ve en un dashboard el estado de todos los links de todas las sedes, aplica cambios de política con un click, y recibe alertas si algo falla. Sin SD-WAN, ese trabajo requiere conectarse físicamente a cada router de cada sucursal.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Cloud Gateway — cómo conecta con el cloud</div>
+          <div class="def-text">El <strong>Cloud Gateway</strong> es el punto de entrada al cloud dentro de la red SD-WAN. El controlador SD-WAN puede enviar tráfico al Cloud Gateway de Personal Tech (para workloads propios) o directamente a Azure/AWS (para workloads en hyperscaler) según la política configurada. La empresa define: "todo lo que sea ERP va al cloud de Personal Tech, todo lo que sea Office 365 va directo a internet". El SD-WAN lo ejecuta automáticamente.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIA -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('t3')">
+        <span class="concept-badge" style="background:var(--amber-light);color:var(--amber-dark);">Internet dedicado</span>
+        <div style="flex:1">
+          <div class="concept-title">DIA — Dedicated Internet Access</div>
+          <div class="concept-tagline">Una línea de internet solo para vos, con garantía de velocidad por contrato.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-t3">▼</span>
+      </div>
+      <div class="concept-body open" id="t3">
+        <div class="analogy"><strong>La analogía:</strong> La diferencia entre un servicio de internet hogareño y DIA es como la diferencia entre un colectivo y un taxi. El colectivo (internet compartido) lleva muchos pasajeros, y si el tráfico está complicado o hay muchos viajeros, llegás más tarde. El taxi (DIA) es solo para vos: el chofer se compromete a llevarte en X tiempo y si no cumple, hay penalidades. Eso es exactamente lo que significa "dedicado" — el ancho de banda no se comparte con otros clientes.</div>
+        <div class="def-block">
+          <div class="def-label">Por qué importa que sea simétrico</div>
+          <div class="def-text">Los servicios de internet hogareños y de muchas empresas pequeñas son <strong>asimétricos</strong>: bajan datos mucho más rápido de lo que suben (ej: 100 Mbps de bajada / 10 Mbps de subida). Eso está bien para ver Netflix pero es un problema para una empresa que sube backups al cloud, hace videoconferencias en HD o trabaja con aplicaciones que requieren subir y bajar datos por igual. DIA es simétrico: <strong>la velocidad de subida y bajada es la misma</strong>.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Direct Peering — la ventaja de Personal Tech</div>
+          <div class="def-text"><strong>Peering</strong> significa que dos redes se conectan directamente entre sí, sin pasar por redes intermediarias. Personal Tech tiene acuerdos de <strong>peering directo con los hyperscalers</strong> (AWS, Azure, etc.) lo que significa que cuando un cliente de Personal Tech accede a Azure, el tráfico va directo de la red de Personal Tech a la red de Azure, sin pasar por routers de otras compañías en el medio. El resultado es menos saltos de red, menor latencia y mayor estabilidad que si el cliente usara un proveedor de internet genérico.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCESO DEDICADO / CROSS-CONNECT -->
+    <div class="concept">
+      <div class="concept-header" onclick="toggle('t4')">
+        <span class="concept-badge" style="background:var(--coral-light);color:var(--coral-dark);">Circuito privado</span>
+        <div style="flex:1">
+          <div class="concept-title">Acceso dedicado y Cross-Connect</div>
+          <div class="concept-tagline">Un cable físico que conecta tu rack con el de Personal Tech.</div>
+        </div>
+        <span class="toggle-btn open" id="btn-t4">▼</span>
+      </div>
+      <div class="concept-body open" id="t4">
+        <div class="analogy"><strong>La analogía:</strong> Imaginá que alquilás una oficina en un edificio compartido y querés conectar tu red directamente con la del proveedor de servicios del edificio. En vez de usar el wifi del edificio (que comparten todos), pedís que te pongan un cable de red físico desde tu oficina directamente a la sala de servidores del proveedor. Eso es exactamente el Cross-Connect: un cable físico, dedicado, que solo existe para conectar tu infraestructura con la de Personal Tech.</div>
+        <div class="def-block">
+          <div class="def-label">Qué es el Acceso dedicado</div>
+          <div class="def-text">Es un <strong>circuito físico punto a punto</strong> — un cable de fibra óptica que va desde la sede del cliente hasta el datacenter de Personal Tech. No comparte infraestructura con ningún otro cliente. La capacidad del circuito (ancho de banda) está reservada exclusivamente para esa empresa. Es la opción de mayor rendimiento y menor variabilidad disponible.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Qué es el Cross-Connect</div>
+          <div class="def-text">El Cross-Connect se usa cuando el cliente ya tiene <strong>sus propios servidores dentro del datacenter de Personal Tech</strong> (en un espacio de colocation — básicamente alquila espacio físico en el DC para poner su propio hardware). En ese caso, en vez de salir del DC a internet para conectarse a los servicios de Personal Tech, se pone un cable físico dentro del mismo datacenter. La latencia es <strong>sub-milisegundo</strong> porque los servidores están literalmente a metros de distancia.</div>
+        </div>
+        <div class="def-block">
+          <div class="def-label">Para qué clientes y escenarios</div>
+          <div class="def-text">Colocation con Disaster Recovery, backups masivos nocturnos, bases de datos de alta transaccionalidad. Cualquier escenario donde la <strong>velocidad de transferencia de datos y la latencia son críticas</strong> y no puede haber variabilidad. Bancos que hacen reconciliación nocturna de millones de registros, empresas que replican bases de datos en tiempo real para continuidad de negocio.</div>
+        </div>
+        <div class="diagram">
+          <div style="text-align:center;margin-bottom:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);">Datacenter Personal Tech (Pacheco)</div>
+          <div style="border:1.5px dashed var(--border);border-radius:var(--radius);padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
+            <div class="dbox" style="background:var(--coral-light);color:var(--coral-dark);">Rack del cliente (colo)</div>
+            <div style="font-size:12px;color:var(--text-ter);font-weight:600;">← cable físico →</div>
+            <div class="dbox" style="background:var(--green-light);color:var(--green-dark);">Switch Personal Tech</div>
+            <div style="font-size:12px;color:var(--text-ter);font-weight:600;">→</div>
+            <div class="dbox" style="background:var(--green-light);color:var(--green-dark);">Cloud Personal Tech</div>
+          </div>
+          <div class="diagram-label">Todo ocurre dentro del mismo datacenter. Sin internet, sin red externa. Latencia sub-ms.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SECCIÓN 3: RESUMEN COMPARATIVO -->
+  <div class="section">
+    <div class="section-title">03 — Mapa mental rápido: cuándo usar cada tecnología</div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:8px 10px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);border-bottom:1.5px solid var(--border);background:var(--bg2);">Escenario del cliente</th>
+          <th style="text-align:left;padding:8px 10px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);border-bottom:1.5px solid var(--border);background:var(--bg2);">Tecnología</th>
+          <th style="text-align:left;padding:8px 10px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);border-bottom:1.5px solid var(--border);background:var(--bg2);">Argumento principal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Banco con 30 sucursales que necesita máxima seguridad y cumplimiento regulatorio</td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--blue-light);color:var(--blue-dark);">MPLS + IaaS + DR</span></td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Tráfico nunca toca internet. Soberanía del dato. SLA end-to-end. Compliance BCRA.</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Retail con 100 sucursales que quiere bajar costos de red sin perder visibilidad</td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--green-light);color:var(--green-dark);">SD-WAN + IaaS</span></td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Reducción de costos WAN 30–60%. Panel único de gestión. Failover automático entre links.</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Empresa mediana que usa Azure pero quiere mejor latencia y soberanía de datos</td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--amber-light);color:var(--amber-dark);">DIA + Cloud híbrido</span></td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Peering directo = mejor latencia que internet genérico. Workloads críticos en AR, resto en Azure.</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Empresa que ya tiene hardware propio y quiere conectar su infraestructura al cloud sin salir a internet</td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--coral-light);color:var(--coral-dark);">Colocation + Cross-Connect</span></td>
+          <td style="padding:10px;vertical-align:top;border-bottom:0.5px solid var(--border);color:var(--text-sec);">Sub-ms de latencia. Sin internet en ningún punto. Máximo rendimiento para bases de datos críticas.</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top;color:var(--text-sec);">Gobierno o empresa regulada que empieza su primer migración a cloud</td>
+          <td style="padding:10px;vertical-align:top;"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--gray-light);color:var(--gray-dark);">Bundle básico IaaS + DIA</span></td>
+          <td style="padding:10px;vertical-align:top;color:var(--text-sec);">Una sola factura, un solo proveedor, SLA unificado. Puerta de entrada con mínima complejidad.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>Edgardo Mauricio Celata · Personal Tech · 2025</span>
+    <span>Documento de uso personal — confidencial</span>
+  </div>
+
+</div>
+<script>
+  document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-AR', { year:'numeric', month:'long', day:'numeric' });
+  function toggle(id) {
+    const body = document.getElementById(id);
+    const btn = document.getElementById('btn-' + id);
+    const open = body.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  }
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>

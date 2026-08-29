@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Por qué migrar a la Nube — Argumentos C-Level | Edgardo Celata</title>
+<style>
+:root {
+  --blue-light:#E6F1FB;--blue-mid:#378ADD;--blue-dark:#0C447C;
+  --green-light:#E1F5EE;--green-mid:#1D9E75;--green-dark:#085041;
+  --amber-light:#FAEEDA;--amber-mid:#BA7517;--amber-dark:#633806;
+  --coral-light:#FAECE7;--coral-mid:#D85A30;--coral-dark:#4A1B0C;
+  --purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#26215C;
+  --teal-light:#E0F5F5;--teal-mid:#1A9696;--teal-dark:#0A4040;
+  --red-light:#FFE8E8;--red-mid:#D63030;--red-dark:#7A0000;
+  --gray-light:#F1EFE8;--gray-mid:#888780;--gray-dark:#2C2C2A;
+  --text:#1a1a18;--text-sec:#5f5e5a;--text-ter:#888780;
+  --border:#e0ded6;--bg:#ffffff;--bg2:#f7f5f0;
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.7;}
+a{text-decoration:none;color:inherit;}
+
+/* TOP NAV */
+.topnav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--text);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px;}
+.topnav-brand{font-size:12px;font-weight:700;white-space:nowrap;padding:11px 14px 11px 0;border-right:.5px solid var(--border);margin-right:6px;}
+.tnav{font-size:11px;font-weight:700;padding:12px 10px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-ter);transition:all .18s;}
+.tnav:hover,.tnav.active{color:var(--text);border-bottom-color:var(--text);}
+
+/* PAGE */
+.page{max-width:1040px;margin:0 auto;padding:32px 24px 60px;}
+
+/* HEADER */
+.doc-header{border-bottom:2px solid var(--text);padding-bottom:18px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;}
+.doc-title{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.2;}
+.doc-sub{font-size:13px;color:var(--text-sec);margin-top:4px;font-style:italic;}
+.doc-meta{text-align:right;font-size:11px;color:var(--text-ter);}
+
+/* CHAPTER INTRO STRIP */
+.doc-intro{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:32px;}
+.di-card{padding:13px 15px;border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.di-icon{font-size:22px;margin-bottom:6px;}
+.di-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin-bottom:4px;}
+.di-val{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;}
+.di-sub{font-size:11.5px;color:var(--text-sec);margin-top:3px;line-height:1.45;}
+
+/* VERTICAL */
+.vertical{margin-bottom:48px;scroll-margin-top:52px;}
+.vert-header{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;margin-bottom:6px;}
+.vert-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.vert-title{font-size:19px;font-weight:700;flex:1;}
+.vert-subtitle{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:1px;}
+.vert-toggle{font-size:11px;color:var(--text-ter);transition:transform .22s;}
+.vert-toggle.open{transform:rotate(180deg);}
+.vert-body{display:none;}
+.vert-body.open{display:block;}
+.vert-intro{font-size:13px;color:var(--text-sec);line-height:1.7;margin:10px 0 18px;padding:11px 15px;background:var(--bg2);border-left:3px solid var(--border);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.vert-intro strong{color:var(--text);}
+
+/* ACCORDION */
+.acc{border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.acc-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;}
+.acc-head:hover{background:#eeede6;}
+.acc-badge{font-size:10.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;}
+.acc-info{flex:1;}
+.acc-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.acc-tag{font-size:12px;color:var(--text-ter);font-style:italic;margin-top:2px;}
+.acc-chv{font-size:11px;color:var(--text-ter);transition:transform .22s;flex-shrink:0;margin-top:4px;}
+.acc-chv.open{transform:rotate(180deg);}
+.acc-body{display:none;border-top:.5px solid var(--border);}
+.acc-body.open{display:block;}
+
+/* CONTENT BLOCKS */
+.ab-inner{padding:16px 18px 18px;}
+.clevel-quote{background:var(--gray-light);border-left:3px solid var(--gray-dark);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--text-sec);font-style:italic;line-height:1.65;}
+.clevel-quote strong{color:var(--text);font-style:normal;}
+.block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-ter);margin:14px 0 6px;}
+.block-label:first-child{margin-top:0;}
+.block-text{font-size:13px;color:var(--text-sec);line-height:1.65;}
+.block-text strong{color:var(--text);}
+
+/* FEATURE LIST */
+.feat{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.feat li{font-size:12.5px;color:var(--text-sec);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--text);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+/* PAIN/GAIN TABLE */
+.pg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+.pg-col{border-radius:var(--radius-sm);padding:13px 15px;border:.5px solid var(--border);}
+.pg-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.pg-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.pg-list li{font-size:12px;line-height:1.5;display:flex;gap:6px;align-items:flex-start;}
+.pg-list li strong{font-weight:600;}
+
+/* DATA TABLE */
+.dtable-wrap{overflow-x:auto;margin:10px 0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-ter);border-bottom:1.5px solid var(--border);text-align:left;background:var(--bg2);}
+.dtable td{padding:9px 10px;vertical-align:top;border-bottom:.5px solid var(--border);line-height:1.55;color:var(--text-sec);}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--bg2);}
+.dtable .tn{font-weight:700;color:var(--text);font-size:12.5px;}
+.dtable .ts{font-size:11px;color:var(--text-ter);display:block;margin-top:1px;}
+
+/* KPI STRIP */
+.kpi-strip{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;padding:12px 14px;background:var(--bg2);border-radius:var(--radius-sm);}
+.kpi-strip .ks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);width:100%;margin-bottom:3px;}
+.kpill{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:20px;}
+
+/* WIN NOTE */
+.win-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--green-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--green-mid);line-height:1.6;}
+.win-note strong{color:var(--green-dark);}
+
+/* RISK NOTE */
+.risk-note{font-size:12.5px;color:var(--text-sec);padding:10px 13px;background:var(--red-light);border-radius:var(--radius-sm);margin-top:12px;border-left:2px solid var(--red-mid);line-height:1.6;}
+.risk-note strong{color:var(--red-dark);}
+
+/* OBJECTION BOX */
+.obj-box{border:.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin:8px 0;}
+.obj-q{padding:10px 13px;background:var(--red-light);font-size:12.5px;font-weight:700;color:var(--red-dark);}
+.obj-a{padding:10px 13px;font-size:12.5px;color:var(--text-sec);line-height:1.6;border-top:.5px solid var(--border);}
+.obj-a strong{color:var(--text);}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;}
+
+/* SEPARATOR */
+.sep{border:none;border-top:.5px solid var(--border);margin:14px 0;}
+
+/* FOOTER */
+.doc-footer{border-top:.5px solid var(--border);margin-top:48px;padding-top:14px;font-size:11px;color:var(--text-ter);display:flex;justify-content:space-between;}
+
+@media print{
+  .topnav{display:none;}
+  .vert-body,.acc-body{display:block!important;}
+  .vert-toggle,.acc-chv{display:none;}
+  .page{padding:16px;max-width:100%;}
+  @page{margin:12mm;size:A4;}
+}
+@media(max-width:640px){
+  .doc-header{flex-direction:column;gap:10px;}
+  .doc-meta{text-align:left;}
+  .pg-grid{grid-template-columns:1fr;}
+  .doc-intro{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">☁️ Migración Cloud · C-Level</div>
+  <a class="tnav" href="#v1">01 Por qué ahora</a>
+  <a class="tnav" href="#v2">02 CEO</a>
+  <a class="tnav" href="#v3">03 CFO</a>
+  <a class="tnav" href="#v4">04 CIO/CTO</a>
+  <a class="tnav" href="#v5">05 COO</a>
+  <a class="tnav" href="#v6">06 CISO</a>
+  <a class="tnav" href="#v7">07 CMO/CCO</a>
+  <a class="tnav" href="#v8">08 Objeciones</a>
+  <a class="tnav" href="#v9">09 Modelos de migración</a>
+  <a class="tnav" href="#v10">10 Personal Tech</a>
+  <a class="tnav" href="#v11">11 TCO — Análisis</a>
+  <a class="tnav" href="#v12">12 ROI — Cálculo</a>
+  <a class="tnav" href="#v13">13 Argumentos financieros</a>
+</nav>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div>
+    <div class="doc-title">Por qué migrar a la Nube — Argumentos C-Level</div>
+    <div class="doc-sub">Guía de conversación estratégica · CEO · CFO · CIO/CTO · COO · CISO · CMO</div>
+  </div>
+  <div class="doc-meta">Edgardo Mauricio Celata<br>Solutions Manager | Pre-Sales<br><span id="fecha"></span></div>
+</div>
+
+<!-- INTRO CARDS -->
+<div class="doc-intro">
+  <div class="di-card" style="background:var(--blue-light);border-color:var(--blue-mid);">
+    <div class="di-icon">💰</div>
+    <div class="di-label">Reducción de CAPEX</div>
+    <div class="di-val">De inversión fija a gasto variable</div>
+    <div class="di-sub">El CFO deja de inmovilizar capital en hardware que puede quedar obsoleto.</div>
+  </div>
+  <div class="di-card" style="background:var(--green-light);border-color:var(--green-mid);">
+    <div class="di-icon">⚡</div>
+    <div class="di-label">Velocidad de innovación</div>
+    <div class="di-val">De semanas a horas para lanzar</div>
+    <div class="di-sub">El CEO y el COO pueden mover el negocio más rápido que la competencia.</div>
+  </div>
+  <div class="di-card" style="background:var(--amber-light);border-color:var(--amber-mid);">
+    <div class="di-icon">🛡</div>
+    <div class="di-label">Seguridad & Compliance</div>
+    <div class="di-val">Certificaciones que el CISO no puede construir solo</div>
+    <div class="di-sub">ISO 27001, SOC2, PCI-DSS incluidos. On-premise no puede igualar este nivel.</div>
+  </div>
+  <div class="di-card" style="background:var(--purple-light);border-color:var(--purple-mid);">
+    <div class="di-icon">📈</div>
+    <div class="di-label">Escala sin fricción</div>
+    <div class="di-val">La infraestructura sigue al negocio</div>
+    <div class="di-sub">Cuando el negocio crece, la infraestructura crece con él. Sin licitaciones ni lead times.</div>
+  </div>
+  <div class="di-card" style="background:var(--teal-light);border-color:var(--teal-mid);">
+    <div class="di-icon">🤖</div>
+    <div class="di-label">Acceso a IA y analítica</div>
+    <div class="di-val">Capacidades que antes eran exclusivas de las big tech</div>
+    <div class="di-sub">ML, IA generativa, BigData, IoT. Disponibles en minutos sin datacenter propio.</div>
+  </div>
+  <div class="di-card" style="background:var(--coral-light);border-color:var(--coral-mid);">
+    <div class="di-icon">🔄</div>
+    <div class="di-label">Continuidad garantizada</div>
+    <div class="di-val">DR integrado de fábrica</div>
+    <div class="di-sub">El negocio no para ni ante incendios, inundaciones ni ransomware. RTO en minutos.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ 01 POR QUÉ AHORA -->
+<div class="vertical" id="v1">
+  <div class="vert-header" onclick="toggleV('v1')">
+    <div class="vert-icon" style="background:var(--gray-light)">⏱</div>
+    <div>
+      <div class="vert-title">01 — El contexto: por qué la migración no puede esperar</div>
+      <div class="vert-subtitle">El status quo de on-premise tiene un costo oculto que crece cada año</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v1">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v1">
+    <p class="vert-intro">La pregunta no es "¿migramos a la nube?" sino "¿cuánto nos cuesta cada año que no lo hacemos?" El hardware envejece, las licencias aumentan, los ingenieros escasean y la competencia ya está corriendo en cloud. <strong>Mantener on-premise en 2025 no es una decisión conservadora — es una decisión de riesgo.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w1')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">El costo del no-hacer</span>
+        <div class="acc-info"><div class="acc-name">Lo que le cuesta cada año quedarse en on-premise</div><div class="acc-tag">Costos visibles + costos ocultos + costos de oportunidad</div></div>
+        <span class="acc-chv" id="achv-w1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w1">
+        <div class="ab-inner">
+          <div class="pg-grid">
+            <div class="pg-col" style="background:var(--red-light);">
+              <div class="pg-title" style="color:var(--red-dark);">⚠️ Costos que el CFO ve</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);"><strong>Renovación de hardware:</strong> ciclos de 3-5 años con CAPEX significativo. El hardware se compra para el pico de demanda y trabaja al 20-30% el resto del tiempo.</li>
+                <li style="color:var(--text-sec);"><strong>Licencias de software:</strong> Microsoft, VMware (post-Broadcom +300%), Oracle. Aumentan cada año sin relación con el uso real.</li>
+                <li style="color:var(--text-sec);"><strong>Personal especializado:</strong> administradores de infraestructura cada vez más escasos y más caros. El mercado los absorbe en clouds y fintech.</li>
+                <li style="color:var(--text-sec);"><strong>Espacio físico y energía:</strong> sala de servidores, UPS, cooling, generadores. Todo esto desaparece en cloud.</li>
+              </ul>
+            </div>
+            <div class="pg-col" style="background:var(--amber-light);">
+              <div class="pg-title" style="color:var(--amber-dark);">🕳 Costos ocultos que nadie mide</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);"><strong>Tiempo perdido en procurement:</strong> licitaciones, aprobaciones, entrega, instalación. De 3 a 9 meses para tener un servidor nuevo vs. 10 minutos en cloud.</li>
+                <li style="color:var(--text-sec);"><strong>Deuda técnica acumulada:</strong> sistemas sin parchear, versiones EOL, vulnerabilidades conocidas que nadie tiene tiempo de cerrar.</li>
+                <li style="color:var(--text-sec);"><strong>Proyectos que no arrancan:</strong> ideas de negocio que mueren porque "no hay infraestructura disponible" o el presupuesto de hardware no fue aprobado.</li>
+                <li style="color:var(--text-sec);"><strong>Incidentes no cuantificados:</strong> horas de downtime que afectan productividad y reputación sin aparecer en el P&L.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="risk-note"><strong>El argumento de cierre para el directorio:</strong> On-premise parece "más barato" porque el CAPEX ya está amortizado y no aparece en el presupuesto anual. Pero si se suman los costos de renovación, licencias, personal, energía y oportunidad, el cloud suele ser más económico en un análisis TCO a 3 años — y entrega exponencialmente más capacidades.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('w2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Contexto de mercado</span>
+        <div class="acc-info"><div class="acc-name">Qué está haciendo la competencia mientras tanto</div><div class="acc-tag">La brecha competitiva se amplía cada año que se posterga la migración</div></div>
+        <span class="acc-chv" id="achv-w2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-w2">
+        <div class="ab-inner">
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Los competidores cloud-native innovan más rápido:</strong> una empresa que corre en cloud puede lanzar una nueva feature en horas. Una empresa que espera aprobación de hardware tarda meses. La brecha de velocidad se compone año tras año.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Las fintechs y startups ya nacieron en cloud:</strong> no tienen deuda técnica de on-premise. Compiten con infraestructura variable de costo casi cero y escalan sin inversión fija. Los bancos y retailers tradicionales compiten contra empresas que operan con un modelo de costos estructuralmente diferente.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>La IA es el nuevo campo de batalla:</strong> los modelos de ML y analítica avanzada que permiten personalización, detección de fraude y optimización de precios requieren cloud de fábrica. On-premise no tiene la escala ni las herramientas para correr esos modelos de manera eficiente.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>El talento IT se va al cloud:</strong> los ingenieros más capacitados del mercado trabajan con herramientas cloud. Una empresa que solo ofrece administración de servidores físicos tiene cada vez más dificultad para atraer y retener talento tecnológico de calidad.</li>
+          </ul>
+          <div class="kpi-strip">
+            <span class="ks-label">Datos de contexto global</span>
+            <span class="kpill" style="background:var(--blue-light);color:var(--blue-dark);">94% de las empresas globales usan cloud en algún grado (Flexera 2024)</span>
+            <span class="kpill" style="background:var(--green-light);color:var(--green-dark);">El gasto global en cloud pública supera $600B anuales y crece al 21%</span>
+            <span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">Las empresas cloud-first innovan 4x más rápido que las on-premise (McKinsey)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v1 -->
+
+
+<!-- ══════════════════════════════════════════════ 02 CEO -->
+<div class="vertical" id="v2">
+  <div class="vert-header" onclick="toggleV('v2')">
+    <div class="vert-icon" style="background:var(--blue-light)">👔</div>
+    <div>
+      <div class="vert-title">02 — Argumento para el CEO</div>
+      <div class="vert-subtitle">Velocidad competitiva · Capacidad de innovación · Reputación digital</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v2">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v2">
+    <p class="vert-intro">El CEO mira la empresa desde afuera: ¿somos más o menos competitivos que el año pasado? ¿Podemos movernos más rápido que la competencia? ¿Estamos atrayendo el talento que necesitamos? El cloud es la respuesta a las tres preguntas. <strong>No es una decisión de TI — es una decisión de competitividad estratégica.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ceo1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">CEO</span>
+        <div class="acc-info"><div class="acc-name">Velocidad de innovación — de meses a horas</div><div class="acc-tag">El tiempo de poner una idea en producción define quién gana en el mercado digital</div></div>
+        <span class="acc-chv" id="achv-ceo1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ceo1">
+        <div class="ab-inner">
+          <div class="clevel-quote">"El problema no es que no tengamos las ideas. El problema es que tardamos 6 meses en tener la infraestructura para probarlas."</div>
+          <div class="block-label">El argumento</div>
+          <p class="block-text">On-premise tiene un ciclo de aprovisionamiento de infraestructura de <strong>3 a 9 meses</strong>: licitación, aprobación de presupuesto, compra, entrega, instalación, configuración. En cloud, ese mismo servidor está disponible en <strong>10 minutos</strong> con una tarjeta de crédito. La diferencia no es técnica — es estratégica. Cada idea de negocio que requiere infraestructura nueva tiene que esperar ese ciclo en on-premise. En cloud, el experimento puede lanzarse esta semana.</p>
+          <div class="block-label">Ejemplos concretos por industria</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Retail:</strong> un nuevo canal de e-commerce se puede lanzar en días en cloud. En on-premise, hay que esperar el ciclo de compra de servidores. Mientras tanto, el competidor ya capturó el mercado.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Banca/Fintech:</strong> lanzar un nuevo producto financiero digital en cloud toma semanas. El banco tradicional que necesita aprovisionar infraestructura tarda trimestres. La fintech que nació en cloud ya tiene el cliente.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Manufactura:</strong> implementar un sistema de monitoreo IoT en una planta nueva toma días en cloud. On-premise requiere infraestructura local en cada planta con todos los costos asociados.</li>
+          </ul>
+          <div class="win-note"><strong>La frase de cierre:</strong> "El cloud no es una decisión de TI. Es una decisión de si queremos poder competir en el próximo ciclo del mercado."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ceo2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">CEO</span>
+        <div class="acc-info"><div class="acc-name">Talento tecnológico — el equipo que querés trabaja en cloud</div><div class="acc-tag">La guerra por el talento IT se pelea en el stack tecnológico que ofrece la empresa</div></div>
+        <span class="acc-chv" id="achv-ceo2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ceo2">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Perdimos tres ingenieros senior este año. Todos se fueron a empresas que trabajan con AWS o GCP."</div>
+          <p class="block-text">Los ingenieros de software y DevOps más capaces del mercado trabajan con herramientas cloud-native. Kubernetes, Terraform, CI/CD, serverless, IA — estos son los skills que buscan desarrollar. Una empresa que ofrece administrar servidores físicos y VMware tiene cada vez más dificultad para atraer y retener a este talento. <strong>El stack tecnológico se convirtió en un argumento de employer branding.</strong></p>
+          <div class="win-note"><strong>La consecuencia directa:</strong> Las empresas on-premise terminan con los ingenieros disponibles, no con los mejores. Los mejores ingenieros van a las empresas que les permiten crecer en las tecnologías que los hacen valiosos en el mercado. Cloud es una inversión en capacidad de atracción y retención de talento tecnológico.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ceo3')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">CEO</span>
+        <div class="acc-info"><div class="acc-name">Reputación y posicionamiento — la percepción de modernidad importa</div><div class="acc-tag">Clientes, inversores y socios evalúan la madurez digital de la organización</div></div>
+        <span class="acc-chv" id="achv-ceo3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ceo3">
+        <div class="ab-inner">
+          <p class="block-text">En sectores como servicios financieros, retail y manufactura avanzada, los clientes institucionales y socios estratégicos preguntan explícitamente por el nivel de madurez digital. Los inversores y fondos de capital valoran la postura tecnológica como indicador de resiliencia y capacidad de adaptación. <strong>Una empresa que puede demostrar arquitectura cloud moderna, seguridad certificada y capacidades de IA/analítica tiene un múltiplo de valuación más alto que una equivalente con infraestructura on-premise.</strong></p>
+          <div class="tags">
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Mayor valuación</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Mejor employer branding</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Confianza de clientes</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Atracción de socios</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v2 -->
+
+
+<!-- ══════════════════════════════════════════════ 03 CFO -->
+<div class="vertical" id="v3">
+  <div class="vert-header" onclick="toggleV('v3')">
+    <div class="vert-icon" style="background:var(--green-light)">💰</div>
+    <div>
+      <div class="vert-title">03 — Argumento para el CFO</div>
+      <div class="vert-subtitle">CAPEX vs OPEX · TCO real · Predictibilidad financiera · Riesgo de balance</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v3">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v3">
+    <p class="vert-intro">El CFO no quiere escuchar sobre servidores. Quiere escuchar sobre flujo de caja, predictibilidad de costos, optimización del balance y eliminación de riesgos financieros. <strong>El cloud es la transformación de infraestructura en un modelo financiero completamente diferente — y en la mayoría de los casos, más eficiente.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cfo1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">CFO</span>
+        <div class="acc-info"><div class="acc-name">CAPEX a OPEX — el cambio de modelo financiero más relevante</div><div class="acc-tag">De activo fijo en el balance a gasto operativo alineado con el uso real</div></div>
+        <span class="acc-chv" id="achv-cfo1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cfo1">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Compramos 200 servidores para el pico de demanda de fin de año. El resto del año trabajan al 25% de capacidad."</div>
+          <div class="pg-grid">
+            <div class="pg-col" style="background:var(--red-light);">
+              <div class="pg-title" style="color:var(--red-dark);">❌ Modelo On-Premise (CAPEX)</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Inversión inicial grande. Inmovilización de capital.</li>
+                <li style="color:var(--text-sec);">Se compra para el pico. Se paga la capacidad ociosa el resto del año.</li>
+                <li style="color:var(--text-sec);">Activo en el balance que se deprecia. Riesgo de obsolescencia.</li>
+                <li style="color:var(--text-sec);">Costos de mantenimiento, seguros, espacios físicos.</li>
+                <li style="color:var(--text-sec);">Ciclos de renovación de 3-5 años con picos de CAPEX impredecibles.</li>
+              </ul>
+            </div>
+            <div class="pg-col" style="background:var(--green-light);">
+              <div class="pg-title" style="color:var(--green-dark);">✅ Modelo Cloud (OPEX)</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Sin inversión inicial. Flujo de caja preservado para el negocio.</li>
+                <li style="color:var(--text-sec);">Pagás exactamente lo que usás. Cero capacidad ociosa.</li>
+                <li style="color:var(--text-sec);">Gasto operativo deducible. Fuera del balance. Sin depreciación.</li>
+                <li style="color:var(--text-sec);">Sin costos de mantenimiento físico ni espacio.</li>
+                <li style="color:var(--text-sec);">Costos predecibles y escalables linealmente con el negocio.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="win-note"><strong>El argumento financiero definitivo:</strong> On-premise te obliga a apostar por el futuro: comprás capacidad que tal vez necesitás dentro de 3 años. Cloud te permite crecer con certeza: pagás lo que usás hoy y escalás cuando el negocio lo justifica. El capital que no inmovilizás en servidores está disponible para el negocio.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cfo2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">CFO</span>
+        <div class="acc-info"><div class="acc-name">TCO real a 3 años — el análisis que pocos hacen completo</div><div class="acc-tag">Cómo demostrar que cloud es más económico cuando se miden todos los costos</div></div>
+        <span class="acc-chv" id="achv-cfo2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cfo2">
+        <div class="ab-inner">
+          <div class="block-label">Componentes del TCO on-premise que raramente se suman</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Componente de costo</th><th>On-Premise</th><th style="background:var(--green-light);color:var(--green-dark)">Cloud</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Hardware</td><td>CAPEX cada 3-5 años. Costo completo independientemente del uso.</td><td class="tn" style="color:var(--green-dark)">OPEX por uso real. Cero cuando no se usa.</td></tr>
+              <tr><td class="tn">Licencias de software</td><td>VMware, SO, antivirus, monitoreo. Aumentan anualmente.</td><td class="tn" style="color:var(--green-dark)">Incluidas en el servicio o con descuentos de escala.</td></tr>
+              <tr><td class="tn">Personal de infraestructura</td><td>Administradores de servidores, DBA, redes. Escasos y costosos.</td><td class="tn" style="color:var(--green-dark)">El proveedor gestiona la infraestructura. El equipo interno se reduce o se redirige.</td></tr>
+              <tr><td class="tn">Energía eléctrica</td><td>Servidores + cooling + UPS. Costo 24/7 aunque no haya tráfico.</td><td class="tn" style="color:var(--green-dark)">Incluido en el precio del servicio. Cero cuando el recurso está apagado.</td></tr>
+              <tr><td class="tn">Espacio físico</td><td>Sala de servidores, control de acceso, CCTV, climatización.</td><td class="tn" style="color:var(--green-dark)">No existe. El datacenter es del proveedor.</td></tr>
+              <tr><td class="tn">Disaster Recovery</td><td>Infraestructura duplicada en sitio alternativo. CAPEX extra.</td><td class="tn" style="color:var(--green-dark)">DR incluido como servicio. Se activa cuando se necesita.</td></tr>
+              <tr><td class="tn">Mantenimiento y seguros</td><td>Contratos de garantía, seguros de activos, mantenimiento preventivo.</td><td class="tn" style="color:var(--green-dark)">Responsabilidad del proveedor. Incluido en el SLA.</td></tr>
+              <tr><td class="tn">Obsolescencia</td><td>En 5 años el hardware vale cero. Riesgo de EOL de software.</td><td class="tn" style="color:var(--green-dark)">El proveedor actualiza continuamente. Sin riesgo de obsolescencia.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La revelación del TCO:</strong> Cuando el CFO ve este análisis completo (no solo el costo del servidor), la ventaja económica del cloud generalmente aparece en el año 2 o 3 del contrato. Y en muchos casos, incluso en el año 1 cuando se incluyen los costos de personal y el costo de oportunidad del capital inmovilizado.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cfo3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">CFO</span>
+        <div class="acc-info"><div class="acc-name">FinOps — optimización continua del gasto cloud</div><div class="acc-tag">El cloud no es "poner y olvidar" — tiene una disciplina de gestión de costos que entrega ahorro real</div></div>
+        <span class="acc-chv" id="achv-cfo3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cfo3">
+        <div class="ab-inner">
+          <p class="block-text">FinOps es la disciplina que pone a ingeniería, finanzas y negocio a trabajar juntos para optimizar el gasto cloud. No es un evento puntual — es un proceso continuo que generalmente entrega entre un <strong>20% y 35% de reducción sobre el gasto cloud existente</strong> en los primeros 3 meses de implementación.</p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Rightsizing:</strong> servidores sobredimensionados que pagan por 32GB de RAM cuando usan 8GB. Identificación automática con ahorro inmediato.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Recursos zombies:</strong> servidores de desarrollo que quedaron encendidos el fin de semana, snapshots de 18 meses que nadie usa, IPs reservadas sin asignar. En empresas medianas, este desperdicio puede llegar al 30% del gasto cloud total.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Reserved Instances y Savings Plans:</strong> comprometerse con un nivel mínimo de uso a 1 o 3 años reduce el precio unitario hasta un 72% frente al precio on-demand. Para workloads predecibles (ERP, bases de datos productivas), el ahorro es lineal y garantizado.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Storage tiering:</strong> datos históricos que no se consultan en Storage Archive a $0.001/GB vs. $0.02/GB en storage estándar. Para empresas con compliance de largo plazo, el ahorro es exponencial.</li>
+          </ul>
+          <div class="win-note"><strong>El diferenciador de Personal Tech acá:</strong> Personal Tech ofrece FinOps como servicio profesional. Esto significa que el cliente no necesita un equipo interno de FinOps — Personal Tech lo opera y entrega los ahorros documentados. Para el CFO, es la certeza de que el gasto cloud está siendo optimizado de manera continua y profesional.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v3 -->
+
+
+<!-- ══════════════════════════════════════════════ 04 CIO/CTO -->
+<div class="vertical" id="v4">
+  <div class="vert-header" onclick="toggleV('v4')">
+    <div class="vert-icon" style="background:var(--purple-light)">🔬</div>
+    <div>
+      <div class="vert-title">04 — Argumento para el CIO / CTO</div>
+      <div class="vert-subtitle">Arquitectura moderna · Deuda técnica · Acceso a IA · Velocidad de desarrollo</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v4">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v4">
+    <p class="vert-intro">El CIO/CTO vive entre dos mundos: mantener lo que funciona y construir lo que viene. On-premise lo condena a gastar el 80% del tiempo en mantenimiento y solo el 20% en innovación. Cloud invierte esa proporción. <strong>El CIO que migra a cloud libera a su equipo de la servidumbre del hierro y lo enfoca en crear valor.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cio1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">CIO/CTO</span>
+        <div class="acc-info"><div class="acc-name">Eliminar la deuda técnica — el lastre que frena toda la organización</div><div class="acc-tag">Los sistemas que no se pueden tocar porque nadie sabe qué pasa si se caen</div></div>
+        <span class="acc-chv" id="achv-cio1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cio1">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Tenemos 40 servidores. 12 son críticos y no los podemos tocar porque no hay documentación y el que los instaló ya no está. 8 están en End of Life pero no podemos actualizarlos porque las aplicaciones son incompatibles."</div>
+          <p class="block-text">La deuda técnica on-premise es acumulativa y se autoaliementa. Cada sistema legado que no se puede modernizar retiene el resto de la arquitectura. La migración a cloud fuerza —de manera positiva— a modernizar, documentar y eliminar lo que no aporta valor. <strong>El proceso de migración es en sí mismo una oportunidad de higiene arquitectónica.</strong></p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Parchado automático:</strong> los servicios cloud se parchean solos. Los servidores on-premise sin parchear son la principal puerta de entrada de ransomware.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Versiones siempre actualizadas:</strong> los servicios de bases de datos, storage y cómputo en cloud siempre están en versiones soportadas. No existe el "EOL" para un servicio cloud gestionado.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Documentación forzada:</strong> el proceso de migración obliga a documentar qué corre, dónde y para qué. Muchas empresas descubren durante la migración que tienen servidores que nadie sabe para qué sirven.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cio2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">CIO/CTO</span>
+        <div class="acc-info"><div class="acc-name">Acceso a IA, ML y analítica avanzada — de prohibitivo a accesible</div><div class="acc-tag">Servicios que antes requerían infraestructura millonaria ahora se consumen como API</div></div>
+        <span class="acc-chv" id="achv-cio2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cio2">
+        <div class="ab-inner">
+          <p class="block-text">Construir capacidades de IA on-premise requería GPUs de $50K+, un equipo de MLOps, meses de setup y expertise muy específico. En cloud, esas mismas capacidades están disponibles como servicio en horas. El CIO que migra a cloud habilita a toda la organización para construir sobre IA sin necesidad de ser Google o Amazon.</p>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th style="width:140px">Capacidad</th><th>On-Premise</th><th style="background:var(--purple-light);color:var(--purple-dark)">En Cloud</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Visión por computadora</td><td>GPU dedicada + framework + equipo especializado. Costo de entrada: $50K+</td><td>API lista. Primera llamada en minutos. Pago por imagen procesada.</td></tr>
+              <tr><td class="tn">Procesamiento de lenguaje natural</td><td>Clúster de servidores + modelos entrenados + MLOps. Meses de desarrollo.</td><td>Azure OpenAI, AWS Bedrock, GCP Vertex AI. Integración en días.</td></tr>
+              <tr><td class="tn">Analítica en tiempo real</td><td>Cluster Kafka + Spark + equipo de data engineers. Semanas de infraestructura.</td><td>AWS Kinesis, Azure Event Hubs, GCP Pub/Sub. Disponible en horas.</td></tr>
+              <tr><td class="tn">Data Warehouse</td><td>Appliance dedicado ($100K+) + DBA especializado + mantenimiento continuo.</td><td>BigQuery, Redshift, Synapse. Sin servidores. Primeros queries en minutos.</td></tr>
+              <tr><td class="tn">Detección de fraude con ML</td><td>Proyecto de 12-18 meses. Infraestructura de $200K+. Equipo de 5+ personas.</td><td>SageMaker o Vertex AI con datasets históricos. Primer modelo en semanas.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>El cambio de paradigma para el CIO:</strong> En on-premise, la pregunta era "¿tenemos la infraestructura para correr esto?" En cloud, la pregunta es "¿tenemos los datos y el caso de negocio?" La infraestructura ya existe. El CIO pasa de ser un gestor de servidores a un habilitador de capacidades de negocio.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cio3')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">CIO/CTO</span>
+        <div class="acc-info"><div class="acc-name">DevOps e integración continua — la velocidad de entrega de software</div><div class="acc-tag">CI/CD, pipelines automatizados y despliegues sin intervención manual</div></div>
+        <span class="acc-chv" id="achv-cio3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cio3">
+        <div class="ab-inner">
+          <p class="block-text">Cloud es el enabler natural de DevOps. Los pipelines de CI/CD, los ambientes de desarrollo efímeros, los despliegues blue/green sin downtime y los rollbacks automáticos son patrones que en cloud se implementan en días. En on-premise, requieren infraestructura adicional y meses de configuración.</p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Ambientes efímeros:</strong> un desarrollador puede crear un ambiente completo de pruebas en 5 minutos y destruirlo cuando termina. Sin cloud, esto requiere coordinar con el equipo de infraestructura y esperar disponibilidad.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Infraestructura como código:</strong> toda la infraestructura definida en archivos de texto versionados (Terraform, Bicep). Se puede recrear un ambiente completo en minutos si algo falla. En on-premise, esto no es posible.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>Despliegues sin downtime:</strong> blue/green deployments, canary releases, feature flags. El software llega a los usuarios sin ventanas de mantenimiento ni impacto en el negocio.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v4 -->
+
+
+<!-- ══════════════════════════════════════════════ 05 COO -->
+<div class="vertical" id="v5">
+  <div class="vert-header" onclick="toggleV('v5')">
+    <div class="vert-icon" style="background:var(--teal-light)">⚙️</div>
+    <div>
+      <div class="vert-title">05 — Argumento para el COO</div>
+      <div class="vert-subtitle">Continuidad operativa · Escalabilidad sin fricción · Eficiencia de procesos</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v5">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v5">
+    <p class="vert-intro">El COO necesita que el negocio funcione sin interrupciones, que escale cuando hay demanda y que los procesos sean eficientes. El cloud entrega las tres cosas con niveles de SLA que on-premise no puede igualar. <strong>Para el COO, el cloud es la garantía de que la infraestructura nunca es el cuello de botella.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('coo1')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">COO</span>
+        <div class="acc-info"><div class="acc-name">Continuidad operativa y Disaster Recovery — el negocio no para</div><div class="acc-tag">RTO en minutos vs. horas o días en on-premise — la diferencia entre una interrupción y una catástrofe</div></div>
+        <span class="acc-chv" id="achv-coo1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-coo1">
+        <div class="ab-inner">
+          <div class="clevel-quote">"El año pasado tuvimos 18 horas de downtime por un incendio en la sala de servidores. Perdimos ventas, datos y la confianza de tres clientes clave."</div>
+          <div class="pg-grid">
+            <div class="pg-col" style="background:var(--red-light);">
+              <div class="pg-title" style="color:var(--red-dark);">❌ DR On-Premise</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">DR requiere infraestructura duplicada en sitio alternativo. CAPEX 2x.</li>
+                <li style="color:var(--text-sec);">RTO típico: 4 a 48 horas según la magnitud del incidente.</li>
+                <li style="color:var(--text-sec);">Los drills de DR se hacen 1 vez por año porque interrumpen la operación.</li>
+                <li style="color:var(--text-sec);">El plan de DR existe pero frecuentemente está desactualizado.</li>
+              </ul>
+            </div>
+            <div class="pg-col" style="background:var(--green-light);">
+              <div class="pg-title" style="color:var(--green-dark);">✅ DR en Cloud</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">DR como servicio. Sin infraestructura alternativa propia. OPEX proporcional al uso.</li>
+                <li style="color:var(--text-sec);">RTO contractual de minutos. Los sistemas levantan automáticamente en otra región.</li>
+                <li style="color:var(--text-sec);">Drills automatizados sin impacto en producción. Se pueden hacer mensualmente.</li>
+                <li style="color:var(--text-sec);">RPO granular: pérdida de datos máxima de segundos o minutos, configurable.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="win-note"><strong>El cálculo del COO:</strong> ¿Cuánto cuesta una hora de downtime para la empresa? En retail en alta temporada puede ser millones. En banca puede ser regulatorio. Si el DR cloud cuesta $X al mes y evita un incidente de $Y de pérdida, el ROI es inmediato y medible.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('coo2')">
+        <span class="acc-badge" style="background:var(--teal-light);color:var(--teal-dark);">COO</span>
+        <div class="acc-info"><div class="acc-name">Escalabilidad sin fricción operativa — la infraestructura sigue al negocio</div><div class="acc-tag">Hot Sale, temporadas altas, lanzamientos — el negocio escala sin que IT sea el cuello de botella</div></div>
+        <span class="acc-chv" id="achv-coo2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-coo2">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Cada Hot Sale tenemos que pedir infraestructura adicional con 3 meses de anticipación. Si nos quedamos cortos, perdemos ventas. Si nos sobra, pagamos infraestructura ociosa el resto del año."</div>
+          <p class="block-text">Cloud tiene <strong>autoescalado automático</strong>: cuando el tráfico sube, la infraestructura sube. Cuando baja, baja. El COO no necesita predecir la demanda con meses de anticipación ni coordinar con IT para provisionar hardware. La capacidad responde al negocio en tiempo real.</p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Retail en temporada alta:</strong> el sistema escala automáticamente de 10 a 500 servidores durante Hot Sale y vuelve a 10 cuando termina. Solo se pagan las horas adicionales.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Finanzas en cierre de mes:</strong> los procesos batch del cierre contable tienen capacidad extra disponible exactamente cuando la necesitan, sin aprovisionar permanentemente para ese pico.</li>
+            <li><span class="fdot" style="background:var(--teal-mid)"></span><strong>Lanzamiento de nuevos mercados:</strong> expandir operaciones a una nueva región o país no requiere montar un datacenter local. Se activa la región cloud correspondiente en minutos.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v5 -->
+
+
+<!-- ══════════════════════════════════════════════ 06 CISO -->
+<div class="vertical" id="v6">
+  <div class="vert-header" onclick="toggleV('v6')">
+    <div class="vert-icon" style="background:var(--coral-light)">🔐</div>
+    <div>
+      <div class="vert-title">06 — Argumento para el CISO</div>
+      <div class="vert-subtitle">Certificaciones · Parchado automático · Detección de amenazas · Compliance regulatorio</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v6">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v6">
+    <p class="vert-intro">El CISO tiene la tarea imposible de mantener la seguridad de toda la infraestructura con un equipo limitado y presupuesto insuficiente. Los hyperscalers invierten más en seguridad en una semana de lo que la mayoría de las empresas invierten en un año. <strong>Migrar a cloud no es ceder el control de la seguridad — es subirse a los hombros de los equipos de seguridad más grandes del mundo.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ciso1')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">CISO</span>
+        <div class="acc-info"><div class="acc-name">La paradoja de la seguridad cloud — es más seguro que on-premise</div><div class="acc-tag">La percepción "on-premise es más seguro" es el mito más peligroso de la industria</div></div>
+        <span class="acc-chv" id="achv-ciso1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ciso1">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Preferimos tener los datos on-premise porque así tenemos más control sobre la seguridad."</div>
+          <div class="risk-note"><strong>El mito más peligroso:</strong> On-premise da ilusión de control, no seguridad real. AWS tiene 3.000+ ingenieros dedicados exclusivamente a seguridad. Azure gasta $1B+ anuales en ciberseguridad. La empresa promedio tiene 2-5 personas de seguridad IT. La comparación no tiene sentido.</div>
+          <div class="pg-grid">
+            <div class="pg-col" style="background:var(--red-light);">
+              <div class="pg-title" style="color:var(--red-dark);">❌ Seguridad On-Premise (realidad)</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Servidores sin parchear por falta de tiempo o miedo a interrupciones.</li>
+                <li style="color:var(--text-sec);">Vulnerabilidades EOL que nadie cierra porque las aplicaciones son incompatibles.</li>
+                <li style="color:var(--text-sec);">Monitoreo limitado al horario del equipo de seguridad (si lo hay).</li>
+                <li style="color:var(--text-sec);">Certificaciones (ISO 27001, SOC2) costosas y complejas de mantener.</li>
+                <li style="color:var(--text-sec);">Backups que nadie verifica hasta que los necesitan.</li>
+              </ul>
+            </div>
+            <div class="pg-col" style="background:var(--green-light);">
+              <div class="pg-title" style="color:var(--green-dark);">✅ Seguridad Cloud (realidad)</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Parchado automático de infraestructura gestionada sin downtime.</li>
+                <li style="color:var(--text-sec);">No existe el EOL para servicios cloud — el proveedor mantiene la plataforma.</li>
+                <li style="color:var(--text-sec);">SOC 24/7 del proveedor con detección de amenazas con ML sobre millones de eventos.</li>
+                <li style="color:var(--text-sec);">ISO 27001, SOC2, PCI-DSS, HIPAA — certificaciones heredadas del proveedor.</li>
+                <li style="color:var(--text-sec);">Backups automáticos verificados, inmutables y en múltiples geografías.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ciso2')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">CISO</span>
+        <div class="acc-info"><div class="acc-name">Modelo de responsabilidad compartida — qué cede y qué retiene el cliente</div><div class="acc-tag">El proveedor protege la infraestructura · El cliente protege sus datos y accesos</div></div>
+        <span class="acc-chv" id="achv-ciso2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ciso2">
+        <div class="ab-inner">
+          <p class="block-text">El modelo de responsabilidad compartida es el concepto clave para el CISO. No es "cedo el control" — es "delegamos la seguridad del hardware y la infraestructura al proveedor, y nos enfocamos en proteger datos, identidades y aplicaciones".</p>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Responsabilidad</th><th style="background:var(--coral-light);color:var(--coral-dark)">On-Premise (todo el cliente)</th><th style="background:var(--green-light);color:var(--green-dark)">Cloud (compartida)</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Seguridad física del DC</td><td>Cliente (salas, control de acceso, CCTV)</td><td><strong>Proveedor</strong> (datacenter certificado Tier 3/4)</td></tr>
+              <tr><td class="tn">Hardware y firmware</td><td>Cliente (actualizaciones, garantías, reemplazos)</td><td><strong>Proveedor</strong> (gestionado y actualizado)</td></tr>
+              <tr><td class="tn">Hipervisor y plataforma</td><td>Cliente (VMware, Hyper-V — parchado propio)</td><td><strong>Proveedor</strong> (transparente para el cliente)</td></tr>
+              <tr><td class="tn">Sistema operativo</td><td>Cliente (100%)</td><td>Servicios gestionados: <strong>Proveedor</strong>. VMs: <strong>Cliente</strong></td></tr>
+              <tr><td class="tn">Datos y cifrado</td><td>Cliente (100%)</td><td><strong>Cliente</strong> (el proveedor provee herramientas)</td></tr>
+              <tr><td class="tn">Identidades y accesos</td><td>Cliente (100%)</td><td><strong>Cliente</strong> (con herramientas IAM avanzadas del proveedor)</td></tr>
+              <tr><td class="tn">Detección de amenazas</td><td>Cliente (con herramientas propias — costosas)</td><td>Ambos: <strong>Proveedor</strong> da GuardDuty/Sentinel, <strong>cliente</strong> configura alertas</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La conclusión para el CISO:</strong> El CISO no pierde control — delega lo que el proveedor puede hacer mejor (seguridad de hardware e infraestructura) y retiene lo que solo el cliente puede hacer (gestión de datos, identidades y aplicaciones). El resultado es que el CISO puede enfocarse en la seguridad de capa alta en lugar de gastar el 60% del tiempo en mantenimiento de plataforma.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('ciso3')">
+        <span class="acc-badge" style="background:var(--coral-light);color:var(--coral-dark);">CISO</span>
+        <div class="acc-info"><div class="acc-name">Compliance regulatorio — lo que el regulador ve y exige</div><div class="acc-tag">BCRA, CNV, HIPAA, PCI-DSS, ISO 27001 — los hyperscalers ya tienen las certificaciones que el cliente necesita demostrar</div></div>
+        <span class="acc-chv" id="achv-ciso3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-ciso3">
+        <div class="ab-inner">
+          <p class="block-text">Obtener y mantener ISO 27001, SOC2 Type II o PCI-DSS on-premise requiere inversión de $200K+ en la primera certificación y un equipo dedicado a mantenimiento continuo. Los hyperscalers ya tienen todas estas certificaciones — cuando el cliente usa sus servicios, hereda esas certificaciones para su propia auditoría.</p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>BCRA (Argentina):</strong> los bancos que hostean en Personal Tech Cloud cumplen con el requisito de dato soberano (dato en territorio argentino bajo jurisdicción local) sin necesidad de arquitecturas adicionales.</li>
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>ISO 27001:</strong> AWS, Azure y GCP tienen certificación ISO 27001. Los informes de auditoría del proveedor se incluyen en el proceso de certificación del cliente, reduciendo drásticamente el scope y el costo.</li>
+            <li><span class="fdot" style="background:var(--coral-mid)"></span><strong>PCI-DSS:</strong> los proveedores cloud certificados PCI-DSS eliminan la mayoría de los controles de infraestructura del scope del cliente. El cliente solo necesita certificar la capa de aplicación.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v6 -->
+
+
+<!-- ══════════════════════════════════════════════ 07 CMO/CCO -->
+<div class="vertical" id="v7">
+  <div class="vert-header" onclick="toggleV('v7')">
+    <div class="vert-icon" style="background:var(--amber-light)">📣</div>
+    <div>
+      <div class="vert-title">07 — Argumento para el CMO / CCO</div>
+      <div class="vert-subtitle">Experiencia de cliente · Personalización con IA · Disponibilidad global · Time-to-market</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v7">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v7">
+    <p class="vert-intro">El CMO y el CCO piensan en clientes, canales y experiencias. El cloud es la infraestructura que hace posible la personalización a escala, la disponibilidad 24/7 sin excusas técnicas y el lanzamiento de nuevas iniciativas comerciales sin depender del ciclo de TI. <strong>Para el CMO, el cloud es lo que separa "experiencia de cliente diferenciada" de "el sistema cayó".</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cmo1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">CMO/CCO</span>
+        <div class="acc-info"><div class="acc-name">Personalización a escala — la promesa de la IA para marketing</div><div class="acc-tag">Recomendaciones, precios dinámicos y comunicación personalizada requieren cloud de fábrica</div></div>
+        <span class="acc-chv" id="achv-cmo1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cmo1">
+        <div class="ab-inner">
+          <p class="block-text">Netflix recomienda contenido diferente a cada uno de sus 250 millones de usuarios en tiempo real. Mercado Libre ajusta precios y recomendaciones en milisegundos según comportamiento de navegación. Amazon personaliza la página de inicio para cada visitante. <strong>Nada de esto es posible sin cloud.</strong> No porque on-premise sea técnicamente incapaz, sino porque la escala de procesamiento necesaria es incompatible con infraestructura fija.</p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Motores de recomendación:</strong> ML en tiempo real sobre el comportamiento del usuario. AWS Personalize, Azure Cognitive Services, GCP Recommendations AI. Disponibles como servicio sin infraestructura de datos propia.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Segmentación dinámica:</strong> BigQuery o Redshift procesan millones de registros de comportamiento en segundos para crear segmentos de audiencia en tiempo real que on-premise tardaría horas en calcular.</li>
+            <li><span class="fdot" style="background:var(--amber-mid)"></span><strong>Chatbots y asistentes IA:</strong> Amazon Lex, Azure Bot Service, Dialogflow. Atención al cliente 24/7 con IA generativa integrada. Sin infraestructura dedicada ni equipo de MLOps propio.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('cmo2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">CMO/CCO</span>
+        <div class="acc-info"><div class="acc-name">Disponibilidad 24/7 — el "cayó el sistema" como problema del pasado</div><div class="acc-tag">El cliente digital espera que las apps estén disponibles siempre. Cloud lo garantiza contractualmente</div></div>
+        <span class="acc-chv" id="achv-cmo2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-cmo2">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Durante el Hot Sale del año pasado el sitio cayó durante 45 minutos. Estimamos $800K en ventas perdidas y el trending topic fue nuestro nombre con críticas."</div>
+          <p class="block-text">Un SLA de 99,99% anual significa <strong>52 minutos de downtime máximo en todo el año</strong>. On-premise típicamente entrega 99,5% — es decir, <strong>43 horas de downtime aceptable</strong>. Para el CMO, la diferencia entre 52 minutos y 43 horas en un año puede significar millones en ventas y reputación.</p>
+          <div class="kpi-strip">
+            <span class="ks-label">Impacto del downtime por sector</span>
+            <span class="kpill" style="background:var(--red-light);color:var(--red-dark);">E-commerce: $5K-$50K por hora según temporada</span>
+            <span class="kpill" style="background:var(--red-light);color:var(--red-dark);">Banca online: riesgo regulatorio + pérdida de confianza</span>
+            <span class="kpill" style="background:var(--red-light);color:var(--red-dark);">SaaS B2B: penalidades de SLA + churn de clientes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v7 -->
+
+
+<!-- ══════════════════════════════════════════════ 08 OBJECIONES -->
+<div class="vertical" id="v8">
+  <div class="vert-header" onclick="toggleV('v8')">
+    <div class="vert-icon" style="background:var(--red-light)">❓</div>
+    <div>
+      <div class="vert-title">08 — Las 8 objeciones más frecuentes y cómo responderlas</div>
+      <div class="vert-subtitle">Las resistencias que aparecen en toda conversación de migración — y los argumentos para desactivarlas</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v8">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v8">
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o1')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #1</span>
+        <div class="acc-info"><div class="acc-name">"El cloud es más caro que lo que tenemos on-premise"</div><div class="acc-tag">La más común — y la más fácil de rebatir con un TCO completo</div></div>
+        <span class="acc-chv" id="achv-o1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o1">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "Mis servidores ya están amortizados. El cloud me sale más caro."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> El servidor amortizado no tiene costo de hardware, cierto. Pero tiene costo de energía, cooling, licencias de software (VMware, SO, antivirus), personal de administración, espacio físico y el riesgo de que ese hardware falle sin garantía. Cuando sumás todos esos componentes en un TCO real a 3 años, en la mayoría de los casos el cloud es igual o más económico — y entrega exponencialmente más capacidades. Te propongo hacer ese cálculo juntos con los números reales de tu empresa.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o2')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #2</span>
+        <div class="acc-info"><div class="acc-name">"Tenemos datos sensibles que no pueden salir de la empresa"</div><div class="acc-tag">El argumento de soberanía — que Personal Tech resuelve de fábrica</div></div>
+        <span class="acc-chv" id="achv-o2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o2">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "Nuestros datos de clientes no pueden estar en servidores en el exterior."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> Tenés razón en que los datos no deben salir del país para ciertas industrias reguladas (finanzas, salud, gobierno). Por eso existe Personal Tech Cloud — infraestructura cloud privada en el Datacenter de Pacheco, Argentina. Los datos no salen del territorio nacional, están bajo jurisdicción argentina y cumplen con todos los requisitos del BCRA, CNV y Ley de Protección de Datos Personales. Podés tener todos los beneficios del cloud sin compromiso de soberanía.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o3')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #3</span>
+        <div class="acc-info"><div class="acc-name">"La migración va a interrumpir nuestra operación"</div><div class="acc-tag">El miedo al downtime durante la migración — con el plan correcto, no pasa</div></div>
+        <span class="acc-chv" id="achv-o3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o3">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "Si migramos, tenemos que bajar los sistemas. No podemos permitirnos ese riesgo."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> La migración bien planificada usa técnicas de migración en caliente (live migration) que permiten mover workloads sin downtime. El proceso estándar es: replicar el sistema hacia cloud mientras sigue corriendo on-premise, validar que cloud funciona correctamente, hacer el cutover en una ventana de minutos y mantener on-premise como fallback por 48-72 horas. Las aplicaciones más críticas se migran en ventanas de mantenimiento planificadas de menos de 2 horas. El riesgo está en no tener un plan — no en migrar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o4')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #4</span>
+        <div class="acc-info"><div class="acc-name">"Nuestras aplicaciones legacy no son compatibles con cloud"</div><div class="acc-tag">El argumento del sistema antiguo — que tiene más opciones de lo que parece</div></div>
+        <span class="acc-chv" id="achv-o4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o4">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "Tenemos aplicaciones de 20 años que corren en Windows Server 2003. No podemos migrarlas."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> Lift & Shift — la aplicación se mueve tal cual a una VM cloud sin cambiar nada. Windows Server 2003 puede correr en una VM de AWS, Azure o Personal Tech Cloud exactamente igual que on-premise, pero con la infraestructura del proveedor garantizando la disponibilidad y el hardware. El cliente no necesita reescribir ni modernizar para migrar — puede hacerlo por etapas. La nube corre lo que el cliente tiene hoy y permite modernizar después, a su ritmo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o5')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #5</span>
+        <div class="acc-info"><div class="acc-name">"¿Qué pasa si el proveedor cloud cierra o sube los precios?"</div><div class="acc-tag">El riesgo de lock-in — que se gestiona con arquitectura multicloud</div></div>
+        <span class="acc-chv" id="achv-o5">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o5">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "¿Y si AWS sube los precios mañana y no tenemos alternativa?"</div>
+            <div class="obj-a"><strong>Respuesta:</strong> AWS, Azure y GCP son empresas con decenas de miles de clientes enterprise — no van a subir precios de forma unilateral sin perder mercado. Dicho eso, el riesgo de lock-in se gestiona con arquitectura multicloud y uso de estándares abiertos (Kubernetes, Terraform, PostgreSQL, S3 API). Personal Tech Cloud es compatible con la API de S3 y Kubernetes — lo que construís en Personal Tech es portable. Y la estrategia multicloud (workloads críticos en Personal Tech + hyperscaler cuando aplique) distribuye el riesgo por diseño.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o6')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #6</span>
+        <div class="acc-info"><div class="acc-name">"No tenemos el expertise interno para gestionar cloud"</div><div class="acc-tag">La brecha de habilidades — que el Managed Cloud resuelve</div></div>
+        <span class="acc-chv" id="achv-o6">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o6">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "Nuestro equipo de IT no sabe de cloud. No podemos gestionar esto internamente."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> No hace falta. Personal Tech ofrece Managed Cloud — el equipo de Personal Tech gestiona, monitorea, parchea y opera la infraestructura cloud del cliente 24/7. El cliente no necesita expertise interno de cloud para migrar. El equipo interno de IT sigue haciendo lo que sabe (gestión de aplicaciones, usuarios, proyectos) y Personal Tech se hace cargo de la infraestructura. A medida que el equipo interno gana experiencia, se puede ir tomando más control — a su ritmo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o7')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #7</span>
+        <div class="acc-info"><div class="acc-name">"No tenemos conectividad suficiente para depender del cloud"</div><div class="acc-tag">El argumento del ancho de banda — que Personal Tech resuelve como telco</div></div>
+        <span class="acc-chv" id="achv-o7">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o7">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "Tenemos sedes en el interior con conexiones lentas. Si el cloud se cae o la red falla, nos quedamos sin sistemas."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> Personal Tech es telco y cloud en el mismo proveedor. Como parte de la solución podemos provisionar conectividad DIA (internet dedicado con SLA) o MPLS a todas las sedes simultáneamente. La misma empresa que gestiona tu cloud gestiona tu conectividad — con un solo SLA end-to-end. Si la red falla, es el mismo equipo que la soluciona. Y con SD-WAN, las sedes tienen failover automático entre links (fibra + 4G) sin intervención manual.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('o8')">
+        <span class="acc-badge" style="background:var(--red-light);color:var(--red-dark);">Objeción #8</span>
+        <div class="acc-info"><div class="acc-name">"Preferimos hacer esto el año que viene cuando el presupuesto esté"</div><div class="acc-tag">La postergación — el costo real de esperar</div></div>
+        <span class="acc-chv" id="achv-o8">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-o8">
+        <div class="ab-inner">
+          <div class="obj-box">
+            <div class="obj-q">❌ "El proyecto es bueno, pero vamos a esperar al próximo ejercicio presupuestario."</div>
+            <div class="obj-a"><strong>Respuesta:</strong> Cada mes que se posterga la migración tiene un costo real: renovaciones de hardware y licencias que se pagan de todas formas, horas del equipo IT en mantenimiento en lugar de proyectos de valor, incidentes que ocurren sin el nivel de protección del cloud, y la brecha competitiva que se amplía. El modelo cloud en OPEX permite empezar con workloads pequeños sin CAPEX inicial — no hace falta esperar al próximo presupuesto de CAPEX. Se puede empezar esta semana con un piloto de VPS o migración de un sistema no crítico y el costo aparece en OPEX del mes corriente.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v8 -->
+
+
+<!-- ══════════════════════════════════════════════ 09 MODELOS DE MIGRACIÓN -->
+<div class="vertical" id="v9">
+  <div class="vert-header" onclick="toggleV('v9')">
+    <div class="vert-icon" style="background:var(--teal-light)">🗺</div>
+    <div>
+      <div class="vert-title">09 — Los 6 modelos de migración — cómo se mueve una empresa a cloud</div>
+      <div class="vert-subtitle">Las 6 Rs de migración — desde el más simple al más transformador</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v9">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v9">
+    <p class="vert-intro">No existe una sola forma de migrar a cloud. El modelo correcto depende de la aplicación, el presupuesto, el riesgo y el tiempo disponible. <strong>En la práctica, una empresa usa varios modelos simultáneamente según el sistema que está migrando.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('r1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">1 · Rehost</span>
+        <div class="acc-info"><div class="acc-name">Lift &amp; Shift — mover sin cambiar</div><div class="acc-tag">El servidor se mueve tal cual a una VM cloud. La aplicación no se modifica en absoluto</div></div>
+        <span class="acc-chv" id="achv-r1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-r1">
+        <div class="ab-inner">
+          <p class="block-text">La aplicación se empaqueta tal cual está (sistema operativo, aplicación, datos) y se levanta en una VM cloud. Es el método más rápido y de menor riesgo. <strong>No captura todos los beneficios del cloud-native, pero es el primer paso que permite migrar y estabilizar antes de modernizar.</strong></p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Cuándo usarlo:</strong> aplicaciones legacy críticas que no se pueden tocar, sistemas donde el riesgo de modificar es mayor que el beneficio, primera fase de una migración en etapas.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Tiempo típico:</strong> días a semanas por aplicación.</li>
+            <li><span class="fdot" style="background:var(--blue-mid)"></span><strong>Beneficio inmediato:</strong> el hardware on-premise se libera, el DR es inmediato, la disponibilidad mejora. La aplicación es idéntica al usuario final.</li>
+          </ul>
+          <div class="tags">
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Riesgo bajo</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Velocidad alta</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue-dark);">Modernización limitada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('r2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">2 · Replatform</span>
+        <div class="acc-info"><div class="acc-name">Lift, Tinker &amp; Shift — optimizaciones menores sin reescribir</div><div class="acc-tag">Se ajusta la aplicación para usar servicios gestionados del proveedor cloud sin cambiar la arquitectura core</div></div>
+        <span class="acc-chv" id="achv-r2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-r2">
+        <div class="ab-inner">
+          <p class="block-text">En vez de migrar MySQL instalado en una VM, se migra a RDS (MySQL gestionado). En vez de gestionar el servidor de aplicaciones, se usa Elastic Beanstalk o App Service. La aplicación no se reescribe pero sí se adapta para usar servicios cloud que eliminan la gestión de componentes inferiores.</p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Ejemplo:</strong> pasar de Oracle Database en VM a Oracle Autonomous Database. El esquema de datos es idéntico, pero el cliente deja de gestionar backups, parchado y alta disponibilidad del motor.</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span><strong>Beneficio:</strong> captura los beneficios de los servicios gestionados (backups automáticos, parchado, escalado) con cambios mínimos en la aplicación.</li>
+          </ul>
+          <div class="tags">
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Riesgo moderado</span>
+            <span class="tag" style="background:var(--green-light);color:var(--green-dark);">Balance costo/beneficio óptimo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('r3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">3 · Refactor</span>
+        <div class="acc-info"><div class="acc-name">Re-arquitectura — rediseñar para cloud-native</div><div class="acc-tag">La aplicación se rediseña para aprovechar las capacidades nativas del cloud: serverless, microservicios, contenedores</div></div>
+        <span class="acc-chv" id="achv-r3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-r3">
+        <div class="ab-inner">
+          <p class="block-text">Es el modelo más costoso y complejo pero entrega el mayor valor a largo plazo. La aplicación se divide en microservicios, se containeriza, se despliega en Kubernetes y usa servicios cloud nativos (Lambda, SQS, S3) en lugar de componentes on-premise equivalentes. <strong>Se reserva para aplicaciones estratégicas con alta demanda de escalabilidad y agilidad.</strong></p>
+          <div class="tags">
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Mayor inversión</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Máximo beneficio</span>
+            <span class="tag" style="background:var(--amber-light);color:var(--amber-dark);">Para apps estratégicas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('r4')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">4–6 · Retire, Retain, Replace</span>
+        <div class="acc-info"><div class="acc-name">Retire (eliminar) · Retain (mantener) · Replace (reemplazar por SaaS)</div><div class="acc-tag">No todo necesita migrar — algunos sistemas se eliminan, otros se mantienen, otros se reemplazan</div></div>
+        <span class="acc-chv" id="achv-r4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-r4">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Modelo</th><th>Qué significa</th><th>Cuándo aplicar</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">🗑 Retire</td><td>Se da de baja el sistema. Se migra la funcionalidad a otro sistema o simplemente se elimina.</td><td>Sistemas duplicados, funcionalidades no usadas, "aplicaciones zombie" que nadie sabe para qué sirven.</td></tr>
+              <tr><td class="tn">🔒 Retain</td><td>El sistema se queda on-premise por ahora. Se revisa en el próximo ciclo.</td><td>Sistemas con requisitos regulatorios muy específicos, hardware propietario sin alternativa cloud, sistemas en proceso de reemplazo inminente.</td></tr>
+              <tr><td class="tn">♻️ Replace (SaaS)</td><td>La aplicación se reemplaza por un servicio SaaS equivalente. Ej: el CRM propio se migra a Salesforce.</td><td>Aplicaciones de propósito general (CRM, ERP, RRHH, email) donde existe un SaaS maduro que hace lo mismo sin necesidad de infraestructura propia.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>En la práctica:</strong> una empresa que migra 100 aplicaciones típicamente aplica: Rehost (40%), Replatform (25%), Refactor (10%), Retire (15%), Retain (5%), Replace (5%). La distribución correcta depende del inventario de aplicaciones y los objetivos del negocio.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v9 -->
+
+
+<!-- ══════════════════════════════════════════════ 10 PERSONAL TECH -->
+<div class="vertical" id="v10">
+  <div class="vert-header" onclick="toggleV('v10')">
+    <div class="vert-icon" style="background:var(--blue-light)">🇦🇷</div>
+    <div>
+      <div class="vert-title">10 — Por qué Personal Tech como partner de migración</div>
+      <div class="vert-subtitle">El argumento diferenciador frente a un reseller de AWS o Azure puro</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v10">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v10">
+    <p class="vert-intro">Cualquier empresa puede venderle AWS o Azure al cliente. Personal Tech tiene tres diferenciadores estructurales que ningún reseller ni hyperscaler puro puede replicar: <strong>infraestructura propia en Argentina + red de telecomunicaciones nacional + soporte local en castellano con accountability real.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt1')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Diferenciador</span>
+        <div class="acc-info"><div class="acc-name">El único que vende el circuito, el cloud y el SLA en un solo contrato</div><div class="acc-tag">Telco + Cloud + Soporte local = propuesta que AWS y Azure no pueden hacer</div></div>
+        <span class="acc-chv" id="achv-pt1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt1">
+        <div class="ab-inner">
+          <div class="pg-grid">
+            <div class="pg-col" style="background:var(--red-light);">
+              <div class="pg-title" style="color:var(--red-dark);">❌ Con AWS/Azure directo</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Contrato con AWS o Azure para el cloud.</li>
+                <li style="color:var(--text-sec);">Contrato separado con una telco para la conectividad.</li>
+                <li style="color:var(--text-sec);">Si algo falla, AWS dice que el problema es de la telco y la telco dice que el problema es de AWS.</li>
+                <li style="color:var(--text-sec);">El dato viaja a servidores en el exterior. Riesgo de soberanía para regulados.</li>
+                <li style="color:var(--text-sec);">Soporte en inglés con desfase horario. El ticket puede tardar horas en escalarse.</li>
+              </ul>
+            </div>
+            <div class="pg-col" style="background:var(--green-light);">
+              <div class="pg-title" style="color:var(--green-dark);">✅ Con Personal Tech</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Un solo contrato que cubre cloud + conectividad + soporte.</li>
+                <li style="color:var(--text-sec);">Un solo SLA end-to-end. Si algo falla, hay un solo responsable.</li>
+                <li style="color:var(--text-sec);">El dato queda en el Datacenter de Pacheco, Argentina. Soberanía de fábrica.</li>
+                <li style="color:var(--text-sec);">Facturación en pesos argentinos. Sin exposición cambiaria.</li>
+                <li style="color:var(--text-sec);">Soporte en castellano 24/7 con equipos locales que conocen el contexto regulatorio argentino.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt2')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Diferenciador</span>
+        <div class="acc-info"><div class="acc-name">Multicloud como broker — no solo cloud propio</div><div class="acc-tag">Personal Tech puede vender AWS, Azure, GCP, IBM, Oracle, Huawei + Personal Cloud en una sola propuesta</div></div>
+        <span class="acc-chv" id="achv-pt2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt2">
+        <div class="ab-inner">
+          <p class="block-text">Personal Tech no es solo un proveedor de cloud propio. Es un <strong>broker multicloud</strong> con alianzas certificadas con todos los grandes hyperscalers. Esto significa que puede diseñar una arquitectura donde los workloads críticos y regulados van a Personal Cloud (dato soberano) y los workloads flexibles o con dependencia de servicios específicos van a AWS, Azure o GCP — todo gestionado desde un solo contrato y con soporte local.</p>
+          <div class="kpi-strip">
+            <span class="ks-label">Alianzas certificadas de Personal Tech</span>
+            <span class="kpill" style="background:var(--aws-l);color:var(--aws-d);">🟠 AWS Advanced Partner</span>
+            <span class="kpill" style="background:var(--az-l);color:var(--az-d);">🔵 Azure ExpressRoute Partner</span>
+            <span class="kpill" style="background:var(--gcp-l);color:var(--gcp-d);">🔷 GCP Cloud Interconnect</span>
+            <span class="kpill" style="background:var(--hwa-l);color:var(--hwa-d);">🟥 Huawei Cloud Partner</span>
+          </div>
+          <div class="win-note"><strong>El argumento de cierre:</strong> "No te estamos vendiendo nuestro cloud porque sí. Te estamos ayudando a elegir la arquitectura correcta para cada workload — si algo tiene que ir a AWS o a Azure, lo diseñamos para que vaya ahí. Y conectamos todo con la misma red y el mismo soporte. Eso es lo que te diferencia de contratar cada cosa por separado."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('pt3')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Resumen ejecutivo</span>
+        <div class="acc-info"><div class="acc-name">Los 10 beneficios estratégicos del cloud — para llevar al directorio</div><div class="acc-tag">La síntesis ejecutiva en una página — ROI económico + ROI estratégico</div></div>
+        <span class="acc-chv" id="achv-pt3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-pt3">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Beneficio</th><th>Quién lo siente</th><th>Cómo se mide</th></tr></thead>
+            <tbody>
+              <tr><td><strong>1</strong></td><td class="tn">CAPEX → OPEX</td><td>CFO</td><td>Flujo de caja liberado. Capital disponible para el negocio.</td></tr>
+              <tr><td><strong>2</strong></td><td class="tn">Velocidad de innovación</td><td>CEO · CTO</td><td>Time-to-market de nuevos proyectos. De meses a días.</td></tr>
+              <tr><td><strong>3</strong></td><td class="tn">Escalabilidad automática</td><td>COO · CMO</td><td>Cero downtime en picos de demanda. Cero capacidad ociosa fuera del pico.</td></tr>
+              <tr><td><strong>4</strong></td><td class="tn">Continuidad y DR</td><td>COO · CFO</td><td>RTO en minutos. Pérdida económica por downtime eliminada o minimizada.</td></tr>
+              <tr><td><strong>5</strong></td><td class="tn">Seguridad reforzada</td><td>CISO · CEO</td><td>Certificaciones heredadas. Parchado automático. Reducción de superficie de ataque.</td></tr>
+              <tr><td><strong>6</strong></td><td class="tn">Acceso a IA y analítica</td><td>CTO · CMO</td><td>Capacidades disponibles como servicio. Sin infraestructura propia de ML.</td></tr>
+              <tr><td><strong>7</strong></td><td class="tn">Compliance regulatorio</td><td>CISO · CFO</td><td>Auditorías simplificadas. Certificaciones del proveedor reducen el scope del cliente.</td></tr>
+              <tr><td><strong>8</strong></td><td class="tn">Retención de talento IT</td><td>CEO · CTO</td><td>El equipo trabaja con herramientas modernas. Menor rotación técnica.</td></tr>
+              <tr><td><strong>9</strong></td><td class="tn">Optimización continua (FinOps)</td><td>CFO</td><td>Ahorro documentado del 20-35% del gasto cloud en primeros 3 meses.</td></tr>
+              <tr><td><strong>10</strong></td><td class="tn">Reputación tecnológica</td><td>CEO · CCO</td><td>Percepción de modernidad en clientes, inversores y socios estratégicos.</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>El mensaje final para el directorio:</strong> El ROI del cloud no se mide solo en reducción de costos de hardware. Se mide en velocidad competitiva, resiliencia operativa, capacidad de innovación y la reputación de una empresa preparada para el futuro. Las empresas que migraron hace 3 años ya tienen 3 años de ventaja. Cada año que se posterga, esa brecha se amplía.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v10 -->
+
+
+<!-- ══════════════════════════════════════════════ 11 TCO -->
+<div class="vertical" id="v11">
+  <div class="vert-header" onclick="toggleV('v11')">
+    <div class="vert-icon" style="background:var(--green-light)">📊</div>
+    <div>
+      <div class="vert-title">11 — TCO: Costo Total de Propiedad — cómo calcularlo correctamente</div>
+      <div class="vert-subtitle">Total Cost of Ownership · La comparación real entre on-premise y cloud a 3 años</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v11">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v11">
+    <p class="vert-intro">El TCO es la herramienta que cierra la conversación con el CFO. La mayoría de los análisis de costo son incompletos porque solo miran el precio del servidor cloud vs. el precio del hardware on-premise. <strong>El TCO correcto suma todos los costos durante la vida útil de la infraestructura — visibles y ocultos — y los compara en igualdad de condiciones.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tco1')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Estructura del TCO</span>
+        <div class="acc-info"><div class="acc-name">Los 8 componentes de costo que deben incluirse en todo análisis TCO</div><div class="acc-tag">Si falta alguno, el análisis está incompleto y favorece artificialmente al on-premise</div></div>
+        <span class="acc-chv" id="achv-tco1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tco1">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead>
+              <tr>
+                <th style="width:160px">Componente</th>
+                <th style="background:var(--red-light);color:var(--red-dark)">❌ On-Premise (típico)</th>
+                <th style="background:var(--green-light);color:var(--green-dark)">✅ Cloud (típico)</th>
+                <th style="width:120px">Impacto en TCO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tn">01 · Hardware</td>
+                <td>CAPEX cada 3-5 años. Compra para el pico. 60-70% capacidad ociosa el resto del tiempo. Garantías, seguros.</td>
+                <td>OPEX mensual. Solo se paga lo que se usa. Escala automáticamente con la demanda real.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Alto impacto</span></td>
+              </tr>
+              <tr>
+                <td class="tn">02 · Licencias de software</td>
+                <td>VMware vSphere/vCenter: $8K–$25K/socket. Windows Server: $700–$6K/servidor. Antivirus, monitoreo, backup: $50–$150/servidor/año.</td>
+                <td>Incluidas en el servicio gestionado o BYOL con descuentos (Azure Hybrid Benefit hasta -55%). Sin renovaciones inesperadas.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Alto impacto</span></td>
+              </tr>
+              <tr>
+                <td class="tn">03 · Personal IT</td>
+                <td>1 sysadmin senior: $2M–$4M ARS/mes + cargas sociales. Capacitación continua. Dificultad creciente de retención.</td>
+                <td>Managed Cloud: Personal Tech opera la infraestructura. El equipo interno se redirige a proyectos de negocio.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Alto impacto</span></td>
+              </tr>
+              <tr>
+                <td class="tn">04 · Energía eléctrica</td>
+                <td>1 servidor rack: 200-500W promedio. 10 servidores: ~$1.500–$3.500 USD/año en energía + cooling. 24/7 aunque no haya carga.</td>
+                <td>Incluida en el precio del servicio. Cero cuando el recurso está apagado o en modo serverless.</td>
+                <td><span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">Impacto medio</span></td>
+              </tr>
+              <tr>
+                <td class="tn">05 · Espacio físico</td>
+                <td>Sala de servidores: $500–$3.000 USD/m² equipada (UPS, cooling, CCTV, acceso controlado). Costo fijo independiente del uso.</td>
+                <td>No existe. El datacenter es del proveedor. El espacio físico liberado puede usarse para el negocio.</td>
+                <td><span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">Impacto medio</span></td>
+              </tr>
+              <tr>
+                <td class="tn">06 · Disaster Recovery</td>
+                <td>Segundo sitio con infraestructura espejada: CAPEX 1.5x–2x. Mantenimiento dual. Drills costosos.</td>
+                <td>DRaaS: pago por uso. Se activa solo cuando se necesita. Drills automatizados sin costo de infraestructura.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Alto impacto</span></td>
+              </tr>
+              <tr>
+                <td class="tn">07 · Tiempo de downtime</td>
+                <td>On-premise típico: 99.5% uptime = 43 horas caídas/año. A $5K–$50K/hora (según industria), el costo es significativo.</td>
+                <td>SLA 99,95%–99,99% = 4–52 minutos/año. Reducción drástica del costo de interrupciones.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">Alto impacto</span></td>
+              </tr>
+              <tr>
+                <td class="tn">08 · Costo de oportunidad</td>
+                <td>Capital inmovilizado en hardware que podría estar en el negocio. Proyectos que no arrancan por falta de infraestructura disponible.</td>
+                <td>Capital libre para el negocio. Proyectos que arrancan esta semana sin esperar licitación de hardware.</td>
+                <td><span class="kpill" style="background:var(--purple-light);color:var(--purple-dark);">Estratégico</span></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La conclusión del TCO completo:</strong> Cuando se suman los 8 componentes, el cloud generalmente es igual o más económico que on-premise en el año 2-3 del análisis, incluso sin contar los beneficios estratégicos. Y en el año 5, la ventaja del cloud se amplía porque el hardware on-premise requiere renovación (nuevo pico de CAPEX) mientras el cloud simplemente ajusta el OPEX.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tco2')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Ejemplo numérico</span>
+        <div class="acc-info"><div class="acc-name">TCO a 3 años — empresa mediana de 20 servidores</div><div class="acc-tag">Caso de referencia orientativo para una empresa con 20 servidores físicos y 100 usuarios</div></div>
+        <span class="acc-chv" id="achv-tco2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tco2">
+        <div class="ab-inner">
+          <div class="block-label">Supuestos del caso</div>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--green-mid)"></span>20 servidores físicos mixtos (aplicaciones, BD, archivos, DR)</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span>100 usuarios activos · 2 administradores de infraestructura</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span>Datacenter propio (sala de servidores en el edificio de la empresa)</li>
+            <li><span class="fdot" style="background:var(--green-mid)"></span>DR en sitio alternativo con hardware espejado</li>
+          </ul>
+          <div class="dtable-wrap" style="margin-top:14px;">
+          <table class="dtable">
+            <thead>
+              <tr>
+                <th style="width:180px">Componente de costo</th>
+                <th style="background:var(--red-light);color:var(--red-dark)">On-Premise (3 años)</th>
+                <th style="background:var(--green-light);color:var(--green-dark)">Cloud Personal Tech (3 años)</th>
+                <th style="width:120px">Diferencia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tn">Hardware + renovación</td>
+                <td>$120.000 (compra inicial) + $40.000 en año 3 (partes/renovación)</td>
+                <td>Incluido en el servicio mensual</td>
+                <td style="color:var(--green-dark);font-weight:700;">−$160.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Licencias software</td>
+                <td>VMware + SO + backup: ~$35.000/año × 3 = $105.000</td>
+                <td>~$10.000/año en licencias residuales × 3 = $30.000</td>
+                <td style="color:var(--green-dark);font-weight:700;">−$75.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Personal infraestructura</td>
+                <td>2 sysadmin × $45.000/año × 3 = $270.000</td>
+                <td>Managed Cloud: 0.5 persona equivalente = $67.500 (3 años)</td>
+                <td style="color:var(--green-dark);font-weight:700;">−$202.500</td>
+              </tr>
+              <tr>
+                <td class="tn">Energía + cooling</td>
+                <td>~$18.000/año × 3 = $54.000</td>
+                <td>Incluido en el servicio. $0</td>
+                <td style="color:var(--green-dark);font-weight:700;">−$54.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Espacio físico (sala DC)</td>
+                <td>~$8.000/año × 3 = $24.000</td>
+                <td>$0 — datacenter de Personal Tech</td>
+                <td style="color:var(--green-dark);font-weight:700;">−$24.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Disaster Recovery</td>
+                <td>Sitio alternativo: $60.000 CAPEX + $15.000/año mantenimiento × 3 = $105.000</td>
+                <td>DRaaS: ~$8.000/año × 3 = $24.000</td>
+                <td style="color:var(--green-dark);font-weight:700;">−$81.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Servicio cloud mensual</td>
+                <td>$0</td>
+                <td>~$72.000/año × 3 = $216.000</td>
+                <td style="color:var(--red-dark);font-weight:700;">+$216.000</td>
+              </tr>
+              <tr style="background:var(--bg2);">
+                <td class="tn" style="font-size:14px;">TOTAL 3 AÑOS</td>
+                <td style="font-weight:700;font-size:14px;color:var(--red-dark);">~$718.000</td>
+                <td style="font-weight:700;font-size:14px;color:var(--green-dark);">~$337.500</td>
+                <td style="font-weight:700;font-size:15px;color:var(--green-dark);">−$380.500</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="risk-note" style="margin-top:12px;"><strong>Nota metodológica:</strong> Los valores son referenciales en USD y sirven como orden de magnitud para estructurar la conversación con el cliente. Los números reales de cada empresa deben relevarse con precisión. En pesos argentinos, la ventaja del cloud es aún mayor por el impacto de la inflación sobre los costos de personal e infraestructura on-premise.</div>
+          <div class="win-note" style="margin-top:8px;"><strong>Lo que no está en la tabla pero también cuenta:</strong> el costo de los proyectos que no arrancaron por falta de infraestructura disponible, el costo de los incidentes de seguridad (un solo ransomware puede costar más que 3 años de cloud), y el valor del equipo IT redirigido a proyectos de negocio.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('tco3')">
+        <span class="acc-badge" style="background:var(--blue-light);color:var(--blue-dark);">Herramientas oficiales</span>
+        <div class="acc-info"><div class="acc-name">Calculadoras TCO oficiales de los hyperscalers</div><div class="acc-tag">Herramientas gratuitas para hacer el análisis con los números reales del cliente</div></div>
+        <span class="acc-chv" id="achv-tco3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-tco3">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Proveedor</th><th>Herramienta</th><th>Qué calcula</th><th>Ventaja para preventa</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="border-left:3px solid var(--aws)"><strong>🟠 AWS</strong></td>
+                <td>AWS TCO Calculator / AWS Pricing Calculator</td>
+                <td>Comparativa on-premise vs. AWS. Incluye cálculo de ahorro estimado a 3 años.</td>
+                <td>Genera un reporte PDF ejecutivo listo para presentar al CFO. Muy visual.</td>
+              </tr>
+              <tr>
+                <td style="border-left:3px solid var(--az)"><strong>🔵 Azure</strong></td>
+                <td>Azure TCO Calculator</td>
+                <td>Ingresás tu infraestructura actual (servidores, storage, red) y calcula el ahorro estimado al migrar a Azure.</td>
+                <td>El más detallado. Desglosa cada componente de costo. Exportable a Excel para personalizar.</td>
+              </tr>
+              <tr>
+                <td style="border-left:3px solid var(--gcp)"><strong>🔷 GCP</strong></td>
+                <td>Google Cloud Pricing Calculator</td>
+                <td>Estimación de costos de servicios GCP. Más orientado a costeo de solución que a comparativa on-premise.</td>
+                <td>Ideal para dimensionar soluciones de analytics/ML donde GCP es la opción.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>Tip de preventa:</strong> Hacer el TCO Calculator de Azure con el cliente en la reunión — en vivo, con sus números reales — es una de las técnicas de cierre más efectivas. El cliente ve el ahorro calculado por la herramienta oficial de Microsoft, no por vos. La credibilidad del argumento se multiplica.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v11 -->
+
+
+<!-- ══════════════════════════════════════════════ 12 ROI -->
+<div class="vertical" id="v12">
+  <div class="vert-header" onclick="toggleV('v12')">
+    <div class="vert-icon" style="background:var(--amber-light)">💹</div>
+    <div>
+      <div class="vert-title">12 — ROI: Retorno sobre la Inversión — cómo calcularlo y presentarlo</div>
+      <div class="vert-subtitle">Return on Investment · Cuantificar el valor real de la migración cloud</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v12">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v12">
+    <p class="vert-intro">El ROI del cloud no es solo la diferencia de costos de infraestructura. El ROI completo incluye el valor de lo que se habilitó — proyectos que antes no existían, ingresos protegidos por mayor disponibilidad, ahorro de incidentes evitados. <strong>El ROI bien calculado convierte la conversación de "cuánto cuesta" a "cuánto vale".</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('roi1')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Fórmula base</span>
+        <div class="acc-info"><div class="acc-name">Cómo calcular el ROI de la migración cloud</div><div class="acc-tag">ROI = (Beneficios totales − Inversión total) / Inversión total × 100</div></div>
+        <span class="acc-chv" id="achv-roi1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-roi1">
+        <div class="ab-inner">
+          <div class="block-label">La fórmula</div>
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:14px 16px;margin:8px 0;text-align:center;">
+            <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">ROI = (Beneficios totales − Costo total de migración) ÷ Costo total de migración × 100</div>
+            <div style="font-size:12px;color:var(--text-ter);">Ejemplo: si los beneficios a 3 años son $500.000 y la inversión de migración fue $100.000 → ROI = 400%</div>
+          </div>
+          <div class="block-label" style="margin-top:14px;">Componentes del numerador (beneficios que suman al ROI)</div>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th style="width:180px">Categoría</th><th>Qué incluye</th><th style="width:160px">Cómo se cuantifica</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="tn">Ahorro directo de costos</td>
+                <td>Reducción de hardware, licencias, energía, espacio físico, personal de infraestructura.</td>
+                <td>TCO on-premise − TCO cloud. El análisis de la sección anterior.</td>
+              </tr>
+              <tr>
+                <td class="tn">Ingresos protegidos por uptime</td>
+                <td>Al pasar de 99,5% a 99,99% uptime, se evitan ~42 horas de downtime/año. En retail/banca eso equivale a ingresos preservados.</td>
+                <td>Horas de downtime evitadas × ingreso promedio por hora. Para e-commerce: $5K–$50K/hora.</td>
+              </tr>
+              <tr>
+                <td class="tn">Valor del tiempo IT liberado</td>
+                <td>Horas/semana que el equipo IT dedicaba a mantenimiento de servidores, ahora disponibles para proyectos de negocio.</td>
+                <td>Horas/semana × costo hora × 52 semanas × número de personas. Tipicamente 20-30 hrs/semana por persona.</td>
+              </tr>
+              <tr>
+                <td class="tn">Costo de incidentes evitados</td>
+                <td>Un incidente de ransomware promedio cuesta $200K–$1M en recuperación, multas y daño reputacional. El cloud reduce este riesgo significativamente.</td>
+                <td>Probabilidad de incidente × costo promedio del incidente. Para PyME: al menos 1 incidente relevante cada 3 años.</td>
+              </tr>
+              <tr>
+                <td class="tn">Proyectos habilitados</td>
+                <td>Iniciativas que antes no podían arrancar por falta de infraestructura: app mobile, portal de cliente, BI/analytics, integración de canales.</td>
+                <td>Estimación conservadora de ingresos incrementales o ahorro operativo del proyecto habilitado.</td>
+              </tr>
+              <tr>
+                <td class="tn">Ahorro de FinOps continuo</td>
+                <td>Optimización continua del gasto cloud una vez en operación: rightsizing, reserved instances, recursos zombies.</td>
+                <td>20–35% del gasto cloud mensual. Documentado mensualmente.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('roi2')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">Ejemplo de ROI</span>
+        <div class="acc-info"><div class="acc-name">ROI a 3 años — empresa mediana (mismo caso del TCO)</div><div class="acc-tag">Los mismos 20 servidores, ahora con el cálculo de retorno completo</div></div>
+        <span class="acc-chv" id="achv-roi2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-roi2">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead>
+              <tr>
+                <th style="width:180px">Fuente de valor</th>
+                <th>Año 1</th>
+                <th>Año 2</th>
+                <th>Año 3</th>
+                <th style="width:100px">Total 3 años</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tn">Ahorro directo TCO</td>
+                <td>$95.000</td>
+                <td>$115.000</td>
+                <td>$170.000 (incluye renovación evitada)</td>
+                <td style="font-weight:700;color:var(--green-dark);">$380.500</td>
+              </tr>
+              <tr>
+                <td class="tn">Ingresos protegidos por uptime</td>
+                <td>$30.000</td>
+                <td>$30.000</td>
+                <td>$30.000</td>
+                <td style="font-weight:700;color:var(--green-dark);">$90.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Tiempo IT liberado → proyectos</td>
+                <td>$20.000</td>
+                <td>$25.000</td>
+                <td>$25.000</td>
+                <td style="font-weight:700;color:var(--green-dark);">$70.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Ahorro FinOps continuo</td>
+                <td>$8.000</td>
+                <td>$12.000</td>
+                <td>$15.000</td>
+                <td style="font-weight:700;color:var(--green-dark);">$35.000</td>
+              </tr>
+              <tr>
+                <td class="tn">Costo de incidente evitado (probabilístico)</td>
+                <td>$30.000</td>
+                <td>$30.000</td>
+                <td>$30.000</td>
+                <td style="font-weight:700;color:var(--green-dark);">$90.000</td>
+              </tr>
+              <tr style="background:var(--green-light);">
+                <td class="tn" style="font-size:13px;">TOTAL BENEFICIOS</td>
+                <td style="font-weight:700;">$183.000</td>
+                <td style="font-weight:700;">$212.000</td>
+                <td style="font-weight:700;">$270.000</td>
+                <td style="font-weight:700;font-size:14px;color:var(--green-dark);">$665.500</td>
+              </tr>
+              <tr style="background:var(--red-light);">
+                <td class="tn" style="font-size:13px;">Costo de migración + cloud</td>
+                <td style="font-weight:700;">$95.000 (migración + 1er año)</td>
+                <td style="font-weight:700;">$72.000</td>
+                <td style="font-weight:700;">$72.000</td>
+                <td style="font-weight:700;font-size:14px;color:var(--red-dark);">$239.000</td>
+              </tr>
+              <tr style="background:var(--bg2);">
+                <td class="tn" style="font-size:14px;">BENEFICIO NETO</td>
+                <td style="font-weight:700;color:var(--green-dark);">$88.000</td>
+                <td style="font-weight:700;color:var(--green-dark);">$140.000</td>
+                <td style="font-weight:700;color:var(--green-dark);">$198.000</td>
+                <td style="font-weight:700;font-size:15px;color:var(--green-dark);">$426.500</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:14px 16px;margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="text-align:center;">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-bottom:4px;">ROI total 3 años</div>
+              <div style="font-size:26px;font-weight:700;color:var(--green-dark);">178%</div>
+              <div style="font-size:11px;color:var(--text-ter);">(Beneficio neto / Inversión)</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-bottom:4px;">Payback period</div>
+              <div style="font-size:26px;font-weight:700;color:var(--amber-dark);">~7 meses</div>
+              <div style="font-size:11px;color:var(--text-ter);">(Punto de equilibrio)</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);margin-bottom:4px;">Beneficio año 1</div>
+              <div style="font-size:26px;font-weight:700;color:var(--green-dark);">$88K</div>
+              <div style="font-size:11px;color:var(--text-ter);">Neto, solo en el primer año</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('roi3')">
+        <span class="acc-badge" style="background:var(--amber-light);color:var(--amber-dark);">ROI por industria</span>
+        <div class="acc-info"><div class="acc-name">Dónde el ROI es más alto según el sector</div><div class="acc-tag">No todos los clientes tienen el mismo punto de dolor — el ROI varía por vertical</div></div>
+        <span class="acc-chv" id="achv-roi3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-roi3">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Sector</th><th>Driver principal de ROI</th><th>Segundo driver</th><th>ROI estimado a 3 años</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>🏦 <strong>Banca y Fintech</strong></td>
+                <td>Disponibilidad 24/7: el downtime bancario tiene costo regulatorio + pérdida de confianza.</td>
+                <td>Compliance heredado (BCRA, PCI-DSS) sin construir infraestructura de certificación.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">150%–300%</span></td>
+              </tr>
+              <tr>
+                <td>🛒 <strong>Retail / E-commerce</strong></td>
+                <td>Escalado automático en temporada alta. Cada hora de downtime en Hot Sale = miles de ventas perdidas.</td>
+                <td>Personalización con ML: recomendaciones y precios dinámicos incrementan conversión.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">200%–400%</span></td>
+              </tr>
+              <tr>
+                <td>🏭 <strong>Manufactura</strong></td>
+                <td>IoT industrial + analytics: pasar de mantenimiento correctivo a predictivo reduce paradas no planificadas en 30-50%.</td>
+                <td>ERP en cloud con DR: continuidad de la línea de producción garantizada.</td>
+                <td><span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">120%–250%</span></td>
+              </tr>
+              <tr>
+                <td>🏛 <strong>Gobierno y Sector Público</strong></td>
+                <td>Reducción de CAPEX en presupuesto público. Pago por uso alineado con ciclos presupuestarios anuales.</td>
+                <td>Soberanía del dato con Personal Tech Cloud: cumplimiento normativo sin arquitecturas complejas.</td>
+                <td><span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">100%–200%</span></td>
+              </tr>
+              <tr>
+                <td>🏥 <strong>Salud</strong></td>
+                <td>DR de historia clínica digital: perder registros médicos tiene costo legal y ético incalculable.</td>
+                <td>Telemedicina y apps de pacientes: habilitadas solo con infraestructura cloud escalable.</td>
+                <td><span class="kpill" style="background:var(--green-light);color:var(--green-dark);">180%–350%</span></td>
+              </tr>
+              <tr>
+                <td>🌾 <strong>Agronegocios</strong></td>
+                <td>IoT agro + analítica: decisiones basadas en datos de suelo, clima y maquinaria reducen pérdidas y aumentan rendimiento.</td>
+                <td>Conectividad satelital + cloud en campo: operaciones remotas sin infraestructura local.</td>
+                <td><span class="kpill" style="background:var(--amber-light);color:var(--amber-dark);">130%–280%</span></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v12 -->
+
+
+<!-- ══════════════════════════════════════════════ 13 ARGUMENTOS FINANCIEROS -->
+<div class="vertical" id="v13">
+  <div class="vert-header" onclick="toggleV('v13')">
+    <div class="vert-icon" style="background:var(--purple-light)">🎯</div>
+    <div>
+      <div class="vert-title">13 — Los argumentos financieros que cierran la decisión</div>
+      <div class="vert-subtitle">El toolkit completo para la conversación con quien firma — CFO, CEO o Directorio</div>
+    </div>
+    <span class="vert-toggle" id="vtgl-v13">▼</span>
+  </div>
+  <div class="vert-body" id="vbdy-v13">
+    <p class="vert-intro">Esta sección es el resumen ejecutivo para llevar a la reunión más importante. Los argumentos están ordenados por impacto y por interlocutor. <strong>No se presentan todos juntos — se elige el argumento más relevante para el interlocutor específico y se va profundizando según la conversación.</strong></p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fa1')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Argumento #1</span>
+        <div class="acc-info"><div class="acc-name">El capital que liberás hoy vale más que el ahorro futuro</div><div class="acc-tag">El CAPEX no invertido en servidores tiene un valor de oportunidad inmediato</div></div>
+        <span class="acc-chv" id="achv-fa1">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fa1">
+        <div class="ab-inner">
+          <div class="clevel-quote">"¿Qué harían con $200.000 liberados del presupuesto de infraestructura que no van a necesitar gastar este año?"</div>
+          <p class="block-text">Esta es la pregunta que cambia la conversación. El CFO que estaba pensando en "cuánto cuesta el cloud" empieza a pensar en "qué puedo hacer con lo que me libera". El capital que no se inmoviliza en hardware puede ir a: <strong>expansión comercial, desarrollo de nuevos productos, marketing, M&A, o simplemente mejorar el flujo de caja</strong>. La decisión de migrar no es un gasto — es una reubicación estratégica del capital.</p>
+          <div class="win-note"><strong>Cuándo usarlo:</strong> Con el CFO en la primera conversación, antes de entrar en los detalles técnicos. El objetivo es plantear que la migración es una decisión financiera, no tecnológica.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fa2')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Argumento #2</span>
+        <div class="acc-info"><div class="acc-name">El costo de no migrar se compone cada año como interés negativo</div><div class="acc-tag">Cada año de postergación acumula deuda técnica, brecha competitiva y costos crecientes</div></div>
+        <span class="acc-chv" id="achv-fa2">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fa2">
+        <div class="ab-inner">
+          <p class="block-text">El efecto compuesto del no-hacer es devastador en tecnología. Las licencias suben. El hardware envejece. Los ingenieros que saben administrar on-premise se vuelven más escasos y más caros. La deuda técnica crece. La brecha competitiva con empresas cloud-native se amplía. <strong>Cada año de postergación hace la migración más cara, más riesgosa y más urgente simultáneamente.</strong></p>
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>Dimensión</th><th>Año 0 (hoy)</th><th>Año 1 (sin migrar)</th><th>Año 3 (sin migrar)</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">Costo de licencias</td><td>Base</td><td>+8–12% (inflación + aumento de vendors)</td><td>+25–40% acumulado</td></tr>
+              <tr><td class="tn">Edad del hardware</td><td>3-4 años</td><td>4-5 años (fin de soporte inminente)</td><td>Requiere reemplazo urgente</td></tr>
+              <tr><td class="tn">Disponibilidad de talento</td><td>Difícil</td><td>Más difícil (+20% escasez)</td><td>Crítico — se fueron al cloud</td></tr>
+              <tr><td class="tn">Brecha vs. competencia cloud-native</td><td>1 año</td><td>2 años</td><td>4 años (brecha irreversible en algunos mercados)</td></tr>
+              <tr><td class="tn">Complejidad de la migración</td><td>Normal</td><td>+15% (más sistemas legados)</td><td>+40% (deuda técnica acumulada)</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note"><strong>La frase de cierre:</strong> "El mejor momento para migrar fue hace 3 años. El segundo mejor momento es hoy."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fa3')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Argumento #3</span>
+        <div class="acc-info"><div class="acc-name">El cloud alinea el costo de IT con los ingresos del negocio</div><div class="acc-tag">En cloud, si el negocio crece, IT crece. Si contrae, IT contrae. On-premise no hace eso</div></div>
+        <span class="acc-chv" id="achv-fa3">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fa3">
+        <div class="ab-inner">
+          <div class="clevel-quote">"Gastamos lo mismo en infraestructura en un mes de ventas bajas que en el pico de temporada. La infraestructura no acompaña al negocio."</div>
+          <p class="block-text">On-premise tiene costos fijos independientes del desempeño del negocio. Los servidores cuestan lo mismo si la empresa vende $1M o $10M en el mes. Cloud tiene costos variables que siguen la curva de actividad del negocio. <strong>Para el CFO, este alineamiento entre costo y valor generado es un cambio fundamental en la estructura financiera de IT.</strong></p>
+          <ul class="feat">
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>En temporada baja:</strong> los servidores cloud se reducen automáticamente. El costo baja con los ingresos.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>En expansión:</strong> nuevas sucursales o mercados se activan sin CAPEX. El costo sube proporcionalmente con el crecimiento.</li>
+            <li><span class="fdot" style="background:var(--purple-mid)"></span><strong>En contracción:</strong> si el negocio necesita reducir costos, IT puede reducirse en días. On-premise tiene costos fijos que no se pueden reducir sin desinversión.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fa4')">
+        <span class="acc-badge" style="background:var(--purple-light);color:var(--purple-dark);">Argumento #4</span>
+        <div class="acc-info"><div class="acc-name">La diferencia entre precio y costo total — la trampa del "es más barato on-premise"</div><div class="acc-tag">Precio visible (hardware) vs. Costo real (TCO) — la brecha que favorece artificialmente al on-premise</div></div>
+        <span class="acc-chv" id="achv-fa4">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fa4">
+        <div class="ab-inner">
+          <p class="block-text">El error más común en la comparación on-premise vs. cloud es comparar el <strong>precio visible del hardware</strong> contra el <strong>precio mensual del cloud</strong> — ignorando todos los costos asociados al hardware que no aparecen en la factura del proveedor.</p>
+          <div class="pg-grid">
+            <div class="pg-col" style="background:var(--red-light);">
+              <div class="pg-title" style="color:var(--red-dark);">Lo que el CFO VE en on-premise</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Factura del servidor: $X</li>
+                <li style="color:var(--text-sec);">(El resto no aparece itemizado en ninguna factura)</li>
+              </ul>
+            </div>
+            <div class="pg-col" style="background:var(--amber-light);">
+              <div class="pg-title" style="color:var(--amber-dark);">Lo que el CFO NO VE en on-premise</div>
+              <ul class="pg-list">
+                <li style="color:var(--text-sec);">Costo del personal IT que lo administra (prorrateado)</li>
+                <li style="color:var(--text-sec);">Energía y cooling (va a la cuenta de electricidad general)</li>
+                <li style="color:var(--text-sec);">Licencias de software (van a otra línea presupuestaria)</li>
+                <li style="color:var(--text-sec);">DR y backup (otro presupuesto)</li>
+                <li style="color:var(--text-sec);">Costo de los incidentes (no se presupuestan)</li>
+                <li style="color:var(--text-sec);">Costo de oportunidad del capital (no se contabiliza)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="win-note" style="margin-top:12px;"><strong>La propuesta concreta:</strong> "Te propongo que hagamos juntos el Azure TCO Calculator con los números reales de tu empresa. En 30 minutos vemos el costo real de cada opción, con todos los componentes. Si el cloud sale más caro con todos los números sobre la mesa, lo decimos sin problema. En la mayoría de los casos el resultado sorprende."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="toggleAcc('fa5')">
+        <span class="acc-badge" style="background:var(--green-light);color:var(--green-dark);">Resumen ejecutivo</span>
+        <div class="acc-info"><div class="acc-name">El resumen en una página — para llevar al directorio</div><div class="acc-tag">Los 6 puntos que justifican la migración cloud en 60 segundos</div></div>
+        <span class="acc-chv" id="achv-fa5">▼</span>
+      </div>
+      <div class="acc-body" id="abdy-fa5">
+        <div class="ab-inner">
+          <div class="dtable-wrap">
+          <table class="dtable">
+            <thead><tr><th>#</th><th>Punto</th><th>Argumento en una línea</th><th>Evidencia</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700;font-size:16px;">1</td>
+                <td class="tn">TCO más bajo a 3 años</td>
+                <td>Cuando se suman todos los costos (hardware, licencias, personal, energía, DR), cloud es igual o más económico en 2-3 años.</td>
+                <td>Azure TCO Calculator. Análisis con números propios.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;font-size:16px;">2</td>
+                <td class="tn">ROI documentable</td>
+                <td>178% promedio a 3 años. Payback en 7-12 meses. Beneficios que empiezan en el año 1.</td>
+                <td>Caso de referencia + números de la empresa.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;font-size:16px;">3</td>
+                <td class="tn">CAPEX → OPEX</td>
+                <td>Capital que no se inmoviliza en hardware disponible para el negocio. Sin picos de inversión inesperados.</td>
+                <td>Comparativa de flujo de caja a 5 años.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;font-size:16px;">4</td>
+                <td class="tn">Riesgo reducido</td>
+                <td>SLA 99,99% vs. 99,5% on-premise. DR integrado. Seguridad certificada ISO 27001, SOC2.</td>
+                <td>SLA contractual del proveedor.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;font-size:16px;">5</td>
+                <td class="tn">Velocidad competitiva</td>
+                <td>De semanas a horas para lanzar nuevas iniciativas. IT deja de ser el cuello de botella.</td>
+                <td>Benchmarks de time-to-market cloud vs. on-premise.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;font-size:16px;">6</td>
+                <td class="tn">Escala sin fricción</td>
+                <td>La infraestructura sigue al negocio. Crece cuando crece, reduce cuando reduce. Sin licitaciones.</td>
+                <td>Caso de uso de escalado automático en temporada alta.</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="win-note" style="margin-top:12px;"><strong>El mensaje final:</strong> Migrar a cloud no es un gasto de TI. Es una decisión de optimización financiera, reducción de riesgo y habilitación de capacidad competitiva. El ROI es documentable, el payback es corto y el costo de no hacerlo crece cada año. La pregunta no es si migrar — es cómo hacerlo ordenadamente.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /v13 -->
+
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span>Edgardo Mauricio Celata · Personal Tech · Argumentos estratégicos de migración cloud</span>
+  <span>Documento de uso personal — confidencial — <span id="fecha2"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var hoy=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('fecha').textContent=hoy;
+document.getElementById('fecha2').textContent=hoy;
+
+function toggleV(id){
+  var b=document.getElementById('vbdy-'+id);
+  var t=document.getElementById('vtgl-'+id);
+  var open=b.classList.toggle('open');
+  t.classList.toggle('open',open);
+}
+function toggleAcc(id){
+  var b=document.getElementById('abdy-'+id);
+  var c=document.getElementById('achv-'+id);
+  var open=b.classList.toggle('open');
+  c.classList.toggle('open',open);
+}
+// Active nav
+var verts=document.querySelectorAll('.vertical');
+var navs=document.querySelectorAll('.tnav');
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  verts.forEach(function(v){
+    var top=v.offsetTop;
+    var bot=top+v.offsetHeight;
+    if(sy>=top&&sy<bot){
+      navs.forEach(function(n){n.classList.remove('active');});
+      var a=document.querySelector('.tnav[href="#'+v.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis Estratégico — Personal en la era de la Convergencia | 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#0070F3; --brand-d:#004DBF; --brand-l:#EBF5FF;
+  --ink:#0A0F1E; --ink-2:#1E2535; --ink-3:#374151;
+  --muted:#6B7280; --faint:#9CA3AF; --hairline:#E5E7EB;
+  --bg:#FFFFFF; --bg-off:#F8FAFC; --bg-dark:#0A0F1E;
+  --c1:#0070F3; /* Conectividad */
+  --c2:#0891B2; /* Cloud */
+  --c3:#7C3AED; /* Ciber */
+  --c4:#D97706; /* IoT */
+  --c5:#059669; /* Analytics */
+  --c6:#DC2626; /* IA */
+  --c7:#374151; /* Dev */
+  --c8:#BE185D; /* Personal Pay */
+  --green:#059669; --red:#DC2626; --amber:#D97706;
+  --r:12px; --r-sm:8px; --r-xs:5px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.04);
+  --sh-m:0 4px 20px rgba(0,0,0,.08),0 12px 48px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--ink-3);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:300;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;padding:0 28px;overflow-x:auto;gap:0;}
+.nav-brand{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--brand);white-space:nowrap;padding:13px 18px 13px 0;border-right:1px solid var(--hairline);margin-right:8px;}
+.nl{font-size:11.5px;font-weight:500;padding:14px 10px;white-space:nowrap;color:var(--faint);border-bottom:2px solid transparent;text-decoration:none;transition:all .15s;cursor:pointer;}
+.nl:hover,.nl.on{color:var(--ink);border-bottom-color:var(--brand);}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:0 28px 100px;}
+
+/* ── HERO DARK ── */
+.hero{background:var(--bg-dark);padding:80px 48px 72px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 20% 50%,rgba(0,112,243,.18),transparent),radial-gradient(ellipse 60% 80% at 80% 20%,rgba(124,58,237,.12),transparent);}
+.hero-inner{position:relative;z-index:1;max-width:1044px;margin:0 auto;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);border:.5px solid rgba(255,255,255,.12);padding:5px 14px;border-radius:20px;margin-bottom:24px;}
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-.6px;margin-bottom:18px;max-width:820px;}
+.hero-title em{color:var(--brand);font-style:normal;}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.52);line-height:1.75;max-width:640px;margin-bottom:40px;}
+.hero-data{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:rgba(255,255,255,.07);border-radius:var(--r);overflow:hidden;border:.5px solid rgba(255,255,255,.07);}
+.hd-cell{padding:20px 18px;background:rgba(255,255,255,.03);}
+.hd-val{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;margin-bottom:5px;}
+.hd-val sup{font-size:12px;color:rgba(255,255,255,.4);}
+.hd-label{font-size:11px;color:rgba(255,255,255,.35);line-height:1.4;}
+.hd-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(0,112,243,.25);color:var(--brand);display:inline-block;margin-top:6px;}
+
+/* ── SECTIONS ── */
+.sec{padding:72px 0 0;scroll-margin-top:52px;}
+.sec-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:10px;}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-.3px;margin-bottom:10px;line-height:1.2;}
+.sec-sub{font-size:15px;color:var(--muted);line-height:1.7;max-width:720px;}
+.divider{border:none;border-top:1px solid var(--hairline);margin:0;}
+
+/* ── CONVERGENCE MAP ── */
+.conv-map{margin:40px 0;display:grid;grid-template-columns:1fr 2fr 1fr;gap:0;align-items:start;}
+.conv-col{display:flex;flex-direction:column;gap:8px;}
+.conv-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px;}
+.conv-node{border:.5px solid var(--hairline);border-radius:var(--r-sm);padding:11px 14px;font-size:12.5px;color:var(--ink-3);background:var(--bg);box-shadow:var(--sh);}
+.cn-icon{font-size:15px;margin-bottom:4px;}
+.cn-title{font-weight:600;color:var(--ink);margin-bottom:2px;font-size:12.5px;}
+.cn-text{font-size:11.5px;color:var(--muted);line-height:1.45;}
+.conv-circle{width:180px;height:180px;border-radius:50%;background:var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 0 16px rgba(0,112,243,.08),0 0 0 32px rgba(0,112,243,.04);position:relative;z-index:1;}
+.cc-title{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;text-align:center;line-height:1.3;}
+.cc-sub{font-size:11px;color:rgba(255,255,255,.55);text-align:center;margin-top:4px;}
+.conv-arrows{display:flex;justify-content:center;gap:12px;margin:12px 0;font-size:18px;color:var(--brand);}
+
+/* ── ACCORDION ── */
+.acc-wrap{margin:32px 0;}
+.acc{border:1px solid var(--hairline);border-radius:var(--r);margin-bottom:8px;overflow:hidden;}
+.acc:last-child{margin-bottom:0;}
+.acc-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;background:var(--bg);transition:background .12s;}
+.acc-head:hover{background:var(--bg-off);}
+.acc.open .acc-head{background:var(--bg-off);}
+.ah-icon{width:36px;height:36px;border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.ah-meta{flex:1;}
+.ah-title{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:2px;}
+.ah-sub{font-size:12px;color:var(--muted);}
+.ah-badge{font-size:10.5px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0;}
+.ah-chv{font-size:11px;color:var(--faint);flex-shrink:0;transition:transform .2s;}
+.acc.open .ah-chv{transform:rotate(180deg);}
+.acc-body{display:none;border-top:1px solid var(--hairline);padding:24px 20px 26px;}
+.acc.open .acc-body{display:block;}
+
+/* ── INSIGHT CARDS ── */
+.ins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:28px 0;}
+.ins{border:1px solid var(--hairline);border-radius:var(--r);padding:20px 22px;background:var(--bg);}
+.ins-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;}
+.ins-icon{font-size:22px;}
+.ins-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:20px;}
+.ins-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.ins-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.ins-text strong{color:var(--ink-3);}
+.ins-data{margin-top:12px;padding:10px 12px;border-radius:var(--r-xs);background:var(--bg-off);font-size:12px;color:var(--muted);border-left:2px solid var(--hairline);}
+.ins-data strong{color:var(--ink-3);}
+
+/* ── FLYWHEEL ── */
+.flywheel{margin:40px auto;max-width:680px;position:relative;}
+.fw-center{text-align:center;padding:32px 20px;}
+.fw-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--ink);}
+.fw-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+.fw-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:24px;}
+.fw-step{border:1px solid var(--hairline);border-radius:var(--r);padding:14px 15px;text-align:center;position:relative;}
+.fw-step-num{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;line-height:1;margin-bottom:5px;}
+.fw-step-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.fw-step-text{font-size:11px;color:var(--muted);line-height:1.45;}
+.fw-arrow{text-align:center;font-size:18px;color:var(--faint);padding:4px 0;}
+
+/* ── OPPORTUNITY TABLE ── */
+.opt-wrap{overflow-x:auto;margin:28px 0;}
+.opt-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.opt-table th{padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);border-bottom:1.5px solid var(--hairline);text-align:left;background:var(--bg-off);}
+.opt-table td{padding:11px 14px;vertical-align:top;border-bottom:1px solid var(--hairline);line-height:1.5;color:var(--muted);}
+.opt-table tr:last-child td{border-bottom:none;}
+.opt-table tr:hover td{background:var(--bg-off);}
+.ot-title{font-weight:600;color:var(--ink);font-size:13px;}
+.pill-sm{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;white-space:nowrap;}
+
+/* ── SCENARIO CARDS ── */
+.scen-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:28px 0;}
+.scen{border:1px solid var(--hairline);border-radius:var(--r);overflow:hidden;}
+.scen-head{padding:16px 18px 12px;}
+.scen-horizon{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;}
+.scen-title{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--ink);line-height:1.2;}
+.scen-body{border-top:1px solid var(--hairline);padding:14px 18px;}
+.scen-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.scen-list li{font-size:12.5px;color:var(--muted);display:flex;gap:7px;align-items:flex-start;line-height:1.45;}
+.scen-list li strong{color:var(--ink-3);}
+.scen-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.scen-kpi{font-size:11px;font-weight:600;padding:8px 12px;margin-top:10px;border-radius:var(--r-xs);}
+
+/* ── RISK TABLE ── */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;}
+.risk-card{border:1px solid var(--hairline);border-radius:var(--r-sm);padding:16px 18px;}
+.rk-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.rk-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px;}
+.rk-text{font-size:12px;color:var(--muted);line-height:1.55;}
+.rk-mitigation{font-size:11.5px;margin-top:8px;padding:7px 10px;border-radius:var(--r-xs);background:var(--bg-off);}
+.rk-mitigation strong{color:var(--ink-3);}
+
+/* ── CLOSING ── */
+.closing{background:var(--bg-dark);border-radius:var(--r);padding:48px 44px;margin-top:64px;position:relative;overflow:hidden;}
+.closing::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(0,112,243,.15),transparent);}
+.cl-inner{position:relative;z-index:1;}
+.cl-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:10px;}
+.cl-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:14px;}
+.cl-text{font-size:15px;color:rgba(255,255,255,.55);line-height:1.75;max-width:720px;}
+.cl-text strong{color:rgba(255,255,255,.85);}
+
+/* ── NOTE ── */
+.note{font-size:13px;padding:13px 17px;border-radius:var(--r-sm);margin:16px 0;border-left:3px solid;line-height:1.65;color:var(--muted);}
+.note strong{font-weight:600;}
+.note-blue{background:var(--brand-l);border-color:var(--brand);} .note-blue strong{color:var(--brand-d);}
+.note-green{background:#D1FAE5;border-color:var(--green);} .note-green strong{color:var(--green);}
+.note-amber{background:#FEF3C7;border-color:var(--amber);} .note-amber strong{color:var(--amber);}
+.note-red{background:#FEE2E2;border-color:var(--red);} .note-red strong{color:var(--red);}
+
+/* MISC */
+.feat{list-style:none;display:flex;flex-direction:column;gap:8px;margin:10px 0;}
+.feat li{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.55;}
+.feat li strong{color:var(--ink-3);}
+.fdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
+.box{background:var(--bg-off);border:1px solid var(--hairline);border-radius:var(--r-sm);padding:15px 17px;}
+.box-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.box-text{font-size:12.5px;color:var(--muted);line-height:1.6;}
+.box-text strong{color:var(--ink-3);}
+.footer{border-top:1px solid var(--hairline);margin-top:64px;padding-top:18px;display:flex;justify-content:space-between;font-size:12px;color:var(--faint);flex-wrap:wrap;gap:8px;}
+
+@media(max-width:760px){
+  .page{padding:0 16px 80px;}
+  .hero{padding:48px 20px 36px;}
+  .hero-title{font-size:28px;}
+  .hero-data{grid-template-columns:1fr 1fr;}
+  .ins-grid,.scen-grid,.risk-grid,.grid-2{grid-template-columns:1fr;}
+  .conv-map{grid-template-columns:1fr;} .conv-center{padding:16px 0;}
+  .fw-steps{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Personal — Análisis Estratégico 2026</div>
+  <a class="nl" href="#s1">Contexto y datos</a>
+  <a class="nl" href="#s2">La convergencia</a>
+  <a class="nl" href="#s3">El flywheel</a>
+  <a class="nl" href="#s4">Oportunidades</a>
+  <a class="nl" href="#s5">Escenarios</a>
+  <a class="nl" href="#s6">Riesgos</a>
+  <a class="nl" href="#s7">Conclusión</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">📊 Análisis estratégico · Junio 2026 · Personal Tech</div>
+    <div class="hero-title">Personal en la era de la <em>Convergencia</em>:<br>de la telco al sistema operativo del negocio argentino</div>
+    <div class="hero-sub">Cómo la unificación de Personal + Personal Tech bajo una sola marca crea el activo estratégico más singular del mercado argentino — y por qué la Industria 4.0, el IIoT y la IA no son tendencias externas sino la evolución natural de lo que Personal ya opera.</div>
+    <div class="hero-data">
+      <div class="hd-cell">
+        <div class="hd-val">+41.7<sup>M</sup></div>
+        <div class="hd-label">Suscriptores móviles (Personal + Telefónica Móviles AR)</div>
+        <div class="hd-tag">Red #1 Argentina</div>
+      </div>
+      <div class="hd-cell">
+        <div class="hd-val">$2.36<sup>B</sup></div>
+        <div class="hd-label">Ventas consolidadas Q1 2026 (millones de pesos)</div>
+        <div class="hd-tag">+30.5% YoY</div>
+      </div>
+      <div class="hd-cell">
+        <div class="hd-val">$1.48<sup>T</sup></div>
+        <div class="hd-label">Inversión anual en infraestructura (billones de pesos)</div>
+        <div class="hd-tag">CAPEX masivo</div>
+      </div>
+      <div class="hd-cell">
+        <div class="hd-val">5<sup>DCs</sup></div>
+        <div class="hd-label">Datacenters propios en Argentina (Pacheco, Hornos, Córdoba, Corrientes +)</div>
+        <div class="hd-tag">Dato soberano</div>
+      </div>
+      <div class="hd-cell">
+        <div class="hd-val">+85K</div>
+        <div class="hd-label">Nuevos clientes Personal Flow (2025/2026)</div>
+        <div class="hd-tag">Ecosistema</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══════ S1: CONTEXTO ══════ -->
+<div class="sec" id="s1">
+  <div class="sec-eyebrow">01 — Contexto y datos reales</div>
+  <div class="sec-title">La base: lo que Personal ya es antes de hablar de IA o Industry 4.0</div>
+  <div class="sec-sub">Antes de cualquier análisis estratégico, es necesario entender la escala real de los activos que Personal opera hoy. El contexto cambia radicalmente el análisis — no es una startup buscando escalar, sino un gigante infraestructural buscando monetizar lo que ya tiene.</div>
+
+  <div class="ins-grid" style="margin-top:36px;">
+    <div class="ins">
+      <div class="ins-top">
+        <div class="ins-icon">📱</div>
+        <span class="ins-label" style="background:#EBF5FF;color:var(--brand);">B2C · Personal</span>
+      </div>
+      <div class="ins-title">22.5M de líneas propias — el dataset de comportamiento más grande del país</div>
+      <div class="ins-text">Cada línea genera datos de ubicación, consumo de datos, patrones horarios, apps usadas, transacciones de Personal Pay. <strong>En conjunto, Personal tiene el dataset de comportamiento humano más rico de Argentina</strong> — sin necesitar scrapers ni terceros.</div>
+      <div class="ins-data"><strong>Dato clave:</strong> +19M adicionales de Telefónica Móviles Argentina incorporados. La base total supera los 41M de accesos móviles — mayor penetración que la población económicamente activa de Argentina.</div>
+    </div>
+    <div class="ins">
+      <div class="ins-top">
+        <div class="ins-icon">📺</div>
+        <span class="ins-label" style="background:#F3F4FF;color:var(--c3);">Entretenimiento</span>
+      </div>
+      <div class="ins-title">Personal Flow: +85.000 nuevos clientes — la puerta de entrada al hogar inteligente</div>
+      <div class="ins-text">Flow no es solo televisión. Es el gateway al hogar: el router, el decodificador y la app que conviven con el televisor. <strong>Cada nuevo cliente de Flow es un hogar potencial para domótica, IoT residencial y Personal Pay integrado en la experiencia de entretenimiento.</strong></div>
+      <div class="ins-data"><strong>Convergencia latente:</strong> Flow + banda ancha del hogar + Personal Pay + dispositivos Smart Home = el ecosistema del "hogar conectado" que ningún actor tiene completo en Argentina hoy.</div>
+    </div>
+    <div class="ins">
+      <div class="ins-top">
+        <div class="ins-icon">💳</div>
+        <span class="ins-label" style="background:#FDF2FF;color:var(--c8);">FinTech</span>
+      </div>
+      <div class="ins-title">Personal Pay regulado por BCRA — el sistema nervioso financiero del ecosistema</div>
+      <div class="ins-text">Personal Pay no es solo una billetera. Es el activo que cierra el circuito económico del ecosistema: <strong>el usuario consume con la línea Personal, paga con Personal Pay, ve con Flow y trabaja sobre Personal Tech.</strong> Todo el ciclo de valor en una misma empresa.</div>
+      <div class="ins-data"><strong>Ventaja estructural:</strong> Ser el operador de red Y el medio de pago crea un perfil de riesgo crediticio sin equivalente: Personal conoce el comportamiento de datos, ubicación, pagos y consumo del mismo usuario simultáneamente.</div>
+    </div>
+    <div class="ins">
+      <div class="ins-top">
+        <div class="ins-icon">🏢</div>
+        <span class="ins-label" style="background:#F0FDF4;color:var(--green);">B2B · Personal Tech</span>
+      </div>
+      <div class="ins-title">Personal Tech: ex-Telecom Empresas/Fibercorp — el activo B2B más subestimado</div>
+      <div class="ins-text">Personal Tech no es una división nueva. Es la evolución de décadas de relaciones con las empresas más grandes de Argentina bajo el nombre Telecom Empresas y Fibercorp. <strong>Esas relaciones, ese historial y esa confianza son el activo más difícil de replicar.</strong> Un competidor puede copiar la tecnología en 2 años; no puede copiar 20 años de relaciones corporativas.</div>
+      <div class="ins-data"><strong>Alcance territorial único:</strong> El Personal Tech Trend Day y los despliegues itinerantes llevan soluciones tecnológicas al sector productivo del interior del país — donde los grandes hyperscalers no tienen presencia física ni canal de venta.</div>
+    </div>
+    <div class="ins">
+      <div class="ins-top">
+        <div class="ins-icon">🛰</div>
+        <span class="ins-label" style="background:#FFFBEB;color:var(--amber);">Nuevo · Jun 2026</span>
+      </div>
+      <div class="ins-title">Internet satelital para empresas en todo el país — el campo finalmente conectado</div>
+      <div class="ins-text">Personal Tech lanzó en junio de 2026 su solución de internet satelital para empresas. <strong>Esto no es un producto de nicho — es la llave para conectar Vaca Muerta, los campos del interior, las plantas mineras y los activos remotos que antes eran literalmente inaccesibles para el IIoT.</strong></div>
+      <div class="ins-data"><strong>Impacto en la cadena IIoT:</strong> Sin conectividad satelital, el IIoT tiene un límite geográfico. Con ella, cualquier activo físico en Argentina — independientemente de su ubicación — puede conectarse al cloud de Pacheco. El universo de clientes IoT se expande a todo el territorio nacional.</div>
+    </div>
+    <div class="ins">
+      <div class="ins-top">
+        <div class="ins-icon">📈</div>
+        <span class="ins-label" style="background:#F0FDF4;color:var(--green);">Financiero</span>
+      </div>
+      <div class="ins-title">$1.48 billones de pesos en inversión anual — la escala de un jugador sistémico</div>
+      <div class="ins-text">La inversión de $1.48T de pesos anuales en infraestructura no es solo capex operativo — es la señal de que Personal está construyendo activos que durarán décadas. <strong>Una empresa que invierte a esa escala en infraestructura está posicionándose como infraestructura crítica del país, no como un proveedor de servicios reemplazable.</strong></div>
+      <div class="ins-data"><strong>Contexto macroeconómico:</strong> El crecimiento del 30.5% YoY en ventas consolidadas en Q1 2026 supera la inflación del período, indicando ganancia de share real en el mercado. El negocio no solo se defiende del contexto — lo aprovecha.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" style="margin-top:72px;">
+
+<!-- ══════ S2: LA CONVERGENCIA ══════ -->
+<div class="sec" id="s2">
+  <div class="sec-eyebrow">02 — El análisis de convergencia</div>
+  <div class="sec-title">Cinco convergencias tecnológicas que Personal está en posición única de liderar</div>
+  <div class="sec-sub">Una convergencia tecnológica ocurre cuando dos o más tecnologías previamente separadas se integran para crear valor que ninguna podría generar por separado. Personal es la intersección de 5 convergencias simultáneas — ningún otro actor en Argentina está en todas al mismo tiempo.</div>
+
+  <div class="acc-wrap">
+
+    <!-- CONV 1: 5G + IoT + IA -->
+    <div class="acc" id="conv1">
+      <div class="acc-head" onclick="toggleAcc('conv1')">
+        <div class="ah-icon" style="background:#FEF3C7;">📡</div>
+        <div class="ah-meta">
+          <div class="ah-title">Convergencia 1: 5G + IIoT + Edge AI → la fábrica que se gestiona sola</div>
+          <div class="ah-sub">5G privado · Sensores industriales · Modelos ML en el borde · Alertas autónomas</div>
+        </div>
+        <span class="ah-badge" style="background:#FEF3C7;color:var(--amber);">Industria 4.0 · Manufactura · Energía</span>
+        <span class="ah-chv">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid-2">
+          <div class="box">
+            <div class="box-title">¿Qué hace que esta convergencia sea ahora?</div>
+            <div class="box-text">El 5G de Personal alcanzó cobertura industrial real en 2025–2026, incluyendo Vaca Muerta. Los sensores IIoT bajaron de costo entre 60–80% en los últimos 5 años. Los modelos de ML en edge ya corren en dispositivos de $200 USD. <strong>Las tres piezas están disponibles simultáneamente por primera vez</strong> — no era posible hace 3 años.</div>
+          </div>
+          <div class="box">
+            <div class="box-title">Por qué Personal es el único que puede orquestarla completa</div>
+            <div class="box-text">El 5G privado dentro de la planta es de Personal. La SIM del sensor IIoT es de Personal. El APN privado que transporta los datos es de Personal. El cloud en Pacheco donde procesa el modelo es de Personal. <strong>Ningún otro jugador en Argentina tiene todos estos eslabones bajo un mismo techo.</strong></div>
+          </div>
+        </div>
+        <div class="note note-amber"><strong>El caso de la planta industrial:</strong> Un sensor de vibración enviando datos cada 100ms genera 864,000 lecturas/día por máquina. Con 200 máquinas en planta: 172M de lecturas/día. Eso requiere 5G (latencia sub-10ms para control en tiempo real), edge computing (procesar localmente para no saturar el uplink), y un modelo ML entrenado en Pacheco sobre los datos históricos. La convergencia completa solo Personal puede darla.</div>
+      </div>
+    </div>
+
+    <!-- CONV 2: MASA B2C + DATOS + PERSONAL PAY -->
+    <div class="acc" id="conv2">
+      <div class="acc-head" onclick="toggleAcc('conv2')">
+        <div class="ah-icon" style="background:#FDF2FF;">💳</div>
+        <div class="ah-meta">
+          <div class="ah-title">Convergencia 2: 41M de usuarios + comportamiento digital + Personal Pay → el perfil de cliente más rico de Argentina</div>
+          <div class="ah-sub">Telemetría de red · Datos de pago · Comportamiento de consumo · Scoring alternativo</div>
+        </div>
+        <span class="ah-badge" style="background:#FDF2FF;color:var(--c8);">FinTech · B2C · Datos</span>
+        <span class="ah-chv">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid-2">
+          <div class="box">
+            <div class="box-title">El activo de datos que nadie tiene</div>
+            <div class="box-text">Mercado Pago conoce los pagos de sus usuarios. Meta conoce sus interacciones sociales. Google conoce sus búsquedas. <strong>Personal conoce simultáneamente: ubicación en tiempo real, consumo de datos por app, historial de pagos, hábitos de entretenimiento (Flow) y comportamiento de conectividad.</strong> Es el perfil más completo del usuario argentino disponible comercialmente.</div>
+          </div>
+          <div class="box">
+            <div class="box-title">La monetización responsable de ese activo</div>
+            <div class="box-text">El camino no es vender los datos (ilegal y reputacionalmente destructivo). Es usarlos para <strong>mejorar los propios productos:</strong> scoring crediticio para Personal Pay, personalización de ofertas de Flow, segmentación para los despliegues de red 5G, y analytics de comportamiento para el sector retail y bancos que son clientes de Personal Tech.</div>
+          </div>
+        </div>
+        <div class="note note-blue"><strong>La convergencia B2C → B2B:</strong> Los datos de comportamiento de los 41M de usuarios de Personal son un insumo de inteligencia para los clientes B2B de Personal Tech. Una cadena de retail cliente de Personal Tech puede recibir insights (anonimizados) de patrones de movilidad en sus zonas de influencia. Eso no lo da ningún consultor, ningún hyperscaler y ninguna consultora de datos — lo da solo quien opera la red que esas personas usan.</div>
+      </div>
+    </div>
+
+    <!-- CONV 3: SATELITAL + AGRO + IIOT -->
+    <div class="acc" id="conv3">
+      <div class="acc-head" onclick="toggleAcc('conv3')">
+        <div class="ah-icon" style="background:#ECFDF5;">🌾</div>
+        <div class="ah-meta">
+          <div class="ah-title">Convergencia 3: Satelital LEO + Agro + IIoT → Argentina productiva completamente conectada</div>
+          <div class="ah-sub">Starlink integrado · LoRaWAN · Sensores de campo · Monitoreo de silos · Trazabilidad de exportación</div>
+        </div>
+        <span class="ah-badge" style="background:#ECFDF5;color:var(--green);">Nuevo Jun 2026 · Agro · Campo</span>
+        <span class="ah-chv">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid-2">
+          <div class="box">
+            <div class="box-title">El momento histórico: el lanzamiento de satelital en junio 2026</div>
+            <div class="box-text">El lanzamiento de Personal Tech Satelital en junio 2026 no es un producto incremental — <strong>es la eliminación de la barrera geográfica que limitaba el IIoT a zonas urbanas.</strong> Argentina tiene 40M de hectáreas productivas. La gran mayoría sin conectividad celular. Con satelital LEO, cualquier sensor en cualquier campo puede transmitir al cloud de Pacheco.</div>
+          </div>
+          <div class="box">
+            <div class="box-title">El mercado agro que esto habilita</div>
+            <div class="box-text">Argentina exporta +$30.000M anuales en commodities agropecuarios. Los compradores internacionales exigen trazabilidad. Personal Tech puede ofrecer: <strong>sensor en el silo (LoRaWAN) → gateway con SIM 4G o satelital → cloud en Pacheco → blockchain de trazabilidad → certificado de exportación digital.</strong> Todo el stack de valor del grano, de campo a puerto.</div>
+          </div>
+        </div>
+        <div class="note note-green"><strong>La ventaja competitiva en agro:</strong> Starlink vende conectividad. Personal Tech vende la conectividad + el APN privado + el cloud + el analytics + la app de monitoreo + la integración con el WMS del acopiador. El diferencial no es la tecnología satelital (que cualquiera puede comprar) — es el stack completo sobre esa tecnología que solo Personal Tech puede dar con soporte local, en pesos, bajo ley argentina.</div>
+      </div>
+    </div>
+
+    <!-- CONV 4: FLOW + SMART HOME + PERSONAL PAY -->
+    <div class="acc" id="conv4">
+      <div class="acc-head" onclick="toggleAcc('conv4')">
+        <div class="ah-icon" style="background:#EFF6FF;">🏠</div>
+        <div class="ah-meta">
+          <div class="ah-title">Convergencia 4: Flow + Banda ancha fija + Personal Pay → el hogar como plataforma</div>
+          <div class="ah-sub">Smart Home · Domótica residencial · Seguridad del hogar · Pagos en el ecosistema doméstico</div>
+        </div>
+        <span class="ah-badge" style="background:#EFF6FF;color:var(--brand);">B2C · Residencial · Ecosistema</span>
+        <span class="ah-chv">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid-2">
+          <div class="box">
+            <div class="box-title">La convergencia del hogar conectado</div>
+            <div class="box-text">Flow ya está en el televisor del cliente. La fibra de Personal ya conecta su router. Personal Pay ya está en su celular. <strong>La distancia entre "plataforma de entretenimiento" y "sistema operativo del hogar" es solo la incorporación de sensores, cámaras y automatización domótica</strong> sobre la infraestructura que ya existe en ese hogar.</div>
+          </div>
+          <div class="box">
+            <div class="box-title">El modelo de negocio del hogar como plataforma</div>
+            <div class="box-text">Amazon hizo esto con Alexa y Ring. Google con Nest. <strong>Personal tiene lo que ninguno de ellos tiene en Argentina: la red celular del hogar (banda ancha), el entretenimiento (Flow) y el sistema de pago (Personal Pay) — todo local, en pesos, con soporte en español.</strong> El cliente de Flow con domótica tiene un costo de switching cercano a cero para salir del ecosistema.</div>
+          </div>
+        </div>
+        <div class="note note-blue"><strong>La oportunidad de ARPU:</strong> Un cliente de Personal con solo telefonía paga X. Con banda ancha: 1.8X. Con Flow: 2.4X. Con Personal Pay activo: 2.7X. Con domótica básica: 3.5X. Con servicio de seguridad del hogar (CCTV + sensores): 4.2X. <strong>El hogar como plataforma puede triplicar el ARPU sin adquirir un solo cliente nuevo.</strong></div>
+      </div>
+    </div>
+
+    <!-- CONV 5: IA SOBRE DATOS OPERACIONALES -->
+    <div class="acc" id="conv5">
+      <div class="acc-head" onclick="toggleAcc('conv5')">
+        <div class="ah-icon" style="background:#FEE2E2;">🧠</div>
+        <div class="ah-meta">
+          <div class="ah-title">Convergencia 5: Red propia + Data soberano + IA → inteligencia operacional que no puede replicar ningún externo</div>
+          <div class="ah-sub">MLOps en Pacheco · RAG sobre datos propios · IA de red · Detección de anomalías · Predicción de demanda</div>
+        </div>
+        <span class="ah-badge" style="background:#FEE2E2;color:var(--red);">IA · Diferencial único</span>
+        <span class="ah-chv">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid-2">
+          <div class="box">
+            <div class="box-title">La IA que solo Personal puede hacer</div>
+            <div class="box-text">Un modelo de IA que predice congestión de red antes de que ocurra necesita datos históricos de tráfico, datos de dispositivos conectados, datos de clima y datos de eventos. <strong>Personal tiene esos datos — en tiempo real, sobre toda la red de Argentina.</strong> Ninguna empresa de IA externa puede construir ese modelo porque los datos no existen fuera de Personal.</div>
+          </div>
+          <div class="box">
+            <div class="box-title">IA operacional vs. IA generativa — la distinción que importa</div>
+            <div class="box-text">La IA generativa (ChatGPT, Claude) está disponible para cualquiera. <strong>La ventaja de Personal no está en el modelo — está en los datos de entrenamiento.</strong> Un modelo entrenado sobre 10 años de datos de red, comportamiento de clientes y transacciones de Personal Pay es un activo competitivo que no se puede comprar ni replicar en el corto plazo.</div>
+          </div>
+        </div>
+        <div class="note note-red"><strong>El riesgo de no actuar:</strong> Los datos operacionales de Personal tienen fecha de vencimiento como ventaja. Si un competidor (o un hyperscaler) logra acuerdos de datos con suficientes empresas argentinas, puede construir modelos similares. La ventana para construir el "data moat" se estrecha a medida que el mercado de datos se desarrolla. <strong>La urgencia estratégica es capturar el valor de los datos hoy, no en 3 años.</strong></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider" style="margin-top:72px;">
+
+<!-- ══════ S3: EL FLYWHEEL ══════ -->
+<div class="sec" id="s3">
+  <div class="sec-eyebrow">03 — El efecto volante</div>
+  <div class="sec-title">El flywheel de Personal: cómo cada servicio acelera el siguiente</div>
+  <div class="sec-sub">Un flywheel (volante de inercia) es el modelo de negocio donde cada paso refuerza al anterior creando un círculo virtuoso que se acelera solo. La clave del flywheel de Personal es que tanto el B2C como el B2B se alimentan mutuamente.</div>
+
+  <div class="flywheel">
+    <div class="fw-center">
+      <div class="fw-title">El Flywheel de Personal</div>
+      <div class="fw-sub">Cada capa acelera a la siguiente — y al volver al inicio, lo hace más rápido</div>
+    </div>
+    <div class="fw-steps">
+      <div class="fw-step" style="border-color:var(--c1);">
+        <div class="fw-step-num" style="color:var(--c1);">①</div>
+        <div class="fw-step-title">Más clientes en la red</div>
+        <div class="fw-step-text">Cada nuevo suscriptor móvil, Flow o Personal Pay alimenta el ecosistema de datos y justifica más inversión en infraestructura.</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-step" style="border-color:var(--c4);">
+        <div class="fw-step-num" style="color:var(--c4);">②</div>
+        <div class="fw-step-title">Más datos operacionales</div>
+        <div class="fw-step-text">Más usuarios = más datos de red, de pago, de comportamiento. El dataset crece en calidad y profundidad.</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-step" style="border-color:var(--c5);">
+        <div class="fw-step-num" style="color:var(--c5);">③</div>
+        <div class="fw-step-title">Mejores modelos de IA</div>
+        <div class="fw-step-text">Más datos = modelos más precisos. El modelo de predicción de churn, de demanda o de falla de red mejora automáticamente.</div>
+      </div>
+    </div>
+    <div class="fw-arrow" style="font-size:22px;text-align:right;padding-right:20px;">↓</div>
+    <div class="fw-steps" style="direction:rtl;">
+      <div class="fw-step" style="border-color:var(--c1);direction:ltr;">
+        <div class="fw-step-num" style="color:var(--c1);">⑦</div>
+        <div class="fw-step-title">Clientes más rentables</div>
+        <div class="fw-step-text">Mayor ARPU por cliente, menor churn, mayor LTV. Los recursos liberados se reinvierten en red e infraestructura.</div>
+      </div>
+      <div class="fw-arrow" style="direction:ltr;">←</div>
+      <div class="fw-step" style="border-color:var(--c8);direction:ltr;">
+        <div class="fw-step-num" style="color:var(--c8);">⑥</div>
+        <div class="fw-step-title">Más transacciones en el ecosistema</div>
+        <div class="fw-step-text">Mejores productos generan más uso de Personal Pay, más horas de Flow, más tráfico de datos. El ciclo se retroalimenta.</div>
+      </div>
+      <div class="fw-arrow" style="direction:ltr;">←</div>
+      <div class="fw-step" style="border-color:var(--c6);direction:ltr;">
+        <div class="fw-step-num" style="color:var(--c6);">⑤</div>
+        <div class="fw-step-title">Mejores productos y servicios</div>
+        <div class="fw-step-text">La IA mejor permite personalización B2C, predicción industrial B2B, scoring financiero y optimización de red. Los productos se hacen más útiles.</div>
+      </div>
+    </div>
+    <div class="fw-arrow" style="font-size:22px;text-align:left;padding-left:20px;">↑</div>
+    <div class="fw-steps" style="grid-template-columns:1fr 36px 1fr;max-width:480px;margin:0 auto;">
+      <div class="fw-step" style="border-color:var(--c2);">
+        <div class="fw-step-num" style="color:var(--c2);">④</div>
+        <div class="fw-step-title">Más valor B2B</div>
+        <div class="fw-step-text">Los insights de IA sobre datos de red y comportamiento crean servicios únicos para los clientes corporativos de Personal Tech que ningún competidor puede replicar.</div>
+      </div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <div class="note note-blue" style="margin-top:24px;"><strong>La diferencia entre un flywheel y una diversificación:</strong> En una diversificación, los negocios son independientes y el éxito de uno no hace más fuerte al otro. En el flywheel de Personal, cada cliente de Flow hace que los modelos de comportamiento doméstico sean más precisos, lo que mejora las ofertas de domótica, lo que aumenta el ARPU de ese cliente, lo que justifica más inversión en infraestructura, lo que mejora la calidad de red, lo que retiene más clientes de telefonía. <strong>Todo está conectado. Eso es lo que lo hace coherente y defensible.</strong></div>
+</div>
+
+<hr class="divider" style="margin-top:72px;">
+
+<!-- ══════ S4: OPORTUNIDADES ══════ -->
+<div class="sec" id="s4">
+  <div class="sec-eyebrow">04 — Mapa de oportunidades</div>
+  <div class="sec-title">Dónde está el dinero: oportunidades por sector y tecnología</div>
+  <div class="sec-sub">Mapeando las convergencias con los sectores industriales de Argentina, emergen oportunidades de distinto tamaño, urgencia y dificultad de captura.</div>
+
+  <div class="opt-wrap">
+    <table class="opt-table">
+      <thead>
+        <tr>
+          <th>Sector</th>
+          <th>Driver principal</th>
+          <th>Convergencia relevante</th>
+          <th>Producto Personal Tech</th>
+          <th>Urgencia</th>
+          <th>Tamaño</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="ot-title">🏭 Manufactura e Industria</div></td>
+          <td>Paradas no planificadas + escasez de técnicos especializados</td>
+          <td>5G privado + IIoT + Edge AI + Mantenimiento predictivo</td>
+          <td>IIoT Stack completo: SIM + APN privado + sensores + cloud + modelo ML + app operador</td>
+          <td><span class="pill-sm" style="background:#FEF3C7;color:var(--amber);">Alta</span></td>
+          <td><span class="pill-sm" style="background:#ECFDF5;color:var(--green);">Grande</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🛢 Oil & Gas / Energía</div></td>
+          <td>Vaca Muerta + YPF digitalización + cero conectividad en campo</td>
+          <td>5G + Satelital LEO + Edge Computing + Telemetría de pozos</td>
+          <td>Personal Tech Satelital (jun 2026) + APN privado + cloud + dashboard en tiempo real</td>
+          <td><span class="pill-sm" style="background:#FEE2E2;color:var(--red);">Crítica</span></td>
+          <td><span class="pill-sm" style="background:#FEE2E2;color:var(--red);">Muy grande</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🌾 Agro / Agroindustria</div></td>
+          <td>Trazabilidad de exportación + precisión agrícola + costo logístico</td>
+          <td>Satelital LEO + LoRaWAN + Analytics + Trazabilidad blockchain</td>
+          <td>Paquete agro: conectividad satelital + sensores campo + Data Lake + certificado exportación</td>
+          <td><span class="pill-sm" style="background:#FEF3C7;color:var(--amber);">Alta</span></td>
+          <td><span class="pill-sm" style="background:#ECFDF5;color:var(--green);">Grande</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">💳 Banca y Finanzas</div></td>
+          <td>BCRA compliance + modernización digital + ciberseguridad</td>
+          <td>Cloud soberano + Ciber + Analytics + IA sobre datos financieros</td>
+          <td>Cloud soberano Pacheco + DR Hornos + modelo IA sobre Data Lake bancario + SASE</td>
+          <td><span class="pill-sm" style="background:#FEE2E2;color:var(--red);">Crítica</span></td>
+          <td><span class="pill-sm" style="background:#ECFDF5;color:var(--green);">Grande</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🚚 Logística y Transporte</div></td>
+          <td>Visibilidad de flota + cold chain + optimización de rutas</td>
+          <td>4G/5G + APN privado + IoT + ML de ruteo + integración ERP</td>
+          <td>Fleet intelligence: SIM + APN + telemetría + analytics + app conductor con IA</td>
+          <td><span class="pill-sm" style="background:#FEF3C7;color:var(--amber);">Alta</span></td>
+          <td><span class="pill-sm" style="background:#F3F4F6;color:var(--c7);">Medio</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🏥 Salud Privada</div></td>
+          <td>HCE digital + PACS storage + telemedicina post-COVID</td>
+          <td>Cloud soberano + IA diagnóstica + Conectividad multisede</td>
+          <td>Cloud HCE en Pacheco + storage PACS elástico + MPLS intersedes + IA sobre imágenes</td>
+          <td><span class="pill-sm" style="background:#F3F4F6;color:var(--c7);">Media</span></td>
+          <td><span class="pill-sm" style="background:#F3F4F6;color:var(--c7);">Medio</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🏛 Gobierno y Municipios</div></td>
+          <td>Modernización digital + Smart City + presupuesto en pesos</td>
+          <td>Conectividad pública + IoT urbano + Cloud soberano + IA para servicios</td>
+          <td>WiFi público + CCTV inteligente + portal digital + cloud bajo ley argentina + Personal Pay trámites</td>
+          <td><span class="pill-sm" style="background:#F3F4F6;color:var(--c7);">Media</span></td>
+          <td><span class="pill-sm" style="background:#ECFDF5;color:var(--green);">Grande</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🏠 Hogar / Residencial</div></td>
+          <td>Clientes Flow existentes + ARPU expansion + Smart Home</td>
+          <td>Flow + Banda ancha fija + Personal Pay + domótica + IoT residencial</td>
+          <td>Upsell domótica sobre base Flow existente: cámaras + sensores + automatización + Personal Pay</td>
+          <td><span class="pill-sm" style="background:#F3F4F6;color:var(--c7);">Media</span></td>
+          <td><span class="pill-sm" style="background:#ECFDF5;color:var(--green);">Masivo</span></td>
+        </tr>
+        <tr>
+          <td><div class="ot-title">🛒 Retail grande</div></td>
+          <td>Picos de tráfico (Hot Sale) + analytics de punto de venta + POS</td>
+          <td>Cloud + CDN + Analytics + Personal Pay POS + IA demanda</td>
+          <td>Auto-scaling + Personal Pay como medio de cobro + Data Lake ventas + predicción demanda</td>
+          <td><span class="pill-sm" style="background:#FEF3C7;color:var(--amber);">Alta</span></td>
+          <td><span class="pill-sm" style="background:#F3F4F6;color:var(--c7);">Medio</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note note-amber"><strong>Priorización recomendada:</strong> Las oportunidades de <span style="color:var(--red);font-weight:600;">urgencia crítica</span> (Oil & Gas, Banca) son las que deben atacarse primero porque el cliente tiene un dolor real e inmediato con o sin Personal. Las de <span style="color:var(--amber);font-weight:600;">urgencia alta</span> (Manufactura, Agro, Retail) son las que deben construirse en paralelo con los casos de éxito de las críticas. Las de urgencia media son las que se activan cuando los primeros dos grupos estén generando referencias.</div>
+</div>
+
+<hr class="divider" style="margin-top:72px;">
+
+<!-- ══════ S5: ESCENARIOS ══════ -->
+<div class="sec" id="s5">
+  <div class="sec-eyebrow">05 — Escenarios prospectivos</div>
+  <div class="sec-title">Tres horizontes estratégicos para Personal 2026–2030</div>
+  <div class="sec-sub">Los escenarios no son predicciones — son marcos de análisis para entender qué decisiones tomadas hoy determinan cuál de los tres se hace realidad.</div>
+
+  <div class="scen-grid">
+    <div class="scen">
+      <div class="scen-head" style="background:var(--bg-off);">
+        <div class="scen-horizon" style="color:var(--brand);">Horizonte 2026–2027</div>
+        <div class="scen-title">Consolidación del stack integrado</div>
+      </div>
+      <div class="scen-body">
+        <ul class="scen-list">
+          <li><span class="scen-dot" style="background:var(--brand);"></span><strong>5G cubre</strong> las principales zonas industriales del país (Vaca Muerta, parques industriales GBA, Rosario, Córdoba).</li>
+          <li><span class="scen-dot" style="background:var(--brand);"></span><strong>Personal Tech Satelital</strong> tiene primeros 500+ clientes agro e industriales remotos activos.</li>
+          <li><span class="scen-dot" style="background:var(--brand);"></span><strong>Primeros casos de éxito</strong> documentados de IIoT con ROI medible en manufactura y logística.</li>
+          <li><span class="scen-dot" style="background:var(--brand);"></span><strong>GPU en Pacheco</strong> habilitada para IA generativa soberana — primeros clientes bancarios y gubernamentales.</li>
+          <li><span class="scen-dot" style="background:var(--brand);"></span><strong>Personal Pay</strong> integrado como medio de cobro en al menos 50.000 comercios nuevos.</li>
+        </ul>
+        <div class="scen-kpi" style="background:var(--brand-l);color:var(--brand-d);">KPI clave: Revenue de servicios digitales B2B supera el 25% del total Telecom Argentina</div>
+      </div>
+    </div>
+    <div class="scen">
+      <div class="scen-head" style="background:var(--bg-off);">
+        <div class="scen-horizon" style="color:var(--green);">Horizonte 2027–2029</div>
+        <div class="scen-title">Personal como plataforma industrial</div>
+      </div>
+      <div class="scen-body">
+        <ul class="scen-list">
+          <li><span class="scen-dot" style="background:var(--green);"></span><strong>El flywheel acelera:</strong> los datos de los primeros clientes IIoT mejoran los modelos ML, que atraen más clientes, que generan más datos. Efecto de red industrial.</li>
+          <li><span class="scen-dot" style="background:var(--green);"></span><strong>Industria 4.0 como servicio gestionado:</strong> Personal Tech opera el IIoT end-to-end para sectores industriales, igual que opera la red de telecomunicaciones.</li>
+          <li><span class="scen-dot" style="background:var(--green);"></span><strong>IA soberana diferenciada:</strong> modelos entrenados sobre datos de sectores específicos (bancario, industrial, agro) que generan precisión inalcanzable para modelos genéricos.</li>
+          <li><span class="scen-dot" style="background:var(--green);"></span><strong>Ecosistema de partners de desarrollo:</strong> Personal Tech certifica partners de desarrollo que construyen sobre su stack — generando revenue de plataforma.</li>
+        </ul>
+        <div class="scen-kpi" style="background:#ECFDF5;color:var(--green);">KPI clave: Churn de clientes con 3+ capas del stack es inferior al 3% anual — vs 18% de conectividad sola</div>
+      </div>
+    </div>
+    <div class="scen">
+      <div class="scen-head" style="background:var(--bg-off);">
+        <div class="scen-horizon" style="color:var(--c8);">Horizonte 2029–2030+</div>
+        <div class="scen-title">Personal como "sistema operativo" de la economía argentina</div>
+      </div>
+      <div class="scen-body">
+        <ul class="scen-list">
+          <li><span class="scen-dot" style="background:var(--c8);"></span><strong>Infraestructura crítica nacional:</strong> los sistemas de pago (Personal Pay), las redes industriales (IIoT) y la infraestructura de nube soberana se vuelven infraestructura de Estado, no solo corporativa.</li>
+          <li><span class="scen-dot" style="background:var(--c8);"></span><strong>IA como commodity interno:</strong> cada empresa argentina accede a capacidad de IA soberana a través de Personal Tech, igual que accede hoy a internet a través de Telecom.</li>
+          <li><span class="scen-dot" style="background:var(--c8);"></span><strong>El "triple dividend":</strong> 5G + IA + IoT generan simultáneamente reducción de costos operativos, nuevas fuentes de ingreso y reducción de consumo energético — el caso de negocio se hace solo.</li>
+          <li><span class="scen-dot" style="background:var(--c8);"></span><strong>Exportación de modelo:</strong> el stack completo de Personal Tech puede replicarse en países latinoamericanos con filiales o acuerdos de operación.</li>
+        </ul>
+        <div class="scen-kpi" style="background:#FDF2FF;color:var(--c8);">KPI clave: Personal Tech figura en el top 3 de proveedores tecnológicos estratégicos de las 500 empresas más grandes de Argentina</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" style="margin-top:72px;">
+
+<!-- ══════ S6: RIESGOS ══════ -->
+<div class="sec" id="s6">
+  <div class="sec-eyebrow">06 — Análisis de riesgos</div>
+  <div class="sec-title">Las amenazas que pueden frenar la convergencia — y cómo mitigarlas</div>
+  <div class="sec-sub">Un análisis estratégico sin riesgos es propaganda, no análisis. Los riesgos no invalidan la estrategia — la calibran.</div>
+
+  <div class="risk-grid">
+    <div class="risk-card" style="border-left:3px solid var(--red);">
+      <div class="rk-type" style="color:var(--red);">⚠️ Riesgo Alto</div>
+      <div class="rk-title">Ejecución: la brecha entre el portafolio y la capacidad de entrega</div>
+      <div class="rk-text">Personal Tech puede diseñar el portafolio más ambicioso del mercado, pero si el equipo de implementación no crece en la misma proporción, los proyectos se retrasan, los clientes se frustran y los casos de éxito que el flywheel necesita no se materializan.</div>
+      <div class="rk-mitigation"><strong>Mitigación:</strong> Programa de partners de implementación certificados (SIs, integradores locales) que multipliquen la capacidad de entrega sin crecer el equipo interno en la misma proporción.</div>
+    </div>
+    <div class="risk-card" style="border-left:3px solid var(--red);">
+      <div class="rk-type" style="color:var(--red);">⚠️ Riesgo Alto</div>
+      <div class="rk-title">Competencia: los hyperscalers aceleran su entrada directa a Argentina</div>
+      <div class="rk-text">AWS, Azure y Google Cloud podrían establecer datacenter en Argentina, eliminando la ventaja de soberanía de dato. Microsoft ya tiene Azure en Brasil. Si replica el modelo en Buenos Aires, el argumento del "dato soberano" pierde fuerza para clientes que pueden pagar en USD.</div>
+      <div class="rk-mitigation"><strong>Mitigación:</strong> Fortalecer los diferenciadores que ningún hyperscaler puede replicar: la red celular, el APN privado, Personal Pay, la relación con las regulaciones locales (ENACOM, BCRA) y el canal de los 200 ejecutivos con relaciones preexistentes en las empresas target.</div>
+    </div>
+    <div class="risk-card" style="border-left:3px solid var(--amber);">
+      <div class="rk-type" style="color:var(--amber);">⚡ Riesgo Medio</div>
+      <div class="rk-title">Talento: la escasez de perfiles técnicos en Argentina</div>
+      <div class="rk-text">Los perfiles de Data Engineer, MLOps, Arquitecto de Soluciones IIoT y DevOps son escasos y caros en Argentina. Los hyperscalers y las startups compiten por los mismos perfiles, muchas veces pagando en dólares. Personal Tech necesita estos perfiles para escalar el portafolio.</div>
+      <div class="rk-mitigation"><strong>Mitigación:</strong> Programa de formación interno sobre el stack propio (como hace AWS con sus certifications). La persona que conoce el stack de Personal Tech tiene un valor diferencial que la hace difícil de reemplazar por un outsider. Asociarse con universidades y bootcamps.</div>
+    </div>
+    <div class="risk-card" style="border-left:3px solid var(--amber);">
+      <div class="rk-type" style="color:var(--amber);">⚡ Riesgo Medio</div>
+      <div class="rk-title">Percepción: que el mercado siga viendo a Personal como "la telco"</div>
+      <div class="rk-text">El mayor riesgo no es tecnológico sino de posicionamiento. Si los CTOs de las empresas target siguen pensando en Personal Tech como el proveedor de SIMs y MPLS, las conversaciones de cloud, IA e IIoT no se abren. El cambio de percepción es más lento que el cambio de portafolio.</div>
+      <div class="rk-mitigation"><strong>Mitigación:</strong> Los Personal Tech Trend Days son el camino correcto — llevar la tecnología al cliente, no esperar que el cliente venga. Los casos de éxito documentados son más eficaces que la publicidad. Un banco que comenta en una conferencia "Personal Tech nos resolvió el DR del BCRA" vale más que 100 anuncios.</div>
+    </div>
+    <div class="risk-card" style="border-left:3px solid var(--brand);">
+      <div class="rk-type" style="color:var(--brand);">📋 Riesgo Regulatorio</div>
+      <div class="rk-title">Cambios en la regulación del mercado de telecomunicaciones o pagos</div>
+      <div class="rk-text">Personal opera bajo regulación de ENACOM (telecomunicaciones) y BCRA (Personal Pay). Cambios regulatorios pueden afectar los modelos de negocio, los precios o las capacidades de monetización de datos. El riesgo es bidireccional: regulación excesiva frena la innovación; regulación insuficiente permite que competidores sin los mismos costos entren más fácilmente.</div>
+      <div class="rk-mitigation"><strong>Mitigación:</strong> La empresa regulada tiene acceso privilegiado a conversaciones regulatorias. Personal debe participar activamente en la definición de los marcos de datos de IoT, IA y cloud soberana que están siendo discutidos en Argentina — siendo el estándar de referencia, no el receptor pasivo.</div>
+    </div>
+    <div class="risk-card" style="border-left:3px solid var(--brand);">
+      <div class="rk-type" style="color:var(--brand);">📋 Riesgo Macroeconómico</div>
+      <div class="rk-title">Volatilidad cambiaria y presupuestaria en los clientes</div>
+      <div class="rk-text">Los clientes corporativos de Personal Tech presupuestan en pesos en un contexto de alta inflación. Los proyectos de IIoT e IA requieren inversión inicial que puede verse afectada por restricciones presupuestarias en años electorales o de ajuste fiscal.</div>
+      <div class="rk-mitigation"><strong>Mitigación:</strong> Los modelos de pago por uso (OPEX) son superiores al CAPEX exactamente por este riesgo. Personal Tech debe diseñar sus propuestas con esquemas que minimicen el compromiso inicial del cliente y demuestren ROI rápido (en el primer año) para justificar la continuidad.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" style="margin-top:72px;">
+
+<!-- ══════ S7: CONCLUSIÓN ══════ -->
+<div class="sec" id="s7">
+  <div class="sec-eyebrow">07 — Conclusión estratégica</div>
+  <div class="sec-title">La tesis de inversión estratégica en Personal Tech 2026</div>
+  <div class="sec-sub">Sintetizando el análisis: por qué la convergencia que Personal está viviendo no es una apuesta — es la consecuencia lógica de lo que ya construyó.</div>
+
+  <div class="ins-grid">
+    <div class="ins" style="border-color:var(--brand);border-width:1.5px;">
+      <div class="ins-top">
+        <div class="ins-icon">🏗</div>
+        <span class="ins-label" style="background:var(--brand-l);color:var(--brand-d);">Tesis central</span>
+      </div>
+      <div class="ins-title">Personal construyó, sin saberlo, la plataforma tecnológica más completa de Argentina</div>
+      <div class="ins-text">Décadas de inversión en red, datacenter, relaciones corporativas y regulaciones han creado un activo que vale muchísimo más que la suma de sus partes. <strong>El mercado todavía no lo valora así porque lo ve como telco. Cuando lo vea como plataforma, la valoración cambia.</strong></div>
+    </div>
+    <div class="ins" style="border-color:var(--green);border-width:1.5px;">
+      <div class="ins-top">
+        <div class="ins-icon">⏰</div>
+        <span class="ins-label" style="background:#ECFDF5;color:var(--green);">Timing</span>
+      </div>
+      <div class="ins-title">La ventana de 2026–2028 es la más importante de la historia de la empresa</div>
+      <div class="ins-text">El 5G maduro, la IA accesible, el IIoT de bajo costo, la nueva normativa BCRA y el personal satelital de junio 2026 confluyen simultáneamente. <strong>Esta ventana se cierra cuando los hyperscalers entren más profundo o cuando un competidor consolidado copie el modelo.</strong></div>
+    </div>
+    <div class="ins" style="border-color:var(--amber);border-width:1.5px;">
+      <div class="ins-top">
+        <div class="ins-icon">🔑</div>
+        <span class="ins-label" style="background:#FEF3C7;color:var(--amber);">Factor crítico</span>
+      </div>
+      <div class="ins-title">Los primeros casos de éxito documentados valen más que cualquier campaña de marketing</div>
+      <div class="ins-text">El mercado argentino es conservador y referencias. <strong>El primer banco que diga "Personal Tech nos ayudó a resolver el BCRA y ahora tenemos IA sobre nuestros datos" abre las puertas de los otros 44 bancos.</strong> La prioridad no es escalar — es tener 5 casos de éxito perfectamente documentados.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSING DARK -->
+<div class="closing">
+  <div class="cl-inner">
+    <div class="cl-label">La frase que resume el análisis completo</div>
+    <div class="cl-title">Personal no está entrando al negocio de la tecnología.<br>Lleva 30 años construyéndolo sin saber que era eso.</div>
+    <div class="cl-text" style="margin-top:20px;">La red de 41 millones de usuarios no es solo un activo de telecomunicaciones — <strong>es la infraestructura neuronal de la economía argentina.</strong> Los datacenters de Pacheco y Hornos no son solo racks y servidores — <strong>son la soberanía digital del país.</strong> Personal Pay no es solo una billetera — <strong>es el sistema circulatorio financiero de millones de transacciones.</strong><br><br>La Industria 4.0, el IIoT y la IA no son tendencias externas que Personal debe adoptar para no quedar atrás. Son el <strong>destino natural de una empresa que ya tiene la red, los datos, el cloud, la regulación y las relaciones.</strong> Solo falta articular la narrativa, ejecutar con casos de éxito concretos y dejar que el flywheel haga el resto.<br><br><strong>La pregunta no es si Personal puede hacer esto. La pregunta es a qué velocidad y con qué prioridades.</strong></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>Edgardo Mauricio Celata · Analista Sr. Infraestructura y Cloud · Personal Tech</span>
+  <span>Análisis estratégico 2026 · Uso interno · <span id="fecha"></span></span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+document.getElementById('fecha').textContent=new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+function toggleAcc(id){
+  var el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Open first acc by default
+document.getElementById('conv1').classList.add('open');
+
+// Nav scroll
+var navLinks=document.querySelectorAll('.nl');
+var secs=['s1','s2','s3','s4','s5','s6','s7'].map(function(id){return document.getElementById(id);}).filter(Boolean);
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+70;
+  var active=null;
+  secs.forEach(function(s){if(sy>=s.offsetTop)active=s;});
+  navLinks.forEach(function(n){n.classList.remove('on');});
+  if(active){var a=document.querySelector('.nl[href="#'+active.id+'"]');if(a)a.classList.add('on');}
+});
+</script>
+
+<!-- IBM Cloud -->
+<div style="margin-top:30px; padding:15px; background:#E3F2FD; border-left:4px solid #0066CC; border-radius:8px;">
+  <p style="font-size:11px; color:#0C447C;"><strong>IBM Cloud:</strong> Para empresas legacy (mainframe, Db2, SAP), Watson AI, Red Hat OpenShift hybrid.</p>
+</div>
+
+</body>
+</html>
