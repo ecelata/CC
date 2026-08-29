@@ -325,6 +325,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 const SEGMENTOS = ['Banca','CCEE Industria','CCEE Servicios'];
 
@@ -435,6 +436,38 @@ function firestoreValueToArray(doc){
     return raw ? JSON.parse(raw) : [];
   }catch(e){
     return [];
+  }
+}
+
+let ACCOUNTS = [];
+let ACCOUNTS_BY_NAME = {};
+
+async function loadAccounts(){
+  try{
+    const res = await fetch('cuentas.csv');
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
+    const rows = parsed.data.filter(r=>{
+      const g1 = (r['Gerente G1 Comercial']||'').trim();
+      const g2 = (r['Gerente G2 Comercial']||'').trim();
+      const jefe = (r['Jefe/Coordinador']||'').trim();
+      return g1 === 'RAMIREZ GONZALO' && (g2 === 'CASIL SILVANA PAULA' || jefe === 'URRUTIGOITY RAUL' || jefe === 'BANOVAZ GABRIELA EDITH');
+    });
+    ACCOUNTS = rows.map(r=>({
+      razonSocial: (r['Razón Social']||'').trim(),
+      cuit: (r['Cuit']||'').trim(),
+      eecc: (r['Ejecutivo']||'').trim(),
+      mailEecc: (r['Mail Ejecutivo']||'').trim(),
+      ingenieroPreventa: (r['Ingeniero']||'').trim(),
+      mailIngeniero: (r['Mail Ingeniero']||'').trim(),
+      industria: (r['VERTICAL']||'').trim()
+    })).filter(a=>a.razonSocial);
+    ACCOUNTS_BY_NAME = {};
+    ACCOUNTS.forEach(a=>{ ACCOUNTS_BY_NAME[a.razonSocial.toLowerCase()] = a; });
+  }catch(e){
+    ACCOUNTS = [];
+    ACCOUNTS_BY_NAME = {};
   }
 }
 
@@ -781,7 +814,7 @@ function drawerTemplate(o){
 
     <div class="section">
       <h3>Identificación</h3>
-      <div class="field"><label>Cliente *</label><input type="text" id="f_cliente" value="${escapeHtml(o.cliente||'')}"></div>
+      <div class="field"><label>Cliente *</label><input type="text" id="f_cliente" list="clientesDatalist" value="${escapeHtml(o.cliente||'')}" autocomplete="off"><datalist id="clientesDatalist">${ACCOUNTS.map(a=>`<option value="${escapeHtml(a.razonSocial)}">`).join('')}</datalist></div>
       <div class="field"><label>Nombre de la oportunidad *</label><input type="text" id="f_nombreOpp" value="${escapeHtml(o.nombreOpp||'')}" placeholder="Ej. Renovación GCP - Horas SSPP"></div>
       <div class="grid2">
         <div class="field"><label>CUIT</label><input type="text" id="f_cuit" value="${escapeHtml(o.cuit||'')}"></div>
@@ -937,10 +970,36 @@ function readFormInto(o){
   return o;
 }
 
+function segmentoDeEecc(eecc){
+  for(const seg of Object.keys(EECC_POR_SEGMENTO)){
+    if(EECC_POR_SEGMENTO[seg].includes(eecc)) return seg;
+  }
+  return '';
+}
+
+function autofillFromAccount(o){
+  const nombre = document.getElementById('f_cliente').value.trim().toLowerCase();
+  const cuenta = ACCOUNTS_BY_NAME[nombre];
+  if(!cuenta) return false;
+  document.getElementById('f_cuit').value = cuenta.cuit;
+  const seg = segmentoDeEecc(cuenta.eecc);
+  if(seg){
+    document.getElementById('f_segmento').value = seg;
+    o.eecc = cuenta.eecc;
+    refreshEeccOptions(o);
+  }
+  readFormInto(o);
+  refreshComputedDisplays(o);
+  showToast('📋 Datos autocompletados: ' + cuenta.eecc + (cuenta.mailEecc? ' · '+cuenta.mailEecc : ''));
+  return true;
+}
+
 function wireDrawer(o){
   refreshEeccOptions(o);
   document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
   document.getElementById('btnCancel').addEventListener('click', closeDrawer);
+  document.getElementById('f_cliente').addEventListener('change', ()=>{ autofillFromAccount(o); });
+  document.getElementById('f_cliente').addEventListener('input', ()=>{ readFormInto(o); });
   document.getElementById('f_segmento').addEventListener('change', ()=>{
     o.eecc='';
     refreshEeccOptions(o);
@@ -1085,7 +1144,7 @@ document.getElementById('fileImport').addEventListener('change', async (e)=>{
 
 (async function init(){
   populateFilterSelects();
-  await loadData();
+  await Promise.all([loadData(), loadAccounts()]);
   renderAll();
 })();
 </script>
