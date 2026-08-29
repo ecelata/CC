@@ -4,47 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cartera Banca &amp; CCEE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
   :root{
-    --ink:#12172B; --ink-2:#1B2140; --paper:#F4F5F2; --paper-2:#FFFFFF; --line:#E1E2DC;
-    --teal:#2E7D6B; --teal-soft:#DCEEE8; --amber:#B8752E; --amber-soft:#F3E4D2;
-    --ink-text:#12172B; --muted:#6B7080;
-    --mono:'SF Mono','IBM Plex Mono','Menlo','Consolas',monospace;
+    --ink:#22261F; --ink-2:#1F4B3F; --paper:#F1EEE6; --paper-2:#FBFAF6; --line:#D3CDBC;
+    --teal:#2F6F5E; --teal-soft:#DCE7E1; --amber:#B5822B; --amber-soft:#F1E4C6;
+    --ink-text:#22261F; --muted:#7A7A6C;
+    --mono:'IBM Plex Mono','SF Mono','Menlo','Consolas',monospace;
     --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'Montserrat',var(--sans);
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--paper);color:var(--ink-text);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
   .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
   @media (max-width:860px){.shell{grid-template-columns:1fr;}}
-  .sidebar{background:var(--ink);color:#EDEEF5;padding:28px 22px;display:flex;flex-direction:column;gap:22px;}
-  .brand .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8B90AE;font-weight:600;}
-  .brand h1{font-size:19px;margin:4px 0 0;font-weight:700;letter-spacing:-0.01em;line-height:1.25;}
+  .sidebar{background:var(--ink);color:#F3F1E9;padding:28px 22px;display:flex;flex-direction:column;gap:22px;}
+  .brand .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9FB0A6;font-weight:600;}
+  .brand h1{font-size:19px;margin:4px 0 0;font-weight:700;letter-spacing:-0.01em;line-height:1.25;font-family:var(--heading);}
   .stat-row{display:flex;gap:10px;}
   .stat{flex:1;background:var(--ink-2);border-radius:10px;padding:12px 10px;}
   .stat .n{font-family:var(--mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;}
-  .stat .l{font-size:10.5px;color:#9195B5;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;}
+  .stat .l{font-size:10.5px;color:#9FB0A6;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;}
   .field{display:flex;flex-direction:column;gap:7px;}
-  .field label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9195B5;font-weight:600;}
-  .field input,.field select{background:var(--ink-2);border:1px solid #2B3157;color:#EDEEF5;border-radius:8px;padding:9px 10px;font-size:13.5px;font-family:var(--sans);outline:none;width:100%;}
-  .field input::placeholder{color:#6E739A;}
+  .field label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9FB0A6;font-weight:600;}
+  .field input,.field select{background:var(--ink-2);border:1px solid #2E5A4C;color:#F3F1E9;border-radius:8px;padding:9px 10px;font-size:13.5px;font-family:var(--sans);outline:none;width:100%;}
+  .field input::placeholder{color:#7FA091;}
   .field input:focus,.field select:focus{border-color:var(--teal);}
   .pill-group{display:flex;gap:6px;flex-wrap:wrap;}
-  .pill{border:1px solid #2B3157;background:var(--ink-2);color:#C7CAE0;padding:7px 11px;border-radius:999px;font-size:12.5px;cursor:pointer;font-weight:600;transition:.12s ease;}
-  .pill:hover{border-color:#4B5386;}
-  .pill.active[data-libro="todos"]{background:#EDEEF5;color:var(--ink);border-color:#EDEEF5;}
+  .pill{border:1px solid #2E5A4C;background:var(--ink-2);color:#D7E4DC;padding:7px 11px;border-radius:999px;font-size:12.5px;cursor:pointer;font-weight:600;transition:.12s ease;}
+  .pill:hover{border-color:#3E7D63;}
+  .pill.active[data-libro="todos"]{background:#F3F1E9;color:var(--ink);border-color:#F3F1E9;}
   .pill.active[data-libro="Banca"]{background:var(--teal);color:#fff;border-color:var(--teal);}
   .pill.active[data-libro="CCEE"]{background:var(--amber);color:#fff;border-color:var(--amber);}
-  .reset{background:none;border:1px solid #2B3157;color:#9195B5;border-radius:8px;padding:9px;font-size:12.5px;cursor:pointer;font-weight:600;}
-  .reset:hover{color:#EDEEF5;border-color:#4B5386;}
-  details.settings{border-top:1px solid #262C50;padding-top:14px;}
-  details.settings summary{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9195B5;font-weight:700;cursor:pointer;}
+  .reset{background:none;border:1px solid #2E5A4C;color:#9FB0A6;border-radius:8px;padding:9px;font-size:12.5px;cursor:pointer;font-weight:600;}
+  .reset:hover{color:#F3F1E9;border-color:#3E7D63;}
+  details.settings{border-top:1px solid #2E5A4C;padding-top:14px;}
+  details.settings summary{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9FB0A6;font-weight:700;cursor:pointer;}
   details.settings .field{margin-top:12px;}
   .apply-btn{margin-top:10px;background:var(--teal);border:none;color:#fff;border-radius:8px;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer;width:100%;}
-  .foot-note{font-size:11px;color:#6E739A;line-height:1.5;margin-top:auto;border-top:1px solid #262C50;padding-top:14px;}
+  .foot-note{font-size:11px;color:#7FA091;line-height:1.5;margin-top:auto;border-top:1px solid #2E5A4C;padding-top:14px;}
   .main{padding:30px 34px;}
   .main-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:16px;flex-wrap:wrap;}
-  .main-head h2{margin:0 0 4px;font-size:15px;color:var(--muted);font-weight:600;}
+  .main-head h2{margin:0 0 4px;font-size:15px;color:var(--muted);font-weight:600;font-family:var(--heading);}
   .count{font-family:var(--mono);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;}
   .export-btn{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-text);}
   .export-btn:hover{border-color:var(--ink);}
@@ -61,12 +64,12 @@
   .badge.Banca{background:var(--teal-soft);color:var(--teal);}
   .badge.CCEE{background:var(--amber-soft);color:var(--amber);}
   .state-box{padding:60px 20px;text-align:center;color:var(--muted);}
-  .state-box.error{color:#B8422E;}
+  .state-box.error{color:#B23F35;}
   .overlay{position:fixed;inset:0;background:rgba(18,23,43,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:50;}
   .overlay.open{display:flex;}
   .drawer{background:var(--paper-2);border-radius:16px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(18,23,43,0.35);}
   .drawer-head{padding:24px 26px 18px;border-bottom:1px solid var(--line);position:relative;}
-  .drawer-head h3{margin:10px 0 0;font-size:20px;letter-spacing:-0.01em;}
+  .drawer-head h3{margin:10px 0 0;font-size:20px;letter-spacing:-0.01em;font-family:var(--sans);}
   .drawer-head .sub{font-family:var(--mono);color:var(--muted);font-size:12.5px;margin-top:4px;}
   .drawer-close{position:absolute;top:18px;right:20px;background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;}
   .drawer-close:hover{color:var(--ink-text);}
@@ -84,9 +87,33 @@
   .link-contact a:hover{text-decoration:underline;}
   .link-empty{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:2px;}
   .section-div{padding:0 26px 22px;}
+  .suite-nav{
+    background:var(--ink-2);display:flex;align-items:center;gap:2px;
+    padding:0 20px;height:42px;
+  }
+  .suite-nav a{
+    color:#CFE0D8;text-decoration:none;font-family:var(--sans);font-size:12.5px;font-weight:500;
+    padding:0 14px;height:42px;display:flex;align-items:center;gap:6px;border-bottom:2px solid transparent;
+  }
+  .suite-nav a:hover{color:#fff;}
+  .suite-nav a.current{color:#fff;border-bottom-color:var(--teal);font-weight:600;}
+  .suite-nav .suite-brand{
+    color:#fff;font-family:var(--heading);font-weight:600;font-size:12.5px;
+    margin-right:10px;padding-right:14px;border-right:1px solid #2E5A4C;height:20px;display:flex;align-items:center;
+  }
+  @media (max-width:720px){
+    .suite-nav{padding:0 14px;overflow-x:auto;}
+    .suite-nav a{padding:0 10px;white-space:nowrap;}
+  }
 </style>
 </head>
 <body>
+<div class="suite-nav">
+  <span class="suite-brand">GGCC · Grandes Cuentas</span>
+  <a href="index.html">Portal</a>
+  <a href="dashboard.html" class="current">Cartera</a>
+  <a href="Backlog_Preventa.html">Backlog</a>
+</div>
 <div class="shell">
   <aside class="sidebar">
     <div class="brand">

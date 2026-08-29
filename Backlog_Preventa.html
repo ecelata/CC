@@ -5,7 +5,7 @@
 <title>Backlog Preventa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#F1EEE6;
@@ -37,7 +37,7 @@
     -webkit-font-smoothing:antialiased;
   }
   .app{max-width:1320px;margin:0 auto;padding:28px 32px 80px;}
-  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0;}
+  h1,h2,h3{font-family:'Montserrat',sans-serif;font-weight:600;margin:0;}
   .topbar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
   .topbar h1{font-size:28px;letter-spacing:-0.01em;}
   .topbar .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
@@ -92,7 +92,7 @@
   .filters select, .filters input{min-width:150px;}
   .spacer{flex:1;}
   .table-wrap{
-    background:#FBFAF6;border:1px solid var(--line);border-radius:4px;overflow:hidden;
+    background:#FBFAF6;border:1px solid var(--line);border-radius:4px;overflow-x:auto;
   }
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{
@@ -120,6 +120,9 @@
   .dot-rojo{background:var(--red);}
   .dot-gris{background:var(--ink-faint);}
   .dias-restantes{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .bant-cell{text-align:center;width:30px;font-size:13px;}
+  th.bant-th{text-align:center;width:30px;padding-left:4px;padding-right:4px;}
+  .estprop-cell{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
   .empty-state{padding:60px 20px;text-align:center;color:var(--ink-soft);}
   .empty-state h3{margin-bottom:8px;color:var(--ink);}
   .empty-state p{font-size:13px;margin:0 0 16px;}
@@ -224,9 +227,33 @@
     .bar-row .bar-label{width:100px;}
     .funnel-stage{width:90px;}
   }
+  .suite-nav{
+    background:var(--stamp-dark);display:flex;align-items:center;gap:2px;
+    padding:0 20px;height:42px;
+  }
+  .suite-nav a{
+    color:#CFE0D8;text-decoration:none;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
+    padding:0 14px;height:42px;display:flex;align-items:center;gap:6px;border-bottom:2px solid transparent;
+  }
+  .suite-nav a:hover{color:#fff;}
+  .suite-nav a.current{color:#fff;border-bottom-color:var(--stamp);font-weight:600;}
+  .suite-nav .suite-brand{
+    color:#fff;font-family:'Montserrat',sans-serif;font-weight:600;font-size:12.5px;
+    margin-right:10px;padding-right:14px;border-right:1px solid #2E5A4C;height:20px;display:flex;align-items:center;
+  }
+  @media (max-width:720px){
+    .suite-nav{padding:0 14px;overflow-x:auto;}
+    .suite-nav a{padding:0 10px;white-space:nowrap;}
+  }
 </style>
 </head>
 <body>
+<div class="suite-nav">
+  <span class="suite-brand">GGCC · Grandes Cuentas</span>
+  <a href="index.html">Portal</a>
+  <a href="dashboard.html">Cartera</a>
+  <a href="Backlog_Preventa.html" class="current">Backlog</a>
+</div>
 <div class="app">
   <div class="topbar">
     <div>
@@ -234,7 +261,7 @@
       <div class="sub" id="subtitle">cargando…</div>
     </div>
     <div class="topbar-actions">
-      <button class="ghost" id="btnLinkFolder">🔗 Vincular carpeta</button>
+      <span class="ghost" id="syncStatus" style="cursor:default;">☁️ Conectando…</span>
       <button class="ghost" id="btnExportJson">Exportar JSON</button>
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
       <button class="ghost" id="btnImport">Importar JSON</button>
@@ -267,8 +294,12 @@
         <thead>
           <tr>
             <th>N°</th><th>Cliente</th><th>Segmento</th><th>Etapa</th><th>Prob.</th>
-            <th>EECC</th><th>Ingeniero</th><th class="money">Valor total</th><th class="money">Ponderado</th>
-            <th>Estado</th><th>Días</th>
+            <th>EECC</th>
+            <th class="bant-th" title="Budget">B</th><th class="bant-th" title="Authority">A</th>
+            <th class="bant-th" title="Need">N</th><th class="bant-th" title="Timeline">T</th>
+            <th class="money">One Shot</th><th class="money">Mensual</th>
+            <th class="money">Valor total</th><th class="money">Ponderado</th>
+            <th>Estado prop.</th><th>Estado</th><th>Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -329,7 +360,6 @@ const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado',
 
 let DATA = [];
 let editingId = null;
-const STORAGE_KEY = 'oportunidades';
 
 function fmtMoney(n){
   n = Number(n)||0;
@@ -383,154 +413,80 @@ function estadoSemaforo(o){
   return 'verde';
 }
 
-const STORAGE_AVAILABLE = (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
-const FS_ACCESS_SUPPORTED = (typeof window.showDirectoryPicker === 'function');
-const FS_FILENAME = 'backlog_preventa_data.json';
-let dirHandle = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtL4cDn7RWpfYoDcbgo",
+  projectId: "backlog-cc"
+};
+const FIRESTORE_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/data?key=${FIREBASE_CONFIG.apiKey}`;
+const LOCAL_CACHE_KEY = 'backlog_preventa_cache_v1';
 
-function idbOpen(){
-  return new Promise((resolve,reject)=>{
-    const req = indexedDB.open('backlog_preventa_fs', 1);
-    req.onupgradeneeded = ()=>{ req.result.createObjectStore('handles'); };
-    req.onsuccess = ()=>resolve(req.result);
-    req.onerror = ()=>reject(req.error);
-  });
-}
-async function idbSetHandle(handle){
-  const db = await idbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction('handles','readwrite');
-    tx.objectStore('handles').put(handle, 'dirHandle');
-    tx.oncomplete = ()=>resolve();
-    tx.onerror = ()=>reject(tx.error);
-  });
-}
-async function idbGetHandle(){
-  const db = await idbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction('handles','readonly');
-    const req = tx.objectStore('handles').get('dirHandle');
-    req.onsuccess = ()=>resolve(req.result || null);
-    req.onerror = ()=>reject(req.error);
-  });
+function setSyncStatus(state, label){
+  const el = document.getElementById('syncStatus');
+  if(!el) return;
+  const icons = {ok:'☁️', busy:'🔄', error:'⚠️', offline:'📴'};
+  el.textContent = (icons[state]||'☁️') + ' ' + label;
 }
 
-function updateFolderStatus(){
-  const btn = document.getElementById('btnLinkFolder');
-  if(!btn) return;
-  if(!FS_ACCESS_SUPPORTED){
-    btn.textContent = '🔗 Vincular carpeta (no soportado en este navegador)';
-    btn.disabled = true;
-    return;
-  }
-  btn.textContent = dirHandle ? ('📁 Carpeta vinculada: ' + dirHandle.name) : '🔗 Vincular carpeta';
-}
-
-async function tryReconnectFolder(){
-  if(!FS_ACCESS_SUPPORTED) return false;
+function firestoreValueToArray(doc){
   try{
-    const saved = await idbGetHandle();
-    if(!saved) return false;
-    const perm = await saved.queryPermission({mode:'readwrite'});
-    if(perm === 'granted'){
-      dirHandle = saved;
-      return true;
-    }
-    dirHandle = null;
-    return false;
+    const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+    return raw ? JSON.parse(raw) : [];
   }catch(e){
-    return false;
-  }
-}
-
-async function linkFolder(){
-  if(!FS_ACCESS_SUPPORTED){
-    showToast('⚠️ Tu navegador no soporta esto. Usá Chrome o Edge de escritorio.');
-    return;
-  }
-  try{
-    const saved = await idbGetHandle();
-    if(saved){
-      const perm = await saved.requestPermission({mode:'readwrite'});
-      if(perm === 'granted'){
-        dirHandle = saved;
-        updateFolderStatus();
-        await loadData();
-        renderAll();
-        showToast('📁 Carpeta reconectada: ' + dirHandle.name);
-        return;
-      }
-    }
-    const handle = await window.showDirectoryPicker({mode:'readwrite'});
-    dirHandle = handle;
-    await idbSetHandle(handle);
-    updateFolderStatus();
-    await loadData();
-    renderAll();
-    await saveData();
-    showToast('📁 Carpeta vinculada: ' + dirHandle.name + '. Guardado automático activado.');
-  }catch(e){
-    if(e.name !== 'AbortError') showToast('⚠️ No se pudo vincular la carpeta.');
-  }
-}
-
-async function getFileHandle(create){
-  if(!dirHandle) return null;
-  try{
-    return await dirHandle.getFileHandle(FS_FILENAME, {create: !!create});
-  }catch(e){
-    return null;
+    return [];
   }
 }
 
 async function loadData(){
-  if(dirHandle){
+  setSyncStatus('busy', 'Cargando desde la nube…');
+  try{
+    const res = await fetch(FIRESTORE_DOC_URL);
+    if(res.status === 404){
+      DATA = [];
+    }else if(res.ok){
+      const doc = await res.json();
+      DATA = firestoreValueToArray(doc);
+    }else{
+      throw new Error('HTTP ' + res.status);
+    }
+    DATA.forEach(computeFields);
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(DATA));
+    setSyncStatus('ok', 'Sincronizado');
+  }catch(e){
+    setSyncStatus('error', 'Sin conexión — mostrando última copia local');
     try{
-      const fh = await getFileHandle(false);
-      if(fh){
-        const file = await fh.getFile();
-        const text = await file.text();
-        DATA = text ? JSON.parse(text) : [];
-        DATA.forEach(computeFields);
-        return;
-      }
-    }catch(e){ }
-  }
-  if(STORAGE_AVAILABLE){
-    try{
-      const res = await window.storage.get(STORAGE_KEY, false);
-      DATA = res && res.value ? JSON.parse(res.value) : [];
-    }catch(e){
+      const cached = localStorage.getItem(LOCAL_CACHE_KEY);
+      DATA = cached ? JSON.parse(cached) : [];
+    }catch(e2){
       DATA = [];
     }
     DATA.forEach(computeFields);
-    return;
   }
-  DATA = [];
-  DATA.forEach(computeFields);
 }
 
 async function saveData(){
-  let savedToFolder = false;
-  if(dirHandle){
-    try{
-      const fh = await getFileHandle(true);
-      const writable = await fh.createWritable();
-      await writable.write(JSON.stringify(DATA, null, 2));
-      await writable.close();
-      savedToFolder = true;
-    }catch(e){
-      showToast('⚠️ No se pudo escribir en la carpeta vinculada.');
-    }
-  }
-  if(STORAGE_AVAILABLE){
-    try{ await window.storage.set(STORAGE_KEY, JSON.stringify(DATA), false); }catch(e){}
-  }
-  if(!savedToFolder && !STORAGE_AVAILABLE){
-    showToast('⚠️ Guardado automático no disponible. Vinculá una carpeta o usá "Exportar JSON".');
+  localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(DATA));
+  setSyncStatus('busy', 'Guardando…');
+  try{
+    const body = {
+      fields: {
+        json: { stringValue: JSON.stringify(DATA) },
+        updatedAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+    const url = FIRESTORE_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    setSyncStatus('ok', 'Sincronizado');
+    return true;
+  }catch(e){
+    setSyncStatus('error', 'No se pudo guardar en la nube — reintentá');
+    showToast('⚠️ No se pudo sincronizar con la nube. Los cambios quedaron guardados solo en este navegador.');
     return false;
   }
-  return true;
 }
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -728,7 +684,7 @@ function renderTable(){
   document.querySelector('.table-wrap table').style.display='table';
   empty.style.display='none';
   if(list.length===0){
-    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="17" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(o=>{
@@ -743,9 +699,15 @@ function renderTable(){
       <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
       <td>${o.probCierre?o.probCierre+'%':'—'}</td>
       <td>${o.eecc? titleCase(o.eecc):'—'}</td>
-      <td>${o.ingenieroPreventa? titleCase(o.ingenieroPreventa):'—'}</td>
+      <td class="bant-cell" title="Budget: ${o.bantBudget||'—'}">${bantIcon(o.bantBudget)}</td>
+      <td class="bant-cell" title="Authority: ${o.bantAuthority||'—'}">${bantIcon(o.bantAuthority)}</td>
+      <td class="bant-cell" title="Need: ${o.bantNeed||'—'}">${bantIcon(o.bantNeed)}</td>
+      <td class="bant-cell" title="Timeline: ${o.bantTimeline||'—'}">${bantIcon(o.bantTimeline)}</td>
+      <td class="money">${o.montoOneShot?fmtMoney(o.montoOneShot):'—'}</td>
+      <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
       <td class="money">${fmtMoney(o.valorTotal)}</td>
       <td class="money">${fmtMoney(o.montoPonderado)}</td>
+      <td class="estprop-cell">${o.estadoPropuesta||'—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
     </tr>`;
@@ -753,6 +715,13 @@ function renderTable(){
   tbody.querySelectorAll('tr[data-id]').forEach(tr=>{
     tr.addEventListener('dblclick', ()=>openDrawer(tr.getAttribute('data-id')));
   });
+}
+function bantIcon(v){
+  if(v==='✅ Sí') return '✅';
+  if(v==='⚠️ Parcial') return '⚠️';
+  if(v==='❌ No') return '❌';
+  if(v==='N/A') return '·';
+  return '—';
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function titleCase(s){ return String(s).toLowerCase().replace(/(^|\s)\S/g, t=>t.toUpperCase()); }
@@ -1074,7 +1043,6 @@ function drillInto(filterId, value){
   renderTable();
   switchTab('tabla');
 }
-document.getElementById('btnLinkFolder').addEventListener('click', linkFolder);
 document.getElementById('btnExportJson').addEventListener('click', ()=>{
   downloadFile(JSON.stringify(DATA,null,2), 'backlog_preventa.json', 'application/json');
 });
@@ -1104,17 +1072,6 @@ document.getElementById('fileImport').addEventListener('change', async (e)=>{
 
 (async function init(){
   populateFilterSelects();
-  updateFolderStatus();
-  if(FS_ACCESS_SUPPORTED){
-    const reconnected = await tryReconnectFolder();
-    updateFolderStatus();
-    if(!reconnected){
-      const saved = await idbGetHandle().catch(()=>null);
-      if(saved){
-        showToast('📁 Tenés una carpeta vinculada. Tocá "Vincular carpeta" para reconectarla (el navegador pide confirmarlo cada vez que abrís el archivo).');
-      }
-    }
-  }
   await loadData();
   renderAll();
 })();
