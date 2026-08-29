@@ -276,14 +276,16 @@
 
   <div class="tabs">
     <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla">Tablero</button>
+    <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas">Cerradas</button>
     <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama">Panorama</button>
   </div>
 
   <div class="view active" id="viewTabla">
+    <h3 id="tableTitle" style="margin-bottom:10px;">Oportunidades activas</h3>
     <div class="filters">
       <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
       <div><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
-      <div><label>Estado</label><select id="fEstadoFinal"><option value="">Todos</option></select></div>
+      <div style="display:none;"><label>Estado</label><select id="fEstadoFinal"><option value="">Todos</option></select></div>
       <div><label>Unidad Neg.</label><select id="fVertical"><option value="">Todas</option></select></div>
       <div><label>EECC</label><select id="fEecc"><option value="">Todos</option></select></div>
       <div><label>Buscar</label><input type="search" id="fBuscar" placeholder="Cliente, oportunidad o CUIT"></div>
@@ -542,6 +544,8 @@ function populateFilterSelects(){
   allEecc().forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=titleCase(s); fEecc.appendChild(o); });
 }
 
+let boardView = 'activas';
+
 function getFiltered(){
   const seg = document.getElementById('fSegmento').value;
   const et = document.getElementById('fEtapa').value;
@@ -550,6 +554,9 @@ function getFiltered(){
   const eecc = document.getElementById('fEecc').value;
   const q = document.getElementById('fBuscar').value.trim().toLowerCase();
   return DATA.filter(o=>{
+    const cerrada = o.estadoFinal && o.estadoFinal!=='Abierto';
+    if(boardView==='activas' && cerrada) return false;
+    if(boardView==='cerradas' && !cerrada) return false;
     if(seg && o.segmento!==seg) return false;
     if(et && o.etapa!==et) return false;
     if(es && o.estadoFinal!==es) return false;
@@ -561,11 +568,27 @@ function getFiltered(){
 }
 
 function renderKpis(){
+  const el = document.getElementById('kpis');
+  if(boardView==='cerradas'){
+    const ganadas = DATA.filter(o=>o.estadoFinal==='Ganado');
+    const perdidas = DATA.filter(o=>o.estadoFinal==='Perdido');
+    const suspendidas = DATA.filter(o=>o.estadoFinal==='Suspendido');
+    const montoGanado = ganadas.reduce((a,o)=>a+o.valorTotal,0);
+    const montoPerdido = perdidas.reduce((a,o)=>a+o.valorTotal,0);
+    const montoSuspendido = suspendidas.reduce((a,o)=>a+o.valorTotal,0);
+    const tasaConv = (ganadas.length+perdidas.length)>0 ? Math.round(ganadas.length/(ganadas.length+perdidas.length)*100) : 0;
+    el.innerHTML = `
+      <div class="kpi"><div class="label">Ganadas</div><div class="value">${fmtMoney(montoGanado)}</div><div class="label" style="margin-top:2px;">${ganadas.length} oportunidades</div></div>
+      <div class="kpi"><div class="label">Perdidas</div><div class="value">${fmtMoney(montoPerdido)}</div><div class="label" style="margin-top:2px;">${perdidas.length} oportunidades</div></div>
+      <div class="kpi"><div class="label">Suspendidas</div><div class="value">${fmtMoney(montoSuspendido)}</div><div class="label" style="margin-top:2px;">${suspendidas.length} oportunidades</div></div>
+      <div class="kpi"><div class="label">Tasa de conversión</div><div class="value">${tasaConv}%</div></div>
+    `;
+    return;
+  }
   const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
   const pipeline = abiertas.reduce((a,o)=>a+o.valorTotal,0);
   const ponderado = abiertas.reduce((a,o)=>a+o.montoPonderado,0);
   const porVencer = abiertas.filter(o=>o.diasRestantes!==null && o.diasRestantes<=7 && o.diasRestantes>=0).length;
-  const el = document.getElementById('kpis');
   el.innerHTML = `
     <div class="kpi"><div class="label">Pipeline abierto</div><div class="value">${fmtMoney(pipeline)}</div></div>
     <div class="kpi"><div class="label">Ponderado</div><div class="value">${fmtMoney(ponderado)}</div></div>
@@ -1106,16 +1129,29 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>switchTab(btn.getAttribute('data-tab')));
 });
 function switchTab(tab){
+  const showTabla = (tab==='tabla' || tab==='cerradas');
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.getAttribute('data-tab')===tab));
-  document.getElementById('viewTabla').classList.toggle('active', tab==='tabla');
+  document.getElementById('viewTabla').classList.toggle('active', showTabla);
   document.getElementById('viewPanorama').classList.toggle('active', tab==='panorama');
+  if(showTabla){
+    boardView = (tab==='cerradas') ? 'cerradas' : 'activas';
+    const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
+    if(estadoWrap) estadoWrap.style.display = (boardView==='cerradas') ? '' : 'none';
+    if(boardView==='activas') document.getElementById('fEstadoFinal').value='';
+    document.getElementById('tableTitle').textContent = (boardView==='cerradas') ? 'Oportunidades cerradas' : 'Oportunidades activas';
+    renderKpis();
+    renderTable();
+  }
   if(tab==='panorama') renderDashboard();
 }
 function drillInto(filterId, value){
   const el = document.getElementById(filterId);
   el.value = (el.value===value) ? '' : value;
-  renderTable();
-  switchTab('tabla');
+  if(filterId==='fEstadoFinal' && value && value!=='Abierto'){
+    switchTab('cerradas');
+  }else{
+    switchTab('tabla');
+  }
 }
 document.getElementById('btnExportJson').addEventListener('click', ()=>{
   downloadFile(JSON.stringify(DATA,null,2), 'backlog_preventa.json', 'application/json');
