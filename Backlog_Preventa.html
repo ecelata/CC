@@ -36,7 +36,7 @@
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
   }
-  .app{max-width:1320px;margin:0 auto;padding:28px 32px 80px;}
+  .app{max-width:1880px;margin:0 auto;padding:28px 32px 80px;}
   h1,h2,h3{font-family:'Montserrat',sans-serif;font-weight:600;margin:0;}
   .topbar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
   .topbar h1{font-size:28px;letter-spacing:-0.01em;}
@@ -93,14 +93,8 @@
   .spacer{flex:1;}
   .table-wrap{
     background:#FBFAF6;border:1px solid var(--line);border-radius:4px;overflow-x:auto;
-    width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;
-    padding:0 32px;box-sizing:border-box;
   }
   .table-wrap table{margin:0;}
-  html,body{overflow-x:hidden;}
-  @media (max-width:720px){
-    .table-wrap{padding:0 14px;}
-  }
   table{width:auto;border-collapse:collapse;font-size:13px;}
   thead th{
     text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
@@ -307,7 +301,7 @@
             <th class="bant-th" title="Need">N</th><th class="bant-th" title="Timeline">T</th>
             <th class="money">One Shot</th><th class="money">Mensual</th>
             <th class="money">Valor total</th><th class="money">Ponderado</th>
-            <th>Estado prop.</th><th>Estado</th><th>Días</th>
+            <th>Vertical</th><th>Proveedor</th><th>Estado prop.</th><th>Fecha cierre est.</th><th>Estado</th><th>Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -692,7 +686,7 @@ function renderTable(){
   document.querySelector('.table-wrap table').style.display='table';
   empty.style.display='none';
   if(list.length===0){
-    tbody.innerHTML = `<tr><td colspan="17" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(o=>{
@@ -715,7 +709,10 @@ function renderTable(){
       <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
       <td class="money">${fmtMoney(o.valorTotal)}</td>
       <td class="money">${fmtMoney(o.montoPonderado)}</td>
+      <td>${o.vertical||'—'}</td>
+      <td>${o.proveedor||'—'}</td>
       <td class="estprop-cell">${o.estadoPropuesta||'—'}</td>
+      <td class="dias-restantes">${o.fechaEstCierre? formatDateShort(o.fechaEstCierre) : '—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
     </tr>`;
@@ -730,6 +727,12 @@ function bantIcon(v){
   if(v==='❌ No') return '❌';
   if(v==='N/A') return '·';
   return '—';
+}
+function formatDateShort(isoDate){
+  if(!isoDate) return '—';
+  const d = new Date(isoDate + 'T00:00:00');
+  if(isNaN(d.getTime())) return '—';
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(-2);
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function titleCase(s){ return String(s).toLowerCase().replace(/(^|\s)\S/g, t=>t.toUpperCase()); }
