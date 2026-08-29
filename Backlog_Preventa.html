@@ -284,7 +284,7 @@
       <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
       <div><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
       <div><label>Estado</label><select id="fEstadoFinal"><option value="">Todos</option></select></div>
-      <div><label>Vertical</label><select id="fVertical"><option value="">Todas</option></select></div>
+      <div><label>Unidad Neg.</label><select id="fVertical"><option value="">Todas</option></select></div>
       <div><label>EECC</label><select id="fEecc"><option value="">Todos</option></select></div>
       <div><label>Buscar</label><input type="search" id="fBuscar" placeholder="Cliente, oportunidad o CUIT"></div>
       <div class="spacer"></div>
@@ -301,7 +301,7 @@
             <th class="bant-th" title="Need">N</th><th class="bant-th" title="Timeline">T</th>
             <th class="money">One Shot</th><th class="money">Mensual</th>
             <th class="money">Valor total</th><th class="money">Ponderado</th>
-            <th>Vertical</th><th>Proveedor</th><th>Estado prop.</th><th>Fecha cierre est.</th><th>Estado</th><th>Días</th>
+            <th>Vertical</th><th>Unidad Neg.</th><th>Proveedor</th><th>Estado prop.</th><th>Fecha cierre est.</th><th>Estado</th><th>Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -353,7 +353,6 @@ const ETAPAS = ['1-Prospección','2-Calificado','3-Análisis Técnico','4-Propue
 const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
 const TIPO_CONTRATO = ['One-time','MRR','ARR','Mixto'];
 const BANT_VALORES = ['✅ Sí','⚠️ Parcial','❌ No','N/A'];
-const INDUSTRIAS = ['Banca','Seguros','Gobierno','Retail','Industria Manufacturera','Energía','Telecomunicaciones','Salud','Educación','Servicios Profesionales'];
 const VERTICALES = ['Cloud Híbrida','Ciberseguridad','IA / ML','Data & Analytics','Modernización de Aplicaciones','Infraestructura','Redes y Conectividad','ERP / CRM','Colaboración y Productividad'];
 const PROVEEDORES = ['AWS','Azure','Google Cloud','Oracle','IBM','VMware','Multi-vendor'];
 const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consultoría','SSPP - Servicios Profesionales','SSAA - Servicios Administrados'];
@@ -673,7 +672,7 @@ function renderDashboard(){
         <div id="dashSegmento">${barListHtml(porSegmento,'fSegmento',fSegVal)}</div>
       </div>
       <div class="panel">
-        <h3>Monto ponderado por vertical</h3>
+        <h3>Monto ponderado por unidad de negocio</h3>
         <div class="panel-hint">Oportunidades abiertas · click para filtrar</div>
         <div id="dashVertical">${barListHtml(porVertical,'fVertical',fVertVal)}</div>
       </div>
@@ -719,7 +718,7 @@ function renderTable(){
   document.querySelector('.table-wrap table').style.display='table';
   empty.style.display='none';
   if(list.length===0){
-    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="21" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(o=>{
@@ -742,6 +741,7 @@ function renderTable(){
       <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
       <td class="money">${fmtMoney(o.valorTotal)}</td>
       <td class="money">${fmtMoney(o.montoPonderado)}</td>
+      <td>${o.industria||'—'}</td>
       <td>${o.vertical||'—'}</td>
       <td>${o.proveedor||'—'}</td>
       <td class="estprop-cell">${o.estadoPropuesta||'—'}</td>
@@ -818,7 +818,7 @@ function drawerTemplate(o){
       <div class="field"><label>Nombre de la oportunidad *</label><input type="text" id="f_nombreOpp" value="${escapeHtml(o.nombreOpp||'')}" placeholder="Ej. Renovación GCP - Horas SSPP"></div>
       <div class="grid2">
         <div class="field"><label>CUIT</label><input type="text" id="f_cuit" value="${escapeHtml(o.cuit||'')}"></div>
-        <div class="field"><label>Industria</label><select id="f_industria">${optionsHtml(INDUSTRIAS,o.industria)}</select></div>
+        <div class="field"><label>Vertical (actividad del cliente)</label><input type="text" id="f_industria" value="${escapeHtml(o.industria||'')}" placeholder="Ej. Manufactura, Comercio, Banca & Finanzas"></div>
       </div>
       <div class="grid2">
         <div class="field"><label>Segmento *</label><select id="f_segmento">${optionsHtml(SEGMENTOS,o.segmento)}</select></div>
@@ -849,7 +849,7 @@ function drawerTemplate(o){
         <div class="field"><label>Prob. de cierre %</label><input type="number" min="0" max="100" id="f_probCierre" value="${o.probCierre}"></div>
       </div>
       <div class="grid2">
-        <div class="field"><label>Vertical solución</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
+        <div class="field"><label>Unidad de Negocio</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
         <div class="field"><label>Proveedor principal</label><select id="f_proveedor">${optionsHtml(PROVEEDORES,o.proveedor)}</select></div>
       </div>
       <div class="field"><label>Tipo de proyecto</label><select id="f_tipoProyecto">${optionsHtml(TIPO_PROYECTO,o.tipoProyecto)}</select></div>
@@ -982,6 +982,8 @@ function autofillFromAccount(o){
   const cuenta = ACCOUNTS_BY_NAME[nombre];
   if(!cuenta) return false;
   document.getElementById('f_cuit').value = cuenta.cuit;
+  const industriaField = document.getElementById('f_industria');
+  if(industriaField && cuenta.industria) industriaField.value = titleCase(cuenta.industria);
   const seg = segmentoDeEecc(cuenta.eecc);
   if(seg){
     document.getElementById('f_segmento').value = seg;
