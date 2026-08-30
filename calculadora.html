@@ -161,8 +161,11 @@
   </div>
 
   <div class="panel no-print" id="escenariosPanel">
-    <h2>Mis escenarios</h2>
-    <div class="hint">Guardados en este navegador. Podés tener varios clientes en curso a la vez — uno esperando horas de Arquitectura no te bloquea empezar otro.</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+      <h2>Mis escenarios</h2>
+      <span class="status-pill" id="escenariosSyncStatus">☁️ Conectando…</span>
+    </div>
+    <div class="hint">Sincronizados en la nube — accesibles desde cualquier compu o celular. Podés tener varios clientes en curso a la vez, uno esperando horas de Arquitectura no te bloquea empezar otro.</div>
     <div id="escenariosList" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
     <div style="display:flex;gap:8px;">
       <button class="primary" id="btnGuardarEscenario">💾 Guardar este escenario</button>
@@ -272,7 +275,6 @@
 let TARIFARIO = [];
 let ITEMS = [];
 let currentScenarioId = null;
-const ESCENARIOS_KEY = 'calc_costos_escenarios_v1';
 
 function fmtMoney(n){
   n = Number(n)||0;
@@ -479,17 +481,69 @@ document.getElementById('btnExportPdf').addEventListener('click', ()=>{
   window.print();
 });
 
-function loadEscenariosStore(){
-  try{
-    return JSON.parse(localStorage.getItem(ESCENARIOS_KEY) || '{}');
-  }catch(e){ return {}; }
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtL4cDn7RWpfYoDcbgo",
+  projectId: "backlog-cc"
+};
+const ESCENARIOS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/calculadora_escenarios?key=${FIREBASE_CONFIG.apiKey}`;
+const ESCENARIOS_LOCAL_CACHE_KEY = 'calc_costos_escenarios_cache_v1';
+let ESCENARIOS_STORE = {};
+
+function setEscenariosSyncStatus(state, label){
+  const el = document.getElementById('escenariosSyncStatus');
+  if(!el) return;
+  const icons = {ok:'☁️', busy:'🔄', error:'⚠️'};
+  el.textContent = (icons[state]||'☁️') + ' ' + label;
 }
-function saveEscenariosStore(store){
-  localStorage.setItem(ESCENARIOS_KEY, JSON.stringify(store));
+
+async function loadEscenariosFromCloud(){
+  setEscenariosSyncStatus('busy', 'Cargando escenarios…');
+  try{
+    const res = await fetch(ESCENARIOS_DOC_URL);
+    if(res.status === 404){
+      ESCENARIOS_STORE = {};
+    }else if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      ESCENARIOS_STORE = raw ? JSON.parse(raw) : {};
+    }else{
+      throw new Error('HTTP ' + res.status);
+    }
+    localStorage.setItem(ESCENARIOS_LOCAL_CACHE_KEY, JSON.stringify(ESCENARIOS_STORE));
+    setEscenariosSyncStatus('ok', 'Sincronizado');
+  }catch(e){
+    setEscenariosSyncStatus('error', 'Sin conexión — mostrando última copia local');
+    try{
+      const cached = localStorage.getItem(ESCENARIOS_LOCAL_CACHE_KEY);
+      ESCENARIOS_STORE = cached ? JSON.parse(cached) : {};
+    }catch(e2){ ESCENARIOS_STORE = {}; }
+  }
+}
+
+async function saveEscenariosToCloud(){
+  localStorage.setItem(ESCENARIOS_LOCAL_CACHE_KEY, JSON.stringify(ESCENARIOS_STORE));
+  setEscenariosSyncStatus('busy', 'Guardando…');
+  try{
+    const body = {
+      fields: {
+        json: { stringValue: JSON.stringify(ESCENARIOS_STORE) },
+        updatedAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+    const url = ESCENARIOS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    setEscenariosSyncStatus('ok', 'Sincronizado');
+    return true;
+  }catch(e){
+    setEscenariosSyncStatus('error', 'No se pudo guardar en la nube — reintentá');
+    alert('⚠️ No se pudo sincronizar con la nube. El escenario quedó guardado solo en este navegador por ahora.');
+    return false;
+  }
 }
 
 function renderEscenariosList(){
-  const store = loadEscenariosStore();
+  const store = ESCENARIOS_STORE;
   const list = document.getElementById('escenariosList');
   const ids = Object.keys(store);
   if(ids.length===0){
@@ -516,13 +570,12 @@ function renderEscenariosList(){
     });
   });
   list.querySelectorAll('.del').forEach(btn=>{
-    btn.addEventListener('click', (ev)=>{
+    btn.addEventListener('click', async (ev)=>{
       ev.stopPropagation();
       const id = btn.getAttribute('data-del');
       if(!confirm('¿Eliminar el escenario "'+(store[id].cliente||id)+'"? No se puede deshacer.')) return;
-      const s = loadEscenariosStore();
-      delete s[id];
-      saveEscenariosStore(s);
+      delete ESCENARIOS_STORE[id];
+      await saveEscenariosToCloud();
       if(currentScenarioId===id){ currentScenarioId=null; }
       renderEscenariosList();
     });
@@ -533,8 +586,7 @@ function cargarEscenario(id){
   if(ITEMS.length>0 && currentScenarioId!==id){
     if(!confirm('Vas a cargar otro escenario. Si el actual tiene cambios sin guardar, se van a perder. ¿Continuar?')) return;
   }
-  const store = loadEscenariosStore();
-  const e = store[id];
+  const e = ESCENARIOS_STORE[id];
   if(!e) return;
   currentScenarioId = id;
   ITEMS = JSON.parse(JSON.stringify(e.items||[]));
@@ -546,19 +598,18 @@ function cargarEscenario(id){
   renderEscenariosList();
 }
 
-document.getElementById('btnGuardarEscenario').addEventListener('click', ()=>{
+document.getElementById('btnGuardarEscenario').addEventListener('click', async ()=>{
   const cliente = document.getElementById('f_clienteOpp').value.trim();
   if(!cliente){ alert('Poné un nombre en "Cliente / Oportunidad" antes de guardar.'); return; }
-  const store = loadEscenariosStore();
   const id = currentScenarioId || (cliente.toLowerCase().replace(/[^a-z0-9]+/g,'-') + '-' + Date.now());
-  store[id] = {
+  ESCENARIOS_STORE[id] = {
     cliente,
     estado: document.getElementById('f_estadoEscenario').value,
     items: ITEMS,
     actualizado: new Date().toISOString()
   };
-  saveEscenariosStore(store);
   currentScenarioId = id;
+  await saveEscenariosToCloud();
   renderEscenariosList();
   document.getElementById('subtitle').textContent = 'Guardado ✓ — ' + ITEMS.length + (ITEMS.length===1?' ítem':' ítems');
 });
@@ -579,6 +630,7 @@ document.getElementById('btnNuevoEscenario').addEventListener('click', ()=>{
 
 (async function init(){
   await loadTarifario();
+  await loadEscenariosFromCloud();
   renderItems();
   renderTotales();
   renderEscenariosList();
