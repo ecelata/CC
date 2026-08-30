@@ -64,8 +64,9 @@
   .tarifario-row .concepto{color:var(--ink);}
   .tarifario-row .costo{font-family:var(--mono);white-space:nowrap;}
 
-  .add-form{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;align-items:end;}
-  @media (max-width:800px){.add-form{grid-template-columns:1fr 1fr;}}
+  .add-form{display:grid;grid-template-columns:1.6fr 1fr 1fr 0.8fr 1.2fr auto;gap:10px;align-items:end;}
+  @media (max-width:1000px){.add-form{grid-template-columns:1fr 1fr 1fr;}}
+  @media (max-width:600px){.add-form{grid-template-columns:1fr 1fr;}}
 
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line-strong);}
@@ -82,6 +83,29 @@
   .total-card{background:var(--stamp-bg);border-radius:8px;padding:16px 18px;}
   .total-card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--stamp-dark);font-weight:600;}
   .total-card .value{font-family:var(--mono);font-size:22px;color:var(--ink);margin-top:4px;}
+
+  .cloud-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .cloud-link{
+    display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid var(--line-strong);
+    border-radius:8px;text-decoration:none;color:var(--ink);background:var(--paper);transition:.15s;
+  }
+  .cloud-link:hover{border-color:var(--stamp);background:var(--stamp-bg);}
+  .cloud-link .badge{
+    width:34px;height:34px;border-radius:7px;background:var(--stamp-bg);color:var(--stamp-dark);
+    display:flex;align-items:center;justify-content:center;font-family:var(--heading);font-weight:700;font-size:12px;flex-shrink:0;
+  }
+  .cloud-link .name{font-weight:600;font-size:13px;}
+  .cloud-link .desc{font-size:11px;color:var(--ink-faint);}
+
+  @media print{
+    .suite-nav, .topbar-actions, .no-print{display:none !important;}
+    body{background:#fff;}
+    .app{padding:0;max-width:100%;}
+    .panel{border:none;padding:0;box-shadow:none;}
+    .totales{page-break-inside:avoid;}
+    .print-only{display:block !important;margin-top:8px;font-size:12px;color:var(--ink-soft);}
+  }
+  .print-only{display:none;}
 
   #f_estadoEscenario{width:auto;padding:8px 12px;font-weight:600;border-width:2px;}
   #f_estadoEscenario[data-state="diseñando"]{border-color:var(--stamp);background:var(--stamp-bg);}
@@ -104,6 +128,11 @@
     <div>
       <h1>Calculadora de Costos</h1>
       <div class="sub" id="subtitle">Dimensionamiento de infraestructura, licencias y horas de servicio</div>
+      <div class="no-print" style="margin-top:10px;max-width:340px;">
+        <label>Cliente / Oportunidad</label>
+        <input type="text" id="f_clienteOpp" placeholder="Ej. Smurfit Kappa Group - DCV">
+      </div>
+      <div class="print-only" id="printHeader" style="display:none;"></div>
     </div>
     <div class="topbar-actions">
       <span class="status-pill" id="tarifarioStatus">☁️ Cargando tarifario…</span>
@@ -113,29 +142,62 @@
         <option value="Completo, listo para Preventa">✅ Completo, listo para Preventa</option>
       </select>
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
+      <button class="ghost" id="btnExportPdf">Exportar PDF</button>
       <button class="danger" id="btnClearAll">Vaciar escenario</button>
     </div>
   </div>
 
-  <div class="panel">
+  <div class="panel no-print">
     <div class="tarifario-toggle" id="tarifarioToggle">
       <span class="chevron">▶</span>
-      <h2 style="margin:0;">Tarifario vigente</h2>
+      <h2 style="margin:0;">Tarifario DCV — pool de recursos (Personal Cloud)</h2>
     </div>
-    <div class="hint">Fuente: tarifario.csv — para actualizar precios, reemplazá ese archivo en el repo.</div>
+    <div class="hint">Cómputo, storage, licencias, SSPP/SSAA y Veeam del datacenter virtual propio. Fuente: tarifario.csv — para actualizar precios, reemplazá ese archivo en el repo. Esto NO cubre AWS/Azure/GCP/Huawei ni licenciamiento fuera de DCV — para eso, usá las calculadoras oficiales de abajo.</div>
     <div class="tarifario-body" id="tarifarioBody"></div>
   </div>
 
-  <div class="panel">
+  <div class="panel no-print">
+    <h2>Calculadoras oficiales por cloud</h2>
+    <div class="hint">Para AWS, Azure, GCP y Huawei — cada proveedor tiene su propia calculadora, siempre más precisa y actualizada que cualquier tarifario propio.</div>
+    <div class="cloud-links">
+      <a class="cloud-link" href="https://calculator.aws/" target="_blank" rel="noopener">
+        <span class="badge">AWS</span>
+        <div><div class="name">AWS Pricing Calculator</div><div class="desc">calculator.aws</div></div>
+      </a>
+      <a class="cloud-link" href="https://azure.microsoft.com/en-us/pricing/calculator/" target="_blank" rel="noopener">
+        <span class="badge">AZ</span>
+        <div><div class="name">Azure Pricing Calculator</div><div class="desc">azure.microsoft.com</div></div>
+      </a>
+      <a class="cloud-link" href="https://cloud.google.com/products/calculator" target="_blank" rel="noopener">
+        <span class="badge">GCP</span>
+        <div><div class="name">Google Cloud Pricing Calculator</div><div class="desc">cloud.google.com</div></div>
+      </a>
+      <a class="cloud-link" href="https://www.huaweicloud.com/intl/en-us/pricing/index.html#/ecs" target="_blank" rel="noopener">
+        <span class="badge">HWC</span>
+        <div><div class="name">Huawei Cloud Pricing</div><div class="desc">huaweicloud.com</div></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="panel no-print">
     <h2>Agregar ítem al escenario</h2>
-    <div class="hint">Elegí el concepto del tarifario, indicá la cantidad, y opcionalmente agrupalo (ej. "Grupo 1: Acceso de Usuarios").</div>
+    <div class="hint">Escribí el ítem (si existe en el tarifario DCV, el precio se autocompleta solo) o cargá cualquier otro con su propio precio unitario. La línea se calcula sola.</div>
     <div class="add-form">
       <div>
-        <label>Concepto</label>
-        <select id="f_concepto"></select>
+        <label>Ítem</label>
+        <input type="text" id="f_item" list="tarifarioDatalist" placeholder="Ej. 1 vCPU, o cualquier ítem propio">
+        <datalist id="tarifarioDatalist"></datalist>
       </div>
       <div>
-        <label>Cantidad <span id="unidadLabel"></span></label>
+        <label>Precio unit. One Shot (USD)</label>
+        <input type="number" id="f_precioOneShot" min="0" step="any" value="0">
+      </div>
+      <div>
+        <label>Precio unit. Mensual (USD)</label>
+        <input type="number" id="f_precioMensual" min="0" step="any" value="0">
+      </div>
+      <div>
+        <label>Cantidad</label>
         <input type="number" id="f_cantidad" min="0" step="any" value="1">
       </div>
       <div>
@@ -212,31 +274,17 @@ async function loadTarifario(){
 }
 
 function populateConceptoSelect(){
-  const sel = document.getElementById('f_concepto');
-  sel.innerHTML = '';
-  const byCat = {};
-  TARIFARIO.forEach(t=>{
-    if(!byCat[t.categoria]) byCat[t.categoria] = [];
-    byCat[t.categoria].push(t);
-  });
-  Object.keys(byCat).forEach(cat=>{
-    const group = document.createElement('optgroup');
-    group.label = cat;
-    byCat[cat].forEach(t=>{
-      const opt = document.createElement('option');
-      opt.value = t.id;
-      opt.textContent = t.concepto + ' (' + t.unidad + ')';
-      group.appendChild(opt);
-    });
-    sel.appendChild(group);
-  });
-  updateUnidadLabel();
+  const dl = document.getElementById('tarifarioDatalist');
+  dl.innerHTML = TARIFARIO.map(t=>`<option value="${escapeHtml(t.concepto)}">`).join('');
 }
 
-function updateUnidadLabel(){
-  const id = document.getElementById('f_concepto').value;
-  const t = TARIFARIO.find(x=>x.id===id);
-  document.getElementById('unidadLabel').textContent = t ? '('+t.unidad+')' : '';
+function autofillPrecioFromTarifario(){
+  const nombre = document.getElementById('f_item').value.trim().toLowerCase();
+  const t = TARIFARIO.find(x=>x.concepto.toLowerCase()===nombre);
+  if(t){
+    document.getElementById('f_precioOneShot').value = t.costoOneShot;
+    document.getElementById('f_precioMensual').value = t.costoMensual;
+  }
 }
 
 function renderTarifarioReference(){
@@ -274,7 +322,7 @@ function renderItems(){
     function itemRow(it){
       return `<tr>
         <td>${escapeHtml(it.concepto)}</td>
-        <td>${it.cantidad} ${escapeHtml(it.unidad)}</td>
+        <td>${it.cantidad} <span style="color:var(--ink-faint);font-family:var(--mono);font-size:11px;">× (${fmtMoney(it.precioOneShotUnit||0)} OS / ${fmtMoney(it.precioMensualUnit||0)} mes)</span></td>
         <td class="money">${fmtMoney(it.costoOneShotTotal)}</td>
         <td class="money">${fmtMoney(it.costoMensualTotal)}</td>
         <td><button class="row-del" data-idx="${it._idx}" title="Eliminar">×</button></td>
@@ -325,24 +373,30 @@ function updateEstadoVisual(){ estadoSel.setAttribute('data-state', estadoMap[es
 estadoSel.addEventListener('change', updateEstadoVisual);
 updateEstadoVisual();
 
-document.getElementById('f_concepto').addEventListener('change', updateUnidadLabel);
+document.getElementById('f_item').addEventListener('input', autofillPrecioFromTarifario);
 
 document.getElementById('btnAddItem').addEventListener('click', ()=>{
-  const id = document.getElementById('f_concepto').value;
-  const t = TARIFARIO.find(x=>x.id===id);
-  if(!t) return;
+  const item = document.getElementById('f_item').value.trim();
+  if(!item) return;
   const cantidad = parseFloat(document.getElementById('f_cantidad').value) || 0;
   if(cantidad <= 0) return;
+  const precioOneShot = parseFloat(document.getElementById('f_precioOneShot').value) || 0;
+  const precioMensual = parseFloat(document.getElementById('f_precioMensual').value) || 0;
   const grupo = document.getElementById('f_grupo').value.trim();
   ITEMS.push({
-    concepto: t.concepto, unidad: t.unidad, cantidad,
-    costoOneShotTotal: cantidad * t.costoOneShot,
-    costoMensualTotal: cantidad * t.costoMensual,
+    concepto: item, unidad: '', cantidad,
+    precioOneShotUnit: precioOneShot, precioMensualUnit: precioMensual,
+    costoOneShotTotal: cantidad * precioOneShot,
+    costoMensualTotal: cantidad * precioMensual,
     grupo
   });
+  document.getElementById('f_item').value = '';
+  document.getElementById('f_precioOneShot').value = 0;
+  document.getElementById('f_precioMensual').value = 0;
   document.getElementById('f_cantidad').value = 1;
   renderItems();
   renderTotales();
+  document.getElementById('f_item').focus();
 });
 
 document.getElementById('btnClearAll').addEventListener('click', ()=>{
@@ -355,23 +409,37 @@ document.getElementById('btnClearAll').addEventListener('click', ()=>{
 });
 
 document.getElementById('btnExportCsv').addEventListener('click', ()=>{
-  const cols = ['grupo','concepto','unidad','cantidad','costo_one_shot_usd','costo_mensual_usd'];
-  const rows = ['Estado del escenario,'+document.getElementById('f_estadoEscenario').value, ''];
+  const cols = ['grupo','item','precio_unit_one_shot_usd','precio_unit_mensual_usd','cantidad','costo_one_shot_usd','costo_mensual_usd'];
+  const cliente = document.getElementById('f_clienteOpp').value.trim();
+  const rows = [];
+  if(cliente) rows.push('Cliente / Oportunidad,'+cliente);
+  rows.push('Estado del escenario,'+document.getElementById('f_estadoEscenario').value);
+  rows.push('');
   rows.push(cols.join(','));
   ITEMS.forEach(i=>{
-    rows.push([i.grupo||'', i.concepto, i.unidad, i.cantidad, i.costoOneShotTotal.toFixed(2), i.costoMensualTotal.toFixed(2)]
+    rows.push([i.grupo||'', i.concepto, (i.precioOneShotUnit||0).toFixed(2), (i.precioMensualUnit||0).toFixed(2), i.cantidad, i.costoOneShotTotal.toFixed(2), i.costoMensualTotal.toFixed(2)]
       .map(v=>{ v=String(v); return (v.includes(',')||v.includes('"')) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(','));
   });
   const totalOS = ITEMS.reduce((a,i)=>a+i.costoOneShotTotal,0);
   const totalMes = ITEMS.reduce((a,i)=>a+i.costoMensualTotal,0);
   rows.push('');
-  rows.push('TOTAL,,,,'+totalOS.toFixed(2)+','+totalMes.toFixed(2));
+  rows.push('TOTAL,,,,,'+totalOS.toFixed(2)+','+totalMes.toFixed(2));
   const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = 'escenario_costos.csv';
   a.click();
   URL.revokeObjectURL(url);
+});
+
+document.getElementById('btnExportPdf').addEventListener('click', ()=>{
+  if(ITEMS.length===0){ alert('No hay ítems cargados en el escenario.'); return; }
+  const cliente = document.getElementById('f_clienteOpp').value.trim();
+  const estado = document.getElementById('f_estadoEscenario').value;
+  const fecha = new Date().toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+  document.getElementById('printHeader').innerHTML =
+    (cliente ? '<strong>' + escapeHtml(cliente) + '</strong> · ' : '') + 'Estado: ' + escapeHtml(estado) + ' · ' + fecha;
+  window.print();
 });
 
 (async function init(){
