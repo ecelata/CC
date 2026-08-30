@@ -82,6 +82,11 @@
   .total-card{background:var(--stamp-bg);border-radius:8px;padding:16px 18px;}
   .total-card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--stamp-dark);font-weight:600;}
   .total-card .value{font-family:var(--mono);font-size:22px;color:var(--ink);margin-top:4px;}
+
+  #f_estadoEscenario{width:auto;padding:8px 12px;font-weight:600;border-width:2px;}
+  #f_estadoEscenario[data-state="diseñando"]{border-color:var(--stamp);background:var(--stamp-bg);}
+  #f_estadoEscenario[data-state="esperando"]{border-color:#B5822B;background:#F1E4C6;}
+  #f_estadoEscenario[data-state="completo"]{border-color:#3E7D4C;background:#DCEBDD;}
 </style>
 </head>
 <body>
@@ -102,6 +107,11 @@
     </div>
     <div class="topbar-actions">
       <span class="status-pill" id="tarifarioStatus">☁️ Cargando tarifario…</span>
+      <select id="f_estadoEscenario" style="width:auto;font-weight:600;">
+        <option value="Diseñando solución">🎨 Diseñando solución</option>
+        <option value="Esperando horas de Arquitectura">⏳ Esperando horas de Arquitectura</option>
+        <option value="Completo, listo para Preventa">✅ Completo, listo para Preventa</option>
+      </select>
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
       <button class="danger" id="btnClearAll">Vaciar escenario</button>
     </div>
@@ -309,6 +319,12 @@ document.getElementById('tarifarioToggle').addEventListener('click', ()=>{
   document.getElementById('tarifarioBody').classList.toggle('open');
 });
 
+const estadoMap = {'Diseñando solución':'diseñando','Esperando horas de Arquitectura':'esperando','Completo, listo para Preventa':'completo'};
+const estadoSel = document.getElementById('f_estadoEscenario');
+function updateEstadoVisual(){ estadoSel.setAttribute('data-state', estadoMap[estadoSel.value]); }
+estadoSel.addEventListener('change', updateEstadoVisual);
+updateEstadoVisual();
+
 document.getElementById('f_concepto').addEventListener('change', updateUnidadLabel);
 
 document.getElementById('btnAddItem').addEventListener('click', ()=>{
@@ -340,7 +356,8 @@ document.getElementById('btnClearAll').addEventListener('click', ()=>{
 
 document.getElementById('btnExportCsv').addEventListener('click', ()=>{
   const cols = ['grupo','concepto','unidad','cantidad','costo_one_shot_usd','costo_mensual_usd'];
-  const rows = [cols.join(',')];
+  const rows = ['Estado del escenario,'+document.getElementById('f_estadoEscenario').value, ''];
+  rows.push(cols.join(','));
   ITEMS.forEach(i=>{
     rows.push([i.grupo||'', i.concepto, i.unidad, i.cantidad, i.costoOneShotTotal.toFixed(2), i.costoMensualTotal.toFixed(2)]
       .map(v=>{ v=String(v); return (v.includes(',')||v.includes('"')) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(','));
