@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Costos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root{
+    --paper:#F1EEE6; --paper-2:#FBFAF6; --ink:#22261F; --ink-soft:#5A5F52; --ink-faint:#8B8F80;
+    --line:#D3CDBC; --line-strong:#B7AF97;
+    --stamp:#6FA3C7; --stamp-dark:#2E5C73; --stamp-bg:#DCEBF1;
+    --red:#B23F35; --red-bg:#F3DCD8;
+    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'Montserrat',var(--sans);
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--heading);font-weight:600;margin:0;}
+
+  .suite-nav{background:var(--stamp-dark);display:flex;align-items:center;gap:2px;padding:0 20px;height:42px;}
+  .suite-nav a{color:#CFE0D8;text-decoration:none;font-family:var(--sans);font-size:12.5px;font-weight:500;padding:0 14px;height:42px;display:flex;align-items:center;border-bottom:2px solid transparent;}
+  .suite-nav a:hover{color:#fff;}
+  .suite-nav a.current{color:#fff;border-bottom-color:var(--stamp);font-weight:600;}
+  .suite-nav .suite-brand{color:#fff;font-family:var(--heading);font-weight:600;font-size:12.5px;margin-right:10px;padding-right:14px;border-right:1px solid #2E5A4C;height:20px;display:flex;align-items:center;}
+  @media (max-width:720px){.suite-nav{padding:0 14px;overflow-x:auto;}.suite-nav a{padding:0 10px;white-space:nowrap;}}
+
+  .app{max-width:1320px;margin:0 auto;padding:28px 32px 80px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
+  .topbar h1{font-size:26px;letter-spacing:-0.01em;color:var(--stamp-dark);}
+  .topbar .sub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+  .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  button{font-family:var(--sans);cursor:pointer;border-radius:6px;border:1px solid var(--line-strong);background:var(--paper-2);padding:8px 14px;font-size:12.5px;color:var(--ink);}
+  button:hover{border-color:var(--stamp);}
+  button.primary{background:var(--stamp);border-color:var(--stamp);color:#fff;font-weight:600;}
+  button.primary:hover{background:var(--stamp-dark);border-color:var(--stamp-dark);}
+  button.danger{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+  button.ghost{background:transparent;}
+  select,input[type=text],input[type=number]{
+    font-family:var(--sans);font-size:13px;padding:8px 10px;border:1px solid var(--line-strong);
+    border-radius:6px;background:var(--paper-2);color:var(--ink);width:100%;
+  }
+  select:focus,input:focus{outline:2px solid var(--stamp-bg);border-color:var(--stamp);}
+  label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:600;display:block;margin-bottom:5px;}
+
+  .status-pill{font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+
+  .panel{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:20px 22px;margin-bottom:18px;}
+  .panel h2{font-size:15px;margin-bottom:14px;color:var(--ink);}
+  .panel .hint{font-size:11.5px;color:var(--ink-faint);margin:-8px 0 14px;}
+
+  .tarifario-toggle{cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;}
+  .tarifario-toggle .chevron{transition:transform .15s;font-size:11px;}
+  .tarifario-toggle.open .chevron{transform:rotate(90deg);}
+  .tarifario-body{display:none;margin-top:14px;}
+  .tarifario-body.open{display:block;}
+  .tarifario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+  .tarifario-cat h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);margin:0 0 8px;font-family:var(--heading);}
+  .tarifario-row{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;padding:4px 0;border-bottom:1px solid var(--line);color:var(--ink-soft);}
+  .tarifario-row:last-child{border-bottom:none;}
+  .tarifario-row .concepto{color:var(--ink);}
+  .tarifario-row .costo{font-family:var(--mono);white-space:nowrap;}
+
+  .add-form{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;align-items:end;}
+  @media (max-width:800px){.add-form{grid-template-columns:1fr 1fr;}}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line-strong);}
+  th.money,td.money{text-align:right;font-family:var(--mono);}
+  tbody td{padding:9px 10px;border-bottom:1px solid var(--line);}
+  tbody tr.group-header td{background:var(--stamp-bg);font-weight:600;color:var(--stamp-dark);font-size:11.5px;}
+  tbody tr.subtotal td{font-weight:600;background:var(--paper);}
+  .row-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:15px;padding:0;}
+  .row-del:hover{color:var(--red);}
+  .empty-row td{text-align:center;color:var(--ink-faint);padding:30px;font-style:italic;}
+
+  .totales{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;}
+  @media (max-width:720px){.totales{grid-template-columns:1fr;}}
+  .total-card{background:var(--stamp-bg);border-radius:8px;padding:16px 18px;}
+  .total-card .label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--stamp-dark);font-weight:600;}
+  .total-card .value{font-family:var(--mono);font-size:22px;color:var(--ink);margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="suite-nav">
+  <span class="suite-brand">GGCC · Grandes Cuentas</span>
+  <a href="index.html">Portal</a>
+  <a href="dashboard.html">Cartera</a>
+  <a href="Backlog_Preventa.html">Backlog</a>
+  <a href="calculadora.html" class="current">Calculadora</a>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div>
+      <h1>Calculadora de Costos</h1>
+      <div class="sub" id="subtitle">Dimensionamiento de infraestructura, licencias y horas de servicio</div>
+    </div>
+    <div class="topbar-actions">
+      <span class="status-pill" id="tarifarioStatus">☁️ Cargando tarifario…</span>
+      <button class="ghost" id="btnExportCsv">Exportar CSV</button>
+      <button class="danger" id="btnClearAll">Vaciar escenario</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="tarifario-toggle" id="tarifarioToggle">
+      <span class="chevron">▶</span>
+      <h2 style="margin:0;">Tarifario vigente</h2>
+    </div>
+    <div class="hint">Fuente: tarifario.csv — para actualizar precios, reemplazá ese archivo en el repo.</div>
+    <div class="tarifario-body" id="tarifarioBody"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Agregar ítem al escenario</h2>
+    <div class="hint">Elegí el concepto del tarifario, indicá la cantidad, y opcionalmente agrupalo (ej. "Grupo 1: Acceso de Usuarios").</div>
+    <div class="add-form">
+      <div>
+        <label>Concepto</label>
+        <select id="f_concepto"></select>
+      </div>
+      <div>
+        <label>Cantidad <span id="unidadLabel"></span></label>
+        <input type="number" id="f_cantidad" min="0" step="any" value="1">
+      </div>
+      <div>
+        <label>Grupo (opcional)</label>
+        <input type="text" id="f_grupo" placeholder="Ej. Grupo 1: Acceso" list="gruposDatalist">
+        <datalist id="gruposDatalist"></datalist>
+      </div>
+      <div>
+        <button class="primary" id="btnAddItem" style="width:100%;">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Escenario</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th><th>Cantidad</th><th class="money">Costo One Shot</th><th class="money">Costo Mensual</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="totales">
+      <div class="total-card">
+        <div class="label">Costo One Shot</div>
+        <div class="value" id="totalOneShot">US$ 0</div>
+      </div>
+      <div class="total-card">
+        <div class="label">Costo Mensual</div>
+        <div class="value" id="totalMensual">US$ 0</div>
+      </div>
+      <div class="total-card">
+        <div class="label">Costo Total (One Shot + 12 meses)</div>
+        <div class="value" id="totalGeneral">US$ 0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let TARIFARIO = [];
+let ITEMS = [];
+
+function fmtMoney(n){
+  n = Number(n)||0;
+  return 'US$ ' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function loadTarifario(){
+  const statusEl = document.getElementById('tarifarioStatus');
+  try{
+    const res = await fetch('tarifario.csv');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
+    TARIFARIO = parsed.data.map(r=>({
+      categoria: r.categoria, subcategoria: r.subcategoria, id: r.id,
+      concepto: r.concepto, descripcion: r.descripcion, unidad: r.unidad,
+      costoOneShot: parseFloat(r.costo_one_shot_usd)||0,
+      costoMensual: parseFloat(r.costo_mensual_usd)||0
+    })).filter(r=>r.concepto);
+    statusEl.textContent = '☁️ Tarifario cargado (' + TARIFARIO.length + ' ítems)';
+  }catch(e){
+    statusEl.textContent = '⚠️ No se pudo cargar tarifario.csv';
+    TARIFARIO = [];
+  }
+  populateConceptoSelect();
+  renderTarifarioReference();
+}
+
+function populateConceptoSelect(){
+  const sel = document.getElementById('f_concepto');
+  sel.innerHTML = '';
+  const byCat = {};
+  TARIFARIO.forEach(t=>{
+    if(!byCat[t.categoria]) byCat[t.categoria] = [];
+    byCat[t.categoria].push(t);
+  });
+  Object.keys(byCat).forEach(cat=>{
+    const group = document.createElement('optgroup');
+    group.label = cat;
+    byCat[cat].forEach(t=>{
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.concepto + ' (' + t.unidad + ')';
+      group.appendChild(opt);
+    });
+    sel.appendChild(group);
+  });
+  updateUnidadLabel();
+}
+
+function updateUnidadLabel(){
+  const id = document.getElementById('f_concepto').value;
+  const t = TARIFARIO.find(x=>x.id===id);
+  document.getElementById('unidadLabel').textContent = t ? '('+t.unidad+')' : '';
+}
+
+function renderTarifarioReference(){
+  const body = document.getElementById('tarifarioBody');
+  const byCat = {};
+  TARIFARIO.forEach(t=>{
+    if(!byCat[t.categoria]) byCat[t.categoria] = [];
+    byCat[t.categoria].push(t);
+  });
+  body.innerHTML = '<div class="tarifario-grid">' + Object.keys(byCat).map(cat=>`
+    <div class="tarifario-cat">
+      <h4>${escapeHtml(cat)}</h4>
+      ${byCat[cat].map(t=>`
+        <div class="tarifario-row">
+          <span class="concepto">${escapeHtml(t.concepto)}</span>
+          <span class="costo">${t.costoOneShot?('OS '+fmtMoney(t.costoOneShot)):''}${(t.costoOneShot&&t.costoMensual)?' · ':''}${t.costoMensual?('Mes '+fmtMoney(t.costoMensual)):''}</span>
+        </div>`).join('')}
+    </div>`).join('') + '</div>';
+}
+
+function renderItems(){
+  const tbody = document.getElementById('itemsBody');
+  if(ITEMS.length===0){
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Todavía no agregaste ítems a este escenario.</td></tr>';
+  }else{
+    const byGroup = {};
+    const noGroup = [];
+    ITEMS.forEach((it,idx)=>{
+      it._idx = idx;
+      const g = it.grupo && it.grupo.trim();
+      if(g){ if(!byGroup[g]) byGroup[g]=[]; byGroup[g].push(it); }
+      else noGroup.push(it);
+    });
+    let html = '';
+    function itemRow(it){
+      return `<tr>
+        <td>${escapeHtml(it.concepto)}</td>
+        <td>${it.cantidad} ${escapeHtml(it.unidad)}</td>
+        <td class="money">${fmtMoney(it.costoOneShotTotal)}</td>
+        <td class="money">${fmtMoney(it.costoMensualTotal)}</td>
+        <td><button class="row-del" data-idx="${it._idx}" title="Eliminar">×</button></td>
+      </tr>`;
+    }
+    Object.keys(byGroup).forEach(g=>{
+      const items = byGroup[g];
+      const subOS = items.reduce((a,i)=>a+i.costoOneShotTotal,0);
+      const subMes = items.reduce((a,i)=>a+i.costoMensualTotal,0);
+      html += `<tr class="group-header"><td colspan="5">${escapeHtml(g)}</td></tr>`;
+      html += items.map(itemRow).join('');
+      html += `<tr class="subtotal"><td colspan="2">Subtotal ${escapeHtml(g)}</td><td class="money">${fmtMoney(subOS)}</td><td class="money">${fmtMoney(subMes)}</td><td></td></tr>`;
+    });
+    html += noGroup.map(itemRow).join('');
+    tbody.innerHTML = html;
+
+    tbody.querySelectorAll('.row-del').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        ITEMS.splice(parseInt(btn.getAttribute('data-idx'),10), 1);
+        renderItems();
+        renderTotales();
+      });
+    });
+  }
+
+  const gruposDatalist = document.getElementById('gruposDatalist');
+  const gruposUnicos = [...new Set(ITEMS.map(i=>i.grupo).filter(Boolean))];
+  gruposDatalist.innerHTML = gruposUnicos.map(g=>`<option value="${escapeHtml(g)}">`).join('');
+}
+
+function renderTotales(){
+  const totalOS = ITEMS.reduce((a,i)=>a+i.costoOneShotTotal,0);
+  const totalMes = ITEMS.reduce((a,i)=>a+i.costoMensualTotal,0);
+  document.getElementById('totalOneShot').textContent = fmtMoney(totalOS);
+  document.getElementById('totalMensual').textContent = fmtMoney(totalMes);
+  document.getElementById('totalGeneral').textContent = fmtMoney(totalOS + totalMes*12);
+  document.getElementById('subtitle').textContent = ITEMS.length + (ITEMS.length===1?' ítem cargado':' ítems cargados') + ' en este escenario';
+}
+
+document.getElementById('tarifarioToggle').addEventListener('click', ()=>{
+  document.getElementById('tarifarioToggle').classList.toggle('open');
+  document.getElementById('tarifarioBody').classList.toggle('open');
+});
+
+document.getElementById('f_concepto').addEventListener('change', updateUnidadLabel);
+
+document.getElementById('btnAddItem').addEventListener('click', ()=>{
+  const id = document.getElementById('f_concepto').value;
+  const t = TARIFARIO.find(x=>x.id===id);
+  if(!t) return;
+  const cantidad = parseFloat(document.getElementById('f_cantidad').value) || 0;
+  if(cantidad <= 0) return;
+  const grupo = document.getElementById('f_grupo').value.trim();
+  ITEMS.push({
+    concepto: t.concepto, unidad: t.unidad, cantidad,
+    costoOneShotTotal: cantidad * t.costoOneShot,
+    costoMensualTotal: cantidad * t.costoMensual,
+    grupo
+  });
+  document.getElementById('f_cantidad').value = 1;
+  renderItems();
+  renderTotales();
+});
+
+document.getElementById('btnClearAll').addEventListener('click', ()=>{
+  if(ITEMS.length===0) return;
+  if(confirm('¿Vaciar todo el escenario actual? Esta acción no se puede deshacer.')){
+    ITEMS = [];
+    renderItems();
+    renderTotales();
+  }
+});
+
+document.getElementById('btnExportCsv').addEventListener('click', ()=>{
+  const cols = ['grupo','concepto','unidad','cantidad','costo_one_shot_usd','costo_mensual_usd'];
+  const rows = [cols.join(',')];
+  ITEMS.forEach(i=>{
+    rows.push([i.grupo||'', i.concepto, i.unidad, i.cantidad, i.costoOneShotTotal.toFixed(2), i.costoMensualTotal.toFixed(2)]
+      .map(v=>{ v=String(v); return (v.includes(',')||v.includes('"')) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(','));
+  });
+  const totalOS = ITEMS.reduce((a,i)=>a+i.costoOneShotTotal,0);
+  const totalMes = ITEMS.reduce((a,i)=>a+i.costoMensualTotal,0);
+  rows.push('');
+  rows.push('TOTAL,,,,'+totalOS.toFixed(2)+','+totalMes.toFixed(2));
+  const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'escenario_costos.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+(async function init(){
+  await loadTarifario();
+  renderItems();
+  renderTotales();
+})();
+</script>
+</body>
+</html>
