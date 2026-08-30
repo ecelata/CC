@@ -10,13 +10,13 @@
   :root{
     --paper:#F1EEE6;
     --paper-2:#E8E4D8;
-    --ink:#22261F;
-    --ink-soft:#5A5F52;
-    --ink-faint:#8B8F80;
+    --ink:#3F443A;
+    --ink-soft:#6B6F62;
+    --ink-faint:#9B9E90;
     --line:#D3CDBC;
     --line-strong:#B7AF97;
-    --stamp:#6FA3C7;
-    --stamp-dark:#2E5C73;
+    --stamp:#8FB8D1;
+    --stamp-dark:#3D6478;
     --stamp-bg:#DCEBF1;
     --mustard:#B5822B;
     --mustard-bg:#F1E4C6;
@@ -95,36 +95,45 @@
     background:#FBFAF6;border:1px solid var(--line);border-radius:4px;overflow-x:auto;
   }
   .table-wrap table{margin:0;}
-  table{width:auto;border-collapse:collapse;font-size:13px;}
+  table{width:auto;border-collapse:collapse;font-size:12px;}
   thead th{
-    text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
-    color:var(--ink-soft);font-weight:500;padding:10px 12px;
+    text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-soft);font-weight:500;padding:7px 9px;
     border-bottom:1px solid var(--line-strong);background:var(--paper-2);
     white-space:nowrap;
   }
-  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody td{padding:5px 9px;border-bottom:1px solid var(--line);vertical-align:middle;line-height:1.25;}
   tbody tr{cursor:pointer;}
   tbody tr:hover{background:var(--stamp-bg);}
-  .idcell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .idcell{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
   .cliente-cell{font-weight:500;}
-  .cliente-cell .opp-name{display:block;font-size:11.5px;color:var(--ink-soft);font-weight:400;margin-top:1px;}
-  .cliente-cell .cuit{display:block;font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
-  .seg-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
-  .etapa-track{display:flex;gap:3px;align-items:center;}
-  .etapa-track .dot{width:14px;height:5px;border-radius:2px;background:var(--line-strong);}
+  .cliente-cell .opp-name{display:block;font-size:10.5px;color:var(--ink-soft);font-weight:400;margin-top:0;}
+  .cliente-cell .cuit{display:block;font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
+  .seg-pill{display:inline-block;padding:1px 7px;border-radius:9px;font-size:10px;font-weight:500;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
+  .etapa-track{display:flex;gap:2px;align-items:center;}
+  .etapa-track .dot{width:11px;height:4px;border-radius:2px;background:var(--line-strong);}
   .etapa-track .dot.done{background:var(--stamp);}
-  .etapa-label{font-size:11px;color:var(--ink-soft);margin-left:6px;white-space:nowrap;}
-  .money{font-family:'IBM Plex Mono',monospace;text-align:right;}
-  .semaforo{display:inline-flex;align-items:center;gap:6px;}
-  .semaforo .dot{width:9px;height:9px;border-radius:50%;}
+  .etapa-label{font-size:10px;color:var(--ink-soft);margin-left:5px;white-space:nowrap;}
+  .money{font-family:'IBM Plex Mono',monospace;text-align:right;font-size:11.5px;}
+  .semaforo{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;}
+  .semaforo .dot{width:7px;height:7px;border-radius:50%;}
   .dot-verde{background:var(--green);}
   .dot-amarillo{background:var(--amber);}
   .dot-rojo{background:var(--red);}
   .dot-gris{background:var(--ink-faint);}
-  .dias-restantes{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
-  .bant-cell{text-align:center;width:30px;font-size:13px;}
-  th.bant-th{text-align:center;width:30px;padding-left:4px;padding-right:4px;}
-  .estprop-cell{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
+  .dias-restantes{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  .bant-cell{text-align:center;width:36px;padding-left:4px;padding-right:4px;}
+  th.bant-th{text-align:center;width:36px;padding-left:4px;padding-right:4px;}
+  .bant-quad{display:inline-grid;grid-template-columns:1fr 1fr;gap:1px;width:20px;}
+  .bant-q{
+    display:flex;align-items:center;justify-content:center;width:10px;height:10px;
+    font-size:7px;font-weight:700;font-family:'Inter',sans-serif;color:#fff;line-height:1;
+  }
+  .bant-q.ok{background:var(--green);}
+  .bant-q.warn{background:var(--amber);}
+  .bant-q.bad{background:var(--red);}
+  .bant-q.na{background:var(--line-strong);color:var(--ink-faint);}
+  .estprop-cell{font-size:10.5px;color:var(--ink-soft);white-space:nowrap;}
   .empty-state{padding:60px 20px;text-align:center;color:var(--ink-soft);}
   .empty-state h3{margin-bottom:8px;color:var(--ink);}
   .empty-state p{font-size:13px;margin:0 0 16px;}
@@ -338,8 +347,7 @@
           <tr>
             <th>N°</th><th>Cliente</th><th>Segmento</th><th>Etapa</th><th>Prob.</th>
             <th>EECC</th>
-            <th class="bant-th" title="Budget">B</th><th class="bant-th" title="Authority">A</th>
-            <th class="bant-th" title="Need">N</th><th class="bant-th" title="Timeline">T</th>
+            <th class="bant-th" title="Budget / Authority / Need / Timeline">BANT</th>
             <th class="money">One Shot</th><th class="money">Mensual</th>
             <th class="money">Valor total</th><th class="money">Ponderado</th>
             <th>Vertical</th><th>Unidad Neg.</th><th>Proveedor</th><th>Estado prop.</th><th>Fecha cierre est.</th><th>Estado</th><th>Días</th>
@@ -781,7 +789,7 @@ function renderTable(){
   document.querySelector('.table-wrap table').style.display='table';
   empty.style.display='none';
   if(list.length===0){
-    tbody.innerHTML = `<tr><td colspan="21" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="18" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(o=>{
@@ -796,10 +804,7 @@ function renderTable(){
       <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
       <td>${o.probCierre?o.probCierre+'%':'—'}</td>
       <td>${o.eecc? titleCase(o.eecc):'—'}</td>
-      <td class="bant-cell" title="Budget: ${o.bantBudget||'—'}">${bantIcon(o.bantBudget)}</td>
-      <td class="bant-cell" title="Authority: ${o.bantAuthority||'—'}">${bantIcon(o.bantAuthority)}</td>
-      <td class="bant-cell" title="Need: ${o.bantNeed||'—'}">${bantIcon(o.bantNeed)}</td>
-      <td class="bant-cell" title="Timeline: ${o.bantTimeline||'—'}">${bantIcon(o.bantTimeline)}</td>
+      <td class="bant-cell">${bantQuadrant(o)}</td>
       <td class="money">${o.montoOneShot?fmtMoney(o.montoOneShot):'—'}</td>
       <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
       <td class="money">${fmtMoney(o.valorTotal)}</td>
@@ -868,6 +873,24 @@ function wireBitacoraDeletes(o){
       wireBitacoraDeletes(o);
     });
   });
+}
+
+function bantColor(v){
+  if(v==='✅ Sí') return 'ok';
+  if(v==='⚠️ Parcial') return 'warn';
+  if(v==='❌ No') return 'bad';
+  return 'na';
+}
+function bantQuadrant(o){
+  const cells = [
+    ['B', o.bantBudget, 'Budget'],
+    ['A', o.bantAuthority, 'Authority'],
+    ['N', o.bantNeed, 'Need'],
+    ['T', o.bantTimeline, 'Timeline']
+  ];
+  return '<div class="bant-quad">' + cells.map(([letra,val,label])=>
+    `<span class="bant-q ${bantColor(val)}" title="${label}: ${val||'—'}">${letra}</span>`
+  ).join('') + '</div>';
 }
 
 function bantIcon(v){
