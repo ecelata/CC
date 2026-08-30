@@ -219,6 +219,13 @@
   }
   .active-filter-bar button{padding:3px 9px;font-size:11.5px;}
   .empty-dash{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13px;}
+  .bitacora-empty{padding:14px 4px;color:var(--ink-faint);font-size:12.5px;font-style:italic;}
+  .bitacora-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);}
+  .bitacora-item:last-child{border-bottom:none;}
+  .bitacora-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--stamp-dark);background:var(--stamp-bg);padding:2px 7px;border-radius:3px;flex-shrink:0;white-space:nowrap;}
+  .bitacora-nota{flex:1;font-size:12.5px;color:var(--ink);line-height:1.5;}
+  .bitacora-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;line-height:1;padding:0 4px;flex-shrink:0;}
+  .bitacora-del:hover{color:var(--red);}
   @media (max-width:720px){
     .app{padding:18px 14px 60px;}
     .kpis{grid-template-columns:1fr 1fr;}
@@ -356,7 +363,8 @@ const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
 const TIPO_CONTRATO = ['One-time','MRR','ARR','Mixto'];
 const BANT_VALORES = ['✅ Sí','⚠️ Parcial','❌ No','N/A'];
 const VERTICALES = ['Cloud Híbrida','Ciberseguridad','IA / ML','Data & Analytics','Modernización de Aplicaciones','Infraestructura','Redes y Conectividad','ERP / CRM','Colaboración y Productividad'];
-const PROVEEDORES = ['AWS','Azure','Google Cloud','Oracle','IBM','VMware','Multi-vendor'];
+const PROVEEDORES = ['AWS','Azure','Google Cloud','Oracle','IBM','VMware','Huawei (HWC)','Personal Cloud (propio)','Multi-vendor'];
+const PRODUCTOS = ['DCV - Datacenter Virtual','VM - Virtual Machines','Personal Cloud','Assessment','Data Analytics','MaaS IA','SaaS Solución','Licenciamiento','Horas SSPP','Horas SSAA','POC','Backup / DR','Ciberseguridad Gestionada'];
 const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consultoría','SSPP - Servicios Profesionales','SSAA - Servicios Administrados'];
 const ESTADO_PROPUESTA = ['Ninguno','RFP','Arquitectura','Técnico-Comercial','En revisión cliente','Enviada'];
 const DOCUMENTOS_GENERADOS = ['Ninguno','Propuesta técnica','Propuesta económica','Contrato','NDA','SOW','Presentación ejecutiva'];
@@ -777,6 +785,29 @@ function renderTable(){
     tr.addEventListener('dblclick', ()=>openDrawer(tr.getAttribute('data-id')));
   });
 }
+function renderBitacoraList(o){
+  const entries = (o.bitacora||[]).slice().sort((a,b)=> b.fecha.localeCompare(a.fecha));
+  if(entries.length===0) return '<div class="bitacora-empty">Todavía no hay avances registrados.</div>';
+  return entries.map(e=>{
+    const idx = (o.bitacora||[]).indexOf(e);
+    return `<div class="bitacora-item">
+      <div class="bitacora-date">${formatDateShort(e.fecha)}</div>
+      <div class="bitacora-nota">${escapeHtml(e.nota)}</div>
+      <button class="bitacora-del" data-idx="${idx}" type="button" title="Eliminar">×</button>
+    </div>`;
+  }).join('');
+}
+
+function wireBitacoraDeletes(o){
+  document.querySelectorAll('.bitacora-del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      o.bitacora.splice(parseInt(btn.getAttribute('data-idx'),10), 1);
+      document.getElementById('bitacoraList').innerHTML = renderBitacoraList(o);
+      wireBitacoraDeletes(o);
+    });
+  });
+}
+
 function bantIcon(v){
   if(v==='✅ Sí') return '✅';
   if(v==='⚠️ Parcial') return '⚠️';
@@ -800,12 +831,13 @@ function optionsHtml(list, selected){
 function blankOpp(){
   return {
     id: nextId(), cliente:'', nombreOpp:'', cuit:'', industria:'', segmento:'', eecc:'',
-    bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'', bantObs:'',
+    bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'', bantObs:'', necesidad:'',
     etapa: ETAPAS[0], probCierre:'',
-    competidores:'', vertical:'', proveedor:'', tipoProyecto:'',
+    competidores:'', vertical:'', proveedor:'', producto:'', tipoProyecto:'',
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
     estadoPropuesta:'', documentosGenerados:'', notasTecnicas:'',
+    proximoPaso:'', bitacora:[],
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
   };
@@ -862,7 +894,8 @@ function drawerTemplate(o){
         <div class="field"><label>Timeline</label><select id="f_bantTimeline">${optionsHtml(BANT_VALORES,o.bantTimeline)}</select></div>
       </div>
       <div class="field"><label>Score <span class="badge-computed">auto</span></label><div class="readonly" id="f_bantScore_ro">${bantScore(o)}/4</div></div>
-      <div class="field"><label>Observaciones BANT</label><textarea id="f_bantObs">${escapeHtml(o.bantObs)}</textarea></div>
+      <div class="field"><label>Necesidad detallada (el "N" en texto)</label><textarea id="f_necesidad" placeholder="Qué problema puntual tiene el cliente, qué está buscando resolver...">${escapeHtml(o.necesidad||'')}</textarea></div>
+      <div class="field"><label>Observaciones BANT</label><textarea id="f_bantObs">${escapeHtml(o.bantObs||'')}</textarea></div>
     </div>
 
     <div class="section">
@@ -873,9 +906,12 @@ function drawerTemplate(o){
       </div>
       <div class="grid2">
         <div class="field"><label>Unidad de Negocio</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
-        <div class="field"><label>Proveedor principal</label><select id="f_proveedor">${optionsHtml(PROVEEDORES,o.proveedor)}</select></div>
+        <div class="field"><label>Tipo de proyecto</label><select id="f_tipoProyecto">${optionsHtml(TIPO_PROYECTO,o.tipoProyecto)}</select></div>
       </div>
-      <div class="field"><label>Tipo de proyecto</label><select id="f_tipoProyecto">${optionsHtml(TIPO_PROYECTO,o.tipoProyecto)}</select></div>
+      <div class="grid2">
+        <div class="field"><label>Proveedor / Partner</label><select id="f_proveedor">${optionsHtml(PROVEEDORES,o.proveedor)}</select></div>
+        <div class="field"><label>Producto Personal Tech</label><input type="text" id="f_producto" list="productosDatalist" value="${escapeHtml(o.producto||'')}" placeholder="Ej. DCV, MaaS IA, Assessment..."><datalist id="productosDatalist">${PRODUCTOS.map(p=>`<option value="${escapeHtml(p)}">`).join('')}</datalist></div>
+      </div>
       <div class="field"><label>Competidores identificados</label><input type="text" id="f_competidores" value="${escapeHtml(o.competidores||'')}"></div>
     </div>
 
@@ -918,6 +954,20 @@ function drawerTemplate(o){
         <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
       </div>
       <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
+    </div>
+
+    <div class="section">
+      <h3>Bitácora y próximos pasos</h3>
+      <div class="field"><label>Próximo paso</label><input type="text" id="f_proximoPaso" value="${escapeHtml(o.proximoPaso||'')}" placeholder="Ej. Agendar demo técnica con IT del cliente"></div>
+      <div class="field">
+        <label>Registrar avance</label>
+        <div style="display:flex;gap:8px;">
+          <input type="date" id="f_bitacoraFecha" value="${todayISO()}" style="max-width:150px;">
+          <input type="text" id="f_bitacoraNota" placeholder="Qué pasó, con quién, qué sigue..." style="flex:1;">
+          <button class="ghost" id="btnAddBitacora" type="button">+ Agregar</button>
+        </div>
+      </div>
+      <div id="bitacoraList">${renderBitacoraList(o)}</div>
     </div>
 
     <div class="section">
@@ -969,10 +1019,12 @@ function readFormInto(o){
   o.bantNeed = document.getElementById('f_bantNeed').value;
   o.bantTimeline = document.getElementById('f_bantTimeline').value;
   o.bantObs = document.getElementById('f_bantObs').value;
+  o.necesidad = document.getElementById('f_necesidad').value;
   o.etapa = document.getElementById('f_etapa').value;
   o.probCierre = document.getElementById('f_probCierre').value;
   o.vertical = document.getElementById('f_vertical').value;
   o.proveedor = document.getElementById('f_proveedor').value;
+  o.producto = document.getElementById('f_producto').value.trim();
   o.tipoProyecto = document.getElementById('f_tipoProyecto').value;
   o.competidores = document.getElementById('f_competidores').value;
   o.fechaEntrada = document.getElementById('f_fechaEntrada').value;
@@ -986,6 +1038,8 @@ function readFormInto(o){
   o.estadoPropuesta = document.getElementById('f_estadoPropuesta').value;
   o.documentosGenerados = document.getElementById('f_documentosGenerados').value;
   o.notasTecnicas = document.getElementById('f_notasTecnicas').value;
+  const proximoPasoField = document.getElementById('f_proximoPaso');
+  if(proximoPasoField) o.proximoPaso = proximoPasoField.value.trim();
   o.estadoFinal = document.getElementById('f_estadoFinal').value;
   o.motivoPerdida = document.getElementById('f_motivoPerdida').value;
   o.fechaCierreReal = document.getElementById('f_fechaCierreReal').value;
@@ -1021,8 +1075,19 @@ function autofillFromAccount(o){
 
 function wireDrawer(o){
   refreshEeccOptions(o);
+  if(!o.bitacora) o.bitacora = [];
   document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
   document.getElementById('btnCancel').addEventListener('click', closeDrawer);
+  document.getElementById('btnAddBitacora').addEventListener('click', ()=>{
+    const fecha = document.getElementById('f_bitacoraFecha').value || todayISO();
+    const nota = document.getElementById('f_bitacoraNota').value.trim();
+    if(!nota) return;
+    o.bitacora.push({fecha, nota});
+    document.getElementById('bitacoraList').innerHTML = renderBitacoraList(o);
+    document.getElementById('f_bitacoraNota').value = '';
+    wireBitacoraDeletes(o);
+  });
+  wireBitacoraDeletes(o);
   document.getElementById('f_cliente').addEventListener('change', ()=>{ autofillFromAccount(o); });
   document.getElementById('f_cliente').addEventListener('input', ()=>{ readFormInto(o); });
   document.getElementById('f_segmento').addEventListener('change', ()=>{
@@ -1082,10 +1147,10 @@ function renderAll(){
 
 function toCsv(){
   const cols = ['id','cliente','nombreOpp','cuit','industria','segmento','eecc','ingenieroPreventa','responsableSegmento',
-    'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','etapa','probCierre','vertical','proveedor',
+    'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','necesidad','etapa','probCierre','vertical','proveedor','producto',
     'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
     'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
-    'horasInvertidas','estadoPropuesta','documentosGenerados','notasTecnicas','estadoFinal','motivoPerdida',
+    'horasInvertidas','estadoPropuesta','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
     'fechaCierreReal','ultimaActualizacion'];
   const rows = [cols.join(',')];
   DATA.forEach(o=>{
