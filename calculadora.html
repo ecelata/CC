@@ -64,8 +64,8 @@
   .tarifario-row .concepto{color:var(--ink);}
   .tarifario-row .costo{font-family:var(--mono);white-space:nowrap;}
 
-  .add-form{display:grid;grid-template-columns:1.6fr 1fr 1fr 0.8fr 1.2fr auto;gap:10px;align-items:end;}
-  @media (max-width:1000px){.add-form{grid-template-columns:1fr 1fr 1fr;}}
+  .add-form{display:grid;grid-template-columns:1.3fr 0.9fr 0.9fr 0.7fr 1fr 1.2fr auto;gap:10px;align-items:end;}
+  @media (max-width:1200px){.add-form{grid-template-columns:1fr 1fr 1fr;}}
   @media (max-width:600px){.add-form{grid-template-columns:1fr 1fr;}}
 
   table{width:100%;border-collapse:collapse;font-size:13px;}
@@ -107,6 +107,19 @@
   }
   .print-only{display:none;}
 
+  .escenario-chip{
+    display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:7px;border:2px solid var(--line-strong);
+    background:var(--paper);cursor:pointer;font-size:12px;min-width:150px;
+  }
+  .escenario-chip:hover{border-color:var(--stamp);}
+  .escenario-chip.active{border-color:var(--stamp-dark);background:var(--stamp-bg);}
+  .escenario-chip .nombre{font-weight:600;color:var(--ink);}
+  .escenario-chip .meta{font-size:10.5px;color:var(--ink-faint);display:flex;justify-content:space-between;gap:8px;align-items:center;}
+  .escenario-chip .estado-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .escenario-chip .del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:13px;padding:0;}
+  .escenario-chip .del:hover{color:var(--red);}
+  .escenarios-empty{color:var(--ink-faint);font-size:12px;font-style:italic;}
+
   #f_estadoEscenario{width:auto;padding:8px 12px;font-weight:600;border-width:2px;}
   #f_estadoEscenario[data-state="diseñando"]{border-color:var(--stamp);background:var(--stamp-bg);}
   #f_estadoEscenario[data-state="esperando"]{border-color:#B5822B;background:#F1E4C6;}
@@ -144,6 +157,16 @@
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
       <button class="ghost" id="btnExportPdf">Exportar PDF</button>
       <button class="danger" id="btnClearAll">Vaciar escenario</button>
+    </div>
+  </div>
+
+  <div class="panel no-print" id="escenariosPanel">
+    <h2>Mis escenarios</h2>
+    <div class="hint">Guardados en este navegador. Podés tener varios clientes en curso a la vez — uno esperando horas de Arquitectura no te bloquea empezar otro.</div>
+    <div id="escenariosList" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="primary" id="btnGuardarEscenario">💾 Guardar este escenario</button>
+      <button class="ghost" id="btnNuevoEscenario">+ Nuevo escenario</button>
     </div>
   </div>
 
@@ -202,8 +225,12 @@
       </div>
       <div>
         <label>Grupo (opcional)</label>
-        <input type="text" id="f_grupo" placeholder="Ej. Grupo 1: Acceso" list="gruposDatalist">
+        <input type="text" id="f_grupo" placeholder="Ej. Grupo 1: Acceso, o AWS, Licencias" list="gruposDatalist">
         <datalist id="gruposDatalist"></datalist>
+      </div>
+      <div>
+        <label>Referencia / Link (opcional)</label>
+        <input type="text" id="f_referencia" placeholder="Link a la estimación de AWS/Azure/GCP, o nota">
       </div>
       <div>
         <button class="primary" id="btnAddItem" style="width:100%;">+ Agregar</button>
@@ -244,6 +271,8 @@
 <script>
 let TARIFARIO = [];
 let ITEMS = [];
+let currentScenarioId = null;
+const ESCENARIOS_KEY = 'calc_costos_escenarios_v1';
 
 function fmtMoney(n){
   n = Number(n)||0;
@@ -320,8 +349,14 @@ function renderItems(){
     });
     let html = '';
     function itemRow(it){
+      const isUrl = it.referencia && /^https?:\/\//i.test(it.referencia);
+      const refHtml = it.referencia
+        ? (isUrl
+            ? ` <a href="${escapeHtml(it.referencia)}" target="_blank" rel="noopener" title="${escapeHtml(it.referencia)}" style="text-decoration:none;">🔗</a>`
+            : ` <span title="${escapeHtml(it.referencia)}" style="cursor:help;color:var(--ink-faint);">📎</span>`)
+        : '';
       return `<tr>
-        <td>${escapeHtml(it.concepto)}</td>
+        <td>${escapeHtml(it.concepto)}${refHtml}</td>
         <td>${it.cantidad} <span style="color:var(--ink-faint);font-family:var(--mono);font-size:11px;">× (${fmtMoney(it.precioOneShotUnit||0)} OS / ${fmtMoney(it.precioMensualUnit||0)} mes)</span></td>
         <td class="money">${fmtMoney(it.costoOneShotTotal)}</td>
         <td class="money">${fmtMoney(it.costoMensualTotal)}</td>
@@ -383,17 +418,19 @@ document.getElementById('btnAddItem').addEventListener('click', ()=>{
   const precioOneShot = parseFloat(document.getElementById('f_precioOneShot').value) || 0;
   const precioMensual = parseFloat(document.getElementById('f_precioMensual').value) || 0;
   const grupo = document.getElementById('f_grupo').value.trim();
+  const referencia = document.getElementById('f_referencia').value.trim();
   ITEMS.push({
     concepto: item, unidad: '', cantidad,
     precioOneShotUnit: precioOneShot, precioMensualUnit: precioMensual,
     costoOneShotTotal: cantidad * precioOneShot,
     costoMensualTotal: cantidad * precioMensual,
-    grupo
+    grupo, referencia
   });
   document.getElementById('f_item').value = '';
   document.getElementById('f_precioOneShot').value = 0;
   document.getElementById('f_precioMensual').value = 0;
   document.getElementById('f_cantidad').value = 1;
+  document.getElementById('f_referencia').value = '';
   renderItems();
   renderTotales();
   document.getElementById('f_item').focus();
@@ -409,7 +446,7 @@ document.getElementById('btnClearAll').addEventListener('click', ()=>{
 });
 
 document.getElementById('btnExportCsv').addEventListener('click', ()=>{
-  const cols = ['grupo','item','precio_unit_one_shot_usd','precio_unit_mensual_usd','cantidad','costo_one_shot_usd','costo_mensual_usd'];
+  const cols = ['grupo','item','precio_unit_one_shot_usd','precio_unit_mensual_usd','cantidad','costo_one_shot_usd','costo_mensual_usd','referencia'];
   const cliente = document.getElementById('f_clienteOpp').value.trim();
   const rows = [];
   if(cliente) rows.push('Cliente / Oportunidad,'+cliente);
@@ -417,7 +454,7 @@ document.getElementById('btnExportCsv').addEventListener('click', ()=>{
   rows.push('');
   rows.push(cols.join(','));
   ITEMS.forEach(i=>{
-    rows.push([i.grupo||'', i.concepto, (i.precioOneShotUnit||0).toFixed(2), (i.precioMensualUnit||0).toFixed(2), i.cantidad, i.costoOneShotTotal.toFixed(2), i.costoMensualTotal.toFixed(2)]
+    rows.push([i.grupo||'', i.concepto, (i.precioOneShotUnit||0).toFixed(2), (i.precioMensualUnit||0).toFixed(2), i.cantidad, i.costoOneShotTotal.toFixed(2), i.costoMensualTotal.toFixed(2), i.referencia||'']
       .map(v=>{ v=String(v); return (v.includes(',')||v.includes('"')) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(','));
   });
   const totalOS = ITEMS.reduce((a,i)=>a+i.costoOneShotTotal,0);
@@ -442,10 +479,109 @@ document.getElementById('btnExportPdf').addEventListener('click', ()=>{
   window.print();
 });
 
+function loadEscenariosStore(){
+  try{
+    return JSON.parse(localStorage.getItem(ESCENARIOS_KEY) || '{}');
+  }catch(e){ return {}; }
+}
+function saveEscenariosStore(store){
+  localStorage.setItem(ESCENARIOS_KEY, JSON.stringify(store));
+}
+
+function renderEscenariosList(){
+  const store = loadEscenariosStore();
+  const list = document.getElementById('escenariosList');
+  const ids = Object.keys(store);
+  if(ids.length===0){
+    list.innerHTML = '<div class="escenarios-empty">Todavía no guardaste ningún escenario.</div>';
+    return;
+  }
+  const estadoColor = {'Diseñando solución':'var(--stamp)','Esperando horas de Arquitectura':'#B5822B','Completo, listo para Preventa':'#3E7D4C'};
+  list.innerHTML = ids.map(id=>{
+    const e = store[id];
+    const activo = id===currentScenarioId;
+    return `<div class="escenario-chip ${activo?'active':''}" data-id="${escapeHtml(id)}">
+      <div class="meta">
+        <span class="nombre">${escapeHtml(e.cliente||'(sin nombre)')}</span>
+        <button class="del" data-del="${escapeHtml(id)}" title="Eliminar">×</button>
+      </div>
+      <div class="meta"><span><span class="estado-dot" style="background:${estadoColor[e.estado]||'#999'}"></span> ${escapeHtml(e.estado)}</span></div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.escenario-chip').forEach(chip=>{
+    chip.addEventListener('click', (ev)=>{
+      if(ev.target.closest('.del')) return;
+      cargarEscenario(chip.getAttribute('data-id'));
+    });
+  });
+  list.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      const id = btn.getAttribute('data-del');
+      if(!confirm('¿Eliminar el escenario "'+(store[id].cliente||id)+'"? No se puede deshacer.')) return;
+      const s = loadEscenariosStore();
+      delete s[id];
+      saveEscenariosStore(s);
+      if(currentScenarioId===id){ currentScenarioId=null; }
+      renderEscenariosList();
+    });
+  });
+}
+
+function cargarEscenario(id){
+  if(ITEMS.length>0 && currentScenarioId!==id){
+    if(!confirm('Vas a cargar otro escenario. Si el actual tiene cambios sin guardar, se van a perder. ¿Continuar?')) return;
+  }
+  const store = loadEscenariosStore();
+  const e = store[id];
+  if(!e) return;
+  currentScenarioId = id;
+  ITEMS = JSON.parse(JSON.stringify(e.items||[]));
+  document.getElementById('f_clienteOpp').value = e.cliente || '';
+  document.getElementById('f_estadoEscenario').value = e.estado || 'Diseñando solución';
+  updateEstadoVisual();
+  renderItems();
+  renderTotales();
+  renderEscenariosList();
+}
+
+document.getElementById('btnGuardarEscenario').addEventListener('click', ()=>{
+  const cliente = document.getElementById('f_clienteOpp').value.trim();
+  if(!cliente){ alert('Poné un nombre en "Cliente / Oportunidad" antes de guardar.'); return; }
+  const store = loadEscenariosStore();
+  const id = currentScenarioId || (cliente.toLowerCase().replace(/[^a-z0-9]+/g,'-') + '-' + Date.now());
+  store[id] = {
+    cliente,
+    estado: document.getElementById('f_estadoEscenario').value,
+    items: ITEMS,
+    actualizado: new Date().toISOString()
+  };
+  saveEscenariosStore(store);
+  currentScenarioId = id;
+  renderEscenariosList();
+  document.getElementById('subtitle').textContent = 'Guardado ✓ — ' + ITEMS.length + (ITEMS.length===1?' ítem':' ítems');
+});
+
+document.getElementById('btnNuevoEscenario').addEventListener('click', ()=>{
+  if(ITEMS.length>0){
+    if(!confirm('¿Empezar un escenario nuevo? Si el actual no está guardado, se pierde.')) return;
+  }
+  currentScenarioId = null;
+  ITEMS = [];
+  document.getElementById('f_clienteOpp').value = '';
+  document.getElementById('f_estadoEscenario').value = 'Diseñando solución';
+  updateEstadoVisual();
+  renderItems();
+  renderTotales();
+  renderEscenariosList();
+});
+
 (async function init(){
   await loadTarifario();
   renderItems();
   renderTotales();
+  renderEscenariosList();
 })();
 </script>
 </body>
