@@ -1,0 +1,20 @@
+categoria,subcategoria,id,concepto,descripcion,unidad,costo_one_shot_usd,costo_mensual_usd
+Compartido,Compute,1,Memoria,1 GB de RAM,GB,7.62,2.09
+Compartido,Compute,2,Procesamiento,1 vCPU,vCPU,64,0.63
+Compartido,Storage,3,Almacenamiento SSD 600 IOPS,1GB @600 IOPS,GB,0.63,0
+Compartido,Storage,4,Almacenamiento SSD 1250 IOPS,1GB @1250 IOPS,GB,1.26,0
+Compartido,Storage,5,Almacenamiento SSD 2500 IOPS,1GB @2500 IOPS,GB,2.52,0
+Compartido,Storage,6,Almacenamiento SSD 5000 IOPS,1GB @5000 IOPS,GB,3.99,0
+Compartido,Conectividad,7,Conectividad Asimétrica,1Mbps,Mbps,0,0.06
+Compartido,Conectividad,8,Conectividad Simétrica,1Mbps,Mbps,0,0.25
+Licencias,SO,9,Licencia Windows,Costo por vCPU,vCPU,0,3.5
+Licencias,SO,10,Licencia Terminal Server,Costo por usuario concurrente,Usuario,0,7.38
+Licencias,SO,11,RedHat Enterprise Linux (VM <=4vCPU),Costo por VM con 4vCPU o menos,VM,0,33
+Licencias,SO,12,RedHat Enterprise Linux (VM >4vCPU),Costo por VM con más de 4vCPU,VM,0,73
+Licencias,SQL,13,Licencia SQL Server Standard,Costo por vCPU,vCPU,0,83.49
+Licencias,SQL,14,Licencia SQL Server Enterprise,Costo por vCPU,vCPU,0,314.33
+Licencias,SQL,15,Licencia SQL Server Web,Costo por vCPU,vCPU,0,5.22
+ServiciosProfesionales,Horas,16,SSPP,"Servicios Profesionales - Implementación (one-shot, por hora)",Hora,25,0
+ServiciosProfesionales,Horas,17,SSAA,"Administración y Soporte (recurrente, por hora/mes)",Hora,0,25
+Veeam,Backup,18,Veeam Standard,Backup & Replication Standard + Agent - por VM/mes,VM,0,2.6
+Veeam,Backup,19,Veeam Enterprise Plus,Backup & Replication Enterprise Plus + Agent - por VM/mes,VM,0,5.72
