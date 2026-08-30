@@ -220,12 +220,43 @@
   .active-filter-bar button{padding:3px 9px;font-size:11.5px;}
   .empty-dash{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13px;}
   .bitacora-empty{padding:14px 4px;color:var(--ink-faint);font-size:12.5px;font-style:italic;}
-  .bitacora-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);}
+  .bitacora-day-label{
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);
+    text-align:center;margin:14px 0 8px;position:relative;
+  }
+  .bitacora-day-label:first-child{margin-top:4px;}
+  .bitacora-item{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);}
   .bitacora-item:last-child{border-bottom:none;}
-  .bitacora-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--stamp-dark);background:var(--stamp-bg);padding:2px 7px;border-radius:3px;flex-shrink:0;white-space:nowrap;}
-  .bitacora-nota{flex:1;font-size:12.5px;color:var(--ink);line-height:1.5;}
-  .bitacora-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;line-height:1;padding:0 4px;flex-shrink:0;}
+  .bitacora-main{flex:1;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .bitacora-tipo-badge{
+    font-size:10.5px;font-weight:600;color:var(--stamp-dark);background:var(--stamp-bg);
+    padding:2px 7px;border-radius:3px;white-space:nowrap;
+  }
+  .bitacora-nota{font-size:12.5px;color:var(--ink);line-height:1.5;}
+  .bitacora-time{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);flex-shrink:0;white-space:nowrap;padding-top:2px;}
+  .bitacora-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;flex-shrink:0;}
   .bitacora-del:hover{color:var(--red);}
+  .bitacora-modal-overlay{
+    position:fixed;inset:0;background:rgba(34,38,31,0.45);z-index:200;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .bitacora-modal{
+    background:var(--paper-2);border-radius:8px;padding:22px;max-width:420px;width:100%;
+    box-shadow:0 12px 40px rgba(0,0,0,0.25);
+  }
+  .bitacora-modal h4{font-family:var(--heading, 'Montserrat',sans-serif);font-size:15px;margin:0 0 14px;color:var(--ink);}
+  .bitacora-tipos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .tipo-chip{
+    font-family:'Inter',sans-serif;font-size:11.5px;padding:6px 11px;border-radius:20px;
+    border:1px solid var(--line-strong);background:var(--paper);color:var(--ink-soft);cursor:pointer;
+  }
+  .tipo-chip:hover{border-color:var(--stamp);}
+  .tipo-chip.active{background:var(--stamp);border-color:var(--stamp);color:#fff;}
+  .bitacora-modal input[type="text"]{
+    width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--line-strong);border-radius:5px;
+    font-family:'Inter',sans-serif;font-size:13px;margin-bottom:16px;
+  }
+  .bitacora-modal-actions{display:flex;justify-content:flex-end;gap:8px;}
   @media (max-width:720px){
     .app{padding:18px 14px 60px;}
     .kpis{grid-template-columns:1fr 1fr;}
@@ -785,17 +816,47 @@ function renderTable(){
     tr.addEventListener('dblclick', ()=>openDrawer(tr.getAttribute('data-id')));
   });
 }
+const TIPOS_BITACORA = ['Llamado','Email enviado','Propuesta enviada','Reunión','Demo técnica','No atendió','Seguimiento','Otro'];
+
+function bitacoraEntryDate(e){
+  if(e.fechaHora) return new Date(e.fechaHora);
+  if(e.fecha) return new Date(e.fecha + 'T00:00:00');
+  return new Date();
+}
+
+function bitacoraGroupLabel(d){
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const dia = new Date(d); dia.setHours(0,0,0,0);
+  const diff = Math.round((hoy - dia) / 86400000);
+  if(diff===0) return 'Hoy';
+  if(diff===1) return 'Ayer';
+  return dia.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+
 function renderBitacoraList(o){
-  const entries = (o.bitacora||[]).slice().sort((a,b)=> b.fecha.localeCompare(a.fecha));
+  const entries = (o.bitacora||[]).slice().sort((a,b)=> bitacoraEntryDate(b) - bitacoraEntryDate(a));
   if(entries.length===0) return '<div class="bitacora-empty">Todavía no hay avances registrados.</div>';
-  return entries.map(e=>{
+  let html = '';
+  let lastGroup = null;
+  entries.forEach(e=>{
+    const d = bitacoraEntryDate(e);
+    const label = bitacoraGroupLabel(d);
+    if(label !== lastGroup){
+      html += `<div class="bitacora-day-label">${label}</div>`;
+      lastGroup = label;
+    }
     const idx = (o.bitacora||[]).indexOf(e);
-    return `<div class="bitacora-item">
-      <div class="bitacora-date">${formatDateShort(e.fecha)}</div>
-      <div class="bitacora-nota">${escapeHtml(e.nota)}</div>
+    const timeStr = e.fechaHora ? (String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')) : '';
+    html += `<div class="bitacora-item">
+      <div class="bitacora-main">
+        ${e.tipo?`<span class="bitacora-tipo-badge">${escapeHtml(e.tipo)}</span>`:''}
+        <span class="bitacora-nota">${escapeHtml(e.nota||'')}</span>
+      </div>
+      <span class="bitacora-time">${timeStr}</span>
       <button class="bitacora-del" data-idx="${idx}" type="button" title="Eliminar">×</button>
     </div>`;
-  }).join('');
+  });
+  return html;
 }
 
 function wireBitacoraDeletes(o){
@@ -959,15 +1020,24 @@ function drawerTemplate(o){
     <div class="section">
       <h3>Bitácora y próximos pasos</h3>
       <div class="field"><label>Próximo paso</label><input type="text" id="f_proximoPaso" value="${escapeHtml(o.proximoPaso||'')}" placeholder="Ej. Agendar demo técnica con IT del cliente"></div>
-      <div class="field">
-        <label>Registrar avance</label>
-        <div style="display:flex;gap:8px;">
-          <input type="date" id="f_bitacoraFecha" value="${todayISO()}" style="max-width:150px;">
-          <input type="text" id="f_bitacoraNota" placeholder="Qué pasó, con quién, qué sigue..." style="flex:1;">
-          <button class="ghost" id="btnAddBitacora" type="button">+ Agregar</button>
-        </div>
+      <div class="field" style="margin-bottom:8px;">
+        <button class="ghost" id="btnOpenBitacora" type="button">+ Registrar avance</button>
       </div>
       <div id="bitacoraList">${renderBitacoraList(o)}</div>
+    </div>
+
+    <div class="bitacora-modal-overlay" id="bitacoraModalOverlay" style="display:none;">
+      <div class="bitacora-modal">
+        <h4>Registrar avance</h4>
+        <div class="bitacora-tipos" id="bitacoraTipos">
+          ${TIPOS_BITACORA.map(t=>`<button type="button" class="tipo-chip" data-tipo="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('')}
+        </div>
+        <input type="text" id="f_bitacoraNota" placeholder="Detalle (opcional) — Enter para guardar" autocomplete="off">
+        <div class="bitacora-modal-actions">
+          <button class="ghost" id="btnCancelBitacora" type="button">Cancelar</button>
+          <button class="primary" id="btnSaveBitacora" type="button">Guardar</button>
+        </div>
+      </div>
     </div>
 
     <div class="section">
@@ -1078,16 +1148,50 @@ function wireDrawer(o){
   if(!o.bitacora) o.bitacora = [];
   document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
   document.getElementById('btnCancel').addEventListener('click', closeDrawer);
-  document.getElementById('btnAddBitacora').addEventListener('click', ()=>{
-    const fecha = document.getElementById('f_bitacoraFecha').value || todayISO();
-    const nota = document.getElementById('f_bitacoraNota').value.trim();
-    if(!nota) return;
-    o.bitacora.push({fecha, nota});
+
+  let bitacoraTipoSeleccionado = null;
+  const overlay = document.getElementById('bitacoraModalOverlay');
+  const notaInput = document.getElementById('f_bitacoraNota');
+
+  function openBitacoraModal(){
+    bitacoraTipoSeleccionado = null;
+    document.querySelectorAll('.tipo-chip').forEach(c=>c.classList.remove('active'));
+    notaInput.value = '';
+    overlay.style.display = 'flex';
+    setTimeout(()=>notaInput.focus(), 50);
+  }
+  function closeBitacoraModal(){ overlay.style.display = 'none'; }
+  function saveBitacoraEntry(){
+    const nota = notaInput.value.trim();
+    if(!nota && !bitacoraTipoSeleccionado) return;
+    o.bitacora.push({fechaHora: new Date().toISOString(), tipo: bitacoraTipoSeleccionado, nota});
     document.getElementById('bitacoraList').innerHTML = renderBitacoraList(o);
-    document.getElementById('f_bitacoraNota').value = '';
     wireBitacoraDeletes(o);
+    closeBitacoraModal();
+  }
+
+  document.getElementById('btnOpenBitacora').addEventListener('click', openBitacoraModal);
+  document.getElementById('btnCancelBitacora').addEventListener('click', closeBitacoraModal);
+  document.getElementById('btnSaveBitacora').addEventListener('click', saveBitacoraEntry);
+  overlay.addEventListener('click', (ev)=>{ if(ev.target===overlay) closeBitacoraModal(); });
+  notaInput.addEventListener('keydown', (ev)=>{
+    if(ev.key==='Enter'){ ev.preventDefault(); saveBitacoraEntry(); }
+    if(ev.key==='Escape'){ closeBitacoraModal(); }
+  });
+  document.querySelectorAll('.tipo-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const already = chip.classList.contains('active');
+      document.querySelectorAll('.tipo-chip').forEach(c=>c.classList.remove('active'));
+      if(already){
+        bitacoraTipoSeleccionado = null;
+      }else{
+        chip.classList.add('active');
+        bitacoraTipoSeleccionado = chip.getAttribute('data-tipo');
+      }
+    });
   });
   wireBitacoraDeletes(o);
+
   document.getElementById('f_cliente').addEventListener('change', ()=>{ autofillFromAccount(o); });
   document.getElementById('f_cliente').addEventListener('input', ()=>{ readFormInto(o); });
   document.getElementById('f_segmento').addEventListener('change', ()=>{
