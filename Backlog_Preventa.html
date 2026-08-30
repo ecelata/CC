@@ -8,16 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F1EEE6;
-    --paper-2:#E8E4D8;
-    --ink:#3F443A;
-    --ink-soft:#6B6F62;
-    --ink-faint:#9B9E90;
-    --line:#D3CDBC;
-    --line-strong:#B7AF97;
-    --stamp:#8FB8D1;
-    --stamp-dark:#3D6478;
-    --stamp-bg:#DCEBF1;
+    --paper:#F3F1EB;
+    --paper-2:#EDE9DF;
+    --ink:#4D5147;
+    --ink-soft:#767A6D;
+    --ink-faint:#A6A99C;
+    --line:#DAD5C7;
+    --line-strong:#C3BCA9;
+    --stamp:#7CB3DE;
+    --stamp-dark:#33607C;
+    --stamp-bg:#D7EAF3;
     --mustard:#B5822B;
     --mustard-bg:#F1E4C6;
     --green:#3E7D4C;
@@ -39,7 +39,7 @@
   .app{max-width:1880px;margin:0 auto;padding:28px 32px 80px;}
   h1,h2,h3{font-family:'Montserrat',sans-serif;font-weight:600;margin:0;}
   .topbar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
-  .topbar h1{font-size:28px;letter-spacing:-0.01em;}
+  .topbar h1{font-size:22px;letter-spacing:-0.01em;}
   .topbar .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
   .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   button{
@@ -104,7 +104,9 @@
   }
   tbody td{padding:5px 9px;border-bottom:1px solid var(--line);vertical-align:middle;line-height:1.25;}
   tbody tr{cursor:pointer;}
-  tbody tr:hover{background:var(--stamp-bg);}
+  tbody tr:nth-child(odd){background:#F8F6F1;}
+  tbody tr:nth-child(even){background:#EEEAE0;}
+  tbody tr:hover{background:var(--stamp-bg) !important;}
   .idcell{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
   .cliente-cell{font-weight:500;}
   .cliente-cell .opp-name{display:block;font-size:10.5px;color:var(--ink-soft);font-weight:400;margin-top:0;}
