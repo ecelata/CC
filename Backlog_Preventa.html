@@ -455,8 +455,8 @@ function computeFields(o){
   else o.mrrArrEstimado = o.valorTotal;
   o.montoPonderado = o.valorTotal * (Number(o.probCierre)||0) / 100;
   o.diasRestantes = diasEntre(o.fechaDeadline);
-  o.ingenieroPreventa = INGENIERO_POR_EECC[o.eecc] || '';
-  o.responsableSegmento = RESPONSABLE_POR_SEGMENTO[o.segmento] || '';
+  if(!o.ingenieroPreventa) o.ingenieroPreventa = INGENIERO_POR_EECC[o.eecc] || '';
+  if(!o.responsableSegmento) o.responsableSegmento = RESPONSABLE_POR_SEGMENTO[o.segmento] || '';
   return o;
 }
 function estadoSemaforo(o){
@@ -512,6 +512,9 @@ async function loadAccounts(){
       mailEecc: (r['Mail Ejecutivo']||'').trim(),
       ingenieroPreventa: (r['Ingeniero']||'').trim(),
       mailIngeniero: (r['Mail Ingeniero']||'').trim(),
+      responsable: (r['Gerente G2 Comercial']||'').trim() && r['Gerente G2 Comercial'].trim()!=='A DESIGNAR'
+        ? r['Gerente G2 Comercial'].trim()
+        : (r['Jefe/Coordinador']||'').trim(),
       industria: (r['VERTICAL']||'').trim()
     })).filter(a=>a.razonSocial);
     ACCOUNTS_BY_NAME = {};
@@ -1086,9 +1089,8 @@ function drawerTemplate(o){
 }
 
 function refreshEeccOptions(o){
-  const seg = document.getElementById('f_segmento').value;
   const eeccSel = document.getElementById('f_eecc');
-  const list = EECC_POR_SEGMENTO[seg] || [];
+  const list = allEecc();
   eeccSel.innerHTML = optionsHtml(list, list.includes(o.eecc)?o.eecc:'');
 }
 function refreshComputedDisplays(o){
@@ -1143,13 +1145,6 @@ function readFormInto(o){
   return o;
 }
 
-function segmentoDeEecc(eecc){
-  for(const seg of Object.keys(EECC_POR_SEGMENTO)){
-    if(EECC_POR_SEGMENTO[seg].includes(eecc)) return seg;
-  }
-  return '';
-}
-
 function autofillFromAccount(o){
   const nombre = document.getElementById('f_cliente').value.trim().toLowerCase();
   const cuenta = ACCOUNTS_BY_NAME[nombre];
@@ -1157,15 +1152,13 @@ function autofillFromAccount(o){
   document.getElementById('f_cuit').value = cuenta.cuit;
   const industriaField = document.getElementById('f_industria');
   if(industriaField && cuenta.industria) industriaField.value = titleCase(cuenta.industria);
-  const seg = segmentoDeEecc(cuenta.eecc);
-  if(seg){
-    document.getElementById('f_segmento').value = seg;
-    o.eecc = cuenta.eecc;
-    refreshEeccOptions(o);
-  }
+  o.eecc = cuenta.eecc;
+  o.ingenieroPreventa = cuenta.ingenieroPreventa;
+  o.responsableSegmento = cuenta.responsable;
+  refreshEeccOptions(o);
   readFormInto(o);
   refreshComputedDisplays(o);
-  showToast('📋 Datos autocompletados: ' + cuenta.eecc + (cuenta.mailEecc? ' · '+cuenta.mailEecc : ''));
+  showToast('📋 Autocompletado: ' + cuenta.eecc + (cuenta.ingenieroPreventa? ' · Ing. '+titleCase(cuenta.ingenieroPreventa) : '') + ' — elegí el Segmento a mano');
   return true;
 }
 
@@ -1221,8 +1214,6 @@ function wireDrawer(o){
   document.getElementById('f_cliente').addEventListener('change', ()=>{ autofillFromAccount(o); });
   document.getElementById('f_cliente').addEventListener('input', ()=>{ readFormInto(o); });
   document.getElementById('f_segmento').addEventListener('change', ()=>{
-    o.eecc='';
-    refreshEeccOptions(o);
     readFormInto(o);
     refreshComputedDisplays(o);
   });
