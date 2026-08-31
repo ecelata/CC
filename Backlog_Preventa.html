@@ -493,6 +493,14 @@ function firestoreValueToArray(doc){
 let ACCOUNTS = [];
 let ACCOUNTS_BY_NAME = {};
 
+function segmentoDeTipoHolding(tipoHolding){
+  const t = (tipoHolding||'').toUpperCase();
+  if(t.includes('FINANZAS')) return 'Banca';
+  if(t.includes('SERVICIOS')) return 'CCEE Servicios';
+  if(t.includes('INDUSTRIA')) return 'CCEE Industria';
+  return '';
+}
+
 async function loadAccounts(){
   try{
     const res = await fetch('cuentas.csv');
@@ -515,7 +523,8 @@ async function loadAccounts(){
       responsable: (r['Gerente G2 Comercial']||'').trim() && r['Gerente G2 Comercial'].trim()!=='A DESIGNAR'
         ? r['Gerente G2 Comercial'].trim()
         : (r['Jefe/Coordinador']||'').trim(),
-      industria: (r['VERTICAL']||'').trim()
+      industria: (r['VERTICAL']||'').trim(),
+      segmento: segmentoDeTipoHolding((r['Tipo Holding']||'').trim())
     })).filter(a=>a.razonSocial);
     ACCOUNTS_BY_NAME = {};
     ACCOUNTS.forEach(a=>{ ACCOUNTS_BY_NAME[a.razonSocial.toLowerCase()] = a; });
@@ -1155,10 +1164,12 @@ function autofillFromAccount(o){
   o.eecc = cuenta.eecc;
   o.ingenieroPreventa = cuenta.ingenieroPreventa;
   o.responsableSegmento = cuenta.responsable;
+  if(cuenta.segmento) document.getElementById('f_segmento').value = cuenta.segmento;
   refreshEeccOptions(o);
   readFormInto(o);
   refreshComputedDisplays(o);
-  showToast('📋 Autocompletado: ' + cuenta.eecc + (cuenta.ingenieroPreventa? ' · Ing. '+titleCase(cuenta.ingenieroPreventa) : '') + ' — elegí el Segmento a mano');
+  const segTxt = cuenta.segmento ? (' · ' + cuenta.segmento) : ' — elegí el Segmento a mano';
+  showToast('📋 Autocompletado: ' + cuenta.eecc + (cuenta.ingenieroPreventa? ' · Ing. '+titleCase(cuenta.ingenieroPreventa) : '') + segTxt);
   return true;
 }
 
