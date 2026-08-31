@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <style>
   :root{
     --ink:#4D5147; --ink-2:#33607C; --paper:#F3F1EB; --paper-2:#FCFBF8; --line:#DAD5C7;
@@ -110,6 +112,15 @@
 </style>
 </head>
 <body>
+<div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;max-width:320px;padding:20px;">
+    <div style="font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
+    <h2 style="font-family:var(--heading);font-size:20px;color:var(--ink-text);margin:0 0 8px;">Cartera</h2>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
+    <button id="btnGoogleLogin" style="background:var(--teal);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
+    <p id="authError" style="color:#B23F35;font-size:12px;margin-top:16px;display:none;"></p>
+  </div>
+</div>
 <div class="suite-nav">
   <span class="suite-brand">GGCC · Grandes Cuentas</span>
   <a href="index.html">Portal</a>
@@ -193,6 +204,22 @@
 <div class="overlay" id="overlay"><div class="drawer" id="drawer"></div></div>
 
 <script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtl4cDn7RWpfYoDcbgo",
+  authDomain: "backlog-cc.firebaseapp.com",
+  projectId: "backlog-cc"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const ALLOWED_EMAIL = 'ecelata@gmail.com';
+const FIRESTORE_CUENTAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/cuentas?key=${FIREBASE_CONFIG.apiKey}`;
+
+async function authHeader(){
+  if(!auth.currentUser) return {};
+  const token = await auth.currentUser.getIdToken();
+  return {'Authorization': 'Bearer ' + token};
+}
+
 const DEFAULTS = { g1: 'RAMIREZ GONZALO', banca: 'CASIL SILVANA PAULA', ccee: 'A DESIGNAR' };
 const COLS = {
   cuit:'Cuit', razon_social:'Razón Social', segmento:'Segmento Comercial Confirmado',
@@ -253,10 +280,40 @@ function buildRecords(rows, headers){
   return out;
 }
 
-function loadData(){
+async function getCuentasText(){
+  try{
+    const res = await fetch(FIRESTORE_CUENTAS_URL, {headers: await authHeader()});
+    if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.csv && doc.fields.csv.stringValue;
+      if(raw) return raw;
+    }
+  }catch(e){}
   const src = new URLSearchParams(location.search).get('src') || './cuentas.csv';
-  Papa.parse(src, {
-    download: true, header: true, skipEmptyLines: true,
+  const res2 = await fetch(src);
+  if(!res2.ok) throw new Error('No se pudo leer cuentas.csv');
+  const text = await res2.text();
+  try{
+    const url = FIRESTORE_CUENTAS_URL + '&updateMask.fieldPaths=csv&updateMask.fieldPaths=updatedAt';
+    await fetch(url, {
+      method:'PATCH',
+      headers: {'Content-Type':'application/json', ...(await authHeader())},
+      body: JSON.stringify({fields:{csv:{stringValue:text}, updatedAt:{timestampValue:new Date().toISOString()}}})
+    });
+  }catch(e){}
+  return text;
+}
+
+async function loadData(){
+  let text;
+  try{
+    text = await getCuentasText();
+  }catch(e){
+    showState('No se pudo leer cuentas.csv desde esta ubicación. Si estás viendo esto dentro de Claude, es esperable: subí ambos archivos (dashboard.html + cuentas.csv) a tu repo y abrí la URL publicada.', true);
+    return;
+  }
+  Papa.parse(text, {
+    header: true, skipEmptyLines: true,
     complete: (res) => {
       if(!res.data.length){ showState('No se encontraron filas en cuentas.csv.', true); return; }
       RAW = buildRecords(res.data, res.meta.fields);
@@ -267,10 +324,10 @@ function loadData(){
       $('#data-table').style.display = 'table';
       populateSelect('#filter-eje','ejecutivo');
       populateSelect('#filter-ing','ingeniero');
-      $('#foot-note').textContent = 'cuentas.csv cargado: ' + RAW.length + ' cuentas en el libro de ' + cfg.g1 + '. Para actualizar, reemplazá ese archivo en el repo — esta página no necesita tocarse.';
+      $('#foot-note').textContent = 'Cartera cargada desde la nube: ' + RAW.length + ' cuentas en el libro de ' + cfg.g1 + '.';
       applyFilters();
     },
-    error: () => showState('No se pudo leer cuentas.csv desde esta ubicación. Si estás viendo esto dentro de Claude, es esperable: subí ambos archivos (dashboard.html + cuentas.csv) a tu repo y abrí la URL publicada.', true)
+    error: () => showState('No se pudo interpretar el CSV de cuentas.', true)
   });
 }
 
@@ -409,8 +466,34 @@ $('#cfg-apply').addEventListener('click', () => {
   loadData();
 });
 
-readUrlConfig();
-loadData();
+document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+  try{
+    await auth.signInWithPopup(provider);
+  }catch(e){
+    errEl.textContent = 'No se pudo iniciar sesión: ' + e.message;
+    errEl.style.display = 'block';
+  }
+});
+
+auth.onAuthStateChanged(async (user)=>{
+  const gate = document.getElementById('authGate');
+  const errEl = document.getElementById('authError');
+  if(user && user.email === ALLOWED_EMAIL){
+    gate.style.display = 'none';
+    readUrlConfig();
+    loadData();
+  }else if(user){
+    errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
+    errEl.style.display = 'block';
+    gate.style.display = 'flex';
+    await auth.signOut();
+  }else{
+    gate.style.display = 'flex';
+  }
+});
 </script>
 </body>
 </html>
