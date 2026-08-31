@@ -1,0 +1,86 @@
+/* ============================================================
+   GGCC · Suite comercial — Sistema de diseño compartido
+   Un solo lugar para colores, tipografías, y componentes base.
+   Todas las páginas (index, dashboard, Backlog, calculadora)
+   importan este archivo — no duplicar estos valores adentro
+   de cada <style> local.
+   ============================================================ */
+
+:root{
+  /* Base / neutros */
+  --paper:#F5F3EE;
+  --paper-2:#FFFFFF;
+  --ink:#1A1A18;
+  --ink-soft:#4A4A46;
+  --ink-faint:#8A8A84;
+  --line:#E2DFD8;
+  --line-strong:#CFCABF;
+
+  /* Acento de marca (celeste Bitrix) */
+  --stamp:#00AEEF;
+  --stamp-dark:#005B7F;
+  --stamp-bg:#E3F6FD;
+
+  /* Acentos secundarios */
+  --gold:#B8940A;
+  --gold-bg:#FDF8E8;
+  --green:#1E5C3A;
+  --green-bg:#E8F0EB;
+  --red:#C44D1A;
+  --red-bg:#FDF0EA;
+
+  /* Tipografías */
+  --sans:'DM Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
+  --heading:'DM Sans',var(--sans);
+  --display:'DM Sans',var(--sans);
+  --mono:'IBM Plex Mono','SF Mono','Menlo','Consolas',monospace;
+
+  --shadow: 0 1px 2px rgba(26,26,24,0.06), 0 4px 14px rgba(26,26,24,0.06);
+}
+
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
+h2,h3{font-family:var(--heading);font-weight:600;margin:0;}
+h1{font-family:var(--display);font-weight:700;margin:0;}
+
+/* Barra de navegación compartida entre las 4 herramientas */
+.suite-nav{
+  background:var(--stamp-dark);display:flex;align-items:center;gap:2px;padding:0 20px;height:42px;
+}
+.suite-nav a{
+  color:#CFE0D8;text-decoration:none;font-family:var(--sans);font-size:12.5px;font-weight:500;
+  padding:0 14px;height:42px;display:flex;align-items:center;border-bottom:2px solid transparent;
+}
+.suite-nav a:hover{color:#fff;}
+.suite-nav a.current{color:#fff;border-bottom-color:var(--stamp);font-weight:600;}
+.suite-nav .suite-brand{
+  color:#fff;font-family:var(--heading);font-weight:700;font-size:12.5px;
+  margin-right:10px;padding-right:14px;border-right:1px solid #0A4A63;height:20px;display:flex;align-items:center;
+}
+@media (max-width:720px){
+  .suite-nav{padding:0 14px;overflow-x:auto;}
+  .suite-nav a{padding:0 10px;white-space:nowrap;}
+}
+
+/* Pantalla de login, idéntica en las 4 herramientas */
+#authGate{position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#authGate .authGate-inner{text-align:center;max-width:320px;padding:20px;}
+#authGate .authGate-eyebrow{font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;}
+#authGate h2{font-family:var(--display);font-weight:700;font-size:24px;color:var(--ink);margin:0 0 8px;}
+#authGate p{color:var(--ink-soft);font-size:13px;margin:0 0 20px;}
+#btnGoogleLogin{background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;}
+#authError{color:var(--red);font-size:12px;margin-top:16px;display:none;}
+
+/* Botones genéricos — versión canónica, usada por las 4 herramientas */
+button{
+  font-family:var(--sans);font-size:13px;font-weight:500;border-radius:3px;
+  border:1px solid var(--line-strong);background:var(--paper);color:var(--ink);
+  padding:8px 14px;cursor:pointer;transition:background .12s, transform .05s;
+}
+button:hover{background:var(--paper-2);border-color:var(--stamp);}
+button:active{transform:scale(0.98);}
+button.primary{background:var(--stamp);border-color:var(--stamp-dark);color:#fff;font-weight:600;}
+button.primary:hover{background:var(--stamp-dark);}
+button.danger{border-color:var(--red);color:var(--red);background:var(--paper);}
+button.danger:hover{background:var(--red-bg);}
+button.ghost{border-color:transparent;background:transparent;}
