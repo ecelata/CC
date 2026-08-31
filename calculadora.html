@@ -154,7 +154,9 @@
       <div class="sub" id="subtitle">Dimensionamiento de infraestructura, licencias y horas de servicio</div>
       <div class="no-print" style="margin-top:10px;max-width:340px;">
         <label>Cliente / Oportunidad</label>
-        <input type="text" id="f_clienteOpp" placeholder="Ej. Smurfit Kappa Group - DCV">
+        <input type="text" id="f_clienteOpp" list="cuentasDatalist" placeholder="Ej. Smurfit Kappa Group - DCV">
+        <datalist id="cuentasDatalist"></datalist>
+        <div id="clienteInfo" style="font-size:10.5px;color:var(--ink-faint);margin-top:4px;"></div>
       </div>
       <div class="print-only" id="printHeader" style="display:none;"></div>
     </div>
@@ -670,8 +672,41 @@ document.getElementById('btnNuevoEscenario').addEventListener('click', ()=>{
   renderEscenariosList();
 });
 
+const FIRESTORE_CUENTAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/cuentas?key=${FIREBASE_CONFIG.apiKey}`;
+let ACCOUNTS_BY_NAME = {};
+
+async function loadAccountsForCalc(){
+  try{
+    const res = await fetch(FIRESTORE_CUENTAS_URL, {headers: await authHeader()});
+    if(!res.ok) return;
+    const doc = await res.json();
+    const raw = doc && doc.fields && doc.fields.csv && doc.fields.csv.stringValue;
+    if(!raw) return;
+    const parsed = Papa.parse(raw, {header:true, skipEmptyLines:true});
+    ACCOUNTS_BY_NAME = {};
+    const dl = document.getElementById('cuentasDatalist');
+    dl.innerHTML = '';
+    parsed.data.forEach(r=>{
+      const nombre = (r['Razón Social']||'').trim();
+      if(!nombre) return;
+      ACCOUNTS_BY_NAME[nombre.toLowerCase()] = { cuit: (r['Cuit']||'').trim(), eecc: (r['Ejecutivo']||'').trim() };
+      const opt = document.createElement('option');
+      opt.value = nombre;
+      dl.appendChild(opt);
+    });
+  }catch(e){}
+}
+
+document.getElementById('f_clienteOpp').addEventListener('input', ()=>{
+  const nombre = document.getElementById('f_clienteOpp').value.trim().toLowerCase();
+  const info = document.getElementById('clienteInfo');
+  const cuenta = ACCOUNTS_BY_NAME[nombre];
+  info.textContent = cuenta ? `CUIT ${cuenta.cuit}${cuenta.eecc? ' · EECC '+cuenta.eecc : ''}` : '';
+});
+
 async function bootApp(){
   await loadTarifario();
+  await loadAccountsForCalc();
   await loadEscenariosFromCloud();
   renderItems();
   renderTotales();
