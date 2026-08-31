@@ -111,6 +111,29 @@
   .idcell.prio-alta{border-left:4px solid var(--red);}
   .idcell.prio-media{border-left:4px solid var(--amber);}
   .idcell.prio-baja{border-left:4px solid var(--green);}
+
+  .agenda-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .kanban-board{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+  @media (max-width:900px){.kanban-board{grid-template-columns:1fr;}}
+  .kanban-col{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:12px;min-height:120px;}
+  .kanban-col-head{font-family:var(--heading,'Montserrat',sans-serif);font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--stamp-dark);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+  .kanban-count{background:var(--stamp-bg);color:var(--stamp-dark);font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:1px 7px;border-radius:10px;}
+  .kanban-drop{min-height:60px;display:flex;flex-direction:column;gap:8px;}
+  .kanban-drop.drag-over{background:var(--stamp-bg);border-radius:6px;}
+  .kanban-card{
+    background:var(--paper);border:1px solid var(--line-strong);border-radius:6px;padding:10px 12px;
+    cursor:grab;font-size:12.5px;position:relative;
+  }
+  .kanban-card:active{cursor:grabbing;}
+  .kanban-card.prio-alta{border-left:4px solid var(--red);}
+  .kanban-card.prio-media{border-left:4px solid var(--amber);}
+  .kanban-card.prio-baja{border-left:4px solid var(--green);}
+  .kanban-card .kc-titulo{font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .kanban-card .kc-notas{color:var(--ink-soft);font-size:11.5px;margin-bottom:6px;}
+  .kanban-card .kc-opp-badge{display:inline-block;background:var(--stamp-bg);color:var(--stamp-dark);font-size:10px;padding:1px 7px;border-radius:9px;margin-bottom:6px;cursor:pointer;}
+  .kanban-card .kc-fecha{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);}
+  .kanban-card .kc-move{width:100%;margin-top:8px;font-size:11px;padding:5px 8px;}
+  .kanban-empty{color:var(--ink-faint);font-size:11.5px;font-style:italic;text-align:center;padding:14px 6px;}
   .cliente-cell{font-weight:500;}
   .cliente-cell .opp-name{display:block;font-size:10.5px;color:var(--ink-soft);font-weight:400;margin-top:0;}
   .cliente-cell .cuit{display:block;font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
@@ -302,6 +325,15 @@
 </style>
 </head>
 <body>
+<div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;max-width:320px;padding:20px;">
+    <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
+    <h2 style="font-family:'Montserrat',sans-serif;font-size:20px;color:var(--ink);margin:0 0 8px;">Backlog de preventa</h2>
+    <p style="color:var(--ink-soft);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
+    <button id="btnGoogleLogin" style="background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
+    <p id="authError" style="color:var(--red);font-size:12px;margin-top:16px;display:none;"></p>
+  </div>
+</div>
 <div class="suite-nav">
   <span class="suite-brand">GGCC · Grandes Cuentas</span>
   <a href="index.html">Portal</a>
@@ -331,6 +363,7 @@
     <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla">Tablero</button>
     <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas">Cerradas</button>
     <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama">Panorama</button>
+    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda">Agenda</button>
   </div>
 
   <div class="view active" id="viewTabla">
@@ -371,6 +404,45 @@
   <div class="view" id="viewPanorama">
     <div id="panoramaContent"></div>
   </div>
+
+  <div class="view" id="viewAgenda">
+    <div class="agenda-topbar">
+      <h3 style="margin:0;">Agenda</h3>
+      <button class="primary" id="btnNewTask">+ Nueva tarea</button>
+    </div>
+    <div class="kanban-board" id="kanbanBoard">
+      <div class="kanban-col" data-col="porhacer">
+        <div class="kanban-col-head">Por hacer <span class="kanban-count" id="countPorhacer">0</span></div>
+        <div class="kanban-drop" data-col="porhacer" id="colPorhacer"></div>
+      </div>
+      <div class="kanban-col" data-col="encurso">
+        <div class="kanban-col-head">En curso <span class="kanban-count" id="countEncurso">0</span></div>
+        <div class="kanban-drop" data-col="encurso" id="colEncurso"></div>
+      </div>
+      <div class="kanban-col" data-col="hecho">
+        <div class="kanban-col-head">Hecho <span class="kanban-count" id="countHecho">0</span></div>
+        <div class="kanban-drop" data-col="hecho" id="colHecho"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bitacora-modal-overlay" id="taskModalOverlay" style="display:none;">
+  <div class="bitacora-modal">
+    <h4 id="taskModalTitle">Nueva tarea</h4>
+    <div class="field"><label>Título *</label><input type="text" id="tk_titulo" placeholder="Ej. Llamar a Pablo Tos por AGEA"></div>
+    <div class="field"><label>Oportunidad vinculada (opcional)</label><select id="tk_opp"><option value="">— Ninguna —</option></select></div>
+    <div class="field"><label>Notas (opcional)</label><input type="text" id="tk_notas" placeholder="Detalle breve..."></div>
+    <div class="grid2">
+      <div class="field"><label>Prioridad</label><select id="tk_prioridad"><option value="">—</option><option value="Alta">Alta</option><option value="Media">Media</option><option value="Baja">Baja</option></select></div>
+      <div class="field"><label>Fecha (opcional)</label><input type="date" id="tk_fecha"></div>
+    </div>
+    <div class="bitacora-modal-actions">
+      <button class="danger" id="btnDeleteTask" type="button" style="display:none;margin-right:auto;">Eliminar</button>
+      <button class="ghost" id="btnCancelTask" type="button">Cancelar</button>
+      <button class="primary" id="btnSaveTask" type="button">Guardar</button>
+    </div>
+  </div>
 </div>
 
 <div class="overlay" id="overlay">
@@ -380,6 +452,8 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script>
 const SEGMENTOS = ['Banca','CCEE Industria','CCEE Servicios'];
 
@@ -473,8 +547,18 @@ function estadoSemaforo(o){
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtL4cDn7RWpfYoDcbgo",
+  authDomain: "backlog-cc.firebaseapp.com",
   projectId: "backlog-cc"
 };
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const ALLOWED_EMAIL = 'ecelata@gmail.com';
+
+async function authHeader(){
+  if(!auth.currentUser) return {};
+  const token = await auth.currentUser.getIdToken();
+  return {'Authorization': 'Bearer ' + token};
+}
 const FIRESTORE_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/data?key=${FIREBASE_CONFIG.apiKey}`;
 const LOCAL_CACHE_KEY = 'backlog_preventa_cache_v1';
 
@@ -541,7 +625,7 @@ async function loadAccounts(){
 async function loadData(){
   setSyncStatus('busy', 'Cargando desde la nube…');
   try{
-    const res = await fetch(FIRESTORE_DOC_URL);
+    const res = await fetch(FIRESTORE_DOC_URL, {headers: await authHeader()});
     if(res.status === 404){
       DATA = [];
     }else if(res.ok){
@@ -578,7 +662,7 @@ async function saveData(){
     const url = FIRESTORE_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: {'Content-Type':'application/json'},
+      headers: {'Content-Type':'application/json', ...(await authHeader())},
       body: JSON.stringify(body)
     });
     if(!res.ok) throw new Error('HTTP ' + res.status);
@@ -595,6 +679,50 @@ function showToast(msg){
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+let TASKS = [];
+const TASKS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/agenda_tasks?key=${FIREBASE_CONFIG.apiKey}`;
+const TASKS_LOCAL_CACHE_KEY = 'backlog_agenda_tasks_cache_v1';
+
+async function loadTasks(){
+  try{
+    const res = await fetch(TASKS_DOC_URL, {headers: await authHeader()});
+    if(res.status === 404){
+      TASKS = [];
+    }else if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      TASKS = raw ? JSON.parse(raw) : [];
+    }else{
+      throw new Error('HTTP ' + res.status);
+    }
+    localStorage.setItem(TASKS_LOCAL_CACHE_KEY, JSON.stringify(TASKS));
+  }catch(e){
+    try{
+      const cached = localStorage.getItem(TASKS_LOCAL_CACHE_KEY);
+      TASKS = cached ? JSON.parse(cached) : [];
+    }catch(e2){ TASKS = []; }
+  }
+}
+
+async function saveTasks(){
+  localStorage.setItem(TASKS_LOCAL_CACHE_KEY, JSON.stringify(TASKS));
+  try{
+    const body = {
+      fields: {
+        json: { stringValue: JSON.stringify(TASKS) },
+        updatedAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+    const url = TASKS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    return true;
+  }catch(e){
+    showToast('⚠️ No se pudo sincronizar la Agenda con la nube.');
+    return false;
+  }
 }
 
 function populateFilterSelects(){
@@ -1339,6 +1467,7 @@ function switchTab(tab){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.getAttribute('data-tab')===tab));
   document.getElementById('viewTabla').classList.toggle('active', showTabla);
   document.getElementById('viewPanorama').classList.toggle('active', tab==='panorama');
+  document.getElementById('viewAgenda').classList.toggle('active', tab==='agenda');
   if(showTabla){
     boardView = (tab==='cerradas') ? 'cerradas' : 'activas';
     const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
@@ -1349,6 +1478,7 @@ function switchTab(tab){
     renderTable();
   }
   if(tab==='panorama') renderDashboard();
+  if(tab==='agenda') renderKanban();
 }
 function drillInto(filterId, value){
   const el = document.getElementById(filterId);
@@ -1386,11 +1516,181 @@ document.getElementById('fileImport').addEventListener('change', async (e)=>{
   e.target.value='';
 });
 
-(async function init(){
+function populateOppSelectForTasks(){
+  const sel = document.getElementById('tk_opp');
+  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  sel.innerHTML = '<option value="">— Ninguna —</option>' + abiertas.map(o=>
+    `<option value="${o.id}">${o.id} · ${escapeHtml(o.cliente||'—')}</option>`
+  ).join('');
+}
+
+function taskCardHtml(t){
+  const opp = t.oppId ? DATA.find(o=>o.id===t.oppId) : null;
+  const prioClass = t.prioridad ? 'prio-'+t.prioridad.toLowerCase() : '';
+  return `<div class="kanban-card ${prioClass}" draggable="true" data-id="${t.id}">
+    <div class="kc-titulo">${escapeHtml(t.titulo)}</div>
+    ${opp?`<div class="kc-opp-badge" data-open-opp="${opp.id}">${opp.id} · ${escapeHtml(opp.cliente||'')}</div>`:''}
+    ${t.notas?`<div class="kc-notas">${escapeHtml(t.notas)}</div>`:''}
+    ${t.fecha?`<div class="kc-fecha">${formatDateShort(t.fecha)}</div>`:''}
+    <select class="kc-move" data-move-id="${t.id}">
+      <option value="porhacer" ${t.columna==='porhacer'?'selected':''}>Por hacer</option>
+      <option value="encurso" ${t.columna==='encurso'?'selected':''}>En curso</option>
+      <option value="hecho" ${t.columna==='hecho'?'selected':''}>Hecho</option>
+    </select>
+  </div>`;
+}
+
+function renderKanban(){
+  const cols = {porhacer:[], encurso:[], hecho:[]};
+  TASKS.forEach(t=>{ if(cols[t.columna]) cols[t.columna].push(t); else cols.porhacer.push(t); });
+  ['porhacer','encurso','hecho'].forEach(col=>{
+    const el = document.getElementById('col'+col.charAt(0).toUpperCase()+col.slice(1));
+    el.innerHTML = cols[col].length ? cols[col].map(taskCardHtml).join('') : '<div class="kanban-empty">Sin tareas</div>';
+    document.getElementById('count'+col.charAt(0).toUpperCase()+col.slice(1)).textContent = cols[col].length;
+  });
+  wireKanbanCards();
+}
+
+function wireKanbanCards(){
+  document.querySelectorAll('.kanban-card').forEach(card=>{
+    card.addEventListener('click', (ev)=>{
+      if(ev.target.closest('.kc-move') || ev.target.closest('.kc-opp-badge')) return;
+      openTaskModal(card.getAttribute('data-id'));
+    });
+    card.addEventListener('dragstart', (ev)=>{
+      ev.dataTransfer.setData('text/plain', card.getAttribute('data-id'));
+      setTimeout(()=>card.style.opacity='0.4', 0);
+    });
+    card.addEventListener('dragend', ()=>{ card.style.opacity='1'; });
+  });
+  document.querySelectorAll('.kc-move').forEach(sel=>{
+    sel.addEventListener('click', ev=>ev.stopPropagation());
+    sel.addEventListener('change', async ()=>{
+      await moveTask(sel.getAttribute('data-move-id'), sel.value);
+    });
+  });
+  document.querySelectorAll('.kc-opp-badge').forEach(badge=>{
+    badge.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      openDrawer(badge.getAttribute('data-open-opp'));
+    });
+  });
+  document.querySelectorAll('.kanban-drop').forEach(zone=>{
+    zone.addEventListener('dragover', (ev)=>{ ev.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', ()=>{ zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', async (ev)=>{
+      ev.preventDefault();
+      zone.classList.remove('drag-over');
+      const id = ev.dataTransfer.getData('text/plain');
+      await moveTask(id, zone.getAttribute('data-col'));
+    });
+  });
+}
+
+async function moveTask(id, columna){
+  const t = TASKS.find(x=>x.id===id);
+  if(!t || t.columna===columna){ return; }
+  t.columna = columna;
+  renderKanban();
+  await saveTasks();
+}
+
+let editingTaskId = null;
+function openTaskModal(id){
+  editingTaskId = id || null;
+  populateOppSelectForTasks();
+  const t = id ? TASKS.find(x=>x.id===id) : null;
+  document.getElementById('taskModalTitle').textContent = t ? 'Editar tarea' : 'Nueva tarea';
+  document.getElementById('tk_titulo').value = t ? t.titulo : '';
+  document.getElementById('tk_opp').value = t ? (t.oppId||'') : '';
+  document.getElementById('tk_notas').value = t ? (t.notas||'') : '';
+  document.getElementById('tk_prioridad').value = t ? (t.prioridad||'') : '';
+  document.getElementById('tk_fecha').value = t ? (t.fecha||'') : '';
+  document.getElementById('btnDeleteTask').style.display = t ? '' : 'none';
+  document.getElementById('taskModalOverlay').style.display = 'flex';
+  setTimeout(()=>document.getElementById('tk_titulo').focus(), 50);
+}
+function closeTaskModal(){
+  document.getElementById('taskModalOverlay').style.display = 'none';
+  editingTaskId = null;
+}
+async function saveTaskFromModal(){
+  const titulo = document.getElementById('tk_titulo').value.trim();
+  if(!titulo){ showToast('⚠️ Poné un título para la tarea.'); return; }
+  if(editingTaskId){
+    const t = TASKS.find(x=>x.id===editingTaskId);
+    t.titulo = titulo;
+    t.oppId = document.getElementById('tk_opp').value || null;
+    t.notas = document.getElementById('tk_notas').value.trim();
+    t.prioridad = document.getElementById('tk_prioridad').value;
+    t.fecha = document.getElementById('tk_fecha').value;
+  }else{
+    TASKS.push({
+      id: 'TASK-' + Date.now(),
+      titulo,
+      oppId: document.getElementById('tk_opp').value || null,
+      notas: document.getElementById('tk_notas').value.trim(),
+      prioridad: document.getElementById('tk_prioridad').value,
+      fecha: document.getElementById('tk_fecha').value,
+      columna: 'porhacer'
+    });
+  }
+  closeTaskModal();
+  renderKanban();
+  await saveTasks();
+}
+async function deleteTaskFromModal(){
+  if(!editingTaskId) return;
+  if(!confirm('¿Eliminar esta tarea?')) return;
+  TASKS = TASKS.filter(x=>x.id!==editingTaskId);
+  closeTaskModal();
+  renderKanban();
+  await saveTasks();
+}
+
+document.getElementById('btnNewTask').addEventListener('click', ()=>openTaskModal(null));
+document.getElementById('btnCancelTask').addEventListener('click', closeTaskModal);
+document.getElementById('btnSaveTask').addEventListener('click', saveTaskFromModal);
+document.getElementById('btnDeleteTask').addEventListener('click', deleteTaskFromModal);
+document.getElementById('taskModalOverlay').addEventListener('click', (ev)=>{ if(ev.target.id==='taskModalOverlay') closeTaskModal(); });
+document.getElementById('tk_titulo').addEventListener('keydown', (ev)=>{
+  if(ev.key==='Enter'){ ev.preventDefault(); saveTaskFromModal(); }
+  if(ev.key==='Escape'){ closeTaskModal(); }
+});
+
+async function bootApp(){
   populateFilterSelects();
-  await Promise.all([loadData(), loadAccounts()]);
+  await Promise.all([loadData(), loadAccounts(), loadTasks()]);
   renderAll();
-})();
+}
+
+document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+  try{
+    await auth.signInWithPopup(provider);
+  }catch(e){
+    errEl.textContent = 'No se pudo iniciar sesión: ' + e.message;
+    errEl.style.display = 'block';
+  }
+});
+
+auth.onAuthStateChanged(async (user)=>{
+  const gate = document.getElementById('authGate');
+  const errEl = document.getElementById('authError');
+  if(user && user.email === ALLOWED_EMAIL){
+    gate.style.display = 'none';
+    await bootApp();
+  }else if(user){
+    errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
+    errEl.style.display = 'block';
+    gate.style.display = 'flex';
+    await auth.signOut();
+  }else{
+    gate.style.display = 'flex';
+  }
+});
 </script>
 </body>
 </html>
