@@ -107,7 +107,10 @@
   tbody tr:nth-child(odd){background:#F8F6F1;}
   tbody tr:nth-child(even){background:#EEEAE0;}
   tbody tr:hover{background:var(--stamp-bg) !important;}
-  .idcell{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  .idcell{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);position:relative;}
+  .idcell.prio-alta{border-left:4px solid var(--red);}
+  .idcell.prio-media{border-left:4px solid var(--amber);}
+  .idcell.prio-baja{border-left:4px solid var(--green);}
   .cliente-cell{font-weight:500;}
   .cliente-cell .opp-name{display:block;font-size:10.5px;color:var(--ink-soft);font-weight:400;margin-top:0;}
   .cliente-cell .cuit{display:block;font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
@@ -401,6 +404,7 @@ const RESPONSABLE_POR_SEGMENTO = {
 };
 
 const ETAPAS = ['1-Prospección','2-Calificado','3-Análisis Técnico','4-POC','5-Propuesta','6-Negociación','7-Cierre'];
+const PRIORIDADES = ['Alta','Media','Baja'];
 const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
 const TIPO_CONTRATO = ['One-time','MRR','ARR','Mixto'];
 const BANT_VALORES = ['✅ Sí','⚠️ Parcial','❌ No','N/A'];
@@ -812,7 +816,7 @@ function renderTable(){
     const sem = estadoSemaforo(o);
     const diasTxt = o.diasRestantes===null ? '—' : (o.diasRestantes<0 ? `${Math.abs(o.diasRestantes)}d vencida` : `${o.diasRestantes}d`);
     return `<tr data-id="${o.id}">
-      <td class="idcell">${o.id}</td>
+      <td class="idcell${o.prioridad? ' prio-'+o.prioridad.toLowerCase() : ''}">${o.id}</td>
       <td class="cliente-cell">${escapeHtml(o.cliente||'—')}${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
       <td><span class="seg-pill">${o.segmento||'—'}</span></td>
       <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
@@ -936,7 +940,7 @@ function blankOpp(){
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
     estadoPropuesta:'', documentosGenerados:'', notasTecnicas:'',
-    proximoPaso:'', bitacora:[],
+    proximoPaso:'', bitacora:[], prioridad:'',
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
   };
@@ -1002,6 +1006,10 @@ function drawerTemplate(o){
       <div class="grid2">
         <div class="field"><label>Etapa funnel</label><select id="f_etapa">${optionsHtml(ETAPAS,o.etapa)}</select></div>
         <div class="field"><label>Prob. de cierre %</label><input type="number" min="0" max="100" id="f_probCierre" value="${o.probCierre}"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Prioridad personal</label><select id="f_prioridad">${optionsHtml(PRIORIDADES,o.prioridad)}</select></div>
+        <div class="field"></div>
       </div>
       <div class="grid2">
         <div class="field"><label>Unidad de Negocio</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
@@ -1129,6 +1137,7 @@ function readFormInto(o){
   o.necesidad = document.getElementById('f_necesidad').value;
   o.etapa = document.getElementById('f_etapa').value;
   o.probCierre = document.getElementById('f_probCierre').value;
+  o.prioridad = document.getElementById('f_prioridad').value;
   o.vertical = document.getElementById('f_vertical').value;
   o.proveedor = document.getElementById('f_proveedor').value;
   o.producto = document.getElementById('f_producto').value.trim();
@@ -1229,7 +1238,7 @@ function wireDrawer(o){
     refreshComputedDisplays(o);
   });
   ['f_eecc','f_bantBudget','f_bantAuthority','f_bantNeed','f_bantTimeline','f_fechaDeadline',
-   'f_tipoContrato','f_montoOneShot','f_mesRecurrente','f_probCierre'].forEach(id=>{
+   'f_tipoContrato','f_montoOneShot','f_mesRecurrente','f_probCierre','f_prioridad'].forEach(id=>{
     document.getElementById(id).addEventListener('change', ()=>{ readFormInto(o); refreshComputedDisplays(o); });
     document.getElementById(id).addEventListener('input', ()=>{ readFormInto(o); refreshComputedDisplays(o); });
   });
