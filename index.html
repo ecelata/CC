@@ -6,6 +6,8 @@
 <title>GGCC · Panel comercial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <style>
   :root{
     --paper:#F3F1EB; --paper-2:#FCFBF8; --ink:#4D5147; --ink-soft:#767A6D; --ink-faint:#A6A99C;
@@ -55,6 +57,15 @@
 </style>
 </head>
 <body>
+<div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;max-width:320px;padding:20px;">
+    <div style="font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
+    <h2 style="font-family:var(--heading);font-size:20px;color:var(--ink);margin:0 0 8px;">Panel comercial</h2>
+    <p style="color:var(--ink-soft);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
+    <button id="btnGoogleLogin" style="background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
+    <p id="authError" style="color:#B23F35;font-size:12px;margin-top:16px;display:none;"></p>
+  </div>
+</div>
 
 <div class="suite-nav">
   <span class="suite-brand">GGCC · Grandes Cuentas</span>
@@ -108,5 +119,42 @@
   <footer>ecelata / CC — actualizado manualmente por Edgardo.</footer>
 </div>
 
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtl4cDn7RWpfYoDcbgo",
+  authDomain: "backlog-cc.firebaseapp.com",
+  projectId: "backlog-cc"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const ALLOWED_EMAIL = 'ecelata@gmail.com';
+
+document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+  try{
+    await auth.signInWithPopup(provider);
+  }catch(e){
+    errEl.textContent = 'No se pudo iniciar sesión: ' + e.message;
+    errEl.style.display = 'block';
+  }
+});
+
+auth.onAuthStateChanged(async (user)=>{
+  const gate = document.getElementById('authGate');
+  const errEl = document.getElementById('authError');
+  if(user && user.email === ALLOWED_EMAIL){
+    gate.style.display = 'none';
+  }else if(user){
+    errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
+    errEl.style.display = 'block';
+    gate.style.display = 'flex';
+    await auth.signOut();
+  }else{
+    gate.style.display = 'flex';
+  }
+});
+</script>
 </body>
 </html>
