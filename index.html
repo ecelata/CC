@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GGCC · Panel comercial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <style>
   :root{
-    --paper:#F3F1EB; --paper-2:#FCFBF8; --ink:#4D5147; --ink-soft:#767A6D; --ink-faint:#A6A99C;
-    --line:#DAD5C7; --line-strong:#C3BCA9;
-    --stamp:#7CB3DE; --stamp-dark:#33607C; --stamp-bg:#D7EAF3;
-    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
-    --heading:'Montserrat',var(--sans);
+    --paper:#F5F3EE; --paper-2:#FFFFFF; --ink:#1A1A18; --ink-soft:#4A4A46; --ink-faint:#8A8A84;
+    --line:#E2DFD8; --line-strong:#CFCABF;
+    --stamp:#00AEEF; --stamp-dark:#005B7F; --stamp-bg:#E3F6FD;
+    --gold:#B8940A; --gold-bg:#FDF8E8; --warn:#C44D1A; --warn-bg:#FDF0EA;
+    --sans:'DM Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'DM Sans',var(--sans);
+    --display:'DM Sans',var(--sans);
     --mono:'IBM Plex Mono',monospace;
   }
   *{box-sizing:border-box;}
@@ -34,7 +36,7 @@
   }
   .wrap{max-width:920px;margin:0 auto;padding:56px 24px 80px;}
   .eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp);font-weight:600;margin-bottom:8px;}
-  h1{font-family:var(--heading);font-size:24px;font-weight:700;margin:0 0 8px;letter-spacing:-0.01em;color:var(--stamp-dark);}
+  h1{font-family:var(--display);font-size:28px;font-weight:700;margin:0 0 8px;letter-spacing:0;color:var(--stamp-dark);}
   .lead{font-size:14.5px;color:var(--ink-soft);max-width:560px;line-height:1.6;margin:0 0 40px;}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media (max-width:720px){.grid{grid-template-columns:1fr;}}
@@ -60,10 +62,10 @@
 <div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="text-align:center;max-width:320px;padding:20px;">
     <div style="font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
-    <h2 style="font-family:var(--heading);font-size:20px;color:var(--ink);margin:0 0 8px;">Panel comercial</h2>
+    <h2 style="font-family:var(--display);font-weight:700;font-size:24px;color:var(--ink);margin:0 0 8px;">Panel comercial</h2>
     <p style="color:var(--ink-soft);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
     <button id="btnGoogleLogin" style="background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
-    <p id="authError" style="color:#B23F35;font-size:12px;margin-top:16px;display:none;"></p>
+    <p id="authError" style="color:#C44D1A;font-size:12px;margin-top:16px;display:none;"></p>
   </div>
 </div>
 

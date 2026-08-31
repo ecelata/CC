@@ -5,28 +5,31 @@
 <title>Backlog Preventa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F3F1EB;
-    --paper-2:#EDE9DF;
-    --ink:#4D5147;
-    --ink-soft:#767A6D;
-    --ink-faint:#A6A99C;
-    --line:#DAD5C7;
-    --line-strong:#C3BCA9;
-    --stamp:#7CB3DE;
-    --stamp-dark:#33607C;
-    --stamp-bg:#D7EAF3;
-    --mustard:#B5822B;
-    --mustard-bg:#F1E4C6;
-    --green:#3E7D4C;
-    --green-bg:#DCEBDD;
-    --amber:#B5822B;
-    --amber-bg:#F1E4C6;
-    --red:#B23F35;
-    --red-bg:#F3DCD8;
-    --shadow: 0 1px 2px rgba(34,38,31,0.06), 0 4px 14px rgba(34,38,31,0.06);
+    --paper:#F5F3EE;
+    --paper-2:#FFFFFF;
+    --ink:#1A1A18;
+    --ink-soft:#4A4A46;
+    --ink-faint:#8A8A84;
+    --line:#E2DFD8;
+    --line-strong:#CFCABF;
+    --stamp:#00AEEF;
+    --stamp-dark:#005B7F;
+    --stamp-bg:#E3F6FD;
+    --mustard:#B8940A;
+    --mustard-bg:#FDF8E8;
+    --green:#1E5C3A;
+    --green-bg:#E8F0EB;
+    --amber:#B8940A;
+    --amber-bg:#FDF8E8;
+    --red:#C44D1A;
+    --red-bg:#FDF0EA;
+    --sans:'DM Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'DM Sans',var(--sans);
+    --display:'DM Sans',var(--sans);
+    --shadow: 0 1px 2px rgba(26,26,24,0.06), 0 4px 14px rgba(26,26,24,0.06);
   }
   *{box-sizing:border-box;}
   body{
@@ -37,7 +40,8 @@
     -webkit-font-smoothing:antialiased;
   }
   .app{max-width:1880px;margin:0 auto;padding:28px 32px 80px;}
-  h1,h2,h3{font-family:'Montserrat',sans-serif;font-weight:600;margin:0;}
+  h2,h3{font-family:var(--heading);font-weight:600;margin:0;}
+  h1{font-family:var(--display);font-weight:700;margin:0;}
   .topbar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
   .topbar h1{font-size:22px;letter-spacing:-0.01em;}
   .topbar .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
@@ -315,7 +319,7 @@
   .suite-nav a:hover{color:#fff;}
   .suite-nav a.current{color:#fff;border-bottom-color:var(--stamp);font-weight:600;}
   .suite-nav .suite-brand{
-    color:#fff;font-family:'Montserrat',sans-serif;font-weight:600;font-size:12.5px;
+    color:#fff;font-family:var(--heading);font-weight:600;font-size:12.5px;
     margin-right:10px;padding-right:14px;border-right:1px solid #2E5A4C;height:20px;display:flex;align-items:center;
   }
   @media (max-width:720px){
@@ -327,8 +331,8 @@
 <body>
 <div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="text-align:center;max-width:320px;padding:20px;">
-    <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
-    <h2 style="font-family:'Montserrat',sans-serif;font-size:20px;color:var(--ink);margin:0 0 8px;">Backlog de preventa</h2>
+    <div style="font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
+    <h2 style="font-family:var(--display);font-weight:700;font-size:24px;color:var(--ink);margin:0 0 8px;">Backlog de preventa</h2>
     <p style="color:var(--ink-soft);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
     <button id="btnGoogleLogin" style="background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
     <p id="authError" style="color:var(--red);font-size:12px;margin-top:16px;display:none;"></p>
