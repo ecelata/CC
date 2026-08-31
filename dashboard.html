@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cartera Banca &amp; CCEE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <style>
   :root{
-    --ink:#4D5147; --ink-2:#33607C; --paper:#F3F1EB; --paper-2:#FCFBF8; --line:#DAD5C7;
-    --teal:#7CB3DE; --teal-soft:#D7EAF3; --amber:#B5822B; --amber-soft:#F1E4C6;
-    --ink-text:#4D5147; --muted:#7A7A6C;
+    --ink:#1A1A18; --ink-2:#005B7F; --paper:#F5F3EE; --paper-2:#FFFFFF; --line:#E2DFD8;
+    --teal:#00AEEF; --teal-soft:#E3F6FD; --amber:#B8940A; --amber-soft:#FDF8E8;
+    --ink-text:#1A1A18; --muted:#4A4A46;
     --mono:'IBM Plex Mono','SF Mono','Menlo','Consolas',monospace;
-    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
-    --heading:'Montserrat',var(--sans);
+    --sans:'DM Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'DM Sans',var(--sans);
+    --display:'DM Sans',var(--sans);
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--paper);color:var(--ink-text);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
@@ -24,7 +25,7 @@
   @media (max-width:860px){.shell{grid-template-columns:1fr;}}
   .sidebar{background:var(--paper-2);color:var(--ink-text);padding:28px 22px;display:flex;flex-direction:column;gap:22px;border-right:1px solid var(--line);}
   .brand .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:600;}
-  .brand h1{font-size:17px;margin:4px 0 0;font-weight:700;letter-spacing:-0.01em;line-height:1.25;font-family:var(--heading);}
+  .brand h1{font-size:19px;margin:4px 0 0;font-weight:700;letter-spacing:0;line-height:1.25;font-family:var(--display);}
   .stat-row{display:flex;gap:10px;}
   .stat{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 10px;}
   .stat .n{font-family:var(--mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink-text);}
@@ -68,7 +69,7 @@
   .badge.Banca{background:var(--teal-soft);color:var(--teal);}
   .badge.CCEE{background:var(--amber-soft);color:var(--amber);}
   .state-box{padding:60px 20px;text-align:center;color:var(--muted);}
-  .state-box.error{color:#B23F35;}
+  .state-box.error{color:#C44D1A;}
   .overlay{position:fixed;inset:0;background:rgba(18,23,43,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:50;}
   .overlay.open{display:flex;}
   .drawer{background:var(--paper-2);border-radius:16px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(18,23,43,0.35);}
@@ -115,10 +116,10 @@
 <div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="text-align:center;max-width:320px;padding:20px;">
     <div style="font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
-    <h2 style="font-family:var(--heading);font-size:20px;color:var(--ink-text);margin:0 0 8px;">Cartera</h2>
+    <h2 style="font-family:var(--display);font-weight:700;font-size:24px;color:var(--ink-text);margin:0 0 8px;">Cartera</h2>
     <p style="color:var(--muted);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
     <button id="btnGoogleLogin" style="background:var(--teal);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
-    <p id="authError" style="color:#B23F35;font-size:12px;margin-top:16px;display:none;"></p>
+    <p id="authError" style="color:#C44D1A;font-size:12px;margin-top:16px;display:none;"></p>
   </div>
 </div>
 <div class="suite-nav">

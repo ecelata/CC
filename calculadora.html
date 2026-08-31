@@ -5,23 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calculadora de Costos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <style>
   :root{
-    --paper:#F3F1EB; --paper-2:#FCFBF8; --ink:#4D5147; --ink-soft:#767A6D; --ink-faint:#A6A99C;
-    --line:#DAD5C7; --line-strong:#C3BCA9;
-    --stamp:#7CB3DE; --stamp-dark:#33607C; --stamp-bg:#D7EAF3;
-    --red:#B23F35; --red-bg:#F3DCD8;
-    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
-    --heading:'Montserrat',var(--sans);
+    --paper:#F5F3EE; --paper-2:#FFFFFF; --ink:#1A1A18; --ink-soft:#4A4A46; --ink-faint:#8A8A84;
+    --line:#E2DFD8; --line-strong:#CFCABF;
+    --stamp:#00AEEF; --stamp-dark:#005B7F; --stamp-bg:#E3F6FD;
+    --gold:#B8940A; --gold-bg:#FDF8E8;
+    --red:#C44D1A; --red-bg:#FDF0EA;
+    --sans:'DM Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --heading:'DM Sans',var(--sans);
+    --display:'DM Sans',var(--sans);
     --mono:'IBM Plex Mono',monospace;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
-  h1,h2,h3{font-family:var(--heading);font-weight:600;margin:0;}
+  h2,h3{font-family:var(--heading);font-weight:600;margin:0;}
+  h1{font-family:var(--display);font-weight:700;margin:0;}
 
   .suite-nav{background:var(--stamp-dark);display:flex;align-items:center;gap:2px;padding:0 20px;height:42px;}
   .suite-nav a{color:#CFE0D8;text-decoration:none;font-family:var(--sans);font-size:12.5px;font-weight:500;padding:0 14px;height:42px;display:flex;align-items:center;border-bottom:2px solid transparent;}
@@ -32,7 +35,7 @@
 
   .app{max-width:1320px;margin:0 auto;padding:28px 32px 80px;}
   .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
-  .topbar h1{font-size:21px;letter-spacing:-0.01em;color:var(--stamp-dark);}
+  .topbar h1{font-size:26px;letter-spacing:0;color:var(--stamp-dark);}
   .topbar .sub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
   .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   button{font-family:var(--sans);cursor:pointer;border-radius:6px;border:1px solid var(--line-strong);background:var(--paper-2);padding:8px 14px;font-size:12.5px;color:var(--ink);}
@@ -124,15 +127,15 @@
 
   #f_estadoEscenario{width:auto;padding:8px 12px;font-weight:600;border-width:2px;}
   #f_estadoEscenario[data-state="diseñando"]{border-color:var(--stamp);background:var(--stamp-bg);}
-  #f_estadoEscenario[data-state="esperando"]{border-color:#B5822B;background:#F1E4C6;}
+  #f_estadoEscenario[data-state="esperando"]{border-color:#B8940A;background:#FDF8E8;}
   #f_estadoEscenario[data-state="completo"]{border-color:#3E7D4C;background:#DCEBDD;}
 </style>
 </head>
 <body>
 <div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="text-align:center;max-width:320px;padding:20px;">
-    <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
-    <h2 style="font-family:'Montserrat',sans-serif;font-size:20px;color:var(--ink);margin:0 0 8px;">Calculadora de Costos</h2>
+    <div style="font-family:var(--heading);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
+    <h2 style="font-family:var(--display);font-weight:700;font-size:24px;color:var(--ink);margin:0 0 8px;">Calculadora de Costos</h2>
     <p style="color:var(--ink-soft);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
     <button id="btnGoogleLogin" style="background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
     <p id="authError" style="color:var(--red);font-size:12px;margin-top:16px;display:none;"></p>
@@ -596,7 +599,7 @@ function renderEscenariosList(){
     list.innerHTML = '<div class="escenarios-empty">Todavía no guardaste ningún escenario.</div>';
     return;
   }
-  const estadoColor = {'Diseñando solución':'var(--stamp)','Esperando horas de Arquitectura':'#B5822B','Completo, listo para Preventa':'#3E7D4C'};
+  const estadoColor = {'Diseñando solución':'var(--stamp)','Esperando horas de Arquitectura':'#B8940A','Completo, listo para Preventa':'#1E5C3A'};
   list.innerHTML = ids.map(id=>{
     const e = store[id];
     const activo = id===currentScenarioId;
