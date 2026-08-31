@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <style>
   :root{
     --paper:#F3F1EB; --paper-2:#FCFBF8; --ink:#4D5147; --ink-soft:#767A6D; --ink-faint:#A6A99C;
@@ -127,6 +129,15 @@
 </style>
 </head>
 <body>
+<div id="authGate" style="position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;max-width:320px;padding:20px;">
+    <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp-dark);margin-bottom:6px;">GGCC · Grandes Cuentas</div>
+    <h2 style="font-family:'Montserrat',sans-serif;font-size:20px;color:var(--ink);margin:0 0 8px;">Calculadora de Costos</h2>
+    <p style="color:var(--ink-soft);font-size:13px;margin:0 0 20px;">Iniciá sesión con tu cuenta de Google para continuar.</p>
+    <button id="btnGoogleLogin" style="background:var(--stamp);border:none;color:#fff;font-weight:600;padding:12px 22px;border-radius:8px;font-size:13px;cursor:pointer;">Iniciar sesión con Google</button>
+    <p id="authError" style="color:var(--red);font-size:12px;margin-top:16px;display:none;"></p>
+  </div>
+</div>
 
 <div class="suite-nav">
   <span class="suite-brand">GGCC · Grandes Cuentas</span>
@@ -282,12 +293,33 @@ function fmtMoney(n){
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+async function getTarifarioText(){
+  try{
+    const res = await fetch(FIRESTORE_TARIFARIO_URL, {headers: await authHeader()});
+    if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.csv && doc.fields.csv.stringValue;
+      if(raw) return raw;
+    }
+  }catch(e){}
+  const res2 = await fetch('tarifario.csv');
+  if(!res2.ok) throw new Error('No se pudo leer tarifario.csv');
+  const text = await res2.text();
+  try{
+    const url = FIRESTORE_TARIFARIO_URL + '&updateMask.fieldPaths=csv&updateMask.fieldPaths=updatedAt';
+    await fetch(url, {
+      method:'PATCH',
+      headers: {'Content-Type':'application/json', ...(await authHeader())},
+      body: JSON.stringify({fields:{csv:{stringValue:text}, updatedAt:{timestampValue:new Date().toISOString()}}})
+    });
+  }catch(e){}
+  return text;
+}
+
 async function loadTarifario(){
   const statusEl = document.getElementById('tarifarioStatus');
   try{
-    const res = await fetch('tarifario.csv');
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const text = await res.text();
+    const text = await getTarifarioText();
     const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
     TARIFARIO = parsed.data.map(r=>({
       categoria: r.categoria, subcategoria: r.subcategoria, id: r.id,
@@ -297,7 +329,7 @@ async function loadTarifario(){
     })).filter(r=>r.concepto);
     statusEl.textContent = '☁️ Tarifario cargado (' + TARIFARIO.length + ' ítems)';
   }catch(e){
-    statusEl.textContent = '⚠️ No se pudo cargar tarifario.csv';
+    statusEl.textContent = '⚠️ No se pudo cargar el tarifario';
     TARIFARIO = [];
   }
   populateConceptoSelect();
@@ -482,10 +514,20 @@ document.getElementById('btnExportPdf').addEventListener('click', ()=>{
 });
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtL4cDn7RWpfYoDcbgo",
+  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtl4cDn7RWpfYoDcbgo",
+  authDomain: "backlog-cc.firebaseapp.com",
   projectId: "backlog-cc"
 };
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const ALLOWED_EMAIL = 'ecelata@gmail.com';
+async function authHeader(){
+  if(!auth.currentUser) return {};
+  const token = await auth.currentUser.getIdToken();
+  return {'Authorization': 'Bearer ' + token};
+}
 const ESCENARIOS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/calculadora_escenarios?key=${FIREBASE_CONFIG.apiKey}`;
+const FIRESTORE_TARIFARIO_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/tarifario?key=${FIREBASE_CONFIG.apiKey}`;
 const ESCENARIOS_LOCAL_CACHE_KEY = 'calc_costos_escenarios_cache_v1';
 let ESCENARIOS_STORE = {};
 
@@ -499,7 +541,7 @@ function setEscenariosSyncStatus(state, label){
 async function loadEscenariosFromCloud(){
   setEscenariosSyncStatus('busy', 'Cargando escenarios…');
   try{
-    const res = await fetch(ESCENARIOS_DOC_URL);
+    const res = await fetch(ESCENARIOS_DOC_URL, {headers: await authHeader()});
     if(res.status === 404){
       ESCENARIOS_STORE = {};
     }else if(res.ok){
@@ -531,7 +573,7 @@ async function saveEscenariosToCloud(){
       }
     };
     const url = ESCENARIOS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
-    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
     if(!res.ok) throw new Error('HTTP ' + res.status);
     setEscenariosSyncStatus('ok', 'Sincronizado');
     return true;
@@ -628,13 +670,41 @@ document.getElementById('btnNuevoEscenario').addEventListener('click', ()=>{
   renderEscenariosList();
 });
 
-(async function init(){
+async function bootApp(){
   await loadTarifario();
   await loadEscenariosFromCloud();
   renderItems();
   renderTotales();
   renderEscenariosList();
-})();
+}
+
+document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+  try{
+    await auth.signInWithPopup(provider);
+  }catch(e){
+    errEl.textContent = 'No se pudo iniciar sesión: ' + e.message;
+    errEl.style.display = 'block';
+  }
+});
+
+auth.onAuthStateChanged(async (user)=>{
+  const gate = document.getElementById('authGate');
+  const errEl = document.getElementById('authError');
+  if(user && user.email === ALLOWED_EMAIL){
+    gate.style.display = 'none';
+    await bootApp();
+  }else if(user){
+    errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
+    errEl.style.display = 'block';
+    gate.style.display = 'flex';
+    await auth.signOut();
+  }else{
+    gate.style.display = 'flex';
+  }
+});
 </script>
 </body>
 </html>
