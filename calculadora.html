@@ -153,6 +153,8 @@
       <h1>Calculadora de Costos</h1>
       <div class="sub" id="subtitle">Dimensionamiento de infraestructura, licencias y horas de servicio</div>
       <div class="no-print" style="margin-top:10px;max-width:340px;">
+        <label>Oportunidad del Backlog (opcional)</label>
+        <select id="f_oppVinculada" style="margin-bottom:8px;"><option value="">— Sin vincular —</option></select>
         <label>Cliente / Oportunidad</label>
         <input type="text" id="f_clienteOpp" list="cuentasDatalist" placeholder="Ej. Smurfit Kappa Group - DCV">
         <datalist id="cuentasDatalist"></datalist>
@@ -635,6 +637,7 @@ function cargarEscenario(id){
   currentScenarioId = id;
   ITEMS = JSON.parse(JSON.stringify(e.items||[]));
   document.getElementById('f_clienteOpp').value = e.cliente || '';
+  document.getElementById('f_oppVinculada').value = e.oppVinculada || '';
   document.getElementById('f_estadoEscenario').value = e.estado || 'Diseñando solución';
   updateEstadoVisual();
   renderItems();
@@ -648,6 +651,7 @@ document.getElementById('btnGuardarEscenario').addEventListener('click', async (
   const id = currentScenarioId || (cliente.toLowerCase().replace(/[^a-z0-9]+/g,'-') + '-' + Date.now());
   ESCENARIOS_STORE[id] = {
     cliente,
+    oppVinculada: document.getElementById('f_oppVinculada').value || null,
     estado: document.getElementById('f_estadoEscenario').value,
     items: ITEMS,
     actualizado: new Date().toISOString()
@@ -665,6 +669,7 @@ document.getElementById('btnNuevoEscenario').addEventListener('click', ()=>{
   currentScenarioId = null;
   ITEMS = [];
   document.getElementById('f_clienteOpp').value = '';
+  document.getElementById('f_oppVinculada').value = '';
   document.getElementById('f_estadoEscenario').value = 'Diseñando solución';
   updateEstadoVisual();
   renderItems();
@@ -674,6 +679,32 @@ document.getElementById('btnNuevoEscenario').addEventListener('click', ()=>{
 
 const FIRESTORE_CUENTAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/cuentas?key=${FIREBASE_CONFIG.apiKey}`;
 let ACCOUNTS_BY_NAME = {};
+
+const BACKLOG_DATA_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/data?key=${FIREBASE_CONFIG.apiKey}`;
+let BACKLOG_OPPS = [];
+
+async function loadBacklogOppsForCalc(){
+  try{
+    const res = await fetch(BACKLOG_DATA_URL, {headers: await authHeader()});
+    if(!res.ok) return;
+    const doc = await res.json();
+    const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+    BACKLOG_OPPS = raw ? JSON.parse(raw).filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto') : [];
+    const sel = document.getElementById('f_oppVinculada');
+    sel.innerHTML = '<option value="">— Sin vincular —</option>' + BACKLOG_OPPS.map(o=>
+      `<option value="${o.id}">${o.id} · ${escapeHtml(o.cliente||'—')}${o.nombreOpp?' - '+escapeHtml(o.nombreOpp):''}</option>`
+    ).join('');
+  }catch(e){ BACKLOG_OPPS = []; }
+}
+
+document.getElementById('f_oppVinculada').addEventListener('change', ()=>{
+  const id = document.getElementById('f_oppVinculada').value;
+  if(!id) return;
+  const opp = BACKLOG_OPPS.find(o=>o.id===id);
+  if(!opp) return;
+  document.getElementById('f_clienteOpp').value = opp.id + ' · ' + (opp.cliente||'') + (opp.nombreOpp?' - '+opp.nombreOpp:'');
+  document.getElementById('f_clienteOpp').dispatchEvent(new Event('input'));
+});
 
 async function loadAccountsForCalc(){
   try{
@@ -707,6 +738,7 @@ document.getElementById('f_clienteOpp').addEventListener('input', ()=>{
 async function bootApp(){
   await loadTarifario();
   await loadAccountsForCalc();
+  await loadBacklogOppsForCalc();
   await loadEscenariosFromCloud();
   renderItems();
   renderTotales();
