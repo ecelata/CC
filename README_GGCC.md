@@ -9,7 +9,7 @@ Este documento es el ancla del proyecto — si en algún momento una conversaci�
 
 ## 1. Qué es esto
 
-Suite de 4 herramientas HTML standalone para gestión comercial GGCC (Grandes Cuentas), books Banca + CCEE Servicios + CCEE Industria, bajo Gerente G1 Ramírez Gonzalo, con 3 responsables: Casil Silvana Paula (G2, Banca), Urrutigoity Raúl (Jefe/Coordinador, CCEE), Banovaz Gabriela Edith (Jefe/Coordinador, CCEE).
+Suite de 4 herramientas HTML standalone para gestión comercial GGCC (Grandes Clientes), books Banca + CCEE (Cuentas Estratégicas) Servicios + CCEE Industria, bajo Gerente G1 Ramírez Gonzalo, con 3 responsables: Casil Silvana Paula (G2, Banca), Urrutigoity Raúl (Jefe/Coordinador, CCEE), Banovaz Gabriela Edith (Jefe/Coordinador, CCEE).
 
 Comparten identidad visual (beige + celeste Bitrix, DM Sans), un **CSS compartido** (`design-system.css`), una barra de navegación común, y login obligatorio con Google.
 
