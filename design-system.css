@@ -28,6 +28,8 @@
   --green-bg:#E8F0EB;
   --red:#C44D1A;
   --red-bg:#FDF0EA;
+  --zebra-odd:#F8F6F1;
+  --zebra-even:#EEEAE0;
 
   /* Tipografías */
   --sans:'DM Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
@@ -100,6 +102,8 @@ html[data-theme="rojo"]{
   --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
   --heading:'Inter',var(--sans);
   --display:'Inter',var(--sans);
+  --zebra-odd:#FAFAFA;
+  --zebra-even:#F0F0F1;
 }
 
 /* Selector de tema — dos puntitos de color en la suite-nav */
