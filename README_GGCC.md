@@ -1,6 +1,6 @@
 # GGCC · Suite comercial — README de referencia
 
-**Última actualización:** 31/08/2026 (tarde) — sumado el CSS compartido y la paleta celeste Bitrix
+**Última actualización:** 01/09/2026 — selector de tema (celeste/rojo), siglas GGCC/CCEE corregidas, Tipo Contrato renombrado
 **Repo:** `github.com/ecelata/CC` · **Publicado en:** `https://ecelata.github.io/CC/`
 
 Este documento es el ancla del proyecto — si en algún momento una conversación con Claude se pierde o se comprime, este archivo (más el código y los datos en Firestore) alcanza para retomar todo desde cero.
@@ -11,11 +11,12 @@ Este documento es el ancla del proyecto — si en algún momento una conversaci�
 
 Suite de 4 herramientas HTML standalone para gestión comercial GGCC (Grandes Clientes), books Banca + CCEE (Cuentas Estratégicas) Servicios + CCEE Industria, bajo Gerente G1 Ramírez Gonzalo, con 3 responsables: Casil Silvana Paula (G2, Banca), Urrutigoity Raúl (Jefe/Coordinador, CCEE), Banovaz Gabriela Edith (Jefe/Coordinador, CCEE).
 
-Comparten identidad visual (beige + celeste Bitrix, DM Sans), un **CSS compartido** (`design-system.css`), una barra de navegación común, y login obligatorio con Google.
+Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **tema alternativo rojo/blanco-gris intercambiable**), un **CSS compartido** (`design-system.css` + `theme-toggle.js`), una barra de navegación común, y login obligatorio con Google.
 
 | Herramienta | Archivo | Qué hace | Datos |
 |---|---|---|---|
 | Sistema de diseño | `design-system.css` | Colores, tipografías, nav, login, botones — compartido por las 4 | No es una página, es la hoja de estilos de todas |
+| Selector de tema | `theme-toggle.js` | Inyecta los dos puntitos (celeste/rojo) en la nav, guarda la elección en localStorage | No es una página, es lógica compartida |
 | Portal | `index.html` | Landing con tarjetas a las 3 herramientas | Sin datos propios |
 | Cartera | `dashboard.html` | Visualiza las ~587 cuentas de la cartera filtrada | Firestore (`backlog/cuentas`) |
 | Backlog | `Backlog_Preventa.html` | Pipeline de oportunidades, BANT, bitácora, Agenda/Kanban | Firestore (`backlog/data`, `backlog/agenda_tasks`) |
@@ -50,7 +51,13 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans), un **CSS compartid
 - Secundarios: mostaza `#B8940A` (`--gold`), terracota `#C44D1A` (`--red`, semántico de alerta/perdido), verde `#1E5C3A` (`--green`, semántico de "Ganado" — ya no es el acento de marca)
 - Tipografía: **DM Sans** para todo (cuerpo y títulos, peso 700 en los `h1`). Se probó Instrument Serif para los títulos grandes y se descartó — quedaba mal, mantener todo en DM Sans.
 
-**Para cambiar la paleta/tipografía en el futuro:** editar solo `design-system.css`, subir ese único archivo — las 4 herramientas heredan el cambio automáticamente, sin tocar cada HTML.
+**Selector de tema (celeste/rojo):** `theme-toggle.js` agrega dos puntitos a la barra de navegación (izquierda de todo, no requiere tocar el HTML). El tema se guarda en `localStorage` (`ggcc_theme`), persiste entre sesiones.
+- **Celeste** (default): paleta beige + acento Bitrix, tipografía DM Sans.
+- **Rojo**: fondo blanco/gris neutro (`#F5F5F6`), acento rojo institucional (`#D32433`), tipografía **Inter** (no DM Sans) — inspirado en un sitio bancario (ICBC), sin replicar su marca exacta.
+- Ambas variantes viven en `design-system.css`, bajo el selector `html[data-theme="rojo"]{...}` — cualquier color/fuente que se use en un HTML individual **tiene que pasar por variable** (`var(--paper)`, `var(--stamp)`, etc.), nunca un hex pegado a mano, o no va a responder al cambio de tema. Ya pasó una vez (paneles/zebra-stripe con `#FBFAF6`/`#F8F6F1` hardcodeados) y hubo que salir a cazarlos — variables `--zebra-odd`/`--zebra-even` se agregaron después para cubrir ese caso.
+- Para agregar Inter (u otra fuente del tema alternativo) hay que importarla en el `<link>` de Google Fonts de **cada** HTML, aunque el tema por defecto no la use — si no, el navegador no la tiene descargada cuando el usuario cambia de tema.
+
+**Para cambiar la paleta/tipografía en el futuro:** editar solo `design-system.css` (y `theme-toggle.js` si cambia la lógica del selector), subir esos archivos — las 4 herramientas heredan el cambio automáticamente, sin tocar cada HTML.
 
 ---
 
@@ -111,7 +118,7 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans), un **CSS compartid
 
 **BANT:** `bantBudget/Authority/Need/Timeline` (cuadrante 2x2 compacto en tabla), `necesidad`, `bantObs`.
 
-**Plata:** `montoOneShot`, `mesRecurrente` → `valorTotal` (oneShot + mesRecurrente×12), `montoPonderado` (valorTotal × probCierre).
+**Plata:** `montoOneShot`, `mesRecurrente` → `valorTotal` (oneShot + mesRecurrente×12), `montoPonderado` (valorTotal × probCierre). `tipoContrato` (**One-Shot** / **MRR** / **ARR** / **Mixto** — MRR = *Monthly Recurring Revenue*, ARR = *Annual Recurring Revenue*, no son iniciales de "mes/año" en español aunque coincida el significado). Distingue naturaleza del pago (único vs. recurrente), no si el monto recurrente es fijo o variable — un fee % variable sigue siendo MRR si se cobra mes a mes. `margenEstimado` (%) es un campo informativo, no participa en ningún cálculo automático.
 
 **Fechas:** `fechaEntrada`, `fechaDeadline`, `fechaEstCierre` → `diasRestantes`.
 
@@ -138,6 +145,10 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans), un **CSS compartid
 | OPP-011 | Terminal Zarate SA | CCEE Servicios | 4-POC |
 | OPP-012 | Arte Gráfico Editorial Argentino SA (AGEA) | CCEE Servicios | 6-Negociación |
 
+**AGEA — desglose de la propuesta (Alternativa 1, fee 5%):** commitment GCP a 5 años, NO son USD 1.4MM anuales — ese es el **consumo actual** (baseline). El commit nuevo escala de USD 1.493.500 (año 1) a USD 1.699.500 (año 5), total USD 8.075.200. Ingreso real para Personal Tech: fee 5% sobre consumo (prom. ≈USD 6.729/mes) + Cloud Interconnect USD 3.900/mes + SSPP FinOps/DBA Oracle USD 2.300/mes ≈ **USD 12.929/mes total**, cargado como `tipoContrato: MRR` (no Mixto — no hay pago único). Créditos Google (USD 440K) y descuentos (~USD 1.3MM ahorro) son beneficio para AGEA, no facturación de Personal Tech — van en Notas técnicas, no en los campos de monto.
+
+**Molinos Agro — lección de reasignación interna:** el EECC cambió de Pronzati Diego Fabian a Varela Mariano entre el Excel de hace 3 meses y el de ayer, **sin cambiar de Jefe/Coordinador** (ambos bajo Urrutigoity). Este tipo de cambio no lo detecta la comparación semanal de altas/bajas (que solo mira movimientos de Jefe/G2) — para corregirlo, reseleccionar el cliente en el desplegable de la oportunidad afectada.
+
 Revolut opera en Argentina bajo la razón social de Banco Cetelem Argentina SA (entidad adquirida, sin personería jurídica propia todavía).
 
 ---
@@ -146,6 +157,9 @@ Revolut opera en Argentina bajo la razón social de Banco Cetelem Argentina SA (
 
 - **Escalar a equipo + tablero de gerencia consolidado.** Plan definido, no iniciado: Firebase Auth multi-usuario, datos por usuario (`backlog/{uid}`), reglas por dueño + lectura ampliada para gerentes, página de gerencia consolidada, filtro de cartera configurable por persona.
 - **Skyblue Analytics** — única de las 12 sin confirmar razón social real en la cartera.
+- **Historial en la Agenda (Kanban):** hoy las tarjetas "Hecho" no acumulan historial — idea a implementar: que cada tarjeta tenga su propia bitácora (igual que las oportunidades), y que al resolver una tarea, en vez de archivarla sin más, se pueda generar una tarea nueva vinculada a la misma raíz (mismo cliente/oportunidad) volviendo a "Por hacer" — así se arma una cadena trazable en el tiempo por proyecto, no tarjetas sueltas sin conexión.
+
+**Documento de referencia ya generado:** `Resumen_Funcionalidades_GGCC.docx` — listado de funcionalidades en viñetas, pensado para presentar la suite al equipo. Si se agregan funcionalidades nuevas grandes, conviene regenerarlo.
 
 ---
 
@@ -158,3 +172,4 @@ Revolut opera en Argentina bajo la razón social de Banco Cetelem Argentina SA (
 - **Ningún CSV con datos reales debe volver a vivir en el repo** — todo pasa por Firestore, con login. Un `.csv` nuevo con datos de cuentas/tarifario en el repo es un retroceso de seguridad.
 - **GitHub Pages nunca es privado**, aunque el repo lo sea (salvo Enterprise) — la seguridad real es login + reglas de Firestore, nunca ocultar el hosting.
 - **Nunca duplicar colores/fuentes/nav/botones dentro de un HTML** — todo eso va a `design-system.css`. Si alguna herramienta nueva necesita un estilo que ya existe ahí, importarlo, no copiarlo.
+- **Todo color/fuente visible debe pasar por variable CSS** (`var(--paper)`, `var(--stamp)`, etc.), nunca un hex pegado a mano — si no, el selector de tema (celeste/rojo) no lo detecta y queda "roto" a mitad de camino.
