@@ -28,33 +28,6 @@
     --red-bg:#F3DCD8;
     --shadow: 0 1px 2px rgba(34,38,31,0.06), 0 4px 14px rgba(34,38,31,0.06);
   }
-  html[data-theme="corporativo"]{
-    --paper:#FFFFFF;
-    --paper-2:#F4F7F9;
-    --ink:#333333;
-    --ink-soft:#5C6570;
-    --ink-faint:#8C97A3;
-    --line:#D9E3E8;
-    --line-strong:#448EB4;
-    --stamp:#006699;
-    --stamp-dark:#004D73;
-    --stamp-bg:#E8F1F7;
-    --mustard:#8DC63F;
-    --mustard-bg:#EEF7DF;
-    --green:#8DC63F;
-    --green-bg:#EEF7DF;
-    --amber:#C98A1E;
-    --amber-bg:#FBF0DC;
-    --red:#C0392B;
-    --red-bg:#F8E2DE;
-    --shadow: 0 1px 2px rgba(0,51,77,0.06), 0 4px 14px rgba(0,51,77,0.08);
-  }
-  .theme-switch{display:flex;gap:4px;align-items:center;margin-right:8px;}
-  .theme-switch button{
-    padding:5px 10px;font-size:11px;border-radius:3px;
-    border:1px solid var(--line-strong);background:var(--paper);color:var(--ink-soft);
-  }
-  .theme-switch button.active{background:var(--stamp);color:#fff;border-color:var(--stamp-dark);}
   *{box-sizing:border-box;}
   body{
     margin:0;
@@ -207,11 +180,6 @@
       <div class="sub" id="subtitle">cargando…</div>
     </div>
     <div class="topbar-actions">
-      <div class="theme-switch" id="themeSwitch">
-        <button data-theme-btn="ledger" class="active">Ledger</button>
-        <button data-theme-btn="corporativo">Corporativo</button>
-      </div>
-      <button class="ghost" id="btnLinkFolder">🔗 Vincular carpeta</button>
       <button class="ghost" id="btnExportJson">Exportar JSON</button>
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
       <button class="ghost" id="btnImport">Importar JSON</button>
@@ -345,153 +313,29 @@ function estadoSemaforo(o){
 }
 
 const STORAGE_AVAILABLE = (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
-const FS_ACCESS_SUPPORTED = (typeof window.showDirectoryPicker === 'function');
-const FS_FILENAME = 'backlog_preventa_data.json';
-let dirHandle = null;
-
-function idbOpen(){
-  return new Promise((resolve,reject)=>{
-    const req = indexedDB.open('backlog_preventa_fs', 1);
-    req.onupgradeneeded = ()=>{ req.result.createObjectStore('handles'); };
-    req.onsuccess = ()=>resolve(req.result);
-    req.onerror = ()=>reject(req.error);
-  });
-}
-async function idbSetHandle(handle){
-  const db = await idbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction('handles','readwrite');
-    tx.objectStore('handles').put(handle, 'dirHandle');
-    tx.oncomplete = ()=>resolve();
-    tx.onerror = ()=>reject(tx.error);
-  });
-}
-async function idbGetHandle(){
-  const db = await idbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction('handles','readonly');
-    const req = tx.objectStore('handles').get('dirHandle');
-    req.onsuccess = ()=>resolve(req.result || null);
-    req.onerror = ()=>reject(req.error);
-  });
-}
-
-function updateFolderStatus(){
-  const btn = document.getElementById('btnLinkFolder');
-  if(!btn) return;
-  if(!FS_ACCESS_SUPPORTED){
-    btn.textContent = '🔗 Vincular carpeta (no soportado en este navegador)';
-    btn.disabled = true;
-    return;
-  }
-  btn.textContent = dirHandle ? ('📁 Carpeta vinculada: ' + dirHandle.name) : '🔗 Vincular carpeta';
-}
-
-async function tryReconnectFolder(){
-  if(!FS_ACCESS_SUPPORTED) return false;
-  try{
-    const saved = await idbGetHandle();
-    if(!saved) return false;
-    const perm = await saved.queryPermission({mode:'readwrite'});
-    if(perm === 'granted'){
-      dirHandle = saved;
-      return true;
-    }
-    dirHandle = null;
-    return false;
-  }catch(e){
-    return false;
-  }
-}
-
-async function linkFolder(){
-  if(!FS_ACCESS_SUPPORTED){
-    showToast('⚠️ Tu navegador no soporta esto. Usá Chrome o Edge de escritorio.');
-    return;
-  }
-  try{
-    const saved = await idbGetHandle();
-    if(saved){
-      const perm = await saved.requestPermission({mode:'readwrite'});
-      if(perm === 'granted'){
-        dirHandle = saved;
-        updateFolderStatus();
-        await loadData();
-        renderAll();
-        showToast('📁 Carpeta reconectada: ' + dirHandle.name);
-        return;
-      }
-    }
-    const handle = await window.showDirectoryPicker({mode:'readwrite'});
-    dirHandle = handle;
-    await idbSetHandle(handle);
-    updateFolderStatus();
-    await loadData();
-    renderAll();
-    await saveData();
-    showToast('📁 Carpeta vinculada: ' + dirHandle.name + '. Guardado automático activado.');
-  }catch(e){
-    if(e.name !== 'AbortError') showToast('⚠️ No se pudo vincular la carpeta.');
-  }
-}
-
-async function getFileHandle(create){
-  if(!dirHandle) return null;
-  try{
-    return await dirHandle.getFileHandle(FS_FILENAME, {create: !!create});
-  }catch(e){
-    return null;
-  }
-}
 
 async function loadData(){
-  if(dirHandle){
-    try{
-      const fh = await getFileHandle(false);
-      if(fh){
-        const file = await fh.getFile();
-        const text = await file.text();
-        DATA = text ? JSON.parse(text) : [];
-        DATA.forEach(computeFields);
-        return;
-      }
-    }catch(e){ }
+  if(!STORAGE_AVAILABLE){ DATA = []; DATA.forEach(computeFields); return; }
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    DATA = res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    DATA = [];
   }
-  if(STORAGE_AVAILABLE){
-    try{
-      const res = await window.storage.get(STORAGE_KEY, false);
-      DATA = res && res.value ? JSON.parse(res.value) : [];
-    }catch(e){
-      DATA = [];
-    }
-    DATA.forEach(computeFields);
-    return;
-  }
-  DATA = [];
   DATA.forEach(computeFields);
 }
-
 async function saveData(){
-  let savedToFolder = false;
-  if(dirHandle){
-    try{
-      const fh = await getFileHandle(true);
-      const writable = await fh.createWritable();
-      await writable.write(JSON.stringify(DATA, null, 2));
-      await writable.close();
-      savedToFolder = true;
-    }catch(e){
-      showToast('⚠️ No se pudo escribir en la carpeta vinculada.');
-    }
-  }
-  if(STORAGE_AVAILABLE){
-    try{ await window.storage.set(STORAGE_KEY, JSON.stringify(DATA), false); }catch(e){}
-  }
-  if(!savedToFolder && !STORAGE_AVAILABLE){
-    showToast('⚠️ Guardado automático no disponible. Vinculá una carpeta o usá "Exportar JSON".');
+  if(!STORAGE_AVAILABLE){
+    showToast('⚠️ Guardado automático no disponible acá afuera. Usá "Exportar JSON" para respaldar.');
     return false;
   }
-  return true;
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(DATA), false);
+    return true;
+  }catch(e){
+    showToast('⚠️ No se pudo guardar. Usá "Exportar JSON" para respaldar tus cambios.');
+    return false;
+  }
 }
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -875,7 +719,6 @@ document.getElementById('btnClearFilters').addEventListener('click', ()=>{
   document.getElementById('fBuscar').value='';
   renderTable();
 });
-document.getElementById('btnLinkFolder').addEventListener('click', linkFolder);
 document.getElementById('btnExportJson').addEventListener('click', ()=>{
   downloadFile(JSON.stringify(DATA,null,2), 'backlog_preventa.json', 'application/json');
 });
@@ -903,50 +746,8 @@ document.getElementById('fileImport').addEventListener('change', async (e)=>{
   e.target.value='';
 });
 
-const THEME_KEY = 'backlog_theme';
-function applyTheme(theme){
-  document.documentElement.setAttribute('data-theme', theme==='corporativo' ? 'corporativo' : 'ledger');
-  document.querySelectorAll('#themeSwitch button').forEach(b=>{
-    b.classList.toggle('active', b.dataset.themeBtn === theme);
-  });
-}
-async function saveTheme(theme){
-  if(STORAGE_AVAILABLE){
-    try{ await window.storage.set(THEME_KEY, theme, false); }catch(e){}
-  }
-}
-async function loadTheme(){
-  if(STORAGE_AVAILABLE){
-    try{
-      const res = await window.storage.get(THEME_KEY, false);
-      if(res && res.value) return res.value;
-    }catch(e){}
-  }
-  return 'ledger';
-}
-document.querySelectorAll('#themeSwitch button').forEach(b=>{
-  b.addEventListener('click', async ()=>{
-    const theme = b.dataset.themeBtn;
-    applyTheme(theme);
-    await saveTheme(theme);
-  });
-});
-
 (async function init(){
   populateFilterSelects();
-  const savedTheme = await loadTheme();
-  applyTheme(savedTheme);
-  updateFolderStatus();
-  if(FS_ACCESS_SUPPORTED){
-    const reconnected = await tryReconnectFolder();
-    updateFolderStatus();
-    if(!reconnected){
-      const saved = await idbGetHandle().catch(()=>null);
-      if(saved){
-        showToast('📁 Tenés una carpeta vinculada. Tocá "Vincular carpeta" para reconectarla (el navegador pide confirmarlo cada vez que abrís el archivo).');
-      }
-    }
-  }
   await loadData();
   renderAll();
 })();
