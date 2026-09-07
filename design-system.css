@@ -116,6 +116,9 @@ html[data-theme="nuevo"]{
   --stamp-bg:#E6F1FD;
   --paper:#F6F7FB;
   --paper-2:#FFFFFF;
+  --ink:#323338;
+  --ink-soft:#676879;
+  --ink-faint:#9699A6;
   --line:#E6E9EF;
   --line-strong:#D0D4DC;
   --green:#00C875;
@@ -126,6 +129,9 @@ html[data-theme="nuevo"]{
   --gold-bg:#FFF1DE;
   --zebra-odd:#FFFFFF;
   --zebra-even:#F6F7FB;
+  --sans:'Figtree',-apple-system,'Segoe UI',Roboto,sans-serif;
+  --heading:'Figtree',var(--sans);
+  --display:'Figtree',var(--sans);
 }
 /* Íconos de la nav solo visibles en el tema "Nuevo" */
 .suite-nav .nav-icon{display:none;width:14px;height:14px;margin-right:5px;vertical-align:-2px;}
