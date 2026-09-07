@@ -106,7 +106,35 @@ html[data-theme="rojo"]{
   --zebra-even:#F0F0F1;
 }
 
-/* Selector de tema — dos puntitos de color en la suite-nav */
+/* ============================================================
+   Tema alternativo — "Nuevo" (estilo work-OS colorido, con íconos)
+   Se activa con [data-theme="nuevo"] en <html>, vía theme-toggle.js
+   ============================================================ */
+html[data-theme="nuevo"]{
+  --stamp:#0073EA;
+  --stamp-dark:#0060C2;
+  --stamp-bg:#E6F1FD;
+  --paper:#F6F7FB;
+  --paper-2:#FFFFFF;
+  --line:#E6E9EF;
+  --line-strong:#D0D4DC;
+  --green:#00C875;
+  --green-bg:#E6FAF1;
+  --red:#E2445C;
+  --red-bg:#FCE8EA;
+  --gold:#FDAB3D;
+  --gold-bg:#FFF1DE;
+  --zebra-odd:#FFFFFF;
+  --zebra-even:#F6F7FB;
+}
+/* Íconos de la nav solo visibles en el tema "Nuevo" */
+.suite-nav .nav-icon{display:none;width:14px;height:14px;margin-right:5px;vertical-align:-2px;}
+html[data-theme="nuevo"] .suite-nav .nav-icon{display:inline-block;}
+/* Barra de color a la izquierda de un grupo (activos/inactivos), estilo monday */
+html[data-theme="nuevo"] .group-bar-green{border-left:3px solid var(--green);}
+html[data-theme="nuevo"] .group-bar-red{border-left:3px solid var(--red);}
+
+/* Selector de tema — puntitos de color en la suite-nav */
 .theme-toggle{display:flex;align-items:center;gap:6px;margin-left:auto;padding-right:4px;}
 .theme-toggle button{
   width:18px;height:18px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,0.4);
@@ -116,3 +144,4 @@ html[data-theme="rojo"]{
 .theme-toggle button.active{border-color:#fff;box-shadow:0 0 0 2px var(--stamp-dark);}
 .theme-toggle .dot-celeste{background:#00AEEF;}
 .theme-toggle .dot-rojo{background:#D32433;}
+.theme-toggle .dot-nuevo{background:linear-gradient(135deg,#0073EA 50%,#00C875 50%);}
