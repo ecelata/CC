@@ -119,8 +119,8 @@ html[data-theme="nuevo"]{
   --ink:#323338;
   --ink-soft:#676879;
   --ink-faint:#9699A6;
-  --line:#E6E9EF;
-  --line-strong:#D0D4DC;
+  --line:#EDEFF5;
+  --line-strong:#DDE1E8;
   --green:#00C875;
   --green-bg:#E6FAF1;
   --red:#E2445C;
@@ -133,6 +133,21 @@ html[data-theme="nuevo"]{
   --heading:'Figtree',var(--sans);
   --display:'Figtree',var(--sans);
 }
+/* Menos "cajas con línea", más tarjetas flotando con sombra suave — look más limpio */
+html[data-theme="nuevo"] .kpi,
+html[data-theme="nuevo"] .panel,
+html[data-theme="nuevo"] .table-wrap,
+html[data-theme="nuevo"] .kanban-col,
+html[data-theme="nuevo"] .stat{
+  border-color:transparent;
+  box-shadow:0 1px 3px rgba(35,40,60,0.06), 0 1px 2px rgba(35,40,60,0.04);
+}
+html[data-theme="nuevo"] thead th{
+  border-bottom-color:var(--line);
+  color:var(--ink-faint);
+  font-weight:600;
+}
+html[data-theme="nuevo"] .tabs{border-bottom-color:var(--line);}
 /* Íconos de la nav solo visibles en el tema "Nuevo" */
 .suite-nav .nav-icon{display:none;width:14px;height:14px;margin-right:5px;vertical-align:-2px;}
 html[data-theme="nuevo"] .suite-nav .nav-icon{display:inline-block;}
