@@ -60,6 +60,7 @@
       <button type="button" class="dot-rojo ${saved==='rojo'?'active':''}" data-theme-btn="rojo" title="Rojo"></button>
       <button type="button" class="dot-nuevo ${saved==='nuevo'?'active':''}" data-theme-btn="nuevo" title="Nuevo"></button>
       <button type="button" class="dot-claro ${saved==='claro'?'active':''}" data-theme-btn="claro" title="Claro"></button>
+      <button type="button" class="dot-oscuro ${saved==='oscuro'?'active':''}" data-theme-btn="oscuro" title="Oscuro"></button>
     `;
     nav.appendChild(wrap);
     wrap.querySelectorAll('[data-theme-btn]').forEach(btn=>{
