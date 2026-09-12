@@ -155,6 +155,57 @@ html[data-theme="nuevo"] .suite-nav .nav-icon{display:inline-block;}
 html[data-theme="nuevo"] .group-bar-green{border-left:3px solid var(--green);}
 html[data-theme="nuevo"] .group-bar-red{border-left:3px solid var(--red);}
 
+/* ============================================================
+   Tema alternativo — "Claro" (minimalista, tipo bloc de notas)
+   Blanco puro, texto gris cálido, casi sin bordes, fuente del
+   sistema (sin webfont) — se activa con [data-theme="claro"]
+   ============================================================ */
+html[data-theme="claro"]{
+  --paper:#FFFFFF;
+  --paper-2:#FFFFFF;
+  --ink:#37352F;
+  --ink-soft:#787774;
+  --ink-faint:#9B9A97;
+  --line:#EBEBEA;
+  --line-strong:#E3E2E0;
+  --stamp:#2383E2;
+  --stamp-dark:#0B6FCC;
+  --stamp-bg:#E7F3FF;
+  --green:#448361;
+  --green-bg:#EDF3EC;
+  --red:#D44C47;
+  --red-bg:#FBECEC;
+  --gold:#CB912F;
+  --gold-bg:#FBF3DB;
+  --zebra-odd:#FFFFFF;
+  --zebra-even:#FBFBFA;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --heading:var(--sans);
+  --display:var(--sans);
+}
+html[data-theme="claro"] h1{font-weight:700;}
+html[data-theme="claro"] .kpi,
+html[data-theme="claro"] .panel,
+html[data-theme="claro"] .table-wrap,
+html[data-theme="claro"] .kanban-col,
+html[data-theme="claro"] .stat{
+  border-color:var(--line);
+  box-shadow:none;
+}
+html[data-theme="claro"] thead th{
+  border-bottom-color:var(--line);
+  color:var(--ink-faint);
+  font-weight:500;
+  background:transparent;
+}
+html[data-theme="claro"] .suite-nav{background:#FFFFFF;border-bottom:1px solid var(--line);}
+html[data-theme="claro"] .suite-nav a{color:var(--ink-soft);}
+html[data-theme="claro"] .suite-nav a:hover{color:var(--ink);}
+html[data-theme="claro"] .suite-nav a.current{color:var(--ink);border-bottom-color:var(--stamp);}
+html[data-theme="claro"] .suite-nav .suite-brand{color:var(--ink);border-right-color:var(--line);}
+html[data-theme="claro"] button.primary{background:var(--ink);border-color:var(--ink);}
+html[data-theme="claro"] button.primary:hover{background:#000;border-color:#000;}
+
 /* Selector de tema — puntitos de color en la suite-nav */
 .theme-toggle{display:flex;align-items:center;gap:6px;margin-left:auto;padding-right:4px;}
 .theme-toggle button{
@@ -166,3 +217,5 @@ html[data-theme="nuevo"] .group-bar-red{border-left:3px solid var(--red);}
 .theme-toggle .dot-celeste{background:#00AEEF;}
 .theme-toggle .dot-rojo{background:#D32433;}
 .theme-toggle .dot-nuevo{background:linear-gradient(135deg,#0073EA 50%,#00C875 50%);}
+.theme-toggle .dot-claro{background:#F7F7F5;border-color:rgba(55,53,47,0.3) !important;}
+html[data-theme="claro"] .theme-toggle button.active{box-shadow:0 0 0 2px var(--stamp);}
