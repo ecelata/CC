@@ -246,5 +246,7 @@ html[data-theme="oscuro"]{
 }
 html[data-theme="oscuro"] .suite-nav{background:#101010;}
 html[data-theme="oscuro"] button{background:var(--paper-2);color:var(--ink);}
-html[data-theme="oscuro"] button.primary{color:#101010;}
+html[data-theme="oscuro"] button.primary{background:var(--stamp);border-color:var(--stamp);color:#101010;}
+html[data-theme="oscuro"] button.danger{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+html[data-theme="oscuro"] button.ghost{background:transparent;}
 .theme-toggle .dot-oscuro{background:#101010;border-color:rgba(255,255,255,0.5) !important;}
