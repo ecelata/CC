@@ -219,3 +219,32 @@ html[data-theme="claro"] button.primary:hover{background:#000;border-color:#000;
 .theme-toggle .dot-nuevo{background:linear-gradient(135deg,#0073EA 50%,#00C875 50%);}
 .theme-toggle .dot-claro{background:#F7F7F5;border-color:rgba(55,53,47,0.3) !important;}
 html[data-theme="claro"] .theme-toggle button.active{box-shadow:0 0 0 2px var(--stamp);}
+
+/* ============================================================
+   Tema alternativo — "Oscuro" (simple, sin vueltas)
+   Se activa con [data-theme="oscuro"] en <html>
+   ============================================================ */
+html[data-theme="oscuro"]{
+  --paper:#191919;
+  --paper-2:#242424;
+  --ink:#E8E6E3;
+  --ink-soft:#A8A29B;
+  --ink-faint:#6F6B66;
+  --line:#333333;
+  --line-strong:#454545;
+  --stamp:#29B6F6;
+  --stamp-dark:#0288D1;
+  --stamp-bg:#0D2A38;
+  --green:#4CAF7D;
+  --green-bg:#16332A;
+  --red:#E57373;
+  --red-bg:#3A2323;
+  --gold:#FFB74D;
+  --gold-bg:#3A2E17;
+  --zebra-odd:#1E1E1E;
+  --zebra-even:#232323;
+}
+html[data-theme="oscuro"] .suite-nav{background:#101010;}
+html[data-theme="oscuro"] button{background:var(--paper-2);color:var(--ink);}
+html[data-theme="oscuro"] button.primary{color:#101010;}
+.theme-toggle .dot-oscuro{background:#101010;border-color:rgba(255,255,255,0.5) !important;}
