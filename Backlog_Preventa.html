@@ -56,6 +56,11 @@
     border-bottom:1px solid var(--line-strong);background:var(--paper-2);
     white-space:nowrap;
   }
+  thead th[data-sort]{cursor:pointer;user-select:none;}
+  thead th[data-sort]:hover{color:var(--stamp-dark);}
+  thead th[data-sort]::after{content:'';display:inline-block;width:10px;}
+  thead th[data-sort].sort-asc::after{content:'▲';color:var(--stamp);font-size:8px;margin-left:4px;}
+  thead th[data-sort].sort-desc::after{content:'▼';color:var(--stamp);font-size:8px;margin-left:4px;}
   tbody td{padding:5px 9px;border-bottom:1px solid var(--line);vertical-align:middle;line-height:1.25;}
   tbody tr{cursor:pointer;}
   tbody tr:nth-child(odd){background:var(--zebra-odd);}
@@ -303,6 +308,25 @@
   </div>
 
   <div class="view active" id="viewTabla">
+    <div class="agenda-topbar" style="margin-bottom:14px;">
+      <h3 style="margin:0;">Agenda</h3>
+      <button class="primary btn-new-task">+ Nueva tarea</button>
+    </div>
+    <div class="kanban-board" style="margin-bottom:28px;">
+      <div class="kanban-col" data-col="porhacer">
+        <div class="kanban-col-head">Por hacer <span class="kanban-count" data-kanban-count="porhacer">0</span></div>
+        <div class="kanban-drop" data-col="porhacer" data-kanban-col="porhacer"></div>
+      </div>
+      <div class="kanban-col" data-col="encurso">
+        <div class="kanban-col-head">En curso <span class="kanban-count" data-kanban-count="encurso">0</span></div>
+        <div class="kanban-drop" data-col="encurso" data-kanban-col="encurso"></div>
+      </div>
+      <div class="kanban-col" data-col="hecho">
+        <div class="kanban-col-head">Hecho <span class="kanban-count" data-kanban-count="hecho">0</span></div>
+        <div class="kanban-drop" data-col="hecho" data-kanban-col="hecho"></div>
+      </div>
+    </div>
+
     <h3 id="tableTitle" style="margin-bottom:10px;">Oportunidades activas</h3>
     <div class="filters">
       <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
@@ -319,12 +343,12 @@
       <table id="tabla">
         <thead>
           <tr>
-            <th>N°</th><th>Cliente</th><th>Segmento</th><th>Etapa</th><th>Prob.</th>
-            <th>EECC</th>
-            <th class="bant-th" title="Budget / Authority / Need / Timeline">BANT</th>
-            <th class="money">One Shot</th><th class="money">Mensual</th>
-            <th class="money">Valor total</th><th class="money">Ponderado</th>
-            <th>Vertical</th><th>Unidad Neg.</th><th>Proveedor</th><th>Estado prop.</th><th>Fecha cierre est.</th><th>Estado</th><th>Días</th>
+            <th data-sort="id">N°</th><th data-sort="cliente">Cliente</th><th data-sort="segmento">Segmento</th><th data-sort="etapa">Etapa</th><th data-sort="probCierre">Prob.</th>
+            <th data-sort="eecc">EECC</th>
+            <th class="bant-th" data-sort="bant" title="Budget / Authority / Need / Timeline">BANT</th>
+            <th class="money" data-sort="montoOneShot">One Shot</th><th class="money" data-sort="mesRecurrente">Mensual</th>
+            <th class="money" data-sort="valorTotal">Valor total</th><th class="money" data-sort="montoPonderado">Ponderado</th>
+            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="estadoPropuesta">Estado prop.</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -344,20 +368,20 @@
   <div class="view" id="viewAgenda">
     <div class="agenda-topbar">
       <h3 style="margin:0;">Agenda</h3>
-      <button class="primary" id="btnNewTask">+ Nueva tarea</button>
+      <button class="primary btn-new-task">+ Nueva tarea</button>
     </div>
-    <div class="kanban-board" id="kanbanBoard">
+    <div class="kanban-board">
       <div class="kanban-col" data-col="porhacer">
-        <div class="kanban-col-head">Por hacer <span class="kanban-count" id="countPorhacer">0</span></div>
-        <div class="kanban-drop" data-col="porhacer" id="colPorhacer"></div>
+        <div class="kanban-col-head">Por hacer <span class="kanban-count" data-kanban-count="porhacer">0</span></div>
+        <div class="kanban-drop" data-col="porhacer" data-kanban-col="porhacer"></div>
       </div>
       <div class="kanban-col" data-col="encurso">
-        <div class="kanban-col-head">En curso <span class="kanban-count" id="countEncurso">0</span></div>
-        <div class="kanban-drop" data-col="encurso" id="colEncurso"></div>
+        <div class="kanban-col-head">En curso <span class="kanban-count" data-kanban-count="encurso">0</span></div>
+        <div class="kanban-drop" data-col="encurso" data-kanban-col="encurso"></div>
       </div>
       <div class="kanban-col" data-col="hecho">
-        <div class="kanban-col-head">Hecho <span class="kanban-count" id="countHecho">0</span></div>
-        <div class="kanban-drop" data-col="hecho" id="colHecho"></div>
+        <div class="kanban-col-head">Hecho <span class="kanban-count" data-kanban-count="hecho">0</span></div>
+        <div class="kanban-drop" data-col="hecho" data-kanban-col="hecho"></div>
       </div>
     </div>
   </div>
@@ -719,6 +743,41 @@ function getFiltered(){
   });
 }
 
+let sortKey = null;
+let sortDir = 1;
+function sortValue(o, key){
+  if(key==='etapa') return ETAPAS.indexOf(o.etapa);
+  if(key==='bant') return bantScore(o);
+  return o[key];
+}
+function applySort(list){
+  if(!sortKey) return list;
+  const sorted = [...list].sort((a,b)=>{
+    let va = sortValue(a, sortKey);
+    let vb = sortValue(b, sortKey);
+    const aEmpty = va===null || va===undefined || va==='';
+    const bEmpty = vb===null || vb===undefined || vb==='';
+    if(aEmpty && bEmpty) return 0;
+    if(aEmpty) return 1;
+    if(bEmpty) return -1;
+    if(typeof va==='number' && typeof vb==='number') return (va-vb)*sortDir;
+    return String(va).localeCompare(String(vb), 'es', {numeric:true, sensitivity:'base'}) * sortDir;
+  });
+  return sorted;
+}
+function wireSortableHeaders(){
+  document.querySelectorAll('thead th[data-sort]').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const key = th.getAttribute('data-sort');
+      if(sortKey===key){ sortDir = -sortDir; }
+      else{ sortKey = key; sortDir = 1; }
+      document.querySelectorAll('thead th[data-sort]').forEach(t=>t.classList.remove('sort-asc','sort-desc'));
+      th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+      renderTable();
+    });
+  });
+}
+
 function renderKpis(){
   const el = document.getElementById('kpis');
   if(boardView==='cerradas'){
@@ -881,7 +940,7 @@ function renderDashboard(){
 }
 
 function renderTable(){
-  const list = getFiltered();
+  const list = applySort(getFiltered());
   const tbody = document.getElementById('tbody');
   const empty = document.getElementById('emptyState');
   if(DATA.length===0){
@@ -1368,6 +1427,7 @@ function renderAll(){
   DATA.forEach(computeFields);
   renderKpis();
   renderTable();
+  renderKanban();
   if(document.getElementById('viewPanorama').classList.contains('active')) renderDashboard();
   document.getElementById('subtitle').textContent = DATA.length + (DATA.length===1?' oportunidad registrada':' oportunidades registradas');
 }
@@ -1502,9 +1562,12 @@ function renderKanban(){
   const cols = {porhacer:[], encurso:[], hecho:[]};
   TASKS.forEach(t=>{ if(cols[t.columna]) cols[t.columna].push(t); else cols.porhacer.push(t); });
   ['porhacer','encurso','hecho'].forEach(col=>{
-    const el = document.getElementById('col'+col.charAt(0).toUpperCase()+col.slice(1));
-    el.innerHTML = cols[col].length ? cols[col].map(taskCardHtml).join('') : '<div class="kanban-empty">Sin tareas</div>';
-    document.getElementById('count'+col.charAt(0).toUpperCase()+col.slice(1)).textContent = cols[col].length;
+    document.querySelectorAll('[data-kanban-col="'+col+'"]').forEach(el=>{
+      el.innerHTML = cols[col].length ? cols[col].map(taskCardHtml).join('') : '<div class="kanban-empty">Sin tareas</div>';
+    });
+    document.querySelectorAll('[data-kanban-count="'+col+'"]').forEach(el=>{
+      el.textContent = cols[col].length;
+    });
   });
   wireKanbanCards();
 }
@@ -1606,7 +1669,9 @@ async function deleteTaskFromModal(){
   await saveTasks();
 }
 
-document.getElementById('btnNewTask').addEventListener('click', ()=>openTaskModal(null));
+document.querySelectorAll('.btn-new-task').forEach(btn=>{
+  btn.addEventListener('click', ()=>openTaskModal(null));
+});
 document.getElementById('btnCancelTask').addEventListener('click', closeTaskModal);
 document.getElementById('btnSaveTask').addEventListener('click', saveTaskFromModal);
 document.getElementById('btnDeleteTask').addEventListener('click', deleteTaskFromModal);
@@ -1618,6 +1683,7 @@ document.getElementById('tk_titulo').addEventListener('keydown', (ev)=>{
 
 async function bootApp(){
   populateFilterSelects();
+  wireSortableHeaders();
   await Promise.all([loadData(), loadAccounts(), loadTasks()]);
   renderAll();
 }
