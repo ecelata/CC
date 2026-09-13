@@ -148,6 +148,9 @@
   .drawer-head h2{font-size:21px;}
   .drawer-head .id-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:3px;}
   .section{margin-bottom:22px;border-top:1px solid var(--line);padding-top:16px;}
+  .hint{font-size:11.5px;color:var(--ink-faint);}
+  .proyecto-badge{background:var(--green-bg);border:1px solid var(--green);color:var(--green);border-radius:6px;padding:10px 14px;font-size:12.5px;}
+  .proyecto-badge a{color:var(--stamp-dark);font-weight:600;}
   .section:first-of-type{border-top:none;padding-top:0;}
   .section h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);margin-bottom:12px;font-family:'Inter',sans-serif;font-weight:600;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;}
@@ -288,6 +291,7 @@
   <a href="index.html">Portal</a>
   <a href="dashboard.html">Cartera</a>
   <a href="Backlog_Preventa.html" class="current">Backlog</a>
+  <a href="proyectos.html">Proyectos</a>
   <a href="calculadora.html">Calculadora</a>
 </div>
 <div class="app">
@@ -679,7 +683,75 @@ function showToast(msg){
 }
 
 let TASKS = [];
+let PROYECTOS = [];
 const TASKS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/agenda_tasks?key=${FIREBASE_CONFIG.apiKey}`;
+const PROYECTOS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/proyectos?key=${FIREBASE_CONFIG.apiKey}`;
+const PROYECTOS_LOCAL_CACHE_KEY = 'backlog_proyectos_cache_v1';
+
+async function loadProyectos(){
+  try{
+    const res = await fetch(PROYECTOS_DOC_URL, {headers: await authHeader()});
+    if(res.status === 404){
+      PROYECTOS = [];
+    }else if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      PROYECTOS = raw ? JSON.parse(raw) : [];
+    }else{
+      throw new Error('HTTP ' + res.status);
+    }
+    localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+  }catch(e){
+    try{
+      const cached = localStorage.getItem(PROYECTOS_LOCAL_CACHE_KEY);
+      PROYECTOS = cached ? JSON.parse(cached) : [];
+    }catch(e2){ PROYECTOS = []; }
+  }
+}
+
+async function saveProyectos(){
+  localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+  try{
+    const body = { fields: { json: { stringValue: JSON.stringify(PROYECTOS) }, updatedAt: { timestampValue: new Date().toISOString() } } };
+    const url = PROYECTOS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    return true;
+  }catch(e){
+    showToast('⚠️ No se pudo sincronizar el proyecto con la nube.');
+    return false;
+  }
+}
+
+async function convertirAProyecto(o){
+  if(o.proyectoId) return;
+  const nextNum = PROYECTOS.length + 1;
+  const proyId = 'PROY-' + String(nextNum).padStart(3,'0');
+  const proyecto = {
+    id: proyId,
+    oppId: o.id,
+    cliente: o.cliente, cuit: o.cuit, segmento: o.segmento, eecc: o.eecc,
+    ingenieroPreventa: o.ingenieroPreventa, responsableSegmento: o.responsableSegmento,
+    vertical: o.vertical, proveedor: o.proveedor, producto: o.producto,
+    valorTotal: o.valorTotal, montoPonderado: o.montoPonderado,
+    nombreProyecto: o.nombreOpp || o.cliente,
+    projectManager: '', liderTecnico: '',
+    fechaInicio: '', fechaFinEstimada: '',
+    estadoProyecto: 'Planificación',
+    notas: '',
+    fases: [],
+    creadoDesde: new Date().toISOString()
+  };
+  PROYECTOS.push(proyecto);
+  o.proyectoId = proyId;
+  const dataItem = DATA.find(x=>x.id===o.id);
+  if(dataItem) dataItem.proyectoId = proyId;
+  await Promise.all([saveProyectos(), saveData()]);
+  showToast('🚀 Proyecto ' + proyId + ' creado — abrilo en Proyectos para completar los detalles');
+  const sec = document.getElementById('proyectoSection');
+  if(sec) sec.innerHTML = `<div class="proyecto-badge">🚀 Proyecto creado: <strong>${proyId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a></div>`;
+  renderTable();
+}
 const FIRESTORE_CUENTAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/cuentas?key=${FIREBASE_CONFIG.apiKey}`;
 const TASKS_LOCAL_CACHE_KEY = 'backlog_agenda_tasks_cache_v1';
 
@@ -1265,6 +1337,15 @@ function drawerTemplate(o){
       <div class="field"><label>Fecha cierre real</label><input type="date" id="f_fechaCierreReal" value="${o.fechaCierreReal||''}"></div>
     </div>
 
+    ${o.estadoFinal==='Ganado' ? `
+    <div class="section" id="proyectoSection">
+      ${o.proyectoId
+        ? `<div class="proyecto-badge">🚀 Proyecto creado: <strong>${o.proyectoId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a></div>`
+        : `<button class="primary" id="btnConvertirProyecto" style="width:100%;">🚀 Convertir a Proyecto</button>
+           <div class="hint" style="margin-top:6px;">Crea un proyecto nuevo heredando cliente, CUIT, EECC y montos — sin retipear nada.</div>`
+      }
+    </div>` : ''}
+
     <div class="drawer-actions">
       <div>${editingId?'<button class="danger" id="btnDelete">Eliminar</button>':''}</div>
       <div style="display:flex;gap:8px;">
@@ -1412,6 +1493,31 @@ function wireDrawer(o){
     document.getElementById(id).addEventListener('change', ()=>{ readFormInto(o); refreshComputedDisplays(o); });
     document.getElementById(id).addEventListener('input', ()=>{ readFormInto(o); refreshComputedDisplays(o); });
   });
+
+  document.getElementById('f_estadoFinal').addEventListener('change', ()=>{
+    o.estadoFinal = document.getElementById('f_estadoFinal').value;
+    let sec = document.getElementById('proyectoSection');
+    if(o.estadoFinal==='Ganado'){
+      const html = o.proyectoId
+        ? `🚀 Proyecto creado: <strong>${o.proyectoId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a>`
+        : `<button class="primary" id="btnConvertirProyecto" style="width:100%;">🚀 Convertir a Proyecto</button>
+           <div class="hint" style="margin-top:6px;">Crea un proyecto nuevo heredando cliente, CUIT, EECC y montos — sin retipear nada.</div>`;
+      if(!sec){
+        sec = document.createElement('div');
+        sec.className = 'section';
+        sec.id = 'proyectoSection';
+        document.querySelector('.drawer-actions').insertAdjacentElement('beforebegin', sec);
+      }
+      sec.innerHTML = o.proyectoId ? `<div class="proyecto-badge">${html}</div>` : html;
+      const btn = document.getElementById('btnConvertirProyecto');
+      if(btn) btn.addEventListener('click', ()=>convertirAProyecto(o));
+    }else if(sec){
+      sec.remove();
+    }
+  });
+  const btnConvertirInicial = document.getElementById('btnConvertirProyecto');
+  if(btnConvertirInicial) btnConvertirInicial.addEventListener('click', ()=>convertirAProyecto(o));
+
   const delBtn = document.getElementById('btnDelete');
   if(delBtn){
     delBtn.addEventListener('click', async ()=>{
@@ -1713,7 +1819,7 @@ async function bootApp(){
   populateFilterSelects();
   wireSortableHeaders();
   wireAgendaAccordion();
-  await Promise.all([loadData(), loadAccounts(), loadTasks()]);
+  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos()]);
   renderAll();
 }
 

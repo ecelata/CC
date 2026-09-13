@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyectos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Figtree:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system.css">
+<script src="theme-toggle.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  .app{max-width:1320px;margin:0 auto;padding:28px 32px 80px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
+  .topbar h1{font-size:26px;letter-spacing:0;color:var(--stamp-dark);}
+  .topbar .sub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+  .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  select,input[type=text],input[type=number],input[type=date],textarea{
+    font-family:var(--sans);font-size:13px;padding:8px 10px;border:1px solid var(--line-strong);
+    border-radius:6px;background:var(--paper-2);color:var(--ink);width:100%;
+  }
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--stamp-bg);border-color:var(--stamp);}
+  label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:600;display:block;margin-bottom:5px;}
+  .field{margin-bottom:14px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr;}}
+  .hint{font-size:11.5px;color:var(--ink-faint);}
+
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+  .proj-card{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:16px 18px;
+    cursor:pointer;transition:.12s;
+  }
+  .proj-card:hover{border-color:var(--stamp);}
+  .proj-card .proj-id{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);}
+  .proj-card h3{font-size:14.5px;margin:2px 0 4px;color:var(--ink);}
+  .proj-card .proj-cliente{font-size:12px;color:var(--ink-soft);margin-bottom:10px;}
+  .estado-pill{display:inline-block;padding:2px 9px;border-radius:10px;font-size:10.5px;font-weight:600;}
+  .estado-pill[data-estado="Planificación"]{background:var(--gold-bg);color:var(--gold);}
+  .estado-pill[data-estado="En curso"]{background:var(--stamp-bg);color:var(--stamp-dark);}
+  .estado-pill[data-estado="Bloqueado"]{background:var(--red-bg);color:var(--red);}
+  .estado-pill[data-estado="Cerrado"]{background:var(--green-bg);color:var(--green);}
+  .proj-card .proj-monto{font-family:var(--mono);font-size:12.5px;color:var(--ink);margin-top:8px;}
+  .proj-card .proj-fases-count{font-size:11px;color:var(--ink-faint);margin-top:4px;}
+  .empty-state{padding:60px 20px;text-align:center;color:var(--ink-soft);}
+  .empty-state h3{margin-bottom:8px;color:var(--ink);}
+
+  .overlay{position:fixed;inset:0;background:rgba(26,26,24,0.35);display:none;align-items:stretch;justify-content:flex-end;z-index:50;}
+  .overlay.open{display:flex;}
+  .drawer{width:min(620px,94vw);background:var(--paper);height:100%;overflow-y:auto;box-shadow:-8px 0 24px rgba(0,0,0,0.15);padding:26px 30px 100px;}
+  .drawer-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+  .drawer-head h2{font-size:18px;margin:0;color:var(--ink);}
+  .drawer-head .sub{font-family:var(--mono);color:var(--ink-soft);font-size:12px;margin-top:4px;}
+  .drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink-faint);line-height:1;}
+  .section{margin-bottom:22px;border-top:1px solid var(--line);padding-top:16px;}
+  .section h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin:0 0 12px;font-weight:600;}
+  .readonly-chip{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:12.5px;color:var(--ink-soft);}
+  .traceability{background:var(--stamp-bg);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--stamp-dark);margin-bottom:18px;}
+
+  .fase-row{display:grid;grid-template-columns:1fr 130px 110px 110px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);}
+  .fase-row input,.fase-row select{font-size:12px;padding:6px 8px;}
+  .fase-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:16px;}
+  .fase-del:hover{color:var(--red);}
+  .fase-empty{color:var(--ink-faint);font-size:12px;font-style:italic;padding:10px 0;}
+
+  button{font-family:var(--sans);cursor:pointer;border-radius:6px;border:1px solid var(--line-strong);background:var(--paper-2);padding:8px 14px;font-size:12.5px;color:var(--ink);}
+  button:hover{border-color:var(--stamp);}
+  button.primary{background:var(--stamp);border-color:var(--stamp);color:#fff;font-weight:600;}
+  button.primary:hover{background:var(--stamp-dark);border-color:var(--stamp-dark);}
+  button.danger{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+  button.ghost{background:transparent;border-color:transparent;}
+  .drawer-actions{position:sticky;bottom:-100px;background:var(--paper);border-top:1px solid var(--line);padding:14px 0 0;margin-top:10px;display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div id="authGate">
+  <div class="authGate-inner">
+    <div class="authGate-eyebrow">GGCC · Grandes Clientes</div>
+    <h2>Proyectos</h2>
+    <p>Iniciá sesión con tu cuenta de Google para continuar.</p>
+    <button id="btnGoogleLogin">Iniciar sesión con Google</button>
+    <p id="authError"></p>
+  </div>
+</div>
+
+<div class="suite-nav">
+  <span class="suite-brand">GGCC · Grandes Clientes</span>
+  <a href="index.html">Portal</a>
+  <a href="dashboard.html">Cartera</a>
+  <a href="Backlog_Preventa.html">Backlog</a>
+  <a href="proyectos.html" class="current">Proyectos</a>
+  <a href="calculadora.html">Calculadora</a>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div>
+      <h1>Proyectos</h1>
+      <div class="sub" id="subtitle">Cargando…</div>
+    </div>
+    <div class="topbar-actions">
+      <span class="status-pill" id="syncStatus">☁️ Conectando…</span>
+    </div>
+  </div>
+
+  <div id="proyGrid" class="proj-grid"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="drawer" id="drawer"></div>
+</div>
+
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBPmwJ5ZA-MzgVbDtl4cDn7RWpfYoDcbgo",
+  authDomain: "backlog-cc.firebaseapp.com",
+  projectId: "backlog-cc"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const ALLOWED_EMAIL = 'ecelata@gmail.com';
+async function authHeader(){
+  if(!auth.currentUser) return {};
+  const token = await auth.currentUser.getIdToken();
+  return {'Authorization': 'Bearer ' + token};
+}
+
+const PROYECTOS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/proyectos?key=${FIREBASE_CONFIG.apiKey}`;
+const PROYECTOS_LOCAL_CACHE_KEY = 'backlog_proyectos_cache_v1';
+let PROYECTOS = [];
+
+const ESTADOS_PROYECTO = ['Planificación','En curso','Bloqueado','Cerrado'];
+const ESTADOS_FASE = ['Por hacer','En curso','Bloqueado','Hecho'];
+
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtMoney(n){ n=Number(n)||0; return 'US$ ' + n.toLocaleString('en-US',{maximumFractionDigits:0}); }
+function optionsHtml(list, selected){
+  return list.map(v=>`<option value="${escapeHtml(v)}" ${v===selected?'selected':''}>${escapeHtml(v)}</option>`).join('');
+}
+
+function setSyncStatus(state, label){
+  const el = document.getElementById('syncStatus');
+  const icons = {ok:'☁️', busy:'🔄', error:'⚠️'};
+  el.textContent = (icons[state]||'☁️') + ' ' + label;
+}
+
+async function loadProyectos(){
+  setSyncStatus('busy', 'Cargando…');
+  try{
+    const res = await fetch(PROYECTOS_DOC_URL, {headers: await authHeader()});
+    if(res.status === 404){
+      PROYECTOS = [];
+    }else if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      PROYECTOS = raw ? JSON.parse(raw) : [];
+    }else{
+      throw new Error('HTTP ' + res.status);
+    }
+    localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+    setSyncStatus('ok', 'Sincronizado');
+  }catch(e){
+    setSyncStatus('error', 'Sin conexión — mostrando última copia local');
+    try{
+      const cached = localStorage.getItem(PROYECTOS_LOCAL_CACHE_KEY);
+      PROYECTOS = cached ? JSON.parse(cached) : [];
+    }catch(e2){ PROYECTOS = []; }
+  }
+}
+
+async function saveProyectos(){
+  localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+  setSyncStatus('busy', 'Guardando…');
+  try{
+    const body = { fields: { json: { stringValue: JSON.stringify(PROYECTOS) }, updatedAt: { timestampValue: new Date().toISOString() } } };
+    const url = PROYECTOS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    setSyncStatus('ok', 'Sincronizado');
+    return true;
+  }catch(e){
+    setSyncStatus('error', 'No se pudo guardar — reintentá');
+    return false;
+  }
+}
+
+function renderGrid(){
+  const grid = document.getElementById('proyGrid');
+  document.getElementById('subtitle').textContent = PROYECTOS.length + (PROYECTOS.length===1?' proyecto registrado':' proyectos registrados');
+  if(!PROYECTOS.length){
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <h3>Todavía no hay proyectos</h3>
+      <p>Los proyectos se crean desde una oportunidad marcada como "Ganado" en el Backlog, con el botón "Convertir a Proyecto".</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = PROYECTOS.map(p=>{
+    return `<div class="proj-card" data-id="${p.id}">
+      <div class="proj-id">${p.id} · desde ${escapeHtml(p.oppId||'—')}</div>
+      <h3>${escapeHtml(p.nombreProyecto||p.cliente)}</h3>
+      <div class="proj-cliente">${escapeHtml(p.cliente)}</div>
+      <span class="estado-pill" data-estado="${escapeHtml(p.estadoProyecto)}">${escapeHtml(p.estadoProyecto)}</span>
+      <div class="proj-monto">${fmtMoney(p.valorTotal)}</div>
+      <div class="proj-fases-count">${(p.fases||[]).length} ${(p.fases||[]).length===1?'fase':'fases'}${p.projectManager?' · PM: '+escapeHtml(p.projectManager):''}</div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.proj-card').forEach(card=>{
+    card.addEventListener('click', ()=>openDrawer(card.getAttribute('data-id')));
+  });
+}
+
+function faseRowHtml(fase, idx){
+  return `<div class="fase-row" data-idx="${idx}">
+    <input type="text" class="fase-nombre" value="${escapeHtml(fase.nombre)}" placeholder="Nombre de la fase">
+    <select class="fase-estado">${optionsHtml(ESTADOS_FASE, fase.estado)}</select>
+    <input type="date" class="fase-inicio" value="${fase.fechaInicio||''}">
+    <input type="date" class="fase-fin" value="${fase.fechaFin||''}">
+    <button class="fase-del" type="button" title="Eliminar fase">×</button>
+  </div>`;
+}
+
+function renderFases(p){
+  const cont = document.getElementById('fasesList');
+  const fases = p.fases || [];
+  cont.innerHTML = fases.length
+    ? `<div class="fase-row" style="border-bottom:2px solid var(--line-strong);font-size:10px;text-transform:uppercase;color:var(--ink-faint);font-weight:600;">
+        <div>Fase</div><div>Estado</div><div>Inicio</div><div>Fin</div><div></div>
+      </div>` + fases.map(faseRowHtml).join('')
+    : '<div class="fase-empty">Sin fases todavía — agregá la primera.</div>';
+  cont.querySelectorAll('.fase-row[data-idx]').forEach(row=>{
+    const idx = Number(row.getAttribute('data-idx'));
+    row.querySelector('.fase-nombre').addEventListener('input', (e)=>{ fases[idx].nombre = e.target.value; });
+    row.querySelector('.fase-estado').addEventListener('change', (e)=>{ fases[idx].estado = e.target.value; });
+    row.querySelector('.fase-inicio').addEventListener('change', (e)=>{ fases[idx].fechaInicio = e.target.value; });
+    row.querySelector('.fase-fin').addEventListener('change', (e)=>{ fases[idx].fechaFin = e.target.value; });
+    row.querySelector('.fase-del').addEventListener('click', ()=>{
+      fases.splice(idx,1);
+      renderFases(p);
+    });
+  });
+}
+
+function drawerTemplate(p){
+  return `
+    <div class="drawer-head">
+      <div>
+        <h2>${escapeHtml(p.nombreProyecto||p.cliente)}</h2>
+        <div class="sub">${p.id} · ${escapeHtml(p.cliente)}</div>
+      </div>
+      <button class="drawer-close" id="btnCloseDrawer">×</button>
+    </div>
+
+    <div class="traceability">↩ Originado desde la oportunidad <strong>${escapeHtml(p.oppId||'—')}</strong> del Backlog — CUIT, EECC y montos heredados de ahí, sin retipear.</div>
+
+    <div class="section">
+      <h3>Datos heredados (solo lectura)</h3>
+      <div class="grid2">
+        <div class="field"><label>Cliente</label><div class="readonly-chip">${escapeHtml(p.cliente)}</div></div>
+        <div class="field"><label>CUIT</label><div class="readonly-chip">${escapeHtml(p.cuit)}</div></div>
+        <div class="field"><label>Segmento</label><div class="readonly-chip">${escapeHtml(p.segmento)}</div></div>
+        <div class="field"><label>EECC</label><div class="readonly-chip">${escapeHtml(p.eecc)}</div></div>
+        <div class="field"><label>Ingeniero Preventa</label><div class="readonly-chip">${escapeHtml(p.ingenieroPreventa||'—')}</div></div>
+        <div class="field"><label>Proveedor</label><div class="readonly-chip">${escapeHtml(p.proveedor||'—')}</div></div>
+        <div class="field"><label>Valor total</label><div class="readonly-chip">${fmtMoney(p.valorTotal)}</div></div>
+        <div class="field"><label>Producto</label><div class="readonly-chip">${escapeHtml(p.producto||'—')}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Gestión del proyecto</h3>
+      <div class="field"><label>Nombre del proyecto</label><input type="text" id="f_nombreProyecto" value="${escapeHtml(p.nombreProyecto)}"></div>
+      <div class="grid2">
+        <div class="field"><label>Project Manager</label><input type="text" id="f_projectManager" value="${escapeHtml(p.projectManager)}"></div>
+        <div class="field"><label>Líder técnico</label><input type="text" id="f_liderTecnico" value="${escapeHtml(p.liderTecnico)}"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Fecha de inicio</label><input type="date" id="f_fechaInicio" value="${p.fechaInicio||''}"></div>
+        <div class="field"><label>Fecha fin estimada</label><input type="date" id="f_fechaFinEstimada" value="${p.fechaFinEstimada||''}"></div>
+      </div>
+      <div class="field"><label>Estado del proyecto</label><select id="f_estadoProyecto">${optionsHtml(ESTADOS_PROYECTO, p.estadoProyecto)}</select></div>
+      <div class="field"><label>Notas</label><textarea id="f_notas" rows="3">${escapeHtml(p.notas)}</textarea></div>
+    </div>
+
+    <div class="section">
+      <h3>Fases / hitos</h3>
+      <div id="fasesList"></div>
+      <button type="button" id="btnAddFase" style="margin-top:10px;">+ Agregar fase</button>
+      <div class="hint" style="margin-top:8px;">Sin gráfico de Gantt por ahora — solo lista con estado y fechas. Queda para una segunda fase si hace falta.</div>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="danger" id="btnDeleteProy">Eliminar proyecto</button>
+      <div style="display:flex;gap:8px;">
+        <button class="ghost" id="btnCancel">Cancelar</button>
+        <button class="primary" id="btnSaveProy">Guardar</button>
+      </div>
+    </div>
+  `;
+}
+
+let editingId = null;
+function openDrawer(id){
+  editingId = id;
+  const p = PROYECTOS.find(x=>x.id===id);
+  if(!p) return;
+  if(!p.fases) p.fases = [];
+  document.getElementById('drawer').innerHTML = drawerTemplate(p);
+  document.getElementById('overlay').classList.add('open');
+  renderFases(p);
+  wireDrawer(p);
+}
+function closeDrawer(){
+  document.getElementById('overlay').classList.remove('open');
+  editingId = null;
+}
+
+function wireDrawer(p){
+  document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
+  document.getElementById('btnCancel').addEventListener('click', closeDrawer);
+  document.getElementById('btnAddFase').addEventListener('click', ()=>{
+    if(!p.fases) p.fases = [];
+    p.fases.push({nombre:'', estado:'Por hacer', fechaInicio:'', fechaFin:''});
+    renderFases(p);
+  });
+  document.getElementById('btnDeleteProy').addEventListener('click', async ()=>{
+    if(!confirm('¿Eliminar este proyecto? No se puede deshacer (la oportunidad de origen en el Backlog no se toca).')) return;
+    PROYECTOS = PROYECTOS.filter(x=>x.id!==p.id);
+    await saveProyectos();
+    closeDrawer();
+    renderGrid();
+  });
+  document.getElementById('btnSaveProy').addEventListener('click', async ()=>{
+    p.nombreProyecto = document.getElementById('f_nombreProyecto').value.trim();
+    p.projectManager = document.getElementById('f_projectManager').value.trim();
+    p.liderTecnico = document.getElementById('f_liderTecnico').value.trim();
+    p.fechaInicio = document.getElementById('f_fechaInicio').value;
+    p.fechaFinEstimada = document.getElementById('f_fechaFinEstimada').value;
+    p.estadoProyecto = document.getElementById('f_estadoProyecto').value;
+    p.notas = document.getElementById('f_notas').value.trim();
+    const idx = PROYECTOS.findIndex(x=>x.id===p.id);
+    if(idx>-1) PROYECTOS[idx] = p;
+    await saveProyectos();
+    closeDrawer();
+    renderGrid();
+  });
+}
+
+document.getElementById('overlay').addEventListener('click', (ev)=>{ if(ev.target.id==='overlay') closeDrawer(); });
+
+async function bootApp(){
+  await loadProyectos();
+  renderGrid();
+}
+
+document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+  try{
+    await auth.signInWithPopup(provider);
+  }catch(e){
+    errEl.textContent = 'No se pudo iniciar sesión: ' + e.message;
+    errEl.style.display = 'block';
+  }
+});
+
+auth.onAuthStateChanged(async (user)=>{
+  const gate = document.getElementById('authGate');
+  const errEl = document.getElementById('authError');
+  if(user && user.email === ALLOWED_EMAIL){
+    gate.style.display = 'none';
+    await bootApp();
+  }else if(user){
+    errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
+    errEl.style.display = 'block';
+    gate.style.display = 'flex';
+    await auth.signOut();
+  }else{
+    gate.style.display = 'flex';
+  }
+});
+</script>
+</body>
+</html>
