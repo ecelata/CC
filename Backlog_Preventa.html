@@ -151,6 +151,8 @@
   .hint{font-size:11.5px;color:var(--ink-faint);}
   .proyecto-badge{background:var(--green-bg);border:1px solid var(--green);color:var(--green);border-radius:6px;padding:10px 14px;font-size:12.5px;}
   .proyecto-badge a{color:var(--stamp-dark);font-weight:600;}
+  .link-quitar-vinculo{background:none;border:none;padding:0;color:var(--ink-faint);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+  .link-quitar-vinculo:hover{color:var(--red);}
   .section:first-of-type{border-top:none;padding-top:0;}
   .section h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);margin-bottom:12px;font-family:'Inter',sans-serif;font-weight:600;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;}
@@ -723,6 +725,27 @@ async function saveProyectos(){
   }
 }
 
+function proyectoBadgeHtml(proyId){
+  return `<div class="proyecto-badge">🚀 Proyecto creado: <strong>${proyId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a> · <button type="button" class="link-quitar-vinculo">Quitar vínculo</button></div>`;
+}
+function wireQuitarVinculo(o){
+  const btn = document.querySelector('.link-quitar-vinculo');
+  if(!btn) return;
+  btn.addEventListener('click', async ()=>{
+    if(!confirm('¿Quitar el vínculo con el proyecto? Esto NO borra el proyecto en sí (si querés borrarlo, hacelo desde Proyectos) — solo hace que esta oportunidad vuelva a mostrar el botón "Convertir a Proyecto".')) return;
+    delete o.proyectoId;
+    const dataItem = DATA.find(x=>x.id===o.id);
+    if(dataItem) delete dataItem.proyectoId;
+    await saveData();
+    showToast('Vínculo quitado');
+    const sec = document.getElementById('proyectoSection');
+    if(sec) sec.innerHTML = `<button class="primary" id="btnConvertirProyecto" style="width:100%;">🚀 Convertir a Proyecto</button>
+      <div class="hint" style="margin-top:6px;">Crea un proyecto nuevo heredando cliente, CUIT, EECC y montos — sin retipear nada.</div>`;
+    const newBtn = document.getElementById('btnConvertirProyecto');
+    if(newBtn) newBtn.addEventListener('click', ()=>convertirAProyecto(o));
+  });
+}
+
 async function convertirAProyecto(o){
   if(o.proyectoId) return;
   const nextNum = PROYECTOS.length + 1;
@@ -749,7 +772,7 @@ async function convertirAProyecto(o){
   await Promise.all([saveProyectos(), saveData()]);
   showToast('🚀 Proyecto ' + proyId + ' creado — abrilo en Proyectos para completar los detalles');
   const sec = document.getElementById('proyectoSection');
-  if(sec) sec.innerHTML = `<div class="proyecto-badge">🚀 Proyecto creado: <strong>${proyId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a></div>`;
+  if(sec){ sec.innerHTML = proyectoBadgeHtml(proyId); wireQuitarVinculo(o); }
   renderTable();
 }
 const FIRESTORE_CUENTAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/cuentas?key=${FIREBASE_CONFIG.apiKey}`;
@@ -1340,7 +1363,7 @@ function drawerTemplate(o){
     ${o.estadoFinal==='Ganado' ? `
     <div class="section" id="proyectoSection">
       ${o.proyectoId
-        ? `<div class="proyecto-badge">🚀 Proyecto creado: <strong>${o.proyectoId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a></div>`
+        ? proyectoBadgeHtml(o.proyectoId)
         : `<button class="primary" id="btnConvertirProyecto" style="width:100%;">🚀 Convertir a Proyecto</button>
            <div class="hint" style="margin-top:6px;">Crea un proyecto nuevo heredando cliente, CUIT, EECC y montos — sin retipear nada.</div>`
       }
@@ -1498,25 +1521,28 @@ function wireDrawer(o){
     o.estadoFinal = document.getElementById('f_estadoFinal').value;
     let sec = document.getElementById('proyectoSection');
     if(o.estadoFinal==='Ganado'){
-      const html = o.proyectoId
-        ? `🚀 Proyecto creado: <strong>${o.proyectoId}</strong> — <a href="proyectos.html" target="_blank">ver en Proyectos →</a>`
-        : `<button class="primary" id="btnConvertirProyecto" style="width:100%;">🚀 Convertir a Proyecto</button>
-           <div class="hint" style="margin-top:6px;">Crea un proyecto nuevo heredando cliente, CUIT, EECC y montos — sin retipear nada.</div>`;
       if(!sec){
         sec = document.createElement('div');
         sec.className = 'section';
         sec.id = 'proyectoSection';
         document.querySelector('.drawer-actions').insertAdjacentElement('beforebegin', sec);
       }
-      sec.innerHTML = o.proyectoId ? `<div class="proyecto-badge">${html}</div>` : html;
-      const btn = document.getElementById('btnConvertirProyecto');
-      if(btn) btn.addEventListener('click', ()=>convertirAProyecto(o));
+      if(o.proyectoId){
+        sec.innerHTML = proyectoBadgeHtml(o.proyectoId);
+        wireQuitarVinculo(o);
+      }else{
+        sec.innerHTML = `<button class="primary" id="btnConvertirProyecto" style="width:100%;">🚀 Convertir a Proyecto</button>
+           <div class="hint" style="margin-top:6px;">Crea un proyecto nuevo heredando cliente, CUIT, EECC y montos — sin retipear nada.</div>`;
+        const btn = document.getElementById('btnConvertirProyecto');
+        if(btn) btn.addEventListener('click', ()=>convertirAProyecto(o));
+      }
     }else if(sec){
       sec.remove();
     }
   });
   const btnConvertirInicial = document.getElementById('btnConvertirProyecto');
   if(btnConvertirInicial) btnConvertirInicial.addEventListener('click', ()=>convertirAProyecto(o));
+  wireQuitarVinculo(o);
 
   const delBtn = document.getElementById('btnDelete');
   if(delBtn){

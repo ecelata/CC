@@ -72,6 +72,12 @@
   button.danger{background:var(--red-bg);border-color:var(--red);color:var(--red);}
   button.ghost{background:transparent;border-color:transparent;}
   .drawer-actions{position:sticky;bottom:-100px;background:var(--paper);border-top:1px solid var(--line);padding:14px 0 0;margin-top:10px;display:flex;justify-content:space-between;}
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:4px;
+    font-size:13px;opacity:0;transition:opacity .2s, transform .2s;z-index:99;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -111,6 +117,7 @@
 <div class="overlay" id="overlay">
   <div class="drawer" id="drawer"></div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
 const FIREBASE_CONFIG = {
@@ -128,8 +135,32 @@ async function authHeader(){
 }
 
 const PROYECTOS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/proyectos?key=${FIREBASE_CONFIG.apiKey}`;
+const BACKLOG_DATA_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/data?key=${FIREBASE_CONFIG.apiKey}`;
 const PROYECTOS_LOCAL_CACHE_KEY = 'backlog_proyectos_cache_v1';
 let PROYECTOS = [];
+
+async function desvincularOportunidad(oppId){
+  if(!oppId) return;
+  try{
+    const res = await fetch(BACKLOG_DATA_URL, {headers: await authHeader()});
+    if(!res.ok) return;
+    const doc = await res.json();
+    const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    const opp = data.find(o=>o.id===oppId);
+    if(!opp || !opp.proyectoId) return;
+    delete opp.proyectoId;
+    const url = BACKLOG_DATA_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    await fetch(url, {
+      method:'PATCH',
+      headers:{'Content-Type':'application/json', ...(await authHeader())},
+      body: JSON.stringify({fields:{json:{stringValue:JSON.stringify(data)}, updatedAt:{timestampValue:new Date().toISOString()}}})
+    });
+  }catch(e){
+    showToast('⚠️ El proyecto se borró, pero no pude desvincularlo de la oportunidad en el Backlog. Hacelo a mano: reabrí esa OPP y volvé a guardarla.');
+  }
+}
 
 const ESTADOS_PROYECTO = ['Planificación','En curso','Bloqueado','Cerrado'];
 const ESTADOS_FASE = ['Por hacer','En curso','Bloqueado','Hecho'];
@@ -144,6 +175,12 @@ function setSyncStatus(state, label){
   const el = document.getElementById('syncStatus');
   const icons = {ok:'☁️', busy:'🔄', error:'⚠️'};
   el.textContent = (icons[state]||'☁️') + ' ' + label;
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
 }
 
 async function loadProyectos(){
@@ -325,11 +362,13 @@ function wireDrawer(p){
     renderFases(p);
   });
   document.getElementById('btnDeleteProy').addEventListener('click', async ()=>{
-    if(!confirm('¿Eliminar este proyecto? No se puede deshacer (la oportunidad de origen en el Backlog no se toca).')) return;
+    if(!confirm('¿Eliminar este proyecto? También se va a desvincular de la oportunidad de origen en el Backlog (vuelve a mostrar "Convertir a Proyecto"). No se puede deshacer.')) return;
     PROYECTOS = PROYECTOS.filter(x=>x.id!==p.id);
     await saveProyectos();
+    await desvincularOportunidad(p.oppId);
     closeDrawer();
     renderGrid();
+    showToast('Proyecto eliminado y desvinculado del Backlog');
   });
   document.getElementById('btnSaveProy').addEventListener('click', async ()=>{
     p.nombreProyecto = document.getElementById('f_nombreProyecto').value.trim();
