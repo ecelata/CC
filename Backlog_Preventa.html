@@ -690,31 +690,52 @@ const TASKS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_C
 const PROYECTOS_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/proyectos?key=${FIREBASE_CONFIG.apiKey}`;
 const PROYECTOS_LOCAL_CACHE_KEY = 'backlog_proyectos_cache_v1';
 
+let PROYECTOS_NEXT_SEQ = 1;
+function maxSeqFromIds(items){
+  let max = 0;
+  (items||[]).forEach(p=>{
+    const m = /PROY-(\d+)/.exec(p.id||'');
+    if(m) max = Math.max(max, parseInt(m[1],10));
+  });
+  return max;
+}
 async function loadProyectos(){
   try{
     const res = await fetch(PROYECTOS_DOC_URL, {headers: await authHeader()});
     if(res.status === 404){
-      PROYECTOS = [];
+      PROYECTOS = []; PROYECTOS_NEXT_SEQ = 1;
     }else if(res.ok){
       const doc = await res.json();
       const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
-      PROYECTOS = raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : null;
+      if(Array.isArray(parsed)){
+        // Formato viejo (array plano) — migrar en memoria, el contador arranca del máximo visto
+        PROYECTOS = parsed;
+        PROYECTOS_NEXT_SEQ = maxSeqFromIds(parsed) + 1;
+      }else if(parsed){
+        PROYECTOS = parsed.items || [];
+        PROYECTOS_NEXT_SEQ = parsed.nextSeq || (maxSeqFromIds(PROYECTOS) + 1);
+      }else{
+        PROYECTOS = []; PROYECTOS_NEXT_SEQ = 1;
+      }
     }else{
       throw new Error('HTTP ' + res.status);
     }
-    localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+    localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify({items:PROYECTOS, nextSeq:PROYECTOS_NEXT_SEQ}));
   }catch(e){
     try{
-      const cached = localStorage.getItem(PROYECTOS_LOCAL_CACHE_KEY);
-      PROYECTOS = cached ? JSON.parse(cached) : [];
-    }catch(e2){ PROYECTOS = []; }
+      const cached = JSON.parse(localStorage.getItem(PROYECTOS_LOCAL_CACHE_KEY) || '{}');
+      PROYECTOS = cached.items || [];
+      PROYECTOS_NEXT_SEQ = cached.nextSeq || (maxSeqFromIds(PROYECTOS) + 1);
+    }catch(e2){ PROYECTOS = []; PROYECTOS_NEXT_SEQ = 1; }
   }
 }
 
 async function saveProyectos(){
-  localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+  const payload = {items:PROYECTOS, nextSeq:PROYECTOS_NEXT_SEQ};
+  localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(payload));
   try{
-    const body = { fields: { json: { stringValue: JSON.stringify(PROYECTOS) }, updatedAt: { timestampValue: new Date().toISOString() } } };
+    const body = { fields: { json: { stringValue: JSON.stringify(payload) }, updatedAt: { timestampValue: new Date().toISOString() } } };
     const url = PROYECTOS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
     const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
     if(!res.ok) throw new Error('HTTP ' + res.status);
@@ -748,8 +769,8 @@ function wireQuitarVinculo(o){
 
 async function convertirAProyecto(o){
   if(o.proyectoId) return;
-  const nextNum = PROYECTOS.length + 1;
-  const proyId = 'PROY-' + String(nextNum).padStart(3,'0');
+  const proyId = 'PROY-' + String(PROYECTOS_NEXT_SEQ).padStart(3,'0');
+  PROYECTOS_NEXT_SEQ++;
   const proyecto = {
     id: proyId,
     oppId: o.id,

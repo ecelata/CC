@@ -183,35 +183,47 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 2400);
 }
 
+let PROYECTOS_NEXT_SEQ = 1;
 async function loadProyectos(){
   setSyncStatus('busy', 'Cargando…');
   try{
     const res = await fetch(PROYECTOS_DOC_URL, {headers: await authHeader()});
     if(res.status === 404){
-      PROYECTOS = [];
+      PROYECTOS = []; PROYECTOS_NEXT_SEQ = 1;
     }else if(res.ok){
       const doc = await res.json();
       const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
-      PROYECTOS = raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : null;
+      if(Array.isArray(parsed)){
+        PROYECTOS = parsed;
+        PROYECTOS_NEXT_SEQ = parsed.length + 1;
+      }else if(parsed){
+        PROYECTOS = parsed.items || [];
+        PROYECTOS_NEXT_SEQ = parsed.nextSeq || (PROYECTOS.length + 1);
+      }else{
+        PROYECTOS = []; PROYECTOS_NEXT_SEQ = 1;
+      }
     }else{
       throw new Error('HTTP ' + res.status);
     }
-    localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+    localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify({items:PROYECTOS, nextSeq:PROYECTOS_NEXT_SEQ}));
     setSyncStatus('ok', 'Sincronizado');
   }catch(e){
     setSyncStatus('error', 'Sin conexión — mostrando última copia local');
     try{
-      const cached = localStorage.getItem(PROYECTOS_LOCAL_CACHE_KEY);
-      PROYECTOS = cached ? JSON.parse(cached) : [];
-    }catch(e2){ PROYECTOS = []; }
+      const cached = JSON.parse(localStorage.getItem(PROYECTOS_LOCAL_CACHE_KEY) || '{}');
+      PROYECTOS = cached.items || [];
+      PROYECTOS_NEXT_SEQ = cached.nextSeq || 1;
+    }catch(e2){ PROYECTOS = []; PROYECTOS_NEXT_SEQ = 1; }
   }
 }
 
 async function saveProyectos(){
-  localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(PROYECTOS));
+  const payload = {items:PROYECTOS, nextSeq:PROYECTOS_NEXT_SEQ};
+  localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(payload));
   setSyncStatus('busy', 'Guardando…');
   try{
-    const body = { fields: { json: { stringValue: JSON.stringify(PROYECTOS) }, updatedAt: { timestampValue: new Date().toISOString() } } };
+    const body = { fields: { json: { stringValue: JSON.stringify(payload) }, updatedAt: { timestampValue: new Date().toISOString() } } };
     const url = PROYECTOS_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
     const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
     if(!res.ok) throw new Error('HTTP ' + res.status);
