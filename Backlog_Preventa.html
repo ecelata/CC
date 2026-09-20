@@ -634,10 +634,16 @@ async function loadAccounts(){
       segmento: segmentoDeTipoHolding((r['Tipo Holding']||'').trim())
     })).filter(a=>a.razonSocial);
     ACCOUNTS_BY_NAME = {};
-    ACCOUNTS.forEach(a=>{ ACCOUNTS_BY_NAME[a.razonSocial.toLowerCase()] = a; });
+    ACCOUNTS_BY_CORE = {};
+    ACCOUNTS.forEach(a=>{
+      ACCOUNTS_BY_NAME[a.razonSocial.toLowerCase()] = a;
+      const core = normalizeCore(a.razonSocial);
+      (ACCOUNTS_BY_CORE[core] = ACCOUNTS_BY_CORE[core] || []).push(a);
+    });
   }catch(e){
     ACCOUNTS = [];
     ACCOUNTS_BY_NAME = {};
+    ACCOUNTS_BY_CORE = {};
   }
 }
 
