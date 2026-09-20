@@ -309,6 +309,8 @@
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
       <button class="ghost" id="btnImport">Importar JSON</button>
       <input type="file" id="fileImport" accept="application/json" style="display:none">
+      <button class="ghost" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
+      <input type="file" id="fileImportSF" accept=".xlsx,.xls,.csv" style="display:none">
       <button class="primary" id="btnNew">+ Nueva oportunidad</button>
       <span class="ghost" id="userEmailLabel" style="cursor:default;"></span>
       <button class="ghost" id="btnLogout" title="Cerrar sesión">Salir</button>
@@ -437,6 +439,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script>
@@ -1728,6 +1731,133 @@ document.getElementById('fileImport').addEventListener('change', async (e)=>{
   e.target.value='';
 });
 
+// ══════════════ Importación desde el tablero de Salesforce (Cotizaciones Cloud) ══════════════
+// Actualiza/crea oportunidades a partir del Excel exportado del tablero. Nunca toca los campos
+// que solo vos cargás a mano: BANT, bitácora, notas técnicas, próximo paso, prioridad, tipo de
+// contrato, margen, horas, estado de propuesta, competidores, necesidad, vertical, tipo de proyecto.
+//
+// Mapeo Probabilidad Salesforce -> Etapa del Backlog. Es una aproximación (solo vi ejemplos en
+// 25%) — si al usarlo ves etapas que no calzan, avisame y lo ajustamos.
+const SF_PROB_TO_ETAPA = {
+  0:'1-Prospección', 10:'2-Calificado', 25:'3-Análisis Técnico',
+  50:'5-Propuesta', 75:'6-Negociación', 90:'6-Negociación', 100:'7-Cierre'
+};
+function sfEtapaFromProb(prob){
+  const keys = Object.keys(SF_PROB_TO_ETAPA).map(Number).sort((a,b)=>a-b);
+  let etapa = ETAPAS[0];
+  keys.forEach(k=>{ if(prob>=k) etapa = SF_PROB_TO_ETAPA[k]; });
+  return etapa;
+}
+function sfParseFechaDDMMYYYY(s){
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s||'').trim());
+  if(!m) return '';
+  return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+}
+function sfParseMesCierre(s){
+  const m = /^(\d{1,2})\/(\d{4})$/.exec(String(s||'').trim());
+  if(!m) return '';
+  const mes = parseInt(m[1],10), anio = parseInt(m[2],10);
+  const ultimoDia = new Date(anio, mes, 0).getDate();
+  return `${anio}-${String(mes).padStart(2,'0')}-${String(ultimoDia).padStart(2,'0')}`;
+}
+function sfParsePct(s){
+  const n = parseFloat(String(s||'').replace('%','').replace(',','.'));
+  return isNaN(n) ? '' : Math.round(n);
+}
+function sfProveedorFromProducto(p){
+  p = String(p||'').toLowerCase();
+  if(p.includes('huawei')) return 'Huawei (HWC)';
+  if(p.includes('aws')) return 'AWS';
+  if(p.includes('azure')) return 'Azure';
+  if(p.includes('google')||p.includes('gcp')) return 'Google Cloud';
+  if(p.includes('microsoft')||p.includes('365')) return 'Microsoft';
+  if(p.includes('datacenter')||p.includes('servidor')) return 'Personal Cloud (propio)';
+  return '';
+}
+
+document.getElementById('btnImportSF').addEventListener('click', ()=>{
+  if(blockIfReadonly()) return;
+  document.getElementById('fileImportSF').click();
+});
+document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:'array'});
+    const sheetName = wb.SheetNames.find(n=>/cotizacion/i.test(n)) || wb.SheetNames[0];
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:''});
+
+    let creadas=0, actualizadas=0;
+    const sinCuenta=[], etapasVistas=new Set();
+
+    rows.forEach(r=>{
+      const idCot = String(r['ID Cotización']||'').trim();
+      const cuentaNombre = String(r['Cuenta']||'').trim();
+      if(!idCot || !cuentaNombre) return;
+
+      // 1) match por ID de Salesforce (importaciones posteriores a la primera)
+      let o = DATA.find(x=>x.salesforceId===idCot);
+      // 2) si es la primera vez, intento vincular por nombre de cliente, solo si hay
+      //    exactamente una opp abierta de ese cliente todavía sin salesforceId
+      if(!o){
+        const candidatas = DATA.filter(x=>!x.salesforceId && x.cliente &&
+          x.cliente.trim().toLowerCase()===cuentaNombre.toLowerCase() &&
+          (!x.estadoFinal || x.estadoFinal==='Abierto'));
+        if(candidatas.length===1) o = candidatas[0];
+      }
+      const esNueva = !o;
+      if(!o) o = blankOpp();
+
+      o.salesforceId = idCot;
+      o.cliente = cuentaNombre;
+      if(!o.nombreOpp) o.nombreOpp = String(r['Nombre Cotización']||'').trim();
+      o.producto = String(r['Producto']||'').trim();
+      if(!o.proveedor) o.proveedor = sfProveedorFromProducto(o.producto);
+      o.montoOneShot = Number(r['Cargo Única Vez'])||0;
+      o.mesRecurrente = Number(r['Abono Mensual'])||0;
+      const pct = sfParsePct(r['Probabilidad']);
+      o.probCierre = pct;
+      o.etapa = sfEtapaFromProb(Number(pct)||0);
+      const fEntrada = sfParseFechaDDMMYYYY(r['Fecha Creación']);
+      if(fEntrada) o.fechaEntrada = fEntrada;
+      const fCierre = sfParseMesCierre(r['Mes Cierre']);
+      if(fCierre) o.fechaEstCierre = fCierre;
+      if(Number(pct)===100) o.estadoFinal = 'Ganado';
+      else if(/perdid/i.test(String(r['Etapa']||''))) o.estadoFinal = 'Perdido';
+
+      const cuentaInfo = ACCOUNTS_BY_NAME[cuentaNombre.toLowerCase()];
+      if(cuentaInfo){
+        o.eecc = cuentaInfo.eecc || o.eecc;
+        o.ingenieroPreventa = cuentaInfo.ingenieroPreventa || o.ingenieroPreventa;
+        o.responsableSegmento = cuentaInfo.responsable || o.responsableSegmento;
+        o.segmento = cuentaInfo.segmento || o.segmento;
+        o.cuit = cuentaInfo.cuit || o.cuit;
+        if(cuentaInfo.industria) o.industria = titleCase(cuentaInfo.industria);
+      } else {
+        o.eecc = o.eecc || String(r['Ejecutivo']||'').trim();
+        sinCuenta.push(cuentaNombre);
+      }
+      etapasVistas.add((r['Etapa']||'—') + ' (' + r['Probabilidad'] + ')');
+
+      o.ultimaActualizacion = todayISO();
+      computeFields(o);
+      if(esNueva){ DATA.push(o); creadas++; } else { actualizadas++; }
+    });
+
+    await saveData();
+    renderAll();
+    let msg = `Salesforce: ${creadas} oportunidad(es) creada(s), ${actualizadas} actualizada(s).`;
+    if(sinCuenta.length) msg += `\n\nSin match en tu cartera (revisá EECC/segmento/industria a mano): ${[...new Set(sinCuenta)].join(', ')}`;
+    msg += `\n\nEtapas de Salesforce vistas en este import: ${[...etapasVistas].join(' · ')}`;
+    alert(msg);
+  }catch(err){
+    console.error(err);
+    showToast('No se pudo importar el Excel de Salesforce');
+  }
+  e.target.value='';
+});
+
 function populateOppSelectForTasks(){
   const sel = document.getElementById('tk_opp');
   const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
@@ -1918,6 +2048,7 @@ auth.onAuthStateChanged(async (user)=>{
       const btnNewEmpty = document.getElementById('btnNewEmpty');
       if(btnNewEmpty) btnNewEmpty.style.display = 'none';
       document.getElementById('btnImport').style.display = 'none';
+      document.getElementById('btnImportSF').style.display = 'none';
     }
   }else if(user){
     errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
