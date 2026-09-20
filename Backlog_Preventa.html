@@ -376,7 +376,7 @@
             <th class="bant-th" data-sort="bant" title="Budget / Authority / Need / Timeline">BANT</th>
             <th class="money" data-sort="montoOneShot">One Shot</th><th class="money" data-sort="mesRecurrente">Mensual</th>
             <th class="money" data-sort="valorTotal">Valor total</th><th class="money" data-sort="montoPonderado">Ponderado</th>
-            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="estadoPropuesta">Estado prop.</th><th data-sort="estadoOpp">Estado opp</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
+            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="estadoOpp">Estado opp</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -475,10 +475,10 @@ const VERTICALES = ['Cloud','Cloud Híbrida','Ciberseguridad','IA / ML','Data & 
 const PROVEEDORES = ['AWS','Azure','Google Cloud','Oracle','IBM','VMware','Huawei (HWC)','Microsoft','Personal Cloud (propio)','Multi-vendor'];
 const PRODUCTOS = ['DCV - Datacenter Virtual','VM - Virtual Machines','Personal Cloud','Assessment','Data Analytics','MaaS IA','SaaS Solución','Licenciamiento','Horas SSPP','Horas SSAA','POC','Backup / DR','Ciberseguridad Gestionada'];
 const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consultoría','SSPP - Servicios Profesionales','SSAA - Servicios Administrados'];
-const ESTADO_PROPUESTA = ['Ninguno','RFP','Arquitectura','Técnico-Comercial','En revisión cliente','Enviada'];
-// Estado REAL de la opp (independiente de si hay o no una propuesta comercial escrita —
-// ej. un cupón/crédito Huawei puede estar "En curso" sin que exista jamás un PPCC).
-const ESTADO_OPP = ['En curso','Completada','Stand by'];
+// Estado único de la opp dentro de su ciclo de vida comercial. POC vive acá adentro
+// igual que Técnico-Comercial o Enviada — no siempre hay un PPCC (ej. cupón/crédito
+// Huawei), pero siempre hay UN estado, no dos.
+const ESTADO_OPP = ['Ninguno','RFP','Arquitectura','POC','Técnico-Comercial','En revisión cliente','Enviada','Stand by'];
 const DOCUMENTOS_GENERADOS = ['Ninguno','Propuesta técnica','Propuesta económica','Contrato','NDA','SOW','Presentación ejecutiva'];
 const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado','Sin decisión','Otro'];
 
@@ -527,6 +527,9 @@ function computeFields(o){
   o.diasRestantes = diasEntre(o.fechaDeadline);
   if(!o.ingenieroPreventa) o.ingenieroPreventa = INGENIERO_POR_EECC[o.eecc] || '';
   if(!o.responsableSegmento) o.responsableSegmento = RESPONSABLE_POR_SEGMENTO[o.segmento] || '';
+  // Migración: las opps viejas tenían "estadoPropuesta" como campo separado. Se unificó
+  // en "estadoOpp" — si todavía no tiene el valor nuevo, se lo trae del campo viejo.
+  if(!o.estadoOpp && o.estadoPropuesta && o.estadoPropuesta!=='Ninguno') o.estadoOpp = o.estadoPropuesta;
   return o;
 }
 function estadoSemaforo(o){
@@ -1163,8 +1166,7 @@ function renderTable(){
       <td>${o.industria||'—'}</td>
       <td>${o.vertical||'—'}</td>
       <td>${o.proveedor||'—'}</td>
-      <td class="estprop-cell">${o.estadoPropuesta||'—'}</td>
-      <td>${o.estadoOpp||'—'}</td>
+      <td class="estprop-cell">${o.estadoOpp||'—'}</td>
       <td class="dias-restantes">${o.fechaEstCierre? formatDateShort(o.fechaEstCierre) : '—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
@@ -1273,7 +1275,7 @@ function blankOpp(){
     competidores:'', vertical:'', proveedor:'', producto:'', tipoProyecto:'',
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
-    estadoPropuesta:'', estadoOpp:'', documentosGenerados:'', notasTecnicas:'',
+    estadoOpp:'', documentosGenerados:'', notasTecnicas:'',
     proximoPaso:'', bitacora:[], prioridad:'',
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
@@ -1391,7 +1393,6 @@ function drawerTemplate(o){
     <div class="section">
       <h3>Seguimiento</h3>
       <div class="grid2">
-        <div class="field"><label>Estado propuesta</label><select id="f_estadoPropuesta">${optionsHtml(ESTADO_PROPUESTA,o.estadoPropuesta)}</select></div>
         <div class="field"><label>Estado de la opp</label><select id="f_estadoOpp">${optionsHtml(ESTADO_OPP,o.estadoOpp)}</select></div>
         <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
       </div>
@@ -1495,7 +1496,6 @@ function readFormInto(o){
   o.mesRecurrente = document.getElementById('f_mesRecurrente').value;
   o.margenEstimado = document.getElementById('f_margenEstimado').value;
   o.horasInvertidas = document.getElementById('f_horasInvertidas').value;
-  o.estadoPropuesta = document.getElementById('f_estadoPropuesta').value;
   o.estadoOpp = document.getElementById('f_estadoOpp').value;
   o.documentosGenerados = document.getElementById('f_documentosGenerados').value;
   o.notasTecnicas = document.getElementById('f_notasTecnicas').value;
@@ -1665,7 +1665,7 @@ function toCsv(){
     'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','necesidad','etapa','probCierre','vertical','proveedor','producto',
     'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
     'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
-    'horasInvertidas','estadoPropuesta','estadoOpp','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
+    'horasInvertidas','estadoOpp','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
     'fechaCierreReal','ultimaActualizacion'];
   const rows = [cols.join(',')];
   DATA.forEach(o=>{
