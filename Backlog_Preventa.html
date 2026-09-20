@@ -1849,6 +1849,10 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
   const file = e.target.files[0];
   if(!file) return;
   try{
+    // Backup automático por si el import trae algo raro: se puede deshacer reimportando
+    // este archivo con "Importar JSON".
+    downloadFile(JSON.stringify(DATA,null,2), 'backup_antes_de_import_sf_' + todayISO() + '.json', 'application/json');
+
     const buf = await file.arrayBuffer();
     const wb = XLSX.read(buf, {type:'array'});
     const sheetName = wb.SheetNames.find(n=>/cotizacion/i.test(n)) || wb.SheetNames[0];
@@ -1917,7 +1921,7 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
 
     await saveData();
     renderAll();
-    let msg = `Salesforce: ${creadas} oportunidad(es) creada(s), ${actualizadas} actualizada(s).`;
+    let msg = `Salesforce: ${creadas} oportunidad(es) creada(s), ${actualizadas} actualizada(s). (Se bajó un backup por si hay que revertir: backup_antes_de_import_sf_${todayISO()}.json)`;
     if(posiblesDuplicados.length) msg += `\n\n⚠️ Posibles duplicados (mismo cliente, opp ya cargada distinta) — revisá y fusioná a mano si corresponde, así queda con salesforceId y no se repite:\n` + posiblesDuplicados.join('\n');
     if(sinCuenta.length) msg += `\n\nSin match en tu cartera (revisá EECC/segmento/industria a mano): ${[...new Set(sinCuenta)].join(', ')}`;
     msg += `\n\nEtapas de Salesforce vistas en este import: ${[...etapasVistas].join(' · ')}`;
