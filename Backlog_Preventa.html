@@ -475,6 +475,9 @@ const PROVEEDORES = ['AWS','Azure','Google Cloud','Oracle','IBM','VMware','Huawe
 const PRODUCTOS = ['DCV - Datacenter Virtual','VM - Virtual Machines','Personal Cloud','Assessment','Data Analytics','MaaS IA','SaaS Solución','Licenciamiento','Horas SSPP','Horas SSAA','POC','Backup / DR','Ciberseguridad Gestionada'];
 const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consultoría','SSPP - Servicios Profesionales','SSAA - Servicios Administrados'];
 const ESTADO_PROPUESTA = ['Ninguno','RFP','Arquitectura','Técnico-Comercial','En revisión cliente','Enviada'];
+// Estado REAL de la opp (independiente de si hay o no una propuesta comercial escrita —
+// ej. un cupón/crédito Huawei puede estar "En curso" sin que exista jamás un PPCC).
+const ESTADO_OPP = ['En curso','Completada','Stand by'];
 const DOCUMENTOS_GENERADOS = ['Ninguno','Propuesta técnica','Propuesta económica','Contrato','NDA','SOW','Presentación ejecutiva'];
 const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado','Sin decisión','Otro'];
 
@@ -1268,7 +1271,7 @@ function blankOpp(){
     competidores:'', vertical:'', proveedor:'', producto:'', tipoProyecto:'',
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
-    estadoPropuesta:'', documentosGenerados:'', notasTecnicas:'',
+    estadoPropuesta:'', estadoOpp:'', documentosGenerados:'', notasTecnicas:'',
     proximoPaso:'', bitacora:[], prioridad:'',
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
@@ -1387,6 +1390,7 @@ function drawerTemplate(o){
       <h3>Seguimiento</h3>
       <div class="grid2">
         <div class="field"><label>Estado propuesta</label><select id="f_estadoPropuesta">${optionsHtml(ESTADO_PROPUESTA,o.estadoPropuesta)}</select></div>
+        <div class="field"><label>Estado de la opp</label><select id="f_estadoOpp">${optionsHtml(ESTADO_OPP,o.estadoOpp)}</select></div>
         <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
       </div>
       <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
