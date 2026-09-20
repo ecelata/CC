@@ -307,6 +307,7 @@
       <span class="ghost" id="syncStatus" style="cursor:default;">☁️ Conectando…</span>
       <button class="ghost" id="btnExportJson">Exportar JSON</button>
       <button class="ghost" id="btnExportCsv">Exportar CSV</button>
+      <button class="ghost" id="btnExportPlanilla" title="Excel agrupado como el reporte semanal (Cerrados/A cerrar/Pipeline/POCs), foco en el monto mensual">Exportar planilla</button>
       <button class="ghost" id="btnImport">Importar JSON</button>
       <input type="file" id="fileImport" accept="application/json" style="display:none">
       <button class="ghost" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
@@ -375,7 +376,7 @@
             <th class="bant-th" data-sort="bant" title="Budget / Authority / Need / Timeline">BANT</th>
             <th class="money" data-sort="montoOneShot">One Shot</th><th class="money" data-sort="mesRecurrente">Mensual</th>
             <th class="money" data-sort="valorTotal">Valor total</th><th class="money" data-sort="montoPonderado">Ponderado</th>
-            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="estadoPropuesta">Estado prop.</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
+            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="estadoPropuesta">Estado prop.</th><th data-sort="estadoOpp">Estado opp</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -1163,6 +1164,7 @@ function renderTable(){
       <td>${o.vertical||'—'}</td>
       <td>${o.proveedor||'—'}</td>
       <td class="estprop-cell">${o.estadoPropuesta||'—'}</td>
+      <td>${o.estadoOpp||'—'}</td>
       <td class="dias-restantes">${o.fechaEstCierre? formatDateShort(o.fechaEstCierre) : '—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
@@ -1494,6 +1496,7 @@ function readFormInto(o){
   o.margenEstimado = document.getElementById('f_margenEstimado').value;
   o.horasInvertidas = document.getElementById('f_horasInvertidas').value;
   o.estadoPropuesta = document.getElementById('f_estadoPropuesta').value;
+  o.estadoOpp = document.getElementById('f_estadoOpp').value;
   o.documentosGenerados = document.getElementById('f_documentosGenerados').value;
   o.notasTecnicas = document.getElementById('f_notasTecnicas').value;
   const proximoPasoField = document.getElementById('f_proximoPaso');
@@ -1662,7 +1665,7 @@ function toCsv(){
     'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','necesidad','etapa','probCierre','vertical','proveedor','producto',
     'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
     'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
-    'horasInvertidas','estadoPropuesta','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
+    'horasInvertidas','estadoPropuesta','estadoOpp','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
     'fechaCierreReal','ultimaActualizacion'];
   const rows = [cols.join(',')];
   DATA.forEach(o=>{
@@ -1737,6 +1740,41 @@ document.getElementById('btnExportJson').addEventListener('click', ()=>{
 });
 document.getElementById('btnExportCsv').addEventListener('click', ()=>{
   downloadFile(toCsv(), 'backlog_preventa.csv', 'text/csv');
+});
+
+// ══════════════ Exportar planilla (Excel agrupado como el reporte semanal) ══════════════
+// Arma un .xlsx con hojas Cerrados / A cerrar / Pipeline / POCs, iguales a las categorías
+// del Consultor_Cloud_All_In_One, para que lo bajes, dejes solo las opps representativas
+// y completes "Estado de la Opp". El monto MENSUAL recurrente va primero que el Único Vez,
+// porque la mayoría de los deals son MRR y eso pesa más que el valor total del proyecto.
+function planillaRow(o){
+  return {
+    'Cliente': o.cliente||'', 'Producto': o.producto||'', 'Proveedor': o.proveedor||'',
+    'Mensual USD': Number(o.mesRecurrente)||0, 'Única vez USD': Number(o.montoOneShot)||0,
+    'Etapa': o.etapa||'', 'Estado de la Opp': o.estadoOpp||'', 'Prob. Cierre %': o.probCierre||'',
+    'Fecha Est. Cierre': o.fechaEstCierre||'', 'Fecha Cierre Real': o.fechaCierreReal||'',
+    'EECC': o.eecc||'', 'Ingeniero Preventa': o.ingenieroPreventa||'', 'Próximo paso': o.proximoPaso||''
+  };
+}
+document.getElementById('btnExportPlanilla').addEventListener('click', ()=>{
+  DATA.forEach(computeFields);
+  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  const cerrados = DATA.filter(o=>o.estadoFinal==='Ganado')
+    .sort((a,b)=>(b.fechaCierreReal||'').localeCompare(a.fechaCierreReal||''));
+  const pocs = abiertas.filter(o=>o.etapa==='4-POC');
+  const aCerrar = abiertas.filter(o=>(o.etapa==='6-Negociación'||o.etapa==='7-Cierre'))
+    .sort((a,b)=>(a.fechaEstCierre||'').localeCompare(b.fechaEstCierre||''));
+  const pipeline = abiertas.filter(o=>o.etapa!=='4-POC' && o.etapa!=='6-Negociación' && o.etapa!=='7-Cierre')
+    .sort((a,b)=>(Number(b.mesRecurrente)||0)-(Number(a.mesRecurrente)||0));
+
+  const wb = XLSX.utils.book_new();
+  const hoja = (rows, nombre) => XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.map(planillaRow)), nombre);
+  hoja(cerrados, 'Cerrados');
+  hoja(aCerrar, 'A cerrar');
+  hoja(pipeline, 'Pipeline');
+  hoja(pocs, 'POCs');
+  XLSX.writeFile(wb, 'planilla_backlog_' + todayISO() + '.xlsx');
+  showToast('Planilla exportada: ' + cerrados.length + ' cerrados, ' + aCerrar.length + ' a cerrar, ' + pipeline.length + ' pipeline, ' + pocs.length + ' POCs');
 });
 document.getElementById('btnImport').addEventListener('click', ()=>{
   document.getElementById('fileImport').click();
