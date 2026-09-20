@@ -537,7 +537,17 @@ const FIREBASE_CONFIG = {
 };
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
-const ALLOWED_EMAIL = 'ecelata@gmail.com';
+// Mapa de usuarios permitidos -> rol ('editor' puede cargar/editar/borrar, 'readonly' solo mira)
+const ALLOWED_USERS = {
+  'ecelata@gmail.com': 'editor',
+  'emcelata@personal.com.ar': 'readonly'
+};
+let CURRENT_ROLE = null;
+function isReadonly(){ return CURRENT_ROLE === 'readonly'; }
+function blockIfReadonly(){
+  if(isReadonly()){ alert('Estás en modo solo lectura, no podés guardar cambios.'); return true; }
+  return false;
+}
 
 async function authHeader(){
   if(!auth.currentUser) return {};
@@ -656,6 +666,7 @@ async function loadData(){
 }
 
 async function saveData(){
+  if(blockIfReadonly()) return;
   localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(DATA));
   setSyncStatus('busy', 'Guardando…');
   try{
@@ -735,6 +746,7 @@ async function loadProyectos(){
 }
 
 async function saveProyectos(){
+  if(blockIfReadonly()) return;
   const payload = {items:PROYECTOS, nextSeq:PROYECTOS_NEXT_SEQ};
   localStorage.setItem(PROYECTOS_LOCAL_CACHE_KEY, JSON.stringify(payload));
   try{
@@ -824,6 +836,7 @@ async function loadTasks(){
 }
 
 async function saveTasks(){
+  if(blockIfReadonly()) return;
   localStorage.setItem(TASKS_LOCAL_CACHE_KEY, JSON.stringify(TASKS));
   try{
     const body = {
@@ -1894,11 +1907,18 @@ document.getElementById('btnLogout').addEventListener('click', async ()=>{
 auth.onAuthStateChanged(async (user)=>{
   const gate = document.getElementById('authGate');
   const errEl = document.getElementById('authError');
-  if(user && user.email === ALLOWED_EMAIL){
+  if(user && ALLOWED_USERS[user.email]){
+    CURRENT_ROLE = ALLOWED_USERS[user.email];
     gate.style.display = 'none';
     const lbl = document.getElementById('userEmailLabel');
-    if(lbl) lbl.textContent = '👤 ' + user.email;
+    if(lbl) lbl.textContent = '👤 ' + user.email + (isReadonly() ? ' (solo lectura)' : '');
     await bootApp();
+    if(isReadonly()){
+      document.getElementById('btnNew').style.display = 'none';
+      const btnNewEmpty = document.getElementById('btnNewEmpty');
+      if(btnNewEmpty) btnNewEmpty.style.display = 'none';
+      document.getElementById('btnImport').style.display = 'none';
+    }
   }else if(user){
     errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
     errEl.style.display = 'block';
