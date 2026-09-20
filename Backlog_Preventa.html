@@ -310,6 +310,8 @@
       <button class="ghost" id="btnImport">Importar JSON</button>
       <input type="file" id="fileImport" accept="application/json" style="display:none">
       <button class="primary" id="btnNew">+ Nueva oportunidad</button>
+      <span class="ghost" id="userEmailLabel" style="cursor:default;"></span>
+      <button class="ghost" id="btnLogout" title="Cerrar sesión">Salir</button>
     </div>
   </div>
 
@@ -1873,6 +1875,7 @@ async function bootApp(){
 
 document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
   const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
   const errEl = document.getElementById('authError');
   errEl.style.display = 'none';
   try{
@@ -1883,11 +1886,18 @@ document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
   }
 });
 
+document.getElementById('btnLogout').addEventListener('click', async ()=>{
+  await auth.signOut();
+  location.reload();
+});
+
 auth.onAuthStateChanged(async (user)=>{
   const gate = document.getElementById('authGate');
   const errEl = document.getElementById('authError');
   if(user && user.email === ALLOWED_EMAIL){
     gate.style.display = 'none';
+    const lbl = document.getElementById('userEmailLabel');
+    if(lbl) lbl.textContent = '👤 ' + user.email;
     await bootApp();
   }else if(user){
     errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
