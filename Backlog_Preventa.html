@@ -578,6 +578,24 @@ function firestoreValueToArray(doc){
 
 let ACCOUNTS = [];
 let ACCOUNTS_BY_NAME = {};
+let ACCOUNTS_BY_CORE = {};
+function normalizeCore(s){
+  // Nombre "núcleo" de una razón social: mayúsculas, sin puntuación, sin la forma
+  // jurídica final (SA, SRL, SACI, etc.) ni siglas sueltas. Sirve para matchear
+  // "TERMINAL ZARATE SA" con "TERMINAL ZARATE S A" aunque no sean idénticos.
+  let words = String(s||'').toUpperCase().replace(/[^A-ZÑÁÉÍÓÚ0-9\s]/g,'').replace(/\s+/g,' ').trim().split(' ');
+  while(words.length>1 && words[words.length-1].length<=3) words.pop();
+  return words.join(' ');
+}
+function findCuentaInfo(nombreCliente){
+  const exact = ACCOUNTS_BY_NAME[String(nombreCliente||'').trim().toLowerCase()];
+  if(exact) return {info: exact, ambiguo:false};
+  const core = normalizeCore(nombreCliente);
+  const cands = ACCOUNTS_BY_CORE[core] || [];
+  if(cands.length===1) return {info: cands[0], ambiguo:false};
+  if(cands.length>1) return {info:null, ambiguo:true};
+  return {info:null, ambiguo:false};
+}
 
 function segmentoDeTipoHolding(tipoHolding){
   const t = (tipoHolding||'').toUpperCase();
@@ -1795,25 +1813,28 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:''});
 
     let creadas=0, actualizadas=0;
-    const sinCuenta=[], etapasVistas=new Set();
+    const sinCuenta=[], etapasVistas=new Set(), posiblesDuplicados=[];
 
     rows.forEach(r=>{
       const idCot = String(r['ID Cotización']||'').trim();
       const cuentaNombre = String(r['Cuenta']||'').trim();
       if(!idCot || !cuentaNombre) return;
 
-      // 1) match por ID de Salesforce (importaciones posteriores a la primera)
+      // Match SOLO por ID de Salesforce. La primera vez que aparece una cotización
+      // siempre se crea como opp nueva (aunque el cliente ya tenga otra opp cargada
+      // a mano) para no arriesgarse a pisar una oportunidad distinta del mismo
+      // cliente con datos que no le corresponden. Los posibles duplicados quedan
+      // listados al final para que los fusiones vos a mano una sola vez; de ahí en
+      // más, como ya queda el salesforceId, no se vuelve a confundir.
       let o = DATA.find(x=>x.salesforceId===idCot);
-      // 2) si es la primera vez, intento vincular por nombre de cliente, solo si hay
-      //    exactamente una opp abierta de ese cliente todavía sin salesforceId
-      if(!o){
-        const candidatas = DATA.filter(x=>!x.salesforceId && x.cliente &&
-          x.cliente.trim().toLowerCase()===cuentaNombre.toLowerCase() &&
-          (!x.estadoFinal || x.estadoFinal==='Abierto'));
-        if(candidatas.length===1) o = candidatas[0];
-      }
       const esNueva = !o;
-      if(!o) o = blankOpp();
+      if(!o){
+        o = blankOpp();
+        const coreSF = normalizeCore(cuentaNombre);
+        const posibleDup = DATA.find(x=>!x.salesforceId && x.cliente &&
+          (x.cliente.trim().toLowerCase()===cuentaNombre.toLowerCase() || normalizeCore(x.cliente)===coreSF));
+        if(posibleDup) posiblesDuplicados.push(`${cuentaNombre} (SF: "${String(r['Nombre Cotización']||'').trim()}" vs. ya cargada: ${posibleDup.id} "${posibleDup.nombreOpp||'—'}")`);
+      }
 
       o.salesforceId = idCot;
       o.cliente = cuentaNombre;
@@ -1832,8 +1853,9 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
       if(Number(pct)===100) o.estadoFinal = 'Ganado';
       else if(/perdid/i.test(String(r['Etapa']||''))) o.estadoFinal = 'Perdido';
 
-      const cuentaInfo = ACCOUNTS_BY_NAME[cuentaNombre.toLowerCase()];
-      if(cuentaInfo){
+      const match = findCuentaInfo(cuentaNombre);
+      if(match.info){
+        const cuentaInfo = match.info;
         o.eecc = cuentaInfo.eecc || o.eecc;
         o.ingenieroPreventa = cuentaInfo.ingenieroPreventa || o.ingenieroPreventa;
         o.responsableSegmento = cuentaInfo.responsable || o.responsableSegmento;
@@ -1842,7 +1864,7 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
         if(cuentaInfo.industria) o.industria = titleCase(cuentaInfo.industria);
       } else {
         o.eecc = o.eecc || String(r['Ejecutivo']||'').trim();
-        sinCuenta.push(cuentaNombre);
+        sinCuenta.push(cuentaNombre + (match.ambiguo ? ' (ambiguo, varias cuentas parecidas)' : ''));
       }
       etapasVistas.add((r['Etapa']||'—') + ' (' + r['Probabilidad'] + ')');
 
@@ -1854,6 +1876,7 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
     await saveData();
     renderAll();
     let msg = `Salesforce: ${creadas} oportunidad(es) creada(s), ${actualizadas} actualizada(s).`;
+    if(posiblesDuplicados.length) msg += `\n\n⚠️ Posibles duplicados (mismo cliente, opp ya cargada distinta) — revisá y fusioná a mano si corresponde, así queda con salesforceId y no se repite:\n` + posiblesDuplicados.join('\n');
     if(sinCuenta.length) msg += `\n\nSin match en tu cartera (revisá EECC/segmento/industria a mano): ${[...new Set(sinCuenta)].join(', ')}`;
     msg += `\n\nEtapas de Salesforce vistas en este import: ${[...etapasVistas].join(' · ')}`;
     alert(msg);
