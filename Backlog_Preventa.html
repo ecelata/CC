@@ -101,6 +101,23 @@
   .kanban-card .kc-fecha{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);}
   .kanban-card .kc-move{width:100%;margin-top:8px;font-size:11px;padding:5px 8px;}
   .kanban-empty{color:var(--ink-faint);font-size:11.5px;font-style:italic;text-align:center;padding:14px 6px;}
+  .kanban-board-opps{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start;}
+  .kanban-board-opps .kanban-col{flex:0 0 240px;width:240px;}
+  .kanban-opp-card{
+    background:var(--paper);border:1px solid var(--line-strong);border-radius:6px;padding:10px 11px;
+    cursor:grab;font-size:12px;margin-bottom:8px;user-select:none;
+  }
+  .kanban-opp-card:active{cursor:grabbing;}
+  .kanban-opp-card .ko-cliente{font-weight:600;color:var(--ink);font-size:12.5px;line-height:1.25;}
+  .kanban-opp-card .ko-nombre{color:var(--ink-soft);font-size:11px;margin-top:1px;margin-bottom:6px;}
+  .kanban-opp-card .ko-row{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:6px;}
+  .kanban-opp-card .ko-prob{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  .kanban-opp-card .ko-monto{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:var(--stamp-dark);}
+  .kanban-opp-card .ko-detail{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11px;color:var(--ink-soft);}
+  .kanban-opp-card .ko-detail div{margin-bottom:4px;}
+  .kanban-opp-card.expanded .ko-detail{display:block;}
+  .kanban-opp-card .ko-move{width:100%;margin-top:8px;font-size:10.5px;padding:4px 6px;}
+  .kanban-opp-card .ko-hint{font-size:9.5px;color:var(--ink-faint);text-align:center;margin-top:6px;font-style:italic;}
   .cliente-cell{font-weight:500;}
   .cliente-cell .opp-name{display:block;font-size:10.5px;color:var(--ink-soft);font-weight:400;margin-top:0;}
   .cliente-cell .cuit{display:block;font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-weight:400;}
@@ -325,6 +342,7 @@
     <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas">Cerradas</button>
     <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama">Panorama</button>
     <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda">Agenda</button>
+    <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps">Kanban</button>
   </div>
 
   <div class="view active" id="viewTabla">
@@ -412,6 +430,14 @@
         <div class="kanban-drop" data-col="hecho" data-kanban-col="hecho"></div>
       </div>
     </div>
+  </div>
+
+  <div class="view" id="viewKanbanOpps">
+    <div class="agenda-topbar">
+      <h3 style="margin:0;">Kanban de oportunidades</h3>
+      <div class="hint">Arrastrá para cambiar de etapa · un clic despliega el detalle · doble clic edita</div>
+    </div>
+    <div class="kanban-board-opps" id="kanbanOppsBoard"></div>
   </div>
 </div>
 
@@ -1714,6 +1740,7 @@ function switchTab(tab){
   document.getElementById('viewTabla').classList.toggle('active', showTabla);
   document.getElementById('viewPanorama').classList.toggle('active', tab==='panorama');
   document.getElementById('viewAgenda').classList.toggle('active', tab==='agenda');
+  document.getElementById('viewKanbanOpps').classList.toggle('active', tab==='kanbanopps');
   if(showTabla){
     boardView = (tab==='cerradas') ? 'cerradas' : 'activas';
     const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
@@ -1725,6 +1752,7 @@ function switchTab(tab){
   }
   if(tab==='panorama') renderDashboard();
   if(tab==='agenda') renderKanban();
+  if(tab==='kanbanopps') renderKanbanOpps();
 }
 function drillInto(filterId, value){
   const el = document.getElementById(filterId);
@@ -2016,6 +2044,114 @@ async function moveTask(id, columna){
   t.columna = columna;
   renderKanban();
   await saveTasks();
+}
+
+// ── Kanban de oportunidades (por etapa del pipeline) ──
+function buildKanbanOppsColumns(){
+  const board = document.getElementById('kanbanOppsBoard');
+  if(!board || board.children.length) return; // ya armado
+  board.innerHTML = ETAPAS.map(et=>{
+    const label = et.replace(/^\d-/,'');
+    return `<div class="kanban-col" data-etapa="${et}">
+      <div class="kanban-col-head">${label} <span class="kanban-count" data-ko-count="${et}">0</span></div>
+      <div class="kanban-drop" data-ko-drop="${et}"></div>
+    </div>`;
+  }).join('');
+}
+
+function oppKanbanCardHtml(o){
+  const monto = o.mesRecurrente ? fmtMoney(o.mesRecurrente)+'/mes' : (o.montoOneShot ? fmtMoney(o.montoOneShot)+' único' : '—');
+  return `<div class="kanban-opp-card" draggable="true" data-id="${o.id}">
+    <div class="ko-cliente">${escapeHtml(o.cliente||'—')}</div>
+    ${o.nombreOpp?`<div class="ko-nombre">${escapeHtml(o.nombreOpp)}</div>`:''}
+    <div class="ko-row">
+      <span class="bant-quad">${bantQuadrant(o)}</span>
+      <span class="ko-prob">${o.probCierre?o.probCierre+'%':'—'}</span>
+    </div>
+    <div class="ko-row">
+      <span class="ko-monto">${monto}</span>
+    </div>
+    <div class="ko-detail">
+      <div><strong>EECC:</strong> ${o.eecc?titleCase(o.eecc):'—'}</div>
+      <div><strong>Ing. preventa:</strong> ${o.ingenieroPreventa?titleCase(o.ingenieroPreventa):'—'}</div>
+      <div><strong>Estado opp:</strong> ${o.estadoOpp||'—'}</div>
+      <div><strong>Fecha est. cierre:</strong> ${o.fechaEstCierre?formatDateShort(o.fechaEstCierre):'—'}</div>
+      ${o.proximoPaso?`<div><strong>Próximo paso:</strong> ${escapeHtml(o.proximoPaso)}</div>`:''}
+      <select class="ko-move" data-move-id="${o.id}">
+        ${ETAPAS.map(et=>`<option value="${et}" ${o.etapa===et?'selected':''}>${et}</option>`).join('')}
+      </select>
+    </div>
+    <div class="ko-hint">clic: detalle · doble clic: editar</div>
+  </div>`;
+}
+
+function renderKanbanOpps(){
+  buildKanbanOppsColumns();
+  DATA.forEach(computeFields);
+  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  const cols = {};
+  ETAPAS.forEach(et=>cols[et]=[]);
+  abiertas.forEach(o=>{ (cols[o.etapa] || cols[ETAPAS[0]]).push(o); });
+  ETAPAS.forEach(et=>{
+    const drop = document.querySelector('[data-ko-drop="'+et+'"]');
+    if(drop) drop.innerHTML = cols[et].length ? cols[et].map(oppKanbanCardHtml).join('') : '<div class="kanban-empty">Sin oportunidades</div>';
+    const countEl = document.querySelector('[data-ko-count="'+et+'"]');
+    if(countEl) countEl.textContent = cols[et].length;
+  });
+  wireKanbanOppsCards();
+}
+
+function wireKanbanOppsCards(){
+  document.querySelectorAll('.kanban-opp-card').forEach(card=>{
+    let clickTimer = null;
+    card.addEventListener('click', (ev)=>{
+      if(card.dataset.dragging==='1') return;
+      if(ev.target.closest('.ko-move')) return;
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(()=>{ card.classList.toggle('expanded'); }, 230);
+    });
+    card.addEventListener('dblclick', ()=>{
+      clearTimeout(clickTimer);
+      openDrawer(card.getAttribute('data-id'));
+    });
+    card.addEventListener('dragstart', (ev)=>{
+      ev.dataTransfer.setData('text/plain', card.getAttribute('data-id'));
+      card.dataset.dragging = '1';
+      setTimeout(()=>card.style.opacity='0.4', 0);
+    });
+    card.addEventListener('dragend', ()=>{
+      card.style.opacity='1';
+      setTimeout(()=>{ card.dataset.dragging=''; }, 50);
+    });
+  });
+  document.querySelectorAll('.ko-move').forEach(sel=>{
+    sel.addEventListener('click', ev=>ev.stopPropagation());
+    sel.addEventListener('dblclick', ev=>ev.stopPropagation());
+    sel.addEventListener('change', async ()=>{
+      await moveOppEtapa(sel.getAttribute('data-move-id'), sel.value);
+    });
+  });
+  document.querySelectorAll('[data-ko-drop]').forEach(zone=>{
+    zone.addEventListener('dragover', (ev)=>{ ev.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', ()=>{ zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', async (ev)=>{
+      ev.preventDefault();
+      zone.classList.remove('drag-over');
+      const id = ev.dataTransfer.getData('text/plain');
+      await moveOppEtapa(id, zone.getAttribute('data-ko-drop'));
+    });
+  });
+}
+
+async function moveOppEtapa(id, etapa){
+  const o = DATA.find(x=>x.id===id);
+  if(!o || o.etapa===etapa) return;
+  o.etapa = etapa;
+  computeFields(o);
+  renderKanbanOpps();
+  await saveData();
+  renderTable();
+  renderKpis();
 }
 
 let editingTaskId = null;
