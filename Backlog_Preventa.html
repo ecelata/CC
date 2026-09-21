@@ -329,6 +329,7 @@
       <input type="file" id="fileImport" accept="application/json" style="display:none">
       <button class="ghost" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
       <input type="file" id="fileImportSF" accept=".xlsx,.xls,.csv" style="display:none">
+      <button class="ghost" id="btnSyncEtapa" title="Corrige la etapa del pipeline (Kanban) para que coincida con el Estado de la Opp cargado a mano">🔄 Sincronizar etapa</button>
       <button class="primary" id="btnNew">+ Nueva oportunidad</button>
       <span class="ghost" id="userEmailLabel" style="cursor:default;"></span>
       <button class="ghost" id="btnLogout" title="Cerrar sesión">Salir</button>
@@ -1961,6 +1962,45 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
   e.target.value='';
 });
 
+// ══════════════ Sincronizar etapa (Kanban) desde Estado de la Opp (seguimiento) ══════════════
+// Mientras conviven dos campos —"estadoOpp" (seguimiento, el que se actualiza a mano en el
+// día a día) y "etapa" (funnel comercial, el que mueve el Kanban)— se pueden desincronizar.
+// Este botón corrige "etapa" para que refleje "estadoOpp", que es el campo que se actualiza
+// más seguido y por lo tanto la fuente de verdad hasta que se unifiquen en uno solo.
+const ESTADO_A_ETAPA = {
+  'RFP': '2-Calificado',
+  'Arquitectura': '3-Análisis Técnico',
+  'POC': '4-POC',
+  'Técnico-Comercial': '5-Propuesta',
+  'En revisión cliente': '6-Negociación',
+  'Enviada': '6-Negociación'
+  // 'Ninguno' y 'Stand by' no mapean a una etapa puntual del funnel: se dejan sin tocar.
+};
+document.getElementById('btnSyncEtapa').addEventListener('click', ()=>{
+  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  const cambios = [];
+  abiertas.forEach(o=>{
+    const nuevaEtapa = ESTADO_A_ETAPA[o.estadoOpp];
+    if(nuevaEtapa && o.etapa !== nuevaEtapa){
+      cambios.push({o, de: o.etapa||'—', a: nuevaEtapa});
+    }
+  });
+  if(!cambios.length){ alert('No hay desincronizaciones: la etapa de todas las oportunidades abiertas ya coincide con su Estado de la Opp.'); return; }
+  const preview = cambios.map(c=>`${c.o.id} · ${c.o.cliente||'—'} — Estado "${c.o.estadoOpp}": ${c.de} → ${c.a}`).join('\n');
+  const ok = confirm(
+    `Se van a corregir ${cambios.length} oportunidad(es) para que su etapa (Kanban) coincida con su Estado de la Opp:\n\n${preview}\n\n` +
+    `Mapeo usado: RFP→2-Calificado, Arquitectura→3-Análisis Técnico, POC→4-POC, Técnico-Comercial→5-Propuesta, En revisión cliente / Enviada→6-Negociación.\n` +
+    `("Ninguno" y "Stand by" no se tocan.)\n\nSe baja un backup antes de aplicar. ¿Confirmás?`
+  );
+  if(!ok) return;
+  downloadFile(JSON.stringify(DATA,null,2), 'backup_antes_de_sync_etapa_' + todayISO() + '.json', 'application/json');
+  cambios.forEach(c=>{ c.o.etapa = c.a; c.o.ultimaActualizacion = todayISO(); computeFields(c.o); });
+  saveData().then(()=>{
+    renderAll();
+    showToast(cambios.length + ' oportunidad(es) sincronizada(s). Backup bajado por las dudas.');
+  });
+});
+
 function populateOppSelectForTasks(){
   const sel = document.getElementById('tk_opp');
   const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
@@ -2260,6 +2300,7 @@ auth.onAuthStateChanged(async (user)=>{
       if(btnNewEmpty) btnNewEmpty.style.display = 'none';
       document.getElementById('btnImport').style.display = 'none';
       document.getElementById('btnImportSF').style.display = 'none';
+      document.getElementById('btnSyncEtapa').style.display = 'none';
     }
   }else if(user){
     errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
