@@ -329,7 +329,6 @@
       <input type="file" id="fileImport" accept="application/json" style="display:none">
       <button class="ghost" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
       <input type="file" id="fileImportSF" accept=".xlsx,.xls,.csv" style="display:none">
-      <button class="ghost" id="btnSyncEtapa" title="Corrige la etapa del pipeline (Kanban) para que coincida con el Estado de la Opp cargado a mano">🔄 Sincronizar etapa</button>
       <button class="primary" id="btnNew">+ Nueva oportunidad</button>
       <span class="ghost" id="userEmailLabel" style="cursor:default;"></span>
       <button class="ghost" id="btnLogout" title="Cerrar sesión">Salir</button>
@@ -395,7 +394,7 @@
             <th class="bant-th" data-sort="bant" title="Budget / Authority / Need / Timeline">BANT</th>
             <th class="money" data-sort="montoOneShot">One Shot</th><th class="money" data-sort="mesRecurrente">Mensual</th>
             <th class="money" data-sort="valorTotal">Valor total</th><th class="money" data-sort="montoPonderado">Ponderado</th>
-            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="estadoOpp">Estado opp</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
+            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -505,7 +504,6 @@ const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consult
 // Estado único de la opp dentro de su ciclo de vida comercial. POC vive acá adentro
 // igual que Técnico-Comercial o Enviada — no siempre hay un PPCC (ej. cupón/crédito
 // Huawei), pero siempre hay UN estado, no dos.
-const ESTADO_OPP = ['Ninguno','RFP','Arquitectura','POC','Técnico-Comercial','En revisión cliente','Enviada','Stand by'];
 const DOCUMENTOS_GENERADOS = ['Ninguno','Propuesta técnica','Propuesta económica','Contrato','NDA','SOW','Presentación ejecutiva'];
 const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado','Sin decisión','Otro'];
 
@@ -554,9 +552,20 @@ function computeFields(o){
   o.diasRestantes = diasEntre(o.fechaDeadline);
   if(!o.ingenieroPreventa) o.ingenieroPreventa = INGENIERO_POR_EECC[o.eecc] || '';
   if(!o.responsableSegmento) o.responsableSegmento = RESPONSABLE_POR_SEGMENTO[o.segmento] || '';
-  // Migración: las opps viejas tenían "estadoPropuesta" como campo separado. Se unificó
-  // en "estadoOpp" — si todavía no tiene el valor nuevo, se lo trae del campo viejo.
-  if(!o.estadoOpp && o.estadoPropuesta && o.estadoPropuesta!=='Ninguno') o.estadoOpp = o.estadoPropuesta;
+  // Migración: "etapa" (funnel) y "estado de la opp" (seguimiento: RFP/Arquitectura/POC/
+  // Técnico-Comercial/Enviada/En revisión cliente/Stand by) eran dos campos describiendo el
+  // mismo ciclo de vida y se desincronizaban solos. Quedan unificados en "etapa" únicamente;
+  // el detalle que tenía el campo viejo se preserva como nota libre en "próximo paso" antes
+  // de descartarlo (corre una sola vez por opp: una vez migrado, estas claves ya no existen).
+  const estadoLegacy = o.estadoOpp || o.estadoPropuesta;
+  if(estadoLegacy && estadoLegacy !== 'Ninguno'){
+    const nota = 'Estado seguimiento (migrado): ' + estadoLegacy;
+    if(!o.proximoPaso || !o.proximoPaso.includes(nota)){
+      o.proximoPaso = o.proximoPaso ? (nota + ' — ' + o.proximoPaso) : nota;
+    }
+  }
+  delete o.estadoOpp;
+  delete o.estadoPropuesta;
   return o;
 }
 function estadoSemaforo(o){
@@ -1170,7 +1179,7 @@ function renderTable(){
   document.querySelector('.table-wrap table').style.display='table';
   empty.style.display='none';
   if(list.length===0){
-    tbody.innerHTML = `<tr><td colspan="18" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="17" style="text-align:center;color:var(--ink-soft);padding:30px;">Ninguna oportunidad coincide con los filtros.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(o=>{
@@ -1193,7 +1202,6 @@ function renderTable(){
       <td>${o.industria||'—'}</td>
       <td>${o.vertical||'—'}</td>
       <td>${o.proveedor||'—'}</td>
-      <td class="estprop-cell">${o.estadoOpp||'—'}</td>
       <td class="dias-restantes">${o.fechaEstCierre? formatDateShort(o.fechaEstCierre) : '—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
@@ -1302,7 +1310,7 @@ function blankOpp(){
     competidores:'', vertical:'', proveedor:'', producto:'', tipoProyecto:'',
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
-    estadoOpp:'', documentosGenerados:'', notasTecnicas:'',
+    documentosGenerados:'', notasTecnicas:'',
     proximoPaso:'', bitacora:[], prioridad:'',
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
@@ -1419,10 +1427,7 @@ function drawerTemplate(o){
 
     <div class="section">
       <h3>Seguimiento</h3>
-      <div class="grid2">
-        <div class="field"><label>Estado de la opp</label><select id="f_estadoOpp">${optionsHtml(ESTADO_OPP,o.estadoOpp)}</select></div>
-        <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
-      </div>
+      <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
       <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
     </div>
 
@@ -1523,7 +1528,6 @@ function readFormInto(o){
   o.mesRecurrente = document.getElementById('f_mesRecurrente').value;
   o.margenEstimado = document.getElementById('f_margenEstimado').value;
   o.horasInvertidas = document.getElementById('f_horasInvertidas').value;
-  o.estadoOpp = document.getElementById('f_estadoOpp').value;
   o.documentosGenerados = document.getElementById('f_documentosGenerados').value;
   o.notasTecnicas = document.getElementById('f_notasTecnicas').value;
   const proximoPasoField = document.getElementById('f_proximoPaso');
@@ -1692,7 +1696,7 @@ function toCsv(){
     'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','necesidad','etapa','probCierre','vertical','proveedor','producto',
     'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
     'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
-    'horasInvertidas','estadoOpp','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
+    'horasInvertidas','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
     'fechaCierreReal','ultimaActualizacion'];
   const rows = [cols.join(',')];
   DATA.forEach(o=>{
@@ -1780,7 +1784,7 @@ function planillaRow(o){
   return {
     'Cliente': o.cliente||'', 'Producto': o.producto||'', 'Proveedor': o.proveedor||'',
     'Mensual USD': Number(o.mesRecurrente)||0, 'Única vez USD': Number(o.montoOneShot)||0,
-    'Etapa': o.etapa||'', 'Estado de la Opp': o.estadoOpp||'', 'Prob. Cierre %': o.probCierre||'',
+    'Etapa': o.etapa||'', 'Prob. Cierre %': o.probCierre||'',
     'Fecha Est. Cierre': o.fechaEstCierre||'', 'Fecha Cierre Real': o.fechaCierreReal||'',
     'EECC': o.eecc||'', 'Ingeniero Preventa': o.ingenieroPreventa||'', 'Próximo paso': o.proximoPaso||''
   };
@@ -1962,45 +1966,6 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
   e.target.value='';
 });
 
-// ══════════════ Sincronizar etapa (Kanban) desde Estado de la Opp (seguimiento) ══════════════
-// Mientras conviven dos campos —"estadoOpp" (seguimiento, el que se actualiza a mano en el
-// día a día) y "etapa" (funnel comercial, el que mueve el Kanban)— se pueden desincronizar.
-// Este botón corrige "etapa" para que refleje "estadoOpp", que es el campo que se actualiza
-// más seguido y por lo tanto la fuente de verdad hasta que se unifiquen en uno solo.
-const ESTADO_A_ETAPA = {
-  'RFP': '2-Calificado',
-  'Arquitectura': '3-Análisis Técnico',
-  'POC': '4-POC',
-  'Técnico-Comercial': '5-Propuesta',
-  'En revisión cliente': '6-Negociación',
-  'Enviada': '6-Negociación'
-  // 'Ninguno' y 'Stand by' no mapean a una etapa puntual del funnel: se dejan sin tocar.
-};
-document.getElementById('btnSyncEtapa').addEventListener('click', ()=>{
-  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
-  const cambios = [];
-  abiertas.forEach(o=>{
-    const nuevaEtapa = ESTADO_A_ETAPA[o.estadoOpp];
-    if(nuevaEtapa && o.etapa !== nuevaEtapa){
-      cambios.push({o, de: o.etapa||'—', a: nuevaEtapa});
-    }
-  });
-  if(!cambios.length){ alert('No hay desincronizaciones: la etapa de todas las oportunidades abiertas ya coincide con su Estado de la Opp.'); return; }
-  const preview = cambios.map(c=>`${c.o.id} · ${c.o.cliente||'—'} — Estado "${c.o.estadoOpp}": ${c.de} → ${c.a}`).join('\n');
-  const ok = confirm(
-    `Se van a corregir ${cambios.length} oportunidad(es) para que su etapa (Kanban) coincida con su Estado de la Opp:\n\n${preview}\n\n` +
-    `Mapeo usado: RFP→2-Calificado, Arquitectura→3-Análisis Técnico, POC→4-POC, Técnico-Comercial→5-Propuesta, En revisión cliente / Enviada→6-Negociación.\n` +
-    `("Ninguno" y "Stand by" no se tocan.)\n\nSe baja un backup antes de aplicar. ¿Confirmás?`
-  );
-  if(!ok) return;
-  downloadFile(JSON.stringify(DATA,null,2), 'backup_antes_de_sync_etapa_' + todayISO() + '.json', 'application/json');
-  cambios.forEach(c=>{ c.o.etapa = c.a; c.o.ultimaActualizacion = todayISO(); computeFields(c.o); });
-  saveData().then(()=>{
-    renderAll();
-    showToast(cambios.length + ' oportunidad(es) sincronizada(s). Backup bajado por las dudas.');
-  });
-});
-
 function populateOppSelectForTasks(){
   const sel = document.getElementById('tk_opp');
   const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
@@ -2114,7 +2079,6 @@ function oppKanbanCardHtml(o){
     <div class="ko-detail">
       <div><strong>EECC:</strong> ${o.eecc?titleCase(o.eecc):'—'}</div>
       <div><strong>Ing. preventa:</strong> ${o.ingenieroPreventa?titleCase(o.ingenieroPreventa):'—'}</div>
-      <div><strong>Estado opp:</strong> ${o.estadoOpp||'—'}</div>
       <div><strong>Fecha est. cierre:</strong> ${o.fechaEstCierre?formatDateShort(o.fechaEstCierre):'—'}</div>
       ${o.proximoPaso?`<div><strong>Próximo paso:</strong> ${escapeHtml(o.proximoPaso)}</div>`:''}
       <select class="ko-move" data-move-id="${o.id}">
@@ -2300,7 +2264,6 @@ auth.onAuthStateChanged(async (user)=>{
       if(btnNewEmpty) btnNewEmpty.style.display = 'none';
       document.getElementById('btnImport').style.display = 'none';
       document.getElementById('btnImportSF').style.display = 'none';
-      document.getElementById('btnSyncEtapa').style.display = 'none';
     }
   }else if(user){
     errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
