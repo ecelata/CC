@@ -511,13 +511,15 @@ const RESPONSABLE_POR_SEGMENTO = {
 // empezás el diseño → vos → Arquitectura vía Jira → Preventa/Pricing → Comercial/Preventa). "Owner" implícito
 // de cada fase: 1 Comercial/Preventa y vos (acá nace el Win/salesforceId), 2 POC (equipo Huawei, cupón/trial,
 // sin propuesta técnica — camino alternativo que puede saltear directo a Envío y Negociación), 3 vos,
-// 4 Arquitectura (Jira), 5 Preventa/Pricing, 6 Comercial/Preventa.
+// 4 Arquitectura (Jira — la viabilidad es solo uno de sus trabajos ahí, junto con el dimensionamiento de
+// recursos; por eso la etapa se llama "Arquitectura" y no "En Viabilidad"), 5 Preventa/Pricing, 6 Comercial/Preventa.
 // "Dimensionada" NO es una etapa propia: es solo el momento en que Preventa reenvía a Pricing, así que
 // no tiene entidad separada — queda absorbida en "En Pricing/PPCC".
-const ETAPAS = ['1-Identificada','2-POC','3-En Diseño','4-En Viabilidad','5-En Pricing/PPCC','6-Envío y Negociación'];
-// Migración: mapeo de nombres de etapa viejos (el funnel genérico original de 7 etapas, y la versión
-// intermedia de 7 fases reales que incluía "Dimensionada" como etapa propia) a las 6 fases finales,
-// para no perder el historial de las opps ya cargadas. Corre una sola vez por opp dentro de computeFields.
+const ETAPAS = ['1-Identificada','2-POC','3-En Diseño','4-Arquitectura','5-En Pricing/PPCC','6-Envío y Negociación'];
+// Migración: mapeo de nombres de etapa viejos (el funnel genérico original de 7 etapas, la versión
+// intermedia de 7 fases reales que incluía "Dimensionada" como etapa propia, y la etapa 4 cuando
+// todavía se llamaba "En Viabilidad") a las 6 fases finales, para no perder el historial de las opps
+// ya cargadas. Corre una sola vez por opp dentro de computeFields.
 const ETAPA_MIGRACION = {
   '1-Prospección': '1-Identificada',
   '2-Calificado': '1-Identificada',
@@ -529,7 +531,9 @@ const ETAPA_MIGRACION = {
   // versión intermedia (con "Dimensionada" como etapa propia), por si alguna opp ya quedó migrada a esa forma
   '5-Dimensionada': '5-En Pricing/PPCC',
   '6-En Pricing/PPCC': '5-En Pricing/PPCC',
-  '7-Envío y Negociación': '6-Envío y Negociación'
+  '7-Envío y Negociación': '6-Envío y Negociación',
+  // "En Viabilidad" pasa a llamarse "Arquitectura" (la viabilidad era solo uno de sus trabajos)
+  '4-En Viabilidad': '4-Arquitectura'
 };
 const PRIORIDADES = ['Alta','Media','Baja'];
 const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
@@ -2121,7 +2125,7 @@ const ETAPA_COLORS = {
   '1-Identificada': '#64748b',
   '2-POC': '#f97316',
   '3-En Diseño': '#0ea5e9',
-  '4-En Viabilidad': '#14b8a6',
+  '4-Arquitectura': '#14b8a6',
   '5-En Pricing/PPCC': '#8b5cf6',
   '6-Envío y Negociación': '#ec4899'
 };
