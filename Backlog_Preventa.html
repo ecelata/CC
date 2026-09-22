@@ -101,18 +101,33 @@
   .kanban-card .kc-fecha{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);}
   .kanban-card .kc-move{width:100%;margin-top:8px;font-size:11px;padding:5px 8px;}
   .kanban-empty{color:var(--ink-faint);font-size:11.5px;font-style:italic;text-align:center;padding:14px 6px;}
-  .kanban-board-opps{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start;}
-  .kanban-board-opps .kanban-col{flex:0 0 240px;width:240px;}
+  .kanban-board-opps{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;align-items:flex-start;font-family:'Inter',sans-serif;}
+  .kanban-board-opps .kanban-col{flex:0 0 210px;width:210px;padding:10px;}
+  .kanban-board-opps .kanban-col-head{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+  .kanban-board-opps .kanban-col-head .ko-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .kanban-board-opps .kanban-col-head .ko-col-label{flex:1;}
+  .kanban-board-opps .ko-col-total{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);margin:-2px 0 10px 14px;}
   .kanban-opp-card{
-    background:var(--paper);border:1px solid var(--line-strong);border-radius:6px;padding:10px 11px;
-    cursor:grab;font-size:12px;margin-bottom:8px;user-select:none;
+    background:var(--paper);border:1px solid var(--line-strong);border-left:3px solid var(--stamp);
+    border-radius:6px;padding:9px 10px;cursor:grab;font-size:11.5px;margin-bottom:7px;user-select:none;
+    font-family:'Inter',sans-serif;
   }
   .kanban-opp-card:active{cursor:grabbing;}
-  .kanban-opp-card .ko-cliente{font-weight:600;color:var(--ink);font-size:12.5px;line-height:1.25;}
-  .kanban-opp-card .ko-nombre{color:var(--ink-soft);font-size:11px;margin-top:1px;margin-bottom:6px;}
-  .kanban-opp-card .ko-row{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:6px;}
-  .kanban-opp-card .ko-prob{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
-  .kanban-opp-card .ko-monto{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:var(--stamp-dark);}
+  .kanban-opp-card .ko-cliente{
+    font-weight:600;color:var(--ink);font-size:12px;line-height:1.3;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .kanban-opp-card .ko-nombre{
+    color:var(--ink-soft);font-size:10.5px;margin-top:1px;margin-bottom:6px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .kanban-opp-card .ko-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 6px;margin-top:5px;}
+  .kanban-opp-card .bant-quad{display:flex;gap:3px;width:auto;grid-template-columns:none;}
+  .kanban-opp-card .bant-q{width:15px;height:15px;font-size:9px;border-radius:3px;}
+  .kanban-opp-card .ko-prob{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);}
+  .kanban-opp-card .ko-meta{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--ink-soft);white-space:nowrap;}
+  .kanban-opp-card .ko-meta svg{width:10px;height:10px;flex-shrink:0;opacity:.65;}
+  .kanban-opp-card .ko-monto{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--ink);}
   .kanban-opp-card .ko-detail{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11px;color:var(--ink-soft);}
   .kanban-opp-card .ko-detail div{margin-bottom:4px;}
   .kanban-opp-card.expanded .ko-detail{display:block;}
@@ -2052,13 +2067,31 @@ async function moveTask(id, columna){
 }
 
 // ── Kanban de oportunidades (por etapa del pipeline) ──
+const ETAPA_COLORS = {
+  '1-Prospección': '#64748b',
+  '2-Calificado': '#0ea5e9',
+  '3-Análisis Técnico': '#14b8a6',
+  '4-POC': '#f97316',
+  '5-Propuesta': '#8b5cf6',
+  '6-Negociación': '#ec4899',
+  '7-Cierre': '#22c55e'
+};
+const ICON_MONEY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>';
+const ICON_CALENDAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
+
 function buildKanbanOppsColumns(){
   const board = document.getElementById('kanbanOppsBoard');
   if(!board || board.children.length) return; // ya armado
   board.innerHTML = ETAPAS.map(et=>{
     const label = et.replace(/^\d-/,'');
+    const color = ETAPA_COLORS[et] || 'var(--stamp)';
     return `<div class="kanban-col" data-etapa="${et}">
-      <div class="kanban-col-head">${label} <span class="kanban-count" data-ko-count="${et}">0</span></div>
+      <div class="kanban-col-head">
+        <span class="ko-dot" style="background:${color};"></span>
+        <span class="ko-col-label">${label}</span>
+        <span class="kanban-count" data-ko-count="${et}">0</span>
+      </div>
+      <div class="ko-col-total" data-ko-total="${et}"></div>
       <div class="kanban-drop" data-ko-drop="${et}"></div>
     </div>`;
   }).join('');
@@ -2066,15 +2099,17 @@ function buildKanbanOppsColumns(){
 
 function oppKanbanCardHtml(o){
   const monto = o.mesRecurrente ? fmtMoney(o.mesRecurrente)+'/mes' : (o.montoOneShot ? fmtMoney(o.montoOneShot)+' único' : '—');
-  return `<div class="kanban-opp-card" draggable="true" data-id="${o.id}">
-    <div class="ko-cliente">${escapeHtml(o.cliente||'—')}</div>
-    ${o.nombreOpp?`<div class="ko-nombre">${escapeHtml(o.nombreOpp)}</div>`:''}
+  const color = ETAPA_COLORS[o.etapa] || 'var(--stamp)';
+  return `<div class="kanban-opp-card" draggable="true" data-id="${o.id}" style="border-left-color:${color};">
+    <div class="ko-cliente" title="${escapeHtml(o.cliente||'—')}">${escapeHtml(o.cliente||'—')}</div>
+    ${o.nombreOpp?`<div class="ko-nombre" title="${escapeHtml(o.nombreOpp)}">${escapeHtml(o.nombreOpp)}</div>`:''}
     <div class="ko-row">
       <span class="bant-quad">${bantQuadrant(o)}</span>
       <span class="ko-prob">${o.probCierre?o.probCierre+'%':'—'}</span>
     </div>
     <div class="ko-row">
-      <span class="ko-monto">${monto}</span>
+      <span class="ko-meta">${ICON_MONEY}<span class="ko-monto">${monto}</span></span>
+      ${o.fechaEstCierre?`<span class="ko-meta">${ICON_CALENDAR}${formatDateShort(o.fechaEstCierre)}</span>`:''}
     </div>
     <div class="ko-detail">
       <div><strong>EECC:</strong> ${o.eecc?titleCase(o.eecc):'—'}</div>
@@ -2101,6 +2136,11 @@ function renderKanbanOpps(){
     if(drop) drop.innerHTML = cols[et].length ? cols[et].map(oppKanbanCardHtml).join('') : '<div class="kanban-empty">Sin oportunidades</div>';
     const countEl = document.querySelector('[data-ko-count="'+et+'"]');
     if(countEl) countEl.textContent = cols[et].length;
+    const totalEl = document.querySelector('[data-ko-total="'+et+'"]');
+    if(totalEl){
+      const total = cols[et].reduce((sum,o)=>sum+(Number(o.mesRecurrente)||0),0);
+      totalEl.textContent = total ? fmtMoney(total)+'/mes' : '';
+    }
   });
   wireKanbanOppsCards();
 }
