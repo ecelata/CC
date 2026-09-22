@@ -507,7 +507,22 @@ const RESPONSABLE_POR_SEGMENTO = {
   'Banca':'Casil Silvana Paula','CCEE Industria':'Urrutigoity Raul','CCEE Servicios':'Banovaz Gabriela Edith'
 };
 
-const ETAPAS = ['1-Prospección','2-Calificado','3-Análisis Técnico','4-POC','5-Propuesta','6-Negociación','7-Cierre'];
+// Fases del proceso real de preventa (Comercial/Preventa → vos → Arquitectura vía Jira → Preventa/Pricing → Comercial/Preventa),
+// reemplazan al funnel genérico anterior. "Owner" implícito de cada fase: 1 Comercial/Preventa y vos, 2 POC (equipo Huawei,
+// cupón/trial, sin propuesta técnica — camino alternativo que puede saltear directo a Envío y Negociación), 3 vos, 4 Arquitectura (Jira),
+// 5-6 Preventa/Pricing, 7 Comercial/Preventa.
+const ETAPAS = ['1-Identificada','2-POC','3-En Diseño','4-En Viabilidad','5-Dimensionada','6-En Pricing/PPCC','7-Envío y Negociación'];
+// Migración: mapeo de las 7 etapas viejas (funnel genérico) a las 7 fases nuevas, para no perder
+// el historial de las opps ya cargadas. Corre una sola vez por opp dentro de computeFields.
+const ETAPA_MIGRACION = {
+  '1-Prospección': '1-Identificada',
+  '2-Calificado': '1-Identificada',
+  '3-Análisis Técnico': '3-En Diseño',
+  '4-POC': '2-POC',
+  '5-Propuesta': '6-En Pricing/PPCC',
+  '6-Negociación': '7-Envío y Negociación',
+  '7-Cierre': '7-Envío y Negociación'
+};
 const PRIORIDADES = ['Alta','Media','Baja'];
 const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
 const TIPO_CONTRATO = ['One-Shot','MRR','ARR','Mixto'];
@@ -581,6 +596,10 @@ function computeFields(o){
   }
   delete o.estadoOpp;
   delete o.estadoPropuesta;
+  // Migración: funnel genérico (7 etapas) -> fases reales de preventa (7 fases, con POC
+  // como camino propio). Corre una sola vez por opp: una vez migrada, "etapa" ya tiene uno
+  // de los valores nuevos y ETAPA_MIGRACION[o.etapa] da undefined, así que no vuelve a tocarla.
+  if(ETAPA_MIGRACION[o.etapa]) o.etapa = ETAPA_MIGRACION[o.etapa];
   return o;
 }
 function estadoSemaforo(o){
@@ -1311,6 +1330,12 @@ function formatDateShort(isoDate){
   return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(-2);
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function jiraLinkHtml(url){
+  const v = String(url||'').trim();
+  if(!v) return '';
+  if(!/^https?:\/\//i.test(v)) return 'Pegá un link completo (con http/https) para que se vea cliqueable.';
+  return `<a href="${escapeHtml(v)}" target="_blank" rel="noopener">🔗 Abrir ticket Jira</a>`;
+}
 function titleCase(s){ return String(s).toLowerCase().replace(/(^|\s)\S/g, t=>t.toUpperCase()); }
 
 function optionsHtml(list, selected){
@@ -1325,7 +1350,7 @@ function blankOpp(){
     competidores:'', vertical:'', proveedor:'', producto:'', tipoProyecto:'',
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
-    documentosGenerados:'', notasTecnicas:'',
+    documentosGenerados:'', notasTecnicas:'', ticketJira:'',
     proximoPaso:'', bitacora:[], prioridad:'',
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
@@ -1444,6 +1469,11 @@ function drawerTemplate(o){
       <h3>Seguimiento</h3>
       <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
       <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
+      <div class="field">
+        <label>Ticket Jira (Arquitectura)</label>
+        <input type="text" id="f_ticketJira" value="${escapeHtml(o.ticketJira||'')}" placeholder="Pegá acá el link del ticket">
+        <span class="hint">${jiraLinkHtml(o.ticketJira)}</span>
+      </div>
     </div>
 
     <div class="section">
@@ -1545,6 +1575,8 @@ function readFormInto(o){
   o.horasInvertidas = document.getElementById('f_horasInvertidas').value;
   o.documentosGenerados = document.getElementById('f_documentosGenerados').value;
   o.notasTecnicas = document.getElementById('f_notasTecnicas').value;
+  const ticketJiraField = document.getElementById('f_ticketJira');
+  if(ticketJiraField) o.ticketJira = ticketJiraField.value.trim();
   const proximoPasoField = document.getElementById('f_proximoPaso');
   if(proximoPasoField) o.proximoPaso = proximoPasoField.value.trim();
   o.estadoFinal = document.getElementById('f_estadoFinal').value;
@@ -1578,6 +1610,13 @@ function wireDrawer(o){
   if(!o.bitacora) o.bitacora = [];
   document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
   document.getElementById('btnCancel').addEventListener('click', closeDrawer);
+
+  const ticketJiraInput = document.getElementById('f_ticketJira');
+  if(ticketJiraInput){
+    ticketJiraInput.addEventListener('input', ()=>{
+      ticketJiraInput.nextElementSibling.innerHTML = jiraLinkHtml(ticketJiraInput.value);
+    });
+  }
 
   let bitacoraTipoSeleccionado = null;
   const overlay = document.getElementById('bitacoraModalOverlay');
@@ -1711,7 +1750,7 @@ function toCsv(){
     'bantBudget','bantAuthority','bantNeed','bantTimeline','bantObs','necesidad','etapa','probCierre','vertical','proveedor','producto',
     'tipoProyecto','competidores','fechaEntrada','fechaDeadline','fechaEstCierre','diasRestantes','tipoContrato',
     'montoOneShot','mesRecurrente','anioRecurrente','valorTotal','mrrArrEstimado','montoPonderado','margenEstimado',
-    'horasInvertidas','documentosGenerados','notasTecnicas','proximoPaso','estadoFinal','motivoPerdida',
+    'horasInvertidas','documentosGenerados','notasTecnicas','ticketJira','proximoPaso','estadoFinal','motivoPerdida',
     'fechaCierreReal','ultimaActualizacion'];
   const rows = [cols.join(',')];
   DATA.forEach(o=>{
@@ -1809,10 +1848,10 @@ document.getElementById('btnExportPlanilla').addEventListener('click', ()=>{
   const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
   const cerrados = DATA.filter(o=>o.estadoFinal==='Ganado')
     .sort((a,b)=>(b.fechaCierreReal||'').localeCompare(a.fechaCierreReal||''));
-  const pocs = abiertas.filter(o=>o.etapa==='4-POC');
-  const aCerrar = abiertas.filter(o=>(o.etapa==='6-Negociación'||o.etapa==='7-Cierre'))
+  const pocs = abiertas.filter(o=>o.etapa==='2-POC');
+  const aCerrar = abiertas.filter(o=>o.etapa==='7-Envío y Negociación')
     .sort((a,b)=>(a.fechaEstCierre||'').localeCompare(b.fechaEstCierre||''));
-  const pipeline = abiertas.filter(o=>o.etapa!=='4-POC' && o.etapa!=='6-Negociación' && o.etapa!=='7-Cierre')
+  const pipeline = abiertas.filter(o=>o.etapa!=='2-POC' && o.etapa!=='7-Envío y Negociación')
     .sort((a,b)=>(Number(b.mesRecurrente)||0)-(Number(a.mesRecurrente)||0));
 
   const wb = XLSX.utils.book_new();
@@ -1853,8 +1892,8 @@ document.getElementById('fileImport').addEventListener('change', async (e)=>{
 // Mapeo Probabilidad Salesforce -> Etapa del Backlog. Es una aproximación (solo vi ejemplos en
 // 25%) — si al usarlo ves etapas que no calzan, avisame y lo ajustamos.
 const SF_PROB_TO_ETAPA = {
-  0:'1-Prospección', 10:'2-Calificado', 25:'3-Análisis Técnico',
-  50:'5-Propuesta', 75:'6-Negociación', 90:'6-Negociación', 100:'7-Cierre'
+  0:'1-Identificada', 10:'1-Identificada', 25:'3-En Diseño',
+  50:'6-En Pricing/PPCC', 75:'7-Envío y Negociación', 90:'7-Envío y Negociación', 100:'7-Envío y Negociación'
 };
 function sfEtapaFromProb(prob){
   const keys = Object.keys(SF_PROB_TO_ETAPA).map(Number).sort((a,b)=>a-b);
@@ -2068,13 +2107,13 @@ async function moveTask(id, columna){
 
 // ── Kanban de oportunidades (por etapa del pipeline) ──
 const ETAPA_COLORS = {
-  '1-Prospección': '#64748b',
-  '2-Calificado': '#0ea5e9',
-  '3-Análisis Técnico': '#14b8a6',
-  '4-POC': '#f97316',
-  '5-Propuesta': '#8b5cf6',
-  '6-Negociación': '#ec4899',
-  '7-Cierre': '#22c55e'
+  '1-Identificada': '#64748b',
+  '2-POC': '#f97316',
+  '3-En Diseño': '#0ea5e9',
+  '4-En Viabilidad': '#14b8a6',
+  '5-Dimensionada': '#6366f1',
+  '6-En Pricing/PPCC': '#8b5cf6',
+  '7-Envío y Negociación': '#ec4899'
 };
 const ICON_MONEY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>';
 const ICON_CALENDAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
@@ -2116,6 +2155,7 @@ function oppKanbanCardHtml(o){
       <div><strong>Ing. preventa:</strong> ${o.ingenieroPreventa?titleCase(o.ingenieroPreventa):'—'}</div>
       <div><strong>Fecha est. cierre:</strong> ${o.fechaEstCierre?formatDateShort(o.fechaEstCierre):'—'}</div>
       ${o.proximoPaso?`<div><strong>Próximo paso:</strong> ${escapeHtml(o.proximoPaso)}</div>`:''}
+      ${o.ticketJira?`<div><strong>Jira:</strong> ${jiraLinkHtml(o.ticketJira)}</div>`:''}
       <select class="ko-move" data-move-id="${o.id}">
         ${ETAPAS.map(et=>`<option value="${et}" ${o.etapa===et?'selected':''}>${et}</option>`).join('')}
       </select>
@@ -2151,10 +2191,12 @@ function wireKanbanOppsCards(){
     card.addEventListener('click', (ev)=>{
       if(card.dataset.dragging==='1') return;
       if(ev.target.closest('.ko-move')) return;
+      if(ev.target.closest('a')) return;
       clearTimeout(clickTimer);
       clickTimer = setTimeout(()=>{ card.classList.toggle('expanded'); }, 230);
     });
-    card.addEventListener('dblclick', ()=>{
+    card.addEventListener('dblclick', (ev)=>{
+      if(ev.target.closest('a')) return;
       clearTimeout(clickTimer);
       openDrawer(card.getAttribute('data-id'));
     });
