@@ -266,6 +266,25 @@
   .org-box-mail a{color:inherit;}
   .org-box-seg-tag{display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;background:var(--seg-color);border-radius:3px;padding:1px 5px;margin-bottom:4px;}
   .org-box-cuentas-count{font-size:9px;font-weight:600;color:var(--stamp-dark);margin-top:3px;}
+  .hist-toolbar{display:flex;gap:10px;margin-bottom:14px;}
+  .hist-manual-form{display:none;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:18px;}
+  .hist-manual-form > div{display:flex;flex-direction:column;gap:4px;}
+  .hist-manual-form label{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);}
+  .hist-manual-form input,.hist-manual-form select{padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--paper);font-size:12.5px;}
+  .hist-manual-actions{display:flex;gap:8px;}
+  .hist-chart{padding-top:6px;}
+  .hist-legend{display:flex;gap:16px;margin-bottom:12px;font-size:11px;color:var(--ink-soft);}
+  .hist-legend-item{display:flex;align-items:center;gap:5px;}
+  .hist-swatch{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .hist-swatch-usd{background:var(--stamp);}
+  .hist-swatch-ars{background:var(--gold);}
+  .hist-chart-bars{display:flex;align-items:flex-end;gap:10px;height:180px;overflow-x:auto;padding-bottom:4px;}
+  .hist-month-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex:0 0 auto;width:38px;height:100%;}
+  .hist-bars-pair{display:flex;align-items:flex-end;gap:3px;height:150px;width:100%;justify-content:center;}
+  .hist-bar{width:13px;border-radius:2px 2px 0 0;transition:height .25s;}
+  .hist-bar-usd{background:var(--stamp);}
+  .hist-bar-ars{background:var(--gold);}
+  .hist-month-label{font-size:9.5px;color:var(--ink-faint);margin-top:6px;white-space:nowrap;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;cursor:pointer;padding:3px 4px;border-radius:3px;}
   .bar-row:hover{background:var(--stamp-bg);}
   .bar-row.active{background:var(--stamp-bg);}
@@ -408,6 +427,7 @@
     <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda"><span class="tab-ico">📅</span>Agenda</button>
     <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps"><span class="tab-ico">🗂️</span>Kanban</button>
     <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo"><span class="tab-ico">👥</span>Equipo</button>
+    <button class="tab-btn" id="tabBtnHistorico" data-tab="historico"><span class="tab-ico">📈</span>Histórico</button>
   </div>
 
   <div class="view active" id="viewTabla">
@@ -511,6 +531,45 @@
       <div class="hint">Responsable → cuentas (EECC) a cargo, con su segmento y su ingeniero de preventa</div>
     </div>
     <div class="equipo-grid" id="equipoGrid"></div>
+  </div>
+
+  <div class="view" id="viewHistorico">
+    <div class="agenda-topbar">
+      <h3 style="margin:0;">Histórico de ganadas</h3>
+      <div class="hint">Cotizaciones ganadas de tus EECC, mes a mes · importá el excel de "Cotizaciones Cloud" o agregá a mano</div>
+    </div>
+    <div class="hist-toolbar">
+      <button class="ghost" id="btnHistImport">📥 Importar Excel</button>
+      <input type="file" id="fileHistImport" accept=".xlsx,.xls,.csv" style="display:none">
+      <button class="ghost" id="btnHistManual">+ Agregar a mano</button>
+    </div>
+    <div class="hist-manual-form" id="histManualForm" style="display:none;">
+      <div><label>Mes</label><input type="month" id="hm_mes"></div>
+      <div><label>Cuenta</label><input type="text" id="hm_cuenta" placeholder="Razón social"></div>
+      <div><label>Ejecutivo</label><input type="text" id="hm_ejecutivo" placeholder="EECC"></div>
+      <div><label>Producto</label><input type="text" id="hm_producto" placeholder="Producto"></div>
+      <div><label>Moneda</label><select id="hm_moneda"><option value="USD">USD</option><option value="ARS">ARS</option></select></div>
+      <div><label>Monto</label><input type="number" id="hm_monto" placeholder="0" min="0" step="0.01"></div>
+      <div class="hist-manual-actions">
+        <button class="primary" id="btnHistManualSave">Agregar</button>
+        <button class="ghost" id="btnHistManualCancel">Cancelar</button>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:18px;">
+      <h3>Evolución mensual</h3>
+      <div class="panel-hint">USD y ARS por separado · desde enero 2026</div>
+      <div class="hist-chart" id="histChart"></div>
+    </div>
+    <div class="table-wrap">
+      <table id="histTable">
+        <thead><tr><th>Mes</th><th>Cuenta</th><th>Ejecutivo</th><th>Producto</th><th>Moneda</th><th class="money">Monto</th><th>Origen</th><th></th></tr></thead>
+        <tbody id="histTbody"></tbody>
+      </table>
+      <div class="empty-state" id="histEmptyState" style="display:none;">
+        <h3>Todavía no cargaste ganadas históricas</h3>
+        <p>Importá un excel de cotizaciones o agregá una a mano.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1028,6 +1087,256 @@ async function saveTasks(){
     return false;
   }
 }
+
+// ---- Histórico de ganadas (comisiones) ----------------------------------
+// Guarda cotizaciones "Cerrada-Ganada" de tus EECC, mes a mes, para ver la evolución.
+// Se cargan importando el excel "Cotizaciones Cloud todos" (mismo formato que
+// "Importar Salesforce") o a mano. Vive en su propio documento de Firestore,
+// separado de DATA/TASKS/PROYECTOS.
+let HISTORICO = [];
+const HIST_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/historico?key=${FIREBASE_CONFIG.apiKey}`;
+const HIST_LOCAL_CACHE_KEY = 'backlog_historico_cache_v1';
+const HIST_PRIMER_MES = '2026-01'; // el gráfico siempre arranca acá, aunque no haya datos
+
+async function loadHistorico(){
+  try{
+    const res = await fetch(HIST_DOC_URL, {headers: await authHeader()});
+    if(res.status === 404){
+      HISTORICO = [];
+    }else if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      HISTORICO = raw ? JSON.parse(raw) : [];
+    }else{
+      throw new Error('HTTP ' + res.status);
+    }
+    localStorage.setItem(HIST_LOCAL_CACHE_KEY, JSON.stringify(HISTORICO));
+  }catch(e){
+    try{
+      const cached = localStorage.getItem(HIST_LOCAL_CACHE_KEY);
+      HISTORICO = cached ? JSON.parse(cached) : [];
+    }catch(e2){ HISTORICO = []; }
+  }
+}
+
+async function saveHistorico(){
+  if(blockIfReadonly()) return;
+  localStorage.setItem(HIST_LOCAL_CACHE_KEY, JSON.stringify(HISTORICO));
+  try{
+    const body = {
+      fields: {
+        json: { stringValue: JSON.stringify(HISTORICO) },
+        updatedAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+    const url = HIST_DOC_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt';
+    const res = await fetch(url, {method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    return true;
+  }catch(e){
+    showToast('⚠️ No se pudo sincronizar el Histórico con la nube.');
+    return false;
+  }
+}
+
+// Nombres (normalizados) de tus EECC, sacados de la cartera ya filtrada por
+// Gonzalo Ramirez / Casil / Urrutigoity / Banovaz que carga loadAccounts().
+function normalizeNombre(s){
+  return String(s||'').toUpperCase().normalize('NFKD').replace(/[̀-ͯ]/g,'')
+    .split(/\s+/).filter(Boolean).sort().join(' ');
+}
+function misEeccSet(){
+  const set = new Set();
+  ACCOUNTS.forEach(a=>{ if(a.eecc) set.add(normalizeNombre(a.eecc)); });
+  return set;
+}
+function histParseMesCierre(s){
+  // "07/2026" -> "2026-07"
+  const m = /^(\d{1,2})\/(\d{4})$/.exec(String(s||'').trim());
+  if(!m) return '';
+  return `${m[2]}-${m[1].padStart(2,'0')}`;
+}
+function histId(){ return 'H-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
+
+document.getElementById('btnHistImport').addEventListener('click', ()=>{
+  if(blockIfReadonly()) return;
+  document.getElementById('fileHistImport').click();
+});
+document.getElementById('fileHistImport').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:'array'});
+    const sheetName = wb.SheetNames.find(n=>/cotizacion/i.test(n)) || wb.SheetNames[0];
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:''});
+    const misEecc = misEeccSet();
+    const yaImportados = new Set(HISTORICO.filter(h=>h.idCotizacion).map(h=>h.idCotizacion));
+
+    let agregadas = 0, saltadasNoEecc = 0, saltadasDuplicadas = 0, saltadasNoGanada = 0;
+    rows.forEach(r=>{
+      const etapa = String(r['Etapa']||'').trim();
+      if(!/^Cerrada-Ganada$/i.test(etapa)){ saltadasNoGanada++; return; }
+      const idCot = String(r['ID Cotización']||'').trim();
+      if(idCot && yaImportados.has(idCot)){ saltadasDuplicadas++; return; }
+      const ejecutivo = String(r['Ejecutivo']||'').trim();
+      if(!misEecc.has(normalizeNombre(ejecutivo))){ saltadasNoEecc++; return; }
+      const mes = histParseMesCierre(r['Mes Cierre']);
+      HISTORICO.push({
+        id: histId(),
+        idCotizacion: idCot,
+        mes: mes || HIST_PRIMER_MES,
+        cuenta: String(r['Cuenta']||'').trim(),
+        ejecutivo: ejecutivo,
+        producto: String(r['Producto']||'').trim(),
+        moneda: String(r['Divisa']||'').trim() || 'USD',
+        monto: Number(r['Total Valorizado'])||0,
+        origen: 'excel',
+        cargadoEl: todayISO()
+      });
+      if(idCot) yaImportados.add(idCot);
+      agregadas++;
+    });
+
+    await saveHistorico();
+    renderHistorico();
+    let msg = `Histórico: ${agregadas} cotización(es) ganada(s) agregada(s).`;
+    if(saltadasDuplicadas) msg += ` ${saltadasDuplicadas} ya estaban cargadas (se ignoraron).`;
+    if(saltadasNoEecc) msg += ` ${saltadasNoEecc} no son de tus EECC.`;
+    if(saltadasNoGanada) msg += ` ${saltadasNoGanada} no estaban en etapa Cerrada-Ganada.`;
+    alert(msg);
+  }catch(err){
+    console.error(err);
+    showToast('No se pudo importar el Excel de Histórico');
+  }
+  e.target.value='';
+});
+
+document.getElementById('btnHistManual').addEventListener('click', ()=>{
+  if(blockIfReadonly()) return;
+  const form = document.getElementById('histManualForm');
+  const abrir = form.style.display==='none' || !form.style.display;
+  form.style.display = abrir ? 'flex' : 'none';
+  if(abrir && !document.getElementById('hm_mes').value){
+    document.getElementById('hm_mes').value = todayISO().slice(0,7);
+  }
+});
+document.getElementById('btnHistManualCancel').addEventListener('click', ()=>{
+  document.getElementById('histManualForm').style.display='none';
+});
+document.getElementById('btnHistManualSave').addEventListener('click', async ()=>{
+  if(blockIfReadonly()) return;
+  const mesInput = document.getElementById('hm_mes').value; // "2026-07"
+  const cuenta = document.getElementById('hm_cuenta').value.trim();
+  const ejecutivo = document.getElementById('hm_ejecutivo').value.trim();
+  const producto = document.getElementById('hm_producto').value.trim();
+  const moneda = document.getElementById('hm_moneda').value;
+  const monto = Number(document.getElementById('hm_monto').value)||0;
+  if(!mesInput || !cuenta || !monto){
+    alert('Completá al menos mes, cuenta y monto.');
+    return;
+  }
+  HISTORICO.push({
+    id: histId(), idCotizacion:'', mes: mesInput, cuenta, ejecutivo, producto, moneda, monto,
+    origen:'manual', cargadoEl: todayISO()
+  });
+  await saveHistorico();
+  document.getElementById('hm_cuenta').value='';
+  document.getElementById('hm_ejecutivo').value='';
+  document.getElementById('hm_producto').value='';
+  document.getElementById('hm_monto').value='';
+  document.getElementById('histManualForm').style.display='none';
+  renderHistorico();
+});
+
+function histMonthsRange(){
+  // Todos los meses desde HIST_PRIMER_MES hasta el más nuevo entre hoy y el dato más reciente cargado.
+  const meses = HISTORICO.map(h=>h.mes).filter(Boolean);
+  const hoyMes = todayISO().slice(0,7);
+  let maxMes = hoyMes;
+  meses.forEach(m=>{ if(m > maxMes) maxMes = m; });
+  const out = [];
+  let [y,m] = HIST_PRIMER_MES.split('-').map(Number);
+  const [yMax,mMax] = maxMes.split('-').map(Number);
+  while(y < yMax || (y===yMax && m<=mMax)){
+    out.push(`${y}-${String(m).padStart(2,'0')}`);
+    m++; if(m>12){ m=1; y++; }
+  }
+  return out;
+}
+function histMonthLabel(mes){
+  const [y,m] = mes.split('-');
+  const nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return nombres[parseInt(m,10)-1] + ' ' + y.slice(2);
+}
+function renderHistorico(){
+  const chartEl = document.getElementById('histChart');
+  const meses = histMonthsRange();
+  const porMes = {};
+  meses.forEach(m=>{ porMes[m] = {USD:0, ARS:0}; });
+  HISTORICO.forEach(h=>{
+    const mes = porMes[h.mes] ? h.mes : HIST_PRIMER_MES;
+    if(!porMes[mes]) porMes[mes] = {USD:0, ARS:0};
+    const moneda = (h.moneda||'USD').toUpperCase()==='ARS' ? 'ARS' : 'USD';
+    porMes[mes][moneda] += Number(h.monto)||0;
+  });
+  const maxUsd = Math.max(...meses.map(m=>porMes[m].USD), 1);
+  const maxArs = Math.max(...meses.map(m=>porMes[m].ARS), 1);
+
+  chartEl.innerHTML = `
+    <div class="hist-legend">
+      <span class="hist-legend-item"><span class="hist-swatch hist-swatch-usd"></span>USD</span>
+      <span class="hist-legend-item"><span class="hist-swatch hist-swatch-ars"></span>ARS</span>
+    </div>
+    <div class="hist-chart-bars">
+      ${meses.map(m=>{
+        const usd = porMes[m].USD, ars = porMes[m].ARS;
+        const hUsd = Math.max(usd>0?4:0, (usd/maxUsd)*100);
+        const hArs = Math.max(ars>0?4:0, (ars/maxArs)*100);
+        return `<div class="hist-month-col" title="${histMonthLabel(m)}: US$ ${Math.round(usd).toLocaleString('es-AR')} · ARS ${Math.round(ars).toLocaleString('es-AR')}">
+          <div class="hist-bars-pair">
+            <div class="hist-bar hist-bar-usd" style="height:${hUsd}%"></div>
+            <div class="hist-bar hist-bar-ars" style="height:${hArs}%"></div>
+          </div>
+          <div class="hist-month-label">${histMonthLabel(m)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  const tbody = document.getElementById('histTbody');
+  const empty = document.getElementById('histEmptyState');
+  const list = HISTORICO.slice().sort((a,b)=> b.mes.localeCompare(a.mes) || (b.cargadoEl||'').localeCompare(a.cargadoEl||''));
+  if(list.length===0){
+    tbody.innerHTML='';
+    empty.style.display='block';
+    document.querySelector('#histTable').style.display='none';
+  }else{
+    document.querySelector('#histTable').style.display='table';
+    empty.style.display='none';
+    tbody.innerHTML = list.map(h=>`
+      <tr data-id="${h.id}">
+        <td>${histMonthLabel(h.mes)}</td>
+        <td>${escapeHtml(h.cuenta||'—')}</td>
+        <td>${escapeHtml(titleCase(h.ejecutivo||'')||'—')}</td>
+        <td>${escapeHtml(h.producto||'—')}</td>
+        <td>${h.moneda||'USD'}</td>
+        <td class="money">${(h.moneda||'USD').toUpperCase()==='ARS'?'ARS ':'US$ '}${Math.round(h.monto).toLocaleString('es-AR')}</td>
+        <td>${h.origen==='manual'?'✍️ Manual':'📥 Excel'}</td>
+        <td><button class="bitacora-del hist-del" data-id="${h.id}" type="button" title="Eliminar">×</button></td>
+      </tr>`).join('');
+    tbody.querySelectorAll('.hist-del').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        if(blockIfReadonly()) return;
+        if(!confirm('¿Eliminar este registro del histórico?')) return;
+        HISTORICO = HISTORICO.filter(h=>h.id!==btn.getAttribute('data-id'));
+        await saveHistorico();
+        renderHistorico();
+      });
+    });
+  }
+}
+// ---- fin Histórico -------------------------------------------------------
 
 function populateFilterSelects(){
   const fSeg = document.getElementById('fSegmento');
@@ -1959,6 +2268,7 @@ function switchTab(tab){
   document.getElementById('viewAgenda').classList.toggle('active', tab==='agenda');
   document.getElementById('viewKanbanOpps').classList.toggle('active', tab==='kanbanopps');
   document.getElementById('viewEquipo').classList.toggle('active', tab==='equipo');
+  document.getElementById('viewHistorico').classList.toggle('active', tab==='historico');
   if(showTabla){
     boardView = (tab==='cerradas') ? 'cerradas' : 'activas';
     const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
@@ -1972,6 +2282,7 @@ function switchTab(tab){
   if(tab==='agenda') renderKanban();
   if(tab==='kanbanopps') renderKanbanOpps();
   if(tab==='equipo') renderEquipo();
+  if(tab==='historico') renderHistorico();
 }
 function drillInto(filterId, value){
   const el = document.getElementById(filterId);
@@ -2468,7 +2779,7 @@ async function bootApp(){
   populateFilterSelects();
   wireSortableHeaders();
   wireAgendaAccordion();
-  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos()]);
+  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos(), loadHistorico()]);
   renderAll();
 }
 
@@ -2505,6 +2816,8 @@ auth.onAuthStateChanged(async (user)=>{
       if(btnNewEmpty) btnNewEmpty.style.display = 'none';
       document.getElementById('btnImport').style.display = 'none';
       document.getElementById('btnImportSF').style.display = 'none';
+      document.getElementById('btnHistImport').style.display = 'none';
+      document.getElementById('btnHistManual').style.display = 'none';
     }
   }else if(user){
     errEl.textContent = 'La cuenta ' + user.email + ' no tiene acceso a este sitio.';
