@@ -267,6 +267,11 @@
   .org-box-seg-tag{display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;background:var(--seg-color);border-radius:3px;padding:1px 5px;margin-bottom:4px;}
   .org-box-cuentas-count{font-size:9px;font-weight:600;color:var(--stamp-dark);margin-top:3px;}
   .hist-toolbar{display:flex;gap:10px;margin-bottom:14px;}
+  .hist-dash-row{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;}
+  .hist-dash-filter{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+  .hist-dash-filter label{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);}
+  .hist-dash-filter select{min-width:160px;padding:4px;border:1px solid var(--line);border-radius:4px;background:var(--paper);font-size:12px;}
+  .hist-dash-filter select option{padding:3px 6px;}
   .hist-manual-form{display:none;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:18px;}
   .hist-manual-form > div{display:flex;flex-direction:column;gap:4px;}
   .hist-manual-form label{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);}
@@ -285,6 +290,11 @@
   .hist-bar-usd{background:var(--stamp);}
   .hist-bar-ars{background:var(--gold);}
   .hist-month-label{font-size:9.5px;color:var(--ink-faint);margin-top:6px;white-space:nowrap;}
+  .hist-month-col-dim{opacity:.28;}
+  #histTable thead th[data-hist-sort]{cursor:pointer;}
+  #histTable thead th[data-hist-sort]:hover{color:var(--stamp-dark);}
+  #histTable thead th[data-hist-sort].sort-asc::after{content:'▲';color:var(--stamp);font-size:8px;margin-left:4px;}
+  #histTable thead th[data-hist-sort].sort-desc::after{content:'▼';color:var(--stamp);font-size:8px;margin-left:4px;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;cursor:pointer;padding:3px 4px;border-radius:3px;}
   .bar-row:hover{background:var(--stamp-bg);}
   .bar-row.active{background:var(--stamp-bg);}
@@ -555,6 +565,20 @@
         <button class="ghost" id="btnHistManualCancel">Cancelar</button>
       </div>
     </div>
+
+    <div class="panel" style="margin-bottom:18px;">
+      <h3>Dashboard</h3>
+      <div class="panel-hint">Elegí uno o varios meses (Ctrl/Cmd+click) para ver el total de esa selección · sin nada seleccionado, muestra todo</div>
+      <div class="hist-dash-row">
+        <div class="hist-dash-filter">
+          <label for="histFiltroMeses">Meses</label>
+          <select id="histFiltroMeses" multiple size="6"></select>
+          <button class="ghost" id="btnHistLimpiarMeses" type="button">Ver todos</button>
+        </div>
+        <div class="kpi-row-2" id="histKpis" style="flex:1;"></div>
+      </div>
+    </div>
+
     <div class="panel" style="margin-bottom:18px;">
       <h3>Evolución mensual</h3>
       <div class="panel-hint">USD y ARS por separado · desde enero 2026</div>
@@ -562,7 +586,11 @@
     </div>
     <div class="table-wrap">
       <table id="histTable">
-        <thead><tr><th>Mes</th><th>Cuenta</th><th>Ejecutivo</th><th>Producto</th><th>Moneda</th><th class="money">Monto</th><th>Origen</th><th></th></tr></thead>
+        <thead><tr>
+          <th data-hist-sort="mes">Mes</th><th data-hist-sort="cuenta">Cuenta</th><th data-hist-sort="ejecutivo">Ejecutivo</th>
+          <th data-hist-sort="producto">Producto</th><th data-hist-sort="moneda">Moneda</th>
+          <th class="money" data-hist-sort="monto">Monto</th><th data-hist-sort="origen">Origen</th><th></th>
+        </tr></thead>
         <tbody id="histTbody"></tbody>
       </table>
       <div class="empty-state" id="histEmptyState" style="display:none;">
@@ -1280,7 +1308,58 @@ function histMonthLabel(mes){
   const nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   return nombres[parseInt(m,10)-1] + ' ' + y.slice(2);
 }
+// Orden de la tabla de Histórico — variables propias, separadas de sortKey/sortDir
+// del tablero principal para no pisarse (esa tabla llama a renderTable(), esta a renderHistorico()).
+let histSortKey = null;
+let histSortDir = 1;
+function histSortValue(h, key){
+  if(key==='ejecutivo') return titleCase(h.ejecutivo||'');
+  return h[key];
+}
+function histApplySort(list){
+  if(!histSortKey) return list;
+  return [...list].sort((a,b)=>{
+    let va = histSortValue(a, histSortKey), vb = histSortValue(b, histSortKey);
+    if(typeof va==='number' && typeof vb==='number') return (va-vb)*histSortDir;
+    return String(va||'').localeCompare(String(vb||''), 'es', {numeric:true, sensitivity:'base'}) * histSortDir;
+  });
+}
+function wireHistSortableHeaders(){
+  document.querySelectorAll('#histTable thead th[data-hist-sort]').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const key = th.getAttribute('data-hist-sort');
+      if(histSortKey===key){ histSortDir = -histSortDir; }
+      else{ histSortKey = key; histSortDir = 1; }
+      document.querySelectorAll('#histTable thead th[data-hist-sort]').forEach(t=>t.classList.remove('sort-asc','sort-desc'));
+      th.classList.add(histSortDir===1?'sort-asc':'sort-desc');
+      renderHistorico();
+    });
+  });
+}
+
+// Filtro de meses (multiselección): sin nada tildado = todos los meses.
+function poblarFiltroMeses(){
+  const sel = document.getElementById('histFiltroMeses');
+  const seleccionadosPrevios = new Set(Array.from(sel.selectedOptions).map(o=>o.value));
+  const meses = histMonthsRange().slice().reverse(); // más reciente arriba
+  sel.innerHTML = meses.map(m=>`<option value="${m}" ${seleccionadosPrevios.has(m)?'selected':''}>${histMonthLabel(m)}</option>`).join('');
+}
+function histMesesSeleccionados(){
+  const sel = document.getElementById('histFiltroMeses');
+  const vals = Array.from(sel.selectedOptions).map(o=>o.value);
+  return vals.length ? vals : null; // null = sin filtro, todos
+}
+document.getElementById('histFiltroMeses').addEventListener('change', renderHistorico);
+document.getElementById('btnHistLimpiarMeses').addEventListener('click', ()=>{
+  Array.from(document.getElementById('histFiltroMeses').options).forEach(o=>o.selected=false);
+  renderHistorico();
+});
+
 function renderHistorico(){
+  poblarFiltroMeses();
+  const mesesSel = histMesesSeleccionados();
+
+  // ---- Gráfico de evolución: siempre completo (enero 2026 en adelante), no lo toca el filtro ----
   const chartEl = document.getElementById('histChart');
   const meses = histMonthsRange();
   const porMes = {};
@@ -1304,7 +1383,8 @@ function renderHistorico(){
         const usd = porMes[m].USD, ars = porMes[m].ARS;
         const hUsd = Math.max(usd>0?4:0, (usd/maxUsd)*100);
         const hArs = Math.max(ars>0?4:0, (ars/maxArs)*100);
-        return `<div class="hist-month-col" title="${histMonthLabel(m)}: US$ ${Math.round(usd).toLocaleString('es-AR')} · ARS ${Math.round(ars).toLocaleString('es-AR')}">
+        const enSeleccion = !mesesSel || mesesSel.includes(m);
+        return `<div class="hist-month-col ${enSeleccion?'':'hist-month-col-dim'}" title="${histMonthLabel(m)}: US$ ${Math.round(usd).toLocaleString('es-AR')} · ARS ${Math.round(ars).toLocaleString('es-AR')}">
           <div class="hist-bars-pair">
             <div class="hist-bar hist-bar-usd" style="height:${hUsd}%"></div>
             <div class="hist-bar hist-bar-ars" style="height:${hArs}%"></div>
@@ -1315,9 +1395,25 @@ function renderHistorico(){
     </div>
   `;
 
+  // ---- Dashboard de KPIs: sobre los meses seleccionados (o todo, si no hay selección) ----
+  const filtrados = mesesSel ? HISTORICO.filter(h=>mesesSel.includes(h.mes)) : HISTORICO.slice();
+  const totalUsd = filtrados.filter(h=>(h.moneda||'USD').toUpperCase()!=='ARS').reduce((a,h)=>a+(Number(h.monto)||0),0);
+  const totalArs = filtrados.filter(h=>(h.moneda||'USD').toUpperCase()==='ARS').reduce((a,h)=>a+(Number(h.monto)||0),0);
+  const cuentasDistintas = new Set(filtrados.map(h=>h.cuenta).filter(Boolean)).size;
+  const kpisEl = document.getElementById('histKpis');
+  const etiquetaSel = mesesSel ? (mesesSel.length===1 ? histMonthLabel(mesesSel[0]) : `${mesesSel.length} meses`) : 'Todos los meses';
+  kpisEl.innerHTML = `
+    <div class="kpi"><div class="label">Total USD (${escapeHtml(etiquetaSel)})</div><div class="value">US$ ${Math.round(totalUsd).toLocaleString('es-AR')}</div></div>
+    <div class="kpi"><div class="label">Total ARS (${escapeHtml(etiquetaSel)})</div><div class="value">ARS ${Math.round(totalArs).toLocaleString('es-AR')}</div></div>
+    <div class="kpi"><div class="label">Cotizaciones</div><div class="value">${filtrados.length}</div></div>
+    <div class="kpi"><div class="label">Cuentas distintas</div><div class="value">${cuentasDistintas}</div></div>
+  `;
+
+  // ---- Tabla: filtrada por los meses seleccionados, ordenable por columna ----
   const tbody = document.getElementById('histTbody');
   const empty = document.getElementById('histEmptyState');
-  const list = HISTORICO.slice().sort((a,b)=> b.mes.localeCompare(a.mes) || (b.cargadoEl||'').localeCompare(a.cargadoEl||''));
+  let list = filtrados.slice().sort((a,b)=> b.mes.localeCompare(a.mes) || (b.cargadoEl||'').localeCompare(a.cargadoEl||''));
+  list = histApplySort(list);
   if(list.length===0){
     tbody.innerHTML='';
     empty.style.display='block';
@@ -2789,6 +2885,7 @@ document.getElementById('tk_titulo').addEventListener('keydown', (ev)=>{
 async function bootApp(){
   populateFilterSelects();
   wireSortableHeaders();
+  wireHistSortableHeaders();
   wireAgendaAccordion();
   await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos(), loadHistorico()]);
   renderAll();
