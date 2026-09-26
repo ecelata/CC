@@ -247,6 +247,7 @@
   .org-box-ing .org-box-role{font-size:8.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);margin-bottom:1px;}
   .org-box-mail{font-size:9.5px;color:var(--ink-faint);margin-top:2px;word-break:break-all;}
   .org-box-mail a{color:inherit;}
+  .org-box-seg-tag{display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;background:var(--seg-color);border-radius:3px;padding:1px 5px;margin-bottom:4px;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;cursor:pointer;padding:3px 4px;border-radius:3px;}
   .bar-row:hover{background:var(--stamp-bg);}
   .bar-row.active{background:var(--stamp-bg);}
@@ -481,7 +482,7 @@
   <div class="view" id="viewEquipo">
     <div class="agenda-topbar">
       <h3 style="margin:0;">Equipo</h3>
-      <div class="hint">Responsable de segmento → ingeniero de preventa → cuentas (EECC) a cargo</div>
+      <div class="hint">Responsable → cuentas (EECC) a cargo, con su segmento y su ingeniero de preventa</div>
     </div>
     <div class="equipo-grid" id="equipoGrid"></div>
   </div>
@@ -1138,6 +1139,7 @@ function wireBarClicks(containerEl){
   });
 }
 const SEGMENTO_COLOR = {'Banca':'#0ea5e9','CCEE Servicios':'#8b5cf6','CCEE Industria':'#f97316'};
+const RESPONSABLE_ACCENTS = ['#0ea5e9','#f97316','#8b5cf6','#22c55e','#ec4899'];
 function mailtoHtml(mail){
   if(!mail) return '';
   return `<div class="org-box-mail"><a href="mailto:${escapeHtml(mail)}">${escapeHtml(mail)}</a></div>`;
@@ -1145,32 +1147,47 @@ function mailtoHtml(mail){
 // Fuente de datos del organigrama: preferimos ACCOUNTS (cuentas.csv, se actualiza semanalmente y
 // trae los mails de cada EECC/Ingeniero) sobre los mapas estáticos EECC_POR_SEGMENTO/INGENIERO_POR_EECC,
 // que quedan solo como respaldo para cuando no hay conexión y ACCOUNTS todavía no cargó.
-function equipoDataPorSegmento(seg){
-  const accountsSeg = ACCOUNTS.filter(a=>a.segmento===seg && a.eecc);
-  if(accountsSeg.length){
-    const byEecc = {};
-    accountsSeg.forEach(a=>{
-      if(!byEecc[a.eecc]) byEecc[a.eecc] = {eecc:a.eecc, mailEecc:a.mailEecc||'', ingeniero:a.ingenieroPreventa||'Sin asignar', mailIngeniero:a.mailIngeniero||''};
-    });
-    return Object.values(byEecc).sort((a,b)=>a.eecc.localeCompare(b.eecc));
-  }
-  return (EECC_POR_SEGMENTO[seg]||[]).map(eecc=>(
-    {eecc, mailEecc:'', ingeniero:INGENIERO_POR_EECC[eecc]||'Sin asignar', mailIngeniero:''}
-  )).sort((a,b)=>a.eecc.localeCompare(b.eecc));
+// Agrupamos por RESPONSABLE real (no por segmento): en los datos reales un mismo responsable
+// (ej. Urrutigoity, Banovaz) puede tener cuentas de CCEE Servicios e Industria mezcladas, así que
+// el segmento queda como etiqueta de cada EECC en vez de ser el criterio que arma las columnas.
+function equipoDataPorResponsable(){
+  const accountsConResp = ACCOUNTS.filter(a=>a.eecc && a.responsable);
+  const responsablesFallback = [...new Set(Object.values(RESPONSABLE_POR_SEGMENTO))].map(titleCase);
+  const responsables = accountsConResp.length
+    ? [...new Set(accountsConResp.map(a=>titleCase(a.responsable)))].sort()
+    : responsablesFallback;
+  return responsables.map(resp=>{
+    let nodos;
+    if(accountsConResp.length){
+      const byEecc = {};
+      accountsConResp.filter(a=>titleCase(a.responsable)===resp).forEach(a=>{
+        if(!byEecc[a.eecc]) byEecc[a.eecc] = {eecc:a.eecc, mailEecc:a.mailEecc||'', ingeniero:a.ingenieroPreventa||'Sin asignar', mailIngeniero:a.mailIngeniero||'', segmento:a.segmento||''};
+      });
+      nodos = Object.values(byEecc).sort((a,b)=>a.eecc.localeCompare(b.eecc));
+    } else {
+      // respaldo sin conexión: asume 1 responsable = 1 segmento (limitación conocida de este mapa fijo).
+      // En cuanto ACCOUNTS carga, se corrige solo mostrando el mix real por cuenta.
+      const segs = SEGMENTOS.filter(seg=>titleCase(RESPONSABLE_POR_SEGMENTO[seg]||'')===resp);
+      nodos = segs.flatMap(seg=>(EECC_POR_SEGMENTO[seg]||[]).map(eecc=>(
+        {eecc, mailEecc:'', ingeniero:INGENIERO_POR_EECC[eecc]||'Sin asignar', mailIngeniero:'', segmento:seg}
+      ))).sort((a,b)=>a.eecc.localeCompare(b.eecc));
+    }
+    return {resp, nodos};
+  });
 }
 function renderEquipo(){
   const el = document.getElementById('equipoGrid');
-  el.innerHTML = SEGMENTOS.map(seg=>{
-    const nodos = equipoDataPorSegmento(seg);
-    const accent = SEGMENTO_COLOR[seg]||'var(--stamp)';
+  const grupos = equipoDataPorResponsable();
+  el.innerHTML = grupos.map(({resp, nodos}, i)=>{
+    const accent = RESPONSABLE_ACCENTS[i % RESPONSABLE_ACCENTS.length];
     return `<div class="org-seg" style="--accent:${accent}">
       <div class="org-seg-title">
-        <span class="seg-name">${escapeHtml(seg)}</span>
+        <span class="seg-name">${escapeHtml(resp)}</span>
         <span class="seg-count">${nodos.length} cuenta${nodos.length===1?'':'s'}</span>
       </div>
       <div class="org-root">
         <div class="org-box org-box-resp">
-          <div class="org-box-name">${escapeHtml(titleCase(RESPONSABLE_POR_SEGMENTO[seg]||'—'))}</div>
+          <div class="org-box-name">${escapeHtml(resp)}</div>
           <div class="org-box-role">Responsable</div>
         </div>
       </div>
@@ -1179,6 +1196,7 @@ function renderEquipo(){
         ${nodos.map(n=>`
           <div class="org-child">
             <div class="org-box org-box-eecc">
+              ${n.segmento?`<div class="org-box-seg-tag" style="--seg-color:${SEGMENTO_COLOR[n.segmento]||accent}">${escapeHtml(n.segmento)}</div>`:''}
               <div class="org-box-name">${escapeHtml(titleCase(n.eecc))}</div>
               ${mailtoHtml(n.mailEecc)}
             </div>
