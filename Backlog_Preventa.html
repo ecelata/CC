@@ -248,6 +248,7 @@
   .org-box-mail{font-size:9.5px;color:var(--ink-faint);margin-top:2px;word-break:break-all;}
   .org-box-mail a{color:inherit;}
   .org-box-seg-tag{display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;background:var(--seg-color);border-radius:3px;padding:1px 5px;margin-bottom:4px;}
+  .org-box-cuentas-count{font-size:9px;font-weight:600;color:var(--stamp-dark);margin-top:3px;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;cursor:pointer;padding:3px 4px;border-radius:3px;}
   .bar-row:hover{background:var(--stamp-bg);}
   .bar-row.active{background:var(--stamp-bg);}
@@ -1161,15 +1162,16 @@ function equipoDataPorResponsable(){
     if(accountsConResp.length){
       const byEecc = {};
       accountsConResp.filter(a=>titleCase(a.responsable)===resp).forEach(a=>{
-        if(!byEecc[a.eecc]) byEecc[a.eecc] = {eecc:a.eecc, mailEecc:a.mailEecc||'', ingeniero:a.ingenieroPreventa||'Sin asignar', mailIngeniero:a.mailIngeniero||'', segmento:a.segmento||''};
+        if(!byEecc[a.eecc]) byEecc[a.eecc] = {eecc:a.eecc, mailEecc:a.mailEecc||'', ingeniero:a.ingenieroPreventa||'Sin asignar', mailIngeniero:a.mailIngeniero||'', segmento:a.segmento||'', empresas:new Set()};
+        if(a.razonSocial) byEecc[a.eecc].empresas.add(a.razonSocial);
       });
-      nodos = Object.values(byEecc).sort((a,b)=>a.eecc.localeCompare(b.eecc));
+      nodos = Object.values(byEecc).map(n=>({...n, cantEmpresas:n.empresas.size})).sort((a,b)=>a.eecc.localeCompare(b.eecc));
     } else {
-      // respaldo sin conexión: asume 1 responsable = 1 segmento (limitación conocida de este mapa fijo).
-      // En cuanto ACCOUNTS carga, se corrige solo mostrando el mix real por cuenta.
+      // respaldo sin conexión: asume 1 responsable = 1 segmento (limitación conocida de este mapa fijo),
+      // y no tenemos el detalle de empresas por EECC (eso solo viene de ACCOUNTS/cuentas.csv).
       const segs = SEGMENTOS.filter(seg=>titleCase(RESPONSABLE_POR_SEGMENTO[seg]||'')===resp);
       nodos = segs.flatMap(seg=>(EECC_POR_SEGMENTO[seg]||[]).map(eecc=>(
-        {eecc, mailEecc:'', ingeniero:INGENIERO_POR_EECC[eecc]||'Sin asignar', mailIngeniero:'', segmento:seg}
+        {eecc, mailEecc:'', ingeniero:INGENIERO_POR_EECC[eecc]||'Sin asignar', mailIngeniero:'', segmento:seg, cantEmpresas:null}
       ))).sort((a,b)=>a.eecc.localeCompare(b.eecc));
     }
     return {resp, nodos};
@@ -1183,7 +1185,7 @@ function renderEquipo(){
     return `<div class="org-seg" style="--accent:${accent}">
       <div class="org-seg-title">
         <span class="seg-name">${escapeHtml(resp)}</span>
-        <span class="seg-count">${nodos.length} cuenta${nodos.length===1?'':'s'}</span>
+        <span class="seg-count">${nodos.length} ejecutivo${nodos.length===1?'':'s'}</span>
       </div>
       <div class="org-root">
         <div class="org-box org-box-resp">
@@ -1199,6 +1201,7 @@ function renderEquipo(){
               ${n.segmento?`<div class="org-box-seg-tag" style="--seg-color:${SEGMENTO_COLOR[n.segmento]||accent}">${escapeHtml(n.segmento)}</div>`:''}
               <div class="org-box-name">${escapeHtml(titleCase(n.eecc))}</div>
               ${mailtoHtml(n.mailEecc)}
+              ${n.cantEmpresas!==null?`<div class="org-box-cuentas-count">${n.cantEmpresas} cuenta${n.cantEmpresas===1?'':'s'} a cargo</div>`:''}
             </div>
             <div class="org-connector-small"></div>
             <div class="org-box org-box-ing">
