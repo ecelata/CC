@@ -225,20 +225,28 @@
   .panel{background:var(--paper-2);border:1px solid var(--line);border-radius:4px;padding:16px 18px;}
   .panel h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);margin-bottom:14px;font-family:'Inter',sans-serif;font-weight:600;}
   .panel .panel-hint{font-size:10.5px;color:var(--ink-faint);margin:-10px 0 12px;}
-  .equipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;}
-  @media (max-width:980px){.equipo-grid{grid-template-columns:1fr;}}
-  .equipo-card{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:0;overflow:hidden;}
-  .equipo-card-head{padding:14px 16px;border-bottom:1px solid var(--line);border-top:4px solid var(--accent-color, var(--stamp));}
-  .equipo-card-head .segmento{font-size:13.5px;font-weight:700;font-family:'Inter',sans-serif;}
-  .equipo-card-head .responsable{font-size:11px;color:var(--ink-soft);margin-top:2px;}
-  .equipo-card-head .responsable strong{color:var(--ink);}
-  .equipo-card-body{padding:10px 16px 14px;}
-  .equipo-ing-group{margin-bottom:12px;}
-  .equipo-ing-group:last-child{margin-bottom:0;}
-  .equipo-ing-name{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;color:var(--ink);margin-bottom:6px;}
-  .equipo-ing-count{font-size:10px;font-weight:600;color:var(--stamp-dark);background:var(--stamp-bg,rgba(0,0,0,.05));border-radius:10px;padding:1px 7px;}
-  .equipo-eecc-list{display:flex;flex-direction:column;gap:3px;padding-left:10px;border-left:2px solid var(--line);}
-  .equipo-eecc-item{font-size:11px;color:var(--ink-soft);}
+  .equipo-grid{display:flex;flex-direction:column;gap:38px;}
+  .org-seg{--accent:var(--stamp);}
+  .org-seg-title{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;}
+  .org-seg-title .seg-name{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);font-family:'Inter',sans-serif;}
+  .org-seg-title .seg-count{font-size:10.5px;color:var(--ink-faint);}
+  .org-root{display:flex;justify-content:center;}
+  .org-trunk{width:2px;height:16px;background:var(--accent);margin:0 auto;}
+  .org-box{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:8px 12px;text-align:center;min-width:150px;}
+  .org-box-resp{border-color:var(--accent);border-width:2px;font-family:'Inter',sans-serif;}
+  .org-box-resp .org-box-name{font-size:13px;font-weight:700;}
+  .org-box-resp .org-box-role{font-size:10px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+  .org-children{display:flex;flex-wrap:wrap;justify-content:center;gap:22px 16px;border-top:2px solid var(--accent);padding-top:16px;}
+  .org-child{position:relative;display:flex;flex-direction:column;align-items:center;}
+  .org-child::before{content:'';position:absolute;top:-16px;left:50%;width:2px;height:16px;background:var(--accent);}
+  .org-box-eecc{border-color:var(--accent);}
+  .org-box-eecc .org-box-name{font-size:12px;font-weight:700;color:var(--ink);}
+  .org-connector-small{width:1px;height:9px;background:var(--line);}
+  .org-box-ing{background:transparent;border:1px dashed var(--line);padding:5px 10px;}
+  .org-box-ing .org-box-name{font-size:10.5px;font-weight:600;color:var(--ink-soft);}
+  .org-box-ing .org-box-role{font-size:8.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);margin-bottom:1px;}
+  .org-box-mail{font-size:9.5px;color:var(--ink-faint);margin-top:2px;word-break:break-all;}
+  .org-box-mail a{color:inherit;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;cursor:pointer;padding:3px 4px;border-radius:3px;}
   .bar-row:hover{background:var(--stamp-bg);}
   .bar-row.active{background:var(--stamp-bg);}
@@ -1130,32 +1138,55 @@ function wireBarClicks(containerEl){
   });
 }
 const SEGMENTO_COLOR = {'Banca':'#0ea5e9','CCEE Servicios':'#8b5cf6','CCEE Industria':'#f97316'};
+function mailtoHtml(mail){
+  if(!mail) return '';
+  return `<div class="org-box-mail"><a href="mailto:${escapeHtml(mail)}">${escapeHtml(mail)}</a></div>`;
+}
+// Fuente de datos del organigrama: preferimos ACCOUNTS (cuentas.csv, se actualiza semanalmente y
+// trae los mails de cada EECC/Ingeniero) sobre los mapas estáticos EECC_POR_SEGMENTO/INGENIERO_POR_EECC,
+// que quedan solo como respaldo para cuando no hay conexión y ACCOUNTS todavía no cargó.
+function equipoDataPorSegmento(seg){
+  const accountsSeg = ACCOUNTS.filter(a=>a.segmento===seg && a.eecc);
+  if(accountsSeg.length){
+    const byEecc = {};
+    accountsSeg.forEach(a=>{
+      if(!byEecc[a.eecc]) byEecc[a.eecc] = {eecc:a.eecc, mailEecc:a.mailEecc||'', ingeniero:a.ingenieroPreventa||'Sin asignar', mailIngeniero:a.mailIngeniero||''};
+    });
+    return Object.values(byEecc).sort((a,b)=>a.eecc.localeCompare(b.eecc));
+  }
+  return (EECC_POR_SEGMENTO[seg]||[]).map(eecc=>(
+    {eecc, mailEecc:'', ingeniero:INGENIERO_POR_EECC[eecc]||'Sin asignar', mailIngeniero:''}
+  )).sort((a,b)=>a.eecc.localeCompare(b.eecc));
+}
 function renderEquipo(){
   const el = document.getElementById('equipoGrid');
   el.innerHTML = SEGMENTOS.map(seg=>{
-    const eeccList = EECC_POR_SEGMENTO[seg] || [];
-    // agrupa las EECC del segmento por su ingeniero de preventa, para leer de un vistazo
-    // cuántas cuentas tiene cada uno, en vez de repetir el nombre del ingeniero por cada EECC.
-    const porIngeniero = {};
-    eeccList.forEach(eecc=>{
-      const ing = INGENIERO_POR_EECC[eecc] || 'Sin asignar';
-      (porIngeniero[ing] = porIngeniero[ing] || []).push(eecc);
-    });
-    const grupos = Object.entries(porIngeniero).sort((a,b)=> b[1].length - a[1].length || a[0].localeCompare(b[0]));
-    return `<div class="equipo-card">
-      <div class="equipo-card-head" style="--accent-color:${SEGMENTO_COLOR[seg]||'var(--stamp)'}">
-        <div class="segmento">${escapeHtml(seg)}</div>
-        <div class="responsable">Responsable: <strong>${escapeHtml(titleCase(RESPONSABLE_POR_SEGMENTO[seg]||'—'))}</strong></div>
+    const nodos = equipoDataPorSegmento(seg);
+    const accent = SEGMENTO_COLOR[seg]||'var(--stamp)';
+    return `<div class="org-seg" style="--accent:${accent}">
+      <div class="org-seg-title">
+        <span class="seg-name">${escapeHtml(seg)}</span>
+        <span class="seg-count">${nodos.length} cuenta${nodos.length===1?'':'s'}</span>
       </div>
-      <div class="equipo-card-body">
-        ${grupos.map(([ing, eeccs])=>`
-          <div class="equipo-ing-group">
-            <div class="equipo-ing-name">
-              <span>${escapeHtml(titleCase(ing))}</span>
-              <span class="equipo-ing-count">${eeccs.length} cuenta${eeccs.length===1?'':'s'}</span>
+      <div class="org-root">
+        <div class="org-box org-box-resp">
+          <div class="org-box-name">${escapeHtml(titleCase(RESPONSABLE_POR_SEGMENTO[seg]||'—'))}</div>
+          <div class="org-box-role">Responsable</div>
+        </div>
+      </div>
+      <div class="org-trunk"></div>
+      <div class="org-children">
+        ${nodos.map(n=>`
+          <div class="org-child">
+            <div class="org-box org-box-eecc">
+              <div class="org-box-name">${escapeHtml(titleCase(n.eecc))}</div>
+              ${mailtoHtml(n.mailEecc)}
             </div>
-            <div class="equipo-eecc-list">
-              ${eeccs.map(e=>`<div class="equipo-eecc-item">${escapeHtml(titleCase(e))}</div>`).join('')}
+            <div class="org-connector-small"></div>
+            <div class="org-box org-box-ing">
+              <div class="org-box-role">Preventa</div>
+              <div class="org-box-name">${escapeHtml(titleCase(n.ingeniero))}</div>
+              ${mailtoHtml(n.mailIngeniero)}
             </div>
           </div>`).join('')}
       </div>
