@@ -1174,18 +1174,21 @@ document.getElementById('fileHistImport').addEventListener('change', async (e)=>
     const yaImportados = new Set(HISTORICO.filter(h=>h.idCotizacion).map(h=>h.idCotizacion));
 
     let agregadas = 0, saltadasNoEecc = 0, saltadasDuplicadas = 0, saltadasNoGanada = 0;
+    const mesesVistosArchivo = new Set(); // "Mes Cierre" tal cual viene en el excel, de TODAS las filas
+    const mesesAgregados = {}; // mes ("2026-07") -> cantidad de filas que sí se agregaron
     rows.forEach(r=>{
+      if(r['Mes Cierre']) mesesVistosArchivo.add(String(r['Mes Cierre']).trim());
       const etapa = String(r['Etapa']||'').trim();
       if(!/^Cerrada-Ganada$/i.test(etapa)){ saltadasNoGanada++; return; }
       const idCot = String(r['ID Cotización']||'').trim();
       if(idCot && yaImportados.has(idCot)){ saltadasDuplicadas++; return; }
       const ejecutivo = String(r['Ejecutivo']||'').trim();
       if(!misEecc.has(normalizeNombre(ejecutivo))){ saltadasNoEecc++; return; }
-      const mes = histParseMesCierre(r['Mes Cierre']);
+      const mes = histParseMesCierre(r['Mes Cierre']) || HIST_PRIMER_MES;
       HISTORICO.push({
         id: histId(),
         idCotizacion: idCot,
-        mes: mes || HIST_PRIMER_MES,
+        mes: mes,
         cuenta: String(r['Cuenta']||'').trim(),
         ejecutivo: ejecutivo,
         producto: String(r['Producto']||'').trim(),
@@ -1195,12 +1198,20 @@ document.getElementById('fileHistImport').addEventListener('change', async (e)=>
         cargadoEl: todayISO()
       });
       if(idCot) yaImportados.add(idCot);
+      mesesAgregados[mes] = (mesesAgregados[mes]||0) + 1;
       agregadas++;
     });
 
     await saveHistorico();
     renderHistorico();
-    let msg = `Histórico: ${agregadas} cotización(es) ganada(s) agregada(s).`;
+    const mesesTxt = [...mesesVistosArchivo].join(', ') || '(no encontré la columna "Mes Cierre")';
+    let msg = `📅 Este excel trae "Mes Cierre" = ${mesesTxt} en todas sus filas.\n\n`;
+    msg += `Histórico: ${agregadas} cotización(es) ganada(s) agregada(s)`;
+    if(agregadas){
+      const detalle = Object.keys(mesesAgregados).sort().map(m=>`${histMonthLabel(m)}: ${mesesAgregados[m]}`).join(', ');
+      msg += ` (${detalle})`;
+    }
+    msg += '.';
     if(saltadasDuplicadas) msg += ` ${saltadasDuplicadas} ya estaban cargadas (se ignoraron).`;
     if(saltadasNoEecc) msg += ` ${saltadasNoEecc} no son de tus EECC.`;
     if(saltadasNoGanada) msg += ` ${saltadasNoGanada} no estaban en etapa Cerrada-Ganada.`;
