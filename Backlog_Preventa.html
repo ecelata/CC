@@ -210,14 +210,31 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .err{font-size:11px;color:var(--red);margin-top:2px;}
   .field.error input, .field.error select{border-color:var(--red);}
-  .tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--line-strong);}
+  .tabs{display:flex;gap:2px;margin-bottom:18px;padding:4px;background:var(--paper-2);border-radius:9px;width:fit-content;flex-wrap:wrap;}
   .tab-btn{
-    font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--ink-soft);
-    background:transparent;border:none;border-bottom:2px solid transparent;
-    padding:9px 4px;margin-right:22px;cursor:pointer;border-radius:0;
+    font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;color:var(--ink-soft);
+    background:transparent;border:none;border-bottom:none;
+    padding:7px 12px;margin-right:0;cursor:pointer;border-radius:6px;
+    display:inline-flex;align-items:center;gap:6px;
   }
-  .tab-btn:hover{background:transparent;color:var(--ink);}
-  .tab-btn.active{color:var(--stamp-dark);border-bottom-color:var(--stamp);}
+  .tab-btn .tab-ico{font-size:12px;line-height:1;}
+  .tab-btn:hover{background:rgba(0,0,0,.04);color:var(--ink);}
+  .tab-btn.active{color:var(--stamp-dark);background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.1);font-weight:600;}
+  .menu-wrap{position:relative;display:inline-block;}
+  #btnMoreMenu{font-size:16px;line-height:1;padding:6px 12px;font-weight:700;}
+  .dropdown-menu{
+    display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:50;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    box-shadow:0 6px 20px rgba(0,0,0,.12);padding:6px;min-width:200px;
+  }
+  .dropdown-menu.open{display:block;}
+  .dropdown-menu .dropdown-section-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);padding:6px 10px 4px;font-family:'Inter',sans-serif;font-weight:600;}
+  .dropdown-menu .dropdown-item{
+    display:block;width:100%;text-align:left;background:transparent;border:none;
+    font-size:12.5px;color:var(--ink);padding:7px 10px;border-radius:5px;cursor:pointer;
+  }
+  .dropdown-menu .dropdown-item:hover{background:var(--stamp-bg);}
+  .dropdown-menu .dropdown-divider{height:1px;background:var(--line);margin:5px 4px;}
   .view{display:none;}
   .view.active{display:block;}
   .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
@@ -361,14 +378,22 @@
     </div>
     <div class="topbar-actions">
       <span class="ghost" id="syncStatus" style="cursor:default;">☁️ Conectando…</span>
-      <button class="ghost" id="btnExportJson">Exportar JSON</button>
-      <button class="ghost" id="btnExportCsv">Exportar CSV</button>
-      <button class="ghost" id="btnExportPlanilla" title="Excel agrupado como el reporte semanal (Cerrados/A cerrar/Pipeline/POCs), foco en el monto mensual">Exportar planilla</button>
-      <button class="ghost" id="btnImport">Importar JSON</button>
-      <input type="file" id="fileImport" accept="application/json" style="display:none">
-      <button class="ghost" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
-      <input type="file" id="fileImportSF" accept=".xlsx,.xls,.csv" style="display:none">
       <button class="primary" id="btnNew">+ Nueva oportunidad</button>
+      <div class="menu-wrap">
+        <button class="ghost" id="btnMoreMenu" title="Exportar / Importar">⋯</button>
+        <div class="dropdown-menu" id="moreMenuDropdown">
+          <div class="dropdown-section-label">Exportar</div>
+          <button class="dropdown-item" id="btnExportJson">Exportar JSON</button>
+          <button class="dropdown-item" id="btnExportCsv">Exportar CSV</button>
+          <button class="dropdown-item" id="btnExportPlanilla" title="Excel agrupado como el reporte semanal (Cerrados/A cerrar/Pipeline/POCs), foco en el monto mensual">Exportar planilla</button>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-section-label">Importar</div>
+          <button class="dropdown-item" id="btnImport">Importar JSON</button>
+          <button class="dropdown-item" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
+        </div>
+      </div>
+      <input type="file" id="fileImport" accept="application/json" style="display:none">
+      <input type="file" id="fileImportSF" accept=".xlsx,.xls,.csv" style="display:none">
       <span class="ghost" id="userEmailLabel" style="cursor:default;"></span>
       <button class="ghost" id="btnLogout" title="Cerrar sesión">Salir</button>
     </div>
@@ -377,12 +402,12 @@
   <div class="kpis" id="kpis"></div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla">Tablero</button>
-    <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas">Cerradas</button>
-    <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama">Panorama</button>
-    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda">Agenda</button>
-    <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps">Kanban</button>
-    <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo">Equipo</button>
+    <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla"><span class="tab-ico">📋</span>Tablero</button>
+    <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas"><span class="tab-ico">✅</span>Cerradas</button>
+    <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama"><span class="tab-ico">📊</span>Panorama</button>
+    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda"><span class="tab-ico">📅</span>Agenda</button>
+    <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps"><span class="tab-ico">🗂️</span>Kanban</button>
+    <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo"><span class="tab-ico">👥</span>Equipo</button>
   </div>
 
   <div class="view active" id="viewTabla">
@@ -1896,6 +1921,16 @@ function downloadFile(content, filename, mime){
 }
 
 document.getElementById('btnNew').addEventListener('click', ()=>openDrawer(null));
+document.getElementById('btnMoreMenu').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.getElementById('moreMenuDropdown').classList.toggle('open');
+});
+document.getElementById('moreMenuDropdown').addEventListener('click', (e)=>{
+  if(e.target.tagName==='BUTTON') document.getElementById('moreMenuDropdown').classList.remove('open');
+});
+document.addEventListener('click', ()=>{
+  document.getElementById('moreMenuDropdown').classList.remove('open');
+});
 document.getElementById('btnNewEmpty').addEventListener('click', ()=>openDrawer(null));
 document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeDrawer(); });
 document.getElementById('fSegmento').addEventListener('change', renderTable);
