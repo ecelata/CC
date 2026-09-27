@@ -60,7 +60,7 @@ h1{font-family:var(--display);font-weight:700;margin:0;}
   margin-right:10px;padding-right:14px;border-right:1px solid #0A4A63;height:20px;display:flex;align-items:center;
 }
 .suite-nav .suite-logo-link{display:flex;align-items:center;height:42px;padding-right:12px;margin-right:8px;border-right:1px solid #0A4A63;flex-shrink:0;}
-.suite-nav .suite-logo{height:18px;width:auto;display:block;opacity:.92;transition:opacity .15s;}
+.suite-nav .suite-logo{height:26px;width:auto;display:block;opacity:.92;transition:opacity .15s;}
 .suite-nav .suite-logo-link:hover .suite-logo{opacity:1;}
 @media (max-width:720px){
   .suite-nav{padding:0 14px;overflow-x:auto;}
