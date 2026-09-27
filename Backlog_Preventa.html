@@ -588,8 +588,9 @@
       <table id="histTable">
         <thead><tr>
           <th data-hist-sort="mes">Mes</th><th data-hist-sort="cuenta">Cuenta</th><th data-hist-sort="ejecutivo">Ejecutivo</th>
-          <th data-hist-sort="producto">Producto</th><th data-hist-sort="moneda">Moneda</th>
-          <th class="money" data-hist-sort="monto">Monto</th><th data-hist-sort="origen">Origen</th><th></th>
+          <th data-hist-sort="producto">Producto</th>
+          <th class="money" data-hist-sort="montoUsd">Monto USD</th><th class="money" data-hist-sort="montoArs">Monto ARS</th>
+          <th data-hist-sort="origen">Origen</th><th></th>
         </tr></thead>
         <tbody id="histTbody"></tbody>
       </table>
@@ -1312,16 +1313,24 @@ function histMonthLabel(mes){
 // del tablero principal para no pisarse (esa tabla llama a renderTable(), esta a renderHistorico()).
 let histSortKey = null;
 let histSortDir = 1;
+function histEsArs(h){ return (h.moneda||'USD').toUpperCase()==='ARS'; }
 function histSortValue(h, key){
   if(key==='ejecutivo') return titleCase(h.ejecutivo||'');
+  if(key==='montoUsd') return histEsArs(h) ? null : (Number(h.monto)||0);
+  if(key==='montoArs') return histEsArs(h) ? (Number(h.monto)||0) : null;
   return h[key];
 }
 function histApplySort(list){
   if(!histSortKey) return list;
   return [...list].sort((a,b)=>{
     let va = histSortValue(a, histSortKey), vb = histSortValue(b, histSortKey);
+    const aEmpty = va===null || va===undefined || va==='';
+    const bEmpty = vb===null || vb===undefined || vb==='';
+    if(aEmpty && bEmpty) return 0;
+    if(aEmpty) return 1; // fila que no es de esa moneda, siempre al final
+    if(bEmpty) return -1;
     if(typeof va==='number' && typeof vb==='number') return (va-vb)*histSortDir;
-    return String(va||'').localeCompare(String(vb||''), 'es', {numeric:true, sensitivity:'base'}) * histSortDir;
+    return String(va).localeCompare(String(vb), 'es', {numeric:true, sensitivity:'base'}) * histSortDir;
   });
 }
 function wireHistSortableHeaders(){
@@ -1427,8 +1436,8 @@ function renderHistorico(){
         <td>${escapeHtml(h.cuenta||'—')}</td>
         <td>${escapeHtml(titleCase(h.ejecutivo||'')||'—')}</td>
         <td>${escapeHtml(h.producto||'—')}</td>
-        <td>${h.moneda||'USD'}</td>
-        <td class="money">${(h.moneda||'USD').toUpperCase()==='ARS'?'ARS ':'US$ '}${Math.round(h.monto).toLocaleString('es-AR')}</td>
+        <td class="money">${histEsArs(h)?'—':'US$ '+Math.round(h.monto).toLocaleString('es-AR')}</td>
+        <td class="money">${histEsArs(h)?'ARS '+Math.round(h.monto).toLocaleString('es-AR'):'—'}</td>
         <td>${h.origen==='manual'?'✍️ Manual':'📥 Excel'}</td>
         <td><button class="bitacora-del hist-del" data-id="${h.id}" type="button" title="Eliminar">×</button></td>
       </tr>`).join('');
