@@ -291,6 +291,10 @@
   .hist-bar-ars{background:var(--gold);}
   .hist-month-label{font-size:9.5px;color:var(--ink-faint);margin-top:6px;white-space:nowrap;}
   .hist-month-col-dim{opacity:.28;}
+  .hist-group-toggle{display:flex;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;flex-shrink:0;}
+  .hist-group-toggle button{border:none;background:var(--paper);color:var(--ink-soft);font-size:11.5px;padding:5px 12px;cursor:pointer;}
+  .hist-group-toggle button+button{border-left:1px solid var(--line);}
+  .hist-group-toggle button.active{background:var(--stamp);color:#fff;font-weight:600;}
   #histTable thead th[data-hist-sort]{cursor:pointer;}
   #histTable thead th[data-hist-sort]:hover{color:var(--stamp-dark);}
   #histTable thead th[data-hist-sort].sort-asc::after{content:'▲';color:var(--stamp);font-size:8px;margin-left:4px;}
@@ -395,7 +399,7 @@
   <a href="https://github.com/ecelata/CC" target="_blank" rel="noopener" class="suite-logo-link" title="Repo en GitHub">
     <img src="logo-personal-tech.png" alt="Personal Tech" class="suite-logo" style="height:26px;width:auto;display:block;">
   </a>
-  <span class="suite-brand">GGCC · Grandes Clientes</span>
+  <span class="suite-brand">B2B / CCEE Banca Servicios e Industria</span>
   <a href="index.html">Portal</a>
   <a href="dashboard.html">Cartera</a>
   <a href="Backlog_Preventa.html" class="current">Backlog</a>
@@ -562,7 +566,8 @@
       <div><label>Ejecutivo</label><input type="text" id="hm_ejecutivo" placeholder="EECC"></div>
       <div><label>Producto</label><input type="text" id="hm_producto" placeholder="Producto"></div>
       <div><label>Moneda</label><select id="hm_moneda"><option value="USD">USD</option><option value="ARS">ARS</option></select></div>
-      <div><label>Monto</label><input type="number" id="hm_monto" placeholder="0" min="0" step="0.01"></div>
+      <div><label>Mensual (MRR)</label><input type="number" id="hm_monto_mensual" placeholder="0" min="0" step="0.01"></div>
+      <div><label>One Shot</label><input type="number" id="hm_monto_oneshot" placeholder="0" min="0" step="0.01"></div>
       <div class="hist-manual-actions">
         <button class="primary" id="btnHistManualSave">Agregar</button>
         <button class="ghost" id="btnHistManualCancel">Cancelar</button>
@@ -583,16 +588,22 @@
     </div>
 
     <div class="panel" style="margin-bottom:18px;">
-      <h3>Evolución mensual</h3>
-      <div class="panel-hint">USD y ARS por separado · desde enero 2026</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <h3 style="margin:0;">Evolución</h3>
+        <div class="hist-group-toggle" id="histGroupToggle">
+          <button type="button" class="active" data-group="mes">Mensual</button>
+          <button type="button" data-group="trimestre">Trimestral</button>
+        </div>
+      </div>
+      <div class="panel-hint">USD y ARS por separado · desde enero 2025</div>
       <div class="hist-chart" id="histChart"></div>
     </div>
     <div class="table-wrap">
       <table id="histTable">
         <thead><tr>
           <th data-hist-sort="mes">Mes</th><th data-hist-sort="cuenta">Cuenta</th><th data-hist-sort="ejecutivo">Ejecutivo</th>
-          <th data-hist-sort="producto">Producto</th>
-          <th class="money" data-hist-sort="montoUsd">Monto USD</th><th class="money" data-hist-sort="montoArs">Monto ARS</th>
+          <th data-hist-sort="producto">Producto</th><th data-hist-sort="moneda">Divisa</th>
+          <th class="money" data-hist-sort="mensual">Mensual</th><th class="money" data-hist-sort="oneshot">One Shot</th><th class="money" data-hist-sort="total">Total</th>
           <th data-hist-sort="origen">Origen</th><th></th>
         </tr></thead>
         <tbody id="histTbody"></tbody>
@@ -1128,7 +1139,7 @@ async function saveTasks(){
 let HISTORICO = [];
 const HIST_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/historico?key=${FIREBASE_CONFIG.apiKey}`;
 const HIST_LOCAL_CACHE_KEY = 'backlog_historico_cache_v1';
-const HIST_PRIMER_MES = '2026-01'; // el gráfico siempre arranca acá, aunque no haya datos
+const HIST_PRIMER_MES = '2025-01'; // el gráfico siempre arranca acá, aunque no haya datos
 
 async function loadHistorico(){
   try{
@@ -1190,6 +1201,13 @@ function histParseMesCierre(s){
 }
 function histId(){ return 'H-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
 
+// Valores separados Mensual (MRR) / One Shot. Los registros viejos (de antes de este
+// cambio) solo tenían un campo único "monto" — para no perder esos datos, ese monto
+// se sigue mostrando bajo "Mensual" y el One Shot queda en 0 para esas filas antiguas.
+function histMontoMensual(h){ return h.montoMensual!=null ? (Number(h.montoMensual)||0) : (Number(h.monto)||0); }
+function histMontoOneShot(h){ return h.montoOneShot!=null ? (Number(h.montoOneShot)||0) : 0; }
+function histMontoTotal(h){ return histMontoMensual(h) + histMontoOneShot(h); }
+
 document.getElementById('btnHistImport').addEventListener('click', ()=>{
   if(blockIfReadonly()) return;
   document.getElementById('fileHistImport').click();
@@ -1225,7 +1243,8 @@ document.getElementById('fileHistImport').addEventListener('change', async (e)=>
         ejecutivo: ejecutivo,
         producto: String(r['Producto']||'').trim(),
         moneda: String(r['Divisa']||'').trim() || 'USD',
-        monto: Number(r['Total Valorizado'])||0,
+        montoMensual: Number(r['Abono Mensual'])||0,
+        montoOneShot: Number(r['Cargo Única Vez'])||0,
         origen: 'excel',
         cargadoEl: todayISO()
       });
@@ -1274,20 +1293,22 @@ document.getElementById('btnHistManualSave').addEventListener('click', async ()=
   const ejecutivo = document.getElementById('hm_ejecutivo').value.trim();
   const producto = document.getElementById('hm_producto').value.trim();
   const moneda = document.getElementById('hm_moneda').value;
-  const monto = Number(document.getElementById('hm_monto').value)||0;
-  if(!mesInput || !cuenta || !monto){
-    alert('Completá al menos mes, cuenta y monto.');
+  const montoMensual = Number(document.getElementById('hm_monto_mensual').value)||0;
+  const montoOneShot = Number(document.getElementById('hm_monto_oneshot').value)||0;
+  if(!mesInput || !cuenta || (!montoMensual && !montoOneShot)){
+    alert('Completá al menos mes, cuenta y un monto (mensual o one shot).');
     return;
   }
   HISTORICO.push({
-    id: histId(), idCotizacion:'', mes: mesInput, cuenta, ejecutivo, producto, moneda, monto,
+    id: histId(), idCotizacion:'', mes: mesInput, cuenta, ejecutivo, producto, moneda, montoMensual, montoOneShot,
     origen:'manual', cargadoEl: todayISO()
   });
   await saveHistorico();
   document.getElementById('hm_cuenta').value='';
   document.getElementById('hm_ejecutivo').value='';
   document.getElementById('hm_producto').value='';
-  document.getElementById('hm_monto').value='';
+  document.getElementById('hm_monto_mensual').value='';
+  document.getElementById('hm_monto_oneshot').value='';
   document.getElementById('histManualForm').style.display='none';
   renderHistorico();
 });
@@ -1312,6 +1333,28 @@ function histMonthLabel(mes){
   const nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   return nombres[parseInt(m,10)-1] + ' ' + y.slice(2);
 }
+// Agrupación trimestral del gráfico de evolución (toggle Mensual/Trimestral).
+// La tabla y el filtro de KPIs siguen siendo mes a mes — esto solo cambia cómo
+// se agrupan las barras del gráfico.
+let histChartGrouping = 'mes'; // 'mes' | 'trimestre'
+function histMesAQuarter(mes){
+  const [y,m] = mes.split('-').map(Number);
+  const q = Math.ceil(m/3);
+  return `${y}-Q${q}`;
+}
+function histQuartersRange(){
+  const metes = histMonthsRange();
+  const out = [];
+  metes.forEach(m=>{
+    const q = histMesAQuarter(m);
+    if(out[out.length-1] !== q) out.push(q);
+  });
+  return out;
+}
+function histQuarterLabel(q){
+  const [y,qn] = q.split('-Q');
+  return `Q${qn} ${y.slice(2)}`;
+}
 // Orden de la tabla de Histórico — variables propias, separadas de sortKey/sortDir
 // del tablero principal para no pisarse (esa tabla llama a renderTable(), esta a renderHistorico()).
 let histSortKey = null;
@@ -1319,8 +1362,10 @@ let histSortDir = 1;
 function histEsArs(h){ return (h.moneda||'USD').toUpperCase()==='ARS'; }
 function histSortValue(h, key){
   if(key==='ejecutivo') return titleCase(h.ejecutivo||'');
-  if(key==='montoUsd') return histEsArs(h) ? null : (Number(h.monto)||0);
-  if(key==='montoArs') return histEsArs(h) ? (Number(h.monto)||0) : null;
+  if(key==='moneda') return histEsArs(h) ? 'ARS' : 'USD';
+  if(key==='mensual') return histMontoMensual(h);
+  if(key==='oneshot') return histMontoOneShot(h);
+  if(key==='total') return histMontoTotal(h);
   return h[key];
 }
 function histApplySort(list){
@@ -1366,12 +1411,21 @@ document.getElementById('btnHistLimpiarMeses').addEventListener('click', ()=>{
   Array.from(document.getElementById('histFiltroMeses').options).forEach(o=>o.selected=false);
   renderHistorico();
 });
+document.getElementById('histGroupToggle').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-group]');
+  if(!btn) return;
+  histChartGrouping = btn.getAttribute('data-group');
+  document.querySelectorAll('#histGroupToggle button').forEach(b=>b.classList.toggle('active', b===btn));
+  renderHistorico();
+});
 
 function renderHistorico(){
   poblarFiltroMeses();
   const mesesSel = histMesesSeleccionados();
 
-  // ---- Gráfico de evolución: siempre completo (enero 2026 en adelante), no lo toca el filtro ----
+  // ---- Gráfico de evolución: siempre completo (desde HIST_PRIMER_MES), no lo toca el filtro ----
+  // Se arma siempre por mes (porMes) y, si el toggle está en "Trimestral", esos mismos
+  // totales se re-agrupan sumando de a 3 meses — la tabla y el filtro de KPIs no cambian.
   const chartEl = document.getElementById('histChart');
   const meses = histMonthsRange();
   const porMes = {};
@@ -1380,10 +1434,29 @@ function renderHistorico(){
     const mes = porMes[h.mes] ? h.mes : HIST_PRIMER_MES;
     if(!porMes[mes]) porMes[mes] = {USD:0, ARS:0};
     const moneda = (h.moneda||'USD').toUpperCase()==='ARS' ? 'ARS' : 'USD';
-    porMes[mes][moneda] += Number(h.monto)||0;
+    porMes[mes][moneda] += histMontoTotal(h);
   });
-  const maxUsd = Math.max(...meses.map(m=>porMes[m].USD), 1);
-  const maxArs = Math.max(...meses.map(m=>porMes[m].ARS), 1);
+
+  let buckets, bucketLabel, bucketSelected;
+  if(histChartGrouping === 'trimestre'){
+    const quarters = histQuartersRange();
+    const porQ = {};
+    quarters.forEach(q=>{ porQ[q] = {USD:0, ARS:0}; });
+    meses.forEach(m=>{
+      const q = histMesAQuarter(m);
+      porQ[q].USD += porMes[m].USD;
+      porQ[q].ARS += porMes[m].ARS;
+    });
+    buckets = quarters.map(q=>({key:q, USD:porQ[q].USD, ARS:porQ[q].ARS}));
+    bucketLabel = histQuarterLabel;
+    bucketSelected = q => !mesesSel || meses.some(m=>histMesAQuarter(m)===q && mesesSel.includes(m));
+  }else{
+    buckets = meses.map(m=>({key:m, USD:porMes[m].USD, ARS:porMes[m].ARS}));
+    bucketLabel = histMonthLabel;
+    bucketSelected = m => !mesesSel || mesesSel.includes(m);
+  }
+  const maxUsd = Math.max(...buckets.map(b=>b.USD), 1);
+  const maxArs = Math.max(...buckets.map(b=>b.ARS), 1);
 
   chartEl.innerHTML = `
     <div class="hist-legend">
@@ -1391,17 +1464,17 @@ function renderHistorico(){
       <span class="hist-legend-item"><span class="hist-swatch hist-swatch-ars"></span>ARS</span>
     </div>
     <div class="hist-chart-bars">
-      ${meses.map(m=>{
-        const usd = porMes[m].USD, ars = porMes[m].ARS;
+      ${buckets.map(b=>{
+        const usd = b.USD, ars = b.ARS;
         const hUsd = Math.max(usd>0?4:0, (usd/maxUsd)*100);
         const hArs = Math.max(ars>0?4:0, (ars/maxArs)*100);
-        const enSeleccion = !mesesSel || mesesSel.includes(m);
-        return `<div class="hist-month-col ${enSeleccion?'':'hist-month-col-dim'}" title="${histMonthLabel(m)}: US$ ${Math.round(usd).toLocaleString('es-AR')} · ARS ${Math.round(ars).toLocaleString('es-AR')}">
+        const enSeleccion = bucketSelected(b.key);
+        return `<div class="hist-month-col ${enSeleccion?'':'hist-month-col-dim'}" title="${bucketLabel(b.key)}: US$ ${Math.round(usd).toLocaleString('es-AR')} · ARS ${Math.round(ars).toLocaleString('es-AR')}">
           <div class="hist-bars-pair">
             <div class="hist-bar hist-bar-usd" style="height:${hUsd}%"></div>
             <div class="hist-bar hist-bar-ars" style="height:${hArs}%"></div>
           </div>
-          <div class="hist-month-label">${histMonthLabel(m)}</div>
+          <div class="hist-month-label">${bucketLabel(b.key)}</div>
         </div>`;
       }).join('')}
     </div>
@@ -1409,14 +1482,17 @@ function renderHistorico(){
 
   // ---- Dashboard de KPIs: sobre los meses seleccionados (o todo, si no hay selección) ----
   const filtrados = mesesSel ? HISTORICO.filter(h=>mesesSel.includes(h.mes)) : HISTORICO.slice();
-  const totalUsd = filtrados.filter(h=>(h.moneda||'USD').toUpperCase()!=='ARS').reduce((a,h)=>a+(Number(h.monto)||0),0);
-  const totalArs = filtrados.filter(h=>(h.moneda||'USD').toUpperCase()==='ARS').reduce((a,h)=>a+(Number(h.monto)||0),0);
+  const esUsd = h => (h.moneda||'USD').toUpperCase()!=='ARS';
+  const mensualUsd = filtrados.filter(esUsd).reduce((a,h)=>a+histMontoMensual(h),0);
+  const oneShotUsd = filtrados.filter(esUsd).reduce((a,h)=>a+histMontoOneShot(h),0);
+  const mensualArs = filtrados.filter(h=>!esUsd(h)).reduce((a,h)=>a+histMontoMensual(h),0);
+  const oneShotArs = filtrados.filter(h=>!esUsd(h)).reduce((a,h)=>a+histMontoOneShot(h),0);
   const cuentasDistintas = new Set(filtrados.map(h=>h.cuenta).filter(Boolean)).size;
   const kpisEl = document.getElementById('histKpis');
   const etiquetaSel = mesesSel ? (mesesSel.length===1 ? histMonthLabel(mesesSel[0]) : `${mesesSel.length} meses`) : 'Todos los meses';
   kpisEl.innerHTML = `
-    <div class="kpi"><div class="label">Total USD (${escapeHtml(etiquetaSel)})</div><div class="value">US$ ${Math.round(totalUsd).toLocaleString('es-AR')}</div></div>
-    <div class="kpi"><div class="label">Total ARS (${escapeHtml(etiquetaSel)})</div><div class="value">ARS ${Math.round(totalArs).toLocaleString('es-AR')}</div></div>
+    <div class="kpi"><div class="label">Mensual MRR (${escapeHtml(etiquetaSel)})</div><div class="value">US$ ${Math.round(mensualUsd).toLocaleString('es-AR')} · ARS ${Math.round(mensualArs).toLocaleString('es-AR')}</div></div>
+    <div class="kpi"><div class="label">One Shot (${escapeHtml(etiquetaSel)})</div><div class="value">US$ ${Math.round(oneShotUsd).toLocaleString('es-AR')} · ARS ${Math.round(oneShotArs).toLocaleString('es-AR')}</div></div>
     <div class="kpi"><div class="label">Cotizaciones</div><div class="value">${filtrados.length}</div></div>
     <div class="kpi"><div class="label">Cuentas distintas</div><div class="value">${cuentasDistintas}</div></div>
   `;
@@ -1439,8 +1515,10 @@ function renderHistorico(){
         <td>${escapeHtml(h.cuenta||'—')}</td>
         <td>${escapeHtml(titleCase(h.ejecutivo||'')||'—')}</td>
         <td>${escapeHtml(h.producto||'—')}</td>
-        <td class="money">${histEsArs(h)?'—':'US$ '+Math.round(h.monto).toLocaleString('es-AR')}</td>
-        <td class="money">${histEsArs(h)?'ARS '+Math.round(h.monto).toLocaleString('es-AR'):'—'}</td>
+        <td>${histEsArs(h)?'ARS':'USD'}</td>
+        <td class="money">${histMontoMensual(h) ? (histEsArs(h)?'ARS ':'US$ ')+Math.round(histMontoMensual(h)).toLocaleString('es-AR') : '—'}</td>
+        <td class="money">${histMontoOneShot(h) ? (histEsArs(h)?'ARS ':'US$ ')+Math.round(histMontoOneShot(h)).toLocaleString('es-AR') : '—'}</td>
+        <td class="money">${(histEsArs(h)?'ARS ':'US$ ')+Math.round(histMontoTotal(h)).toLocaleString('es-AR')}</td>
         <td>${h.origen==='manual'?'✍️ Manual':'📥 Excel'}</td>
         <td><button class="bitacora-del hist-del" data-id="${h.id}" type="button" title="Eliminar">×</button></td>
       </tr>`).join('');
