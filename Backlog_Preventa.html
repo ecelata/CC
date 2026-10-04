@@ -16,7 +16,19 @@
   .topbar .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
   .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   button.ghost:hover{background:var(--paper-2);}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:12px;}
+  .pipeline-comp{background:var(--paper-2);border:1px solid var(--line);border-radius:4px;padding:14px 16px;margin-bottom:22px;}
+  .pipeline-comp-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:10px;}
+  .pipeline-comp-bar{height:26px;border-radius:5px;overflow:hidden;display:flex;background:var(--paper);border:1px solid var(--line);}
+  .pipeline-comp-seg{height:100%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;transition:width .25s;}
+  .pipeline-comp-seg.cuv{background:var(--gold);}
+  .pipeline-comp-seg.am{background:var(--stamp);}
+  .pipeline-comp-legend{display:flex;gap:20px;margin-top:10px;flex-wrap:wrap;}
+  .pipeline-comp-legend-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft);}
+  .pipeline-comp-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .pipeline-comp-swatch.cuv{background:var(--gold);}
+  .pipeline-comp-swatch.am{background:var(--stamp);}
+  .pipeline-comp-legend-item b{color:var(--ink);font-family:'IBM Plex Mono',monospace;font-weight:500;}
   .kpi{
     background:var(--paper-2);
     border:1px solid var(--line);
@@ -436,6 +448,7 @@
   </div>
 
   <div class="kpis" id="kpis"></div>
+  <div id="pipelineComposicion"></div>
 
   <div class="tabs">
     <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla"><span class="tab-ico">📋</span>Tablero</button>
@@ -1617,7 +1630,9 @@ function wireAgendaAccordion(){
 
 function renderKpis(){
   const el = document.getElementById('kpis');
+  const comp = document.getElementById('pipelineComposicion');
   if(boardView==='cerradas'){
+    if(comp) comp.innerHTML = '';
     const ganadas = DATA.filter(o=>o.estadoFinal==='Ganado');
     const perdidas = DATA.filter(o=>o.estadoFinal==='Perdido');
     const suspendidas = DATA.filter(o=>o.estadoFinal==='Suspendido');
@@ -1645,6 +1660,25 @@ function renderKpis(){
     <div class="kpi"><div class="label">Oportunidades abiertas</div><div class="value">${abiertas.length}</div></div>
     <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen en 7 días</div><div class="value">${porVencer}</div></div>
   `;
+  if(comp){
+    const amAnual = totalAm*12;
+    const pctCuv = pipeline>0 ? Math.round(totalCuv/pipeline*100) : 0;
+    const pctAm = pipeline>0 ? 100-pctCuv : 0;
+    comp.innerHTML = `
+      <div class="pipeline-comp">
+        <div class="pipeline-comp-title">Composición del pipeline abierto · CUV + AM anualizado (AM × 12) = Pipeline</div>
+        <div class="pipeline-comp-bar">
+          <div class="pipeline-comp-seg cuv" style="width:${Math.max(pctCuv,pctCuv>0?4:0)}%">${pctCuv>=8?pctCuv+'%':''}</div>
+          <div class="pipeline-comp-seg am" style="width:${Math.max(pctAm,pctAm>0?4:0)}%">${pctAm>=8?pctAm+'%':''}</div>
+        </div>
+        <div class="pipeline-comp-legend">
+          <div class="pipeline-comp-legend-item"><span class="pipeline-comp-swatch cuv"></span>CUV: <b>${fmtMoney(totalCuv)}</b> (${pctCuv}%)</div>
+          <div class="pipeline-comp-legend-item"><span class="pipeline-comp-swatch am"></span>AM anualizado (${fmtMoney(totalAm)}/mes × 12): <b>${fmtMoney(amAnual)}</b> (${pctAm}%)</div>
+          <div class="pipeline-comp-legend-item">= Pipeline: <b>${fmtMoney(pipeline)}</b></div>
+        </div>
+      </div>
+    `;
+  }
 }
 
 function groupSum(list, keyFn, valFn){
