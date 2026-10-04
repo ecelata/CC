@@ -1641,7 +1641,7 @@ function renderKpis(){
   el.innerHTML = `
     <div class="kpi"><div class="label">Pipeline abierto</div><div class="value">${fmtMoney(pipeline)}</div></div>
     <div class="kpi"><div class="label">CUV (Cargo Única Vez)</div><div class="value">${fmtMoney(totalCuv)}</div></div>
-    <div class="kpi"><div class="label">AM (Abono Mensual)</div><div class="value">${fmtMoney(totalAm)}</div></div>
+    <div class="kpi"><div class="label">AM (Abono Mensual)</div><div class="value">${fmtMoney(totalAm)}</div><div class="label" style="margin-top:2px;">Anualizado: ${fmtMoney(totalAm*12)}</div></div>
     <div class="kpi"><div class="label">Oportunidades abiertas</div><div class="value">${abiertas.length}</div></div>
     <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen en 7 días</div><div class="value">${porVencer}</div></div>
   `;
