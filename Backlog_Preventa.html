@@ -2753,6 +2753,15 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
       msg += cerradasAuto.length
         ? `\n\n🔒 ${cerradasAuto.length} oportunidad(es) marcada(s) como Cerrada-Perdida automáticamente por no aparecer en este import (revisá si alguna en realidad se ganó):\n` + cerradasAuto.join('\n')
         : `\n\n🔒 Auto-cierre activado: ninguna oportunidad abierta desapareció de este import.`;
+      // Diagnóstico: opps que quedan "abiertas" pero sin salesforceId — el auto-cierre nunca las
+      // toca (no tiene forma de saber si siguen vigentes en SF o no), así que si el conteo de
+      // abiertas no baja como se espera, casi siempre es por esto: son cargas manuales o de un
+      // import viejo de antes de que existiera este campo.
+      const abiertasSinSfId = DATA.filter(o=>(!o.estadoFinal||o.estadoFinal==='Abierto') && !o.salesforceId);
+      if(abiertasSinSfId.length){
+        msg += `\n\n⚠️ Quedan ${abiertasSinSfId.length} oportunidad(es) abiertas SIN ID de Salesforce (cargadas a mano o de antes de este sistema) — el auto-cierre no las puede evaluar, quedan tal cual hasta que las revises a mano:\n` +
+          abiertasSinSfId.map(o=>`${o.cliente}${o.nombreOpp?' — '+o.nombreOpp:''} (${o.id})`).join('\n');
+      }
     }
     alert(msg);
   }catch(err){
