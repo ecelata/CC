@@ -1652,13 +1652,15 @@ function renderKpis(){
   const pipeline = abiertas.reduce((a,o)=>a+o.valorTotal,0);
   const totalCuv = abiertas.reduce((a,o)=>a+(Number(o.montoOneShot)||0),0);
   const totalAm = abiertas.reduce((a,o)=>a+(Number(o.mesRecurrente)||0),0);
-  const porVencer = abiertas.filter(o=>o.diasRestantes!==null && o.diasRestantes<=7 && o.diasRestantes>=0).length;
+  const mesActual = todayISO().slice(0,7);
+  const porVencer = abiertas.filter(o=>o.fechaEstCierre && o.fechaEstCierre.slice(0,7)===mesActual).length;
+  const nombreMes = new Date(todayISO()+'T00:00:00').toLocaleDateString('es-AR', {month:'long'});
   el.innerHTML = `
     <div class="kpi"><div class="label">Pipeline abierto</div><div class="value">${fmtMoney(pipeline)}</div></div>
     <div class="kpi"><div class="label">CUV (Cargo Única Vez)</div><div class="value">${fmtMoney(totalCuv)}</div></div>
     <div class="kpi"><div class="label">AM (Abono Mensual)</div><div class="value">${fmtMoney(totalAm)}</div><div class="label" style="margin-top:2px;">Anualizado: ${fmtMoney(totalAm*12)}</div></div>
     <div class="kpi"><div class="label">Oportunidades abiertas</div><div class="value">${abiertas.length}</div></div>
-    <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen en 7 días</div><div class="value">${porVencer}</div></div>
+    <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen este mes</div><div class="value">${porVencer}</div><div class="label" style="margin-top:2px;text-transform:capitalize;">${nombreMes}</div></div>
   `;
   if(comp){
     const amAnual = totalAm*12;
