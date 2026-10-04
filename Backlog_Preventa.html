@@ -720,7 +720,7 @@ const TIPO_PROYECTO = ['Nuevo','Migración','Renovación','Ampliación','Consult
 // igual que Técnico-Comercial o Enviada — no siempre hay un PPCC (ej. cupón/crédito
 // Huawei), pero siempre hay UN estado, no dos.
 const DOCUMENTOS_GENERADOS = ['Ninguno','Propuesta técnica','Propuesta económica','Contrato','NDA','SOW','Presentación ejecutiva'];
-const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado','Sin decisión','Otro'];
+const MOTIVO_PERDIDA = ['Precio','Timing','Competencia','Presupuesto cancelado','Sin decisión','Desapareció del import SF (auto)','Otro'];
 
 let DATA = [];
 let editingId = null;
@@ -2634,8 +2634,14 @@ function sfProveedorFromProducto(p){
   return '';
 }
 
+let sfImportAutocierre = false;
 document.getElementById('btnImportSF').addEventListener('click', ()=>{
   if(blockIfReadonly()) return;
+  sfImportAutocierre = confirm(
+    '¿Este Excel es el listado COMPLETO de oportunidades abiertas de Salesforce (no un recorte parcial)?\n\n' +
+    'Si confirmás, las oportunidades que ya tenías cargadas como abiertas y que NO aparezcan en este archivo se van a marcar automáticamente como "Cerrada-Perdida" (motivo: "Desapareció del import SF (auto)"), para no depender de que los EECC avisen. Vas a ver el detalle al final del import, y queda un backup JSON por si hay que revertir alguna.\n\n' +
+    'Si es un recorte parcial (ej. solo una cuenta o un EECC), cancelá esto y seguí: el import va a cargar igual, pero sin tocar el estado de las que no aparezcan.'
+  );
   document.getElementById('fileImportSF').click();
 });
 document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
@@ -2712,12 +2718,42 @@ document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
       if(esNueva){ DATA.push(o); creadas++; } else { actualizadas++; }
     });
 
+    // Auto-cierre: si el usuario confirmó que este Excel es el listado COMPLETO de abiertas,
+    // cualquier opp que ya teníamos como abierta (viene de un import anterior, tiene salesforceId)
+    // y que no aparece en este import, ya no está abierta en Salesforce — se asume Perdida salvo
+    // que el propio Excel de "cerrados/ganados" la corrija después (ese import marca Ganado por
+    // separado). Solo toca opps con salesforceId: las cargadas a mano nunca se tocan acá.
+    const cerradasAuto = [];
+    if(sfImportAutocierre){
+      const idsEnImport = new Set(rows.map(r=>String(r['ID Cotización']||'').trim()).filter(Boolean));
+      DATA.forEach(o=>{
+        const estaAbierta = !o.estadoFinal || o.estadoFinal==='Abierto';
+        if(estaAbierta && o.salesforceId && !idsEnImport.has(o.salesforceId)){
+          o.estadoFinal = 'Perdido';
+          o.motivoPerdida = 'Desapareció del import SF (auto)';
+          o.fechaCierreReal = o.fechaCierreReal || todayISO();
+          const nota = `Cerrada automáticamente el ${todayISO()}: no figuraba en el import de abiertas de SF. Revisar si en realidad se ganó.`;
+          if(!o.proximoPaso || !o.proximoPaso.includes(nota)){
+            o.proximoPaso = o.proximoPaso ? (nota + ' — ' + o.proximoPaso) : nota;
+          }
+          o.ultimaActualizacion = todayISO();
+          computeFields(o);
+          cerradasAuto.push(`${o.cliente}${o.nombreOpp?' — '+o.nombreOpp:''} (${o.id})`);
+        }
+      });
+    }
+
     await saveData();
     renderAll();
     let msg = `Salesforce: ${creadas} oportunidad(es) creada(s), ${actualizadas} actualizada(s). (Se bajó un backup por si hay que revertir: backup_antes_de_import_sf_${todayISO()}.json)`;
     if(posiblesDuplicados.length) msg += `\n\n⚠️ Posibles duplicados (mismo cliente, opp ya cargada distinta) — revisá y fusioná a mano si corresponde, así queda con salesforceId y no se repite:\n` + posiblesDuplicados.join('\n');
     if(sinCuenta.length) msg += `\n\nSin match en tu cartera (revisá EECC/segmento/industria a mano): ${[...new Set(sinCuenta)].join(', ')}`;
     msg += `\n\nEtapas de Salesforce vistas en este import: ${[...etapasVistas].join(' · ')}`;
+    if(sfImportAutocierre){
+      msg += cerradasAuto.length
+        ? `\n\n🔒 ${cerradasAuto.length} oportunidad(es) marcada(s) como Cerrada-Perdida automáticamente por no aparecer en este import (revisá si alguna en realidad se ganó):\n` + cerradasAuto.join('\n')
+        : `\n\n🔒 Auto-cierre activado: ninguna oportunidad abierta desapareció de este import.`;
+    }
     alert(msg);
   }catch(err){
     console.error(err);
