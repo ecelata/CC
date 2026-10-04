@@ -16,7 +16,7 @@
   .topbar .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
   .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   button.ghost:hover{background:var(--paper-2);}
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
   .kpi{
     background:var(--paper-2);
     border:1px solid var(--line);
@@ -495,7 +495,7 @@
             <th data-sort="eecc">EECC</th>
             <th class="bant-th" data-sort="bant" title="Budget / Authority / Need / Timeline">BANT</th>
             <th class="money" data-sort="montoOneShot">One Shot</th><th class="money" data-sort="mesRecurrente">Mensual</th>
-            <th class="money" data-sort="valorTotal">Valor total</th><th class="money" data-sort="montoPonderado">Ponderado</th>
+            <th class="money" data-sort="valorTotal">Valor total</th><th data-sort="fechaEntrada">Fecha creación</th>
             <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
           </tr>
         </thead>
@@ -1635,11 +1635,13 @@ function renderKpis(){
   }
   const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
   const pipeline = abiertas.reduce((a,o)=>a+o.valorTotal,0);
-  const ponderado = abiertas.reduce((a,o)=>a+o.montoPonderado,0);
+  const totalCuv = abiertas.reduce((a,o)=>a+(Number(o.montoOneShot)||0),0);
+  const totalAm = abiertas.reduce((a,o)=>a+(Number(o.mesRecurrente)||0),0);
   const porVencer = abiertas.filter(o=>o.diasRestantes!==null && o.diasRestantes<=7 && o.diasRestantes>=0).length;
   el.innerHTML = `
     <div class="kpi"><div class="label">Pipeline abierto</div><div class="value">${fmtMoney(pipeline)}</div></div>
-    <div class="kpi"><div class="label">Ponderado</div><div class="value">${fmtMoney(ponderado)}</div></div>
+    <div class="kpi"><div class="label">CUV (Cargo Única Vez)</div><div class="value">${fmtMoney(totalCuv)}</div></div>
+    <div class="kpi"><div class="label">AM (Abono Mensual)</div><div class="value">${fmtMoney(totalAm)}</div></div>
     <div class="kpi"><div class="label">Oportunidades abiertas</div><div class="value">${abiertas.length}</div></div>
     <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen en 7 días</div><div class="value">${porVencer}</div></div>
   `;
@@ -1883,7 +1885,7 @@ function renderTable(){
       <td class="money">${o.montoOneShot?fmtMoney(o.montoOneShot):'—'}</td>
       <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
       <td class="money">${fmtMoney(o.valorTotal)}</td>
-      <td class="money">${fmtMoney(o.montoPonderado)}</td>
+      <td>${o.fechaEntrada? formatDateShort(o.fechaEntrada) : '—'}</td>
       <td>${o.industria||'—'}</td>
       <td>${o.vertical||'—'}</td>
       <td>${o.proveedor||'—'}</td>
