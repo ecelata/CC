@@ -140,7 +140,9 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
 
 **Seguimiento:** `estadoPropuesta`, `documentosGenerados`, `notasTecnicas`, `proximoPaso`, `bitacora` (array `{fechaHora, tipo, nota}`, timeline WhatsApp-style).
 
-**Vistas (7 pestañas con ícono):** 📋 Tablero · ✅ Cerradas · 📊 Panorama (analítica con drill-down) · 📅 Agenda (Kanban de tareas, vinculables a oportunidad) · 🗂️ Kanban (oportunidades por etapa, drag & drop) · 👥 Equipo (organigrama por responsable con EECC, segmento, mail y cuentas a cargo) · 📈 Histórico (ver 6c).
+**Navegación (desde 25/10/2026):** las 7 vistas ya no van en una fila de pestañas arriba: están en una **barra lateral de íconos** a la izquierda (mismo estilo que `backlog.html`), con el nombre al pasar el mouse. Los KPIs quedaron compactos (CUV, AM mensual, Opps abiertas…) y la **Composición del pipeline abierto** va al costado, en la misma franja. El desplegable de Agenda dentro del Tablero se ocultó (la Agenda tiene su ícono). Resultado: la tabla y el Kanban arrancan ~400 px más arriba. Copia previa en la rama `version/backlog-clasico-antes-rail`.
+
+**Vistas (7, ahora en la barra lateral):** 📋 Tablero · ✅ Cerradas · 📊 Panorama (analítica con drill-down) · 📅 Agenda (Kanban de tareas, vinculables a oportunidad) · 🗂️ Kanban (oportunidades por etapa, drag & drop) · 👥 Equipo (organigrama por responsable con EECC, segmento, mail y cuentas a cargo) · 📈 Histórico (ver 6c).
 
 **Menú de exportar/importar:** Exportar JSON / CSV / **planilla** (Excel agrupado como el reporte semanal: Cerrados / A cerrar / Pipeline / POCs, foco en monto mensual); Importar JSON; **Importar Salesforce**.
 

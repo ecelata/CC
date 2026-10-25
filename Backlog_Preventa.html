@@ -222,7 +222,34 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .err{font-size:11px;color:var(--red);margin-top:2px;}
   .field.error input, .field.error select{border-color:var(--red);}
-  .tabs{display:flex;gap:2px;margin-bottom:18px;padding:4px;background:var(--paper-2);border-radius:9px;width:fit-content;flex-wrap:wrap;}
+  /* Barra lateral de íconos (reemplaza la fila de pestañas) */
+  .shell{display:flex;align-items:flex-start;}
+  .shell>.app{flex:1;min-width:0;}
+  .tabs.rail{position:sticky;top:0;align-self:flex-start;height:calc(100vh - 42px);width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;margin:0;background:var(--paper-2);border-right:1px solid var(--line);border-radius:0;}
+  .tabs.rail .tab-btn{width:46px;height:46px;padding:0;justify-content:center;border-radius:8px;position:relative;color:var(--ink-soft);}
+  .tabs.rail .tab-btn svg{width:20px;height:20px;}
+  .tabs.rail .tab-btn:hover{background:var(--paper);color:var(--ink);}
+  .tabs.rail .tab-btn.active{background:var(--stamp-bg);color:var(--stamp-dark);box-shadow:none;}
+  .tabs.rail .tab-btn::after{content:attr(data-tip);position:absolute;left:54px;top:50%;transform:translateY(-50%);background:var(--ink);color:var(--paper-2);font-size:12px;font-weight:500;padding:4px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:50;}
+  .tabs.rail .tab-btn:hover::after,.tabs.rail .tab-btn:focus-visible::after{opacity:1;}
+  /* Franja de métricas: KPIs compactos + composición del pipeline al costado */
+  .metrics-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);gap:12px;align-items:stretch;margin-bottom:16px;}
+  .metrics-row .kpis{margin-bottom:0;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
+  .metrics-row .kpi{padding:8px 12px;}
+  .metrics-row .kpi .label{font-size:9.5px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .metrics-row .kpi .value{font-size:16px;white-space:nowrap;}
+  .metrics-row .pipeline-comp{margin-bottom:0;padding:10px 14px;height:100%;box-sizing:border-box;}
+  .metrics-row .pipeline-comp-title{margin-bottom:6px;font-size:10px;}
+  .metrics-row .pipeline-comp-bar{height:18px;}
+  .metrics-row .pipeline-comp-legend{gap:4px 14px;margin-top:6px;}
+  .metrics-row .pipeline-comp{display:flex;flex-direction:column;justify-content:center;}
+  .metrics-row .pipeline-comp-legend-item{font-size:11.5px;}
+  /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
+  #agendaAccordion{display:none !important;}
+  .app{padding-top:20px;}
+  .topbar{margin-bottom:14px;}
+  @media (max-width:1300px){ .metrics-row{grid-template-columns:1fr;} }
+  @media (max-width:720px){ .metrics-row .kpis{grid-template-columns:1fr 1fr;} }
   .tab-btn{
     font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;color:var(--ink-soft);
     background:transparent;border:none;border-bottom:none;
@@ -386,6 +413,7 @@
   }
   .bitacora-modal-actions{display:flex;justify-content:flex-end;gap:8px;}
   @media (max-width:720px){
+    .tabs.rail{width:52px;} .tabs.rail .tab-btn{width:40px;height:40px;} .tabs.rail .tab-btn::after{display:none;}
     .app{padding:18px 14px 60px;}
     .kpis{grid-template-columns:1fr 1fr;}
     .kpi-row-2{grid-template-columns:1fr 1fr;}
@@ -419,6 +447,17 @@
   <a href="proyectos.html">Proyectos</a>
   <a href="calculadora.html">Calculadora</a>
 </div>
+<div class="shell">
+  <nav class="tabs rail" aria-label="Secciones del Backlog">
+    <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla" data-tip="Tablero" aria-label="Tablero"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h5v18H3zM10 3h5v12h-5zM17 3h4v8h-4z"/></svg></button>
+    <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps" data-tip="Kanban" aria-label="Kanban"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg></button>
+    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda" data-tip="Agenda" aria-label="Agenda"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+    <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas" data-tip="Cerradas" aria-label="Cerradas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></button>
+    <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama" data-tip="Panorama" aria-label="Panorama"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></button>
+    <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo" data-tip="Equipo" aria-label="Equipo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+    <button class="tab-btn" id="tabBtnHistorico" data-tab="historico" data-tip="Histórico" aria-label="Histórico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 3"/></svg></button>
+  </nav>
+
 <div class="app">
   <div class="topbar">
     <div>
@@ -448,17 +487,9 @@
     </div>
   </div>
 
-  <div class="kpis" id="kpis"></div>
-  <div id="pipelineComposicion"></div>
-
-  <div class="tabs">
-    <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla"><span class="tab-ico">📋</span>Tablero</button>
-    <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas"><span class="tab-ico">✅</span>Cerradas</button>
-    <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama"><span class="tab-ico">📊</span>Panorama</button>
-    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda"><span class="tab-ico">📅</span>Agenda</button>
-    <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps"><span class="tab-ico">🗂️</span>Kanban</button>
-    <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo"><span class="tab-ico">👥</span>Equipo</button>
-    <button class="tab-btn" id="tabBtnHistorico" data-tab="historico"><span class="tab-ico">📈</span>Histórico</button>
+  <div class="metrics-row" id="metricsRow">
+    <div class="kpis" id="kpis"></div>
+    <div id="pipelineComposicion"></div>
   </div>
 
   <div class="view active" id="viewTabla">
@@ -629,6 +660,7 @@
     </div>
   </div>
 </div>
+</div><!-- /shell -->
 
 <div class="bitacora-modal-overlay" id="taskModalOverlay" style="display:none;">
   <div class="bitacora-modal">
@@ -1658,9 +1690,9 @@ function renderKpis(){
   const nombreMes = new Date(todayISO()+'T00:00:00').toLocaleDateString('es-AR', {month:'long'});
   el.innerHTML = `
     <div class="kpi"><div class="label">Pipeline abierto</div><div class="value">${fmtMoney(pipeline)}</div></div>
-    <div class="kpi"><div class="label">CUV (Cargo Única Vez)</div><div class="value">${fmtMoney(totalCuv)}</div></div>
-    <div class="kpi"><div class="label">AM (Abono Mensual)</div><div class="value">${fmtMoney(totalAm)}</div><div class="label" style="margin-top:2px;">Anualizado: ${fmtMoney(totalAm*12)}</div></div>
-    <div class="kpi"><div class="label">Oportunidades abiertas</div><div class="value">${abiertas.length}</div></div>
+    <div class="kpi" title="CUV (Cargo Única Vez)"><div class="label">CUV</div><div class="value">${fmtMoney(totalCuv)}</div></div>
+    <div class="kpi" title="AM (Abono Mensual)"><div class="label">AM mensual</div><div class="value">${fmtMoney(totalAm)}</div><div class="label" style="margin-top:2px;">Anualizado: ${fmtMoney(totalAm*12)}</div></div>
+    <div class="kpi"><div class="label">Opps abiertas</div><div class="value">${abiertas.length}</div></div>
     <div class="kpi ${porVencer>0?'warn':''}"><div class="label">Vencen este mes</div><div class="value">${porVencer}</div><div class="label" style="margin-top:2px;text-transform:capitalize;">${nombreMes}</div></div>
   `;
   if(comp){
@@ -1669,15 +1701,15 @@ function renderKpis(){
     const pctAm = pipeline>0 ? 100-pctCuv : 0;
     comp.innerHTML = `
       <div class="pipeline-comp">
-        <div class="pipeline-comp-title">Composición del pipeline abierto · CUV + AM anualizado (AM × 12) = Pipeline</div>
+        <div class="pipeline-comp-title" title="CUV + AM anualizado (AM × 12) = Pipeline">Composición del pipeline abierto</div>
         <div class="pipeline-comp-bar">
           <div class="pipeline-comp-seg cuv" style="width:${Math.max(pctCuv,pctCuv>0?4:0)}%">${pctCuv>=8?pctCuv+'%':''}</div>
           <div class="pipeline-comp-seg am" style="width:${Math.max(pctAm,pctAm>0?4:0)}%">${pctAm>=8?pctAm+'%':''}</div>
         </div>
         <div class="pipeline-comp-legend">
           <div class="pipeline-comp-legend-item"><span class="pipeline-comp-swatch cuv"></span>CUV: <b>${fmtMoney(totalCuv)}</b> (${pctCuv}%)</div>
-          <div class="pipeline-comp-legend-item"><span class="pipeline-comp-swatch am"></span>AM anualizado (${fmtMoney(totalAm)}/mes × 12): <b>${fmtMoney(amAnual)}</b> (${pctAm}%)</div>
-          <div class="pipeline-comp-legend-item">= Pipeline: <b>${fmtMoney(pipeline)}</b></div>
+          <div class="pipeline-comp-legend-item" title="AM anualizado: ${fmtMoney(totalAm)}/mes × 12"><span class="pipeline-comp-swatch am"></span>AM × 12: <b>${fmtMoney(amAnual)}</b> (${pctAm}%)</div>
+          <div class="pipeline-comp-legend-item">= <b>${fmtMoney(pipeline)}</b></div>
         </div>
       </div>
     `;
