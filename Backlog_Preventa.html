@@ -329,6 +329,25 @@
   .imp-tag.ok{background:var(--stamp-bg);color:var(--stamp-dark);outline:0;}
   .imp-auto{margin:8px 0 2px;}
   @media (max-width:720px){ .staff-kpis{grid-template-columns:1fr 1fr;} .drawer .grid3{grid-template-columns:1fr 1fr;} }
+  /* ── Compacto (25/10/2026): Kanban y filas del tablero ── */
+  /* Kanban: cerrada = solo empresa + opp; al clic se despliega el resto */
+  .kanban-opp-card{padding-top:7px !important;padding-bottom:7px !important;margin-bottom:5px !important;}
+  .kanban-opp-card:not(.expanded) .ko-row,
+  .kanban-opp-card:not(.expanded) .ko-hint{display:none;}
+  .kanban-opp-card .ko-cliente,.kanban-opp-card .ko-nombre{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kanban-opp-card .ko-nombre{margin-top:1px;}
+  .kanban-opp-card.expanded .ko-row{display:flex;}
+  .kanban-board-opps .kanban-drop{gap:5px;}
+  /* Tablero: una fila = dos líneas como máximo (cliente arriba, opp abajo), sin cortes de texto */
+  #tabla tbody td{padding:4px 8px;white-space:nowrap;}
+  #tabla .cliente-cell{max-width:300px;}
+  #tabla .cliente-cell .cli-line span:last-child,#tabla .cliente-cell .opp-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:276px;}
+  #tabla .cliente-cell .opp-name{padding-left:24px;}
+  #tabla .cliente-cell .cuit{display:none;}
+  #tabla td.eecc-cell{max-width:150px;overflow:hidden;text-overflow:ellipsis;}
+  #tabla td:nth-child(n+12){max-width:140px;overflow:hidden;text-overflow:ellipsis;}
+  #tabla .bant-quad{grid-template-columns:repeat(4,1fr);width:auto;}
+  #tabla .bant-q{width:15px;height:15px;font-size:9px;}
   /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
   #agendaAccordion{display:none !important;}
   .app{padding-top:20px;}
@@ -2039,11 +2058,11 @@ function renderTable(){
     const diasTxt = o.diasRestantes===null ? '—' : (o.diasRestantes<0 ? `${Math.abs(o.diasRestantes)}d vencida` : `${o.diasRestantes}d`);
     return `<tr data-id="${o.id}">
       <td class="idcell${o.prioridad? ' prio-'+o.prioridad.toLowerCase() : ''}">${o.id}</td>
-      <td class="cliente-cell"><span class="cli-line">${nextIconHtml(o)}<span>${escapeHtml(o.cliente||'—')}</span></span>${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
+      <td class="cliente-cell" title="${escapeHtml((o.cliente||'')+(o.nombreOpp?' — '+o.nombreOpp:''))}"><span class="cli-line">${nextIconHtml(o)}<span>${escapeHtml(o.cliente||'—')}</span></span>${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
       <td><span class="seg-pill">${o.segmento||'—'}</span></td>
       <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
       <td>${o.probCierre?o.probCierre+'%':'—'}</td>
-      <td>${o.eecc? titleCase(o.eecc):'—'}</td>
+      <td class="eecc-cell" title="${o.eecc? escapeHtml(titleCase(o.eecc)):''}">${o.eecc? titleCase(o.eecc):'—'}</td>
       <td class="bant-cell">${bantQuadrant(o)}</td>
       <td class="money">${o.montoOneShot?fmtMoney(o.montoOneShot):'—'}</td>
       <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
