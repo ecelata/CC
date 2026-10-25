@@ -177,13 +177,14 @@
   .empty-state{padding:60px 20px;text-align:center;color:var(--ink-soft);}
   .empty-state h3{margin-bottom:8px;color:var(--ink);}
   .empty-state p{font-size:13px;margin:0 0 16px;}
+  /* Ficha de la opp como panel lateral: no oscurece ni bloquea el tablero */
   .overlay{
-    position:fixed;inset:0;background:rgba(34,38,31,0.35);
+    position:fixed;top:0;right:0;bottom:0;left:auto;width:min(580px,100vw);background:transparent;
     display:none;align-items:stretch;justify-content:flex-end;z-index:50;
   }
   .overlay.open{display:flex;}
   .drawer{
-    width:min(560px,92vw);background:var(--paper);height:100%;overflow-y:auto;
+    width:100%;background:var(--paper-2);height:100%;overflow-y:auto;border-left:1px solid var(--line-strong);
     box-shadow:-8px 0 24px rgba(0,0,0,0.15);
     padding:26px 30px 100px;
     animation:slidein .18s ease-out;
@@ -191,6 +192,30 @@
   @keyframes slidein{from{transform:translateX(24px);opacity:0;}to{transform:translateX(0);opacity:1;}}
   .drawer-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
   .drawer-head h2{font-size:21px;}
+  .drawer-sub{font-size:13.5px;color:var(--ink-soft);margin-top:4px;}
+  .drawer .ttl-in{font-family:var(--display);font-size:20px;font-weight:700;border:1px solid transparent;border-radius:6px;padding:6px 8px;margin:0 -8px 4px;background:transparent;color:var(--ink);width:calc(100% + 16px);}
+  .drawer .ttl-in:hover,.drawer .ttl-in:focus{border-color:var(--line-strong);outline:0;background:var(--paper-2);}
+  .drawer .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+  .drawer select.stage{background:var(--stamp-bg);color:var(--stamp-dark);font-weight:600;border-color:var(--stamp-dark);}
+  .drawer .box{background:var(--paper);border-radius:8px;padding:10px 12px 2px;margin-bottom:16px;}
+  .drawer .box h3{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:0 0 6px;font-family:'Inter',sans-serif;font-weight:600;}
+  .drawer .grid-np{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:8px;}
+  .drawer .bant-score{font-size:11px;color:var(--ink-faint);text-transform:none;letter-spacing:0;}
+  .bant-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px;margin-bottom:6px;}
+  .bant-row small{color:var(--ink-faint);font-size:11.5px;}
+  .seg{display:flex;border:1px solid var(--line-strong);border-radius:6px;overflow:hidden;flex:none;}
+  .seg button{border:0;border-right:1px solid var(--line);border-radius:0;background:var(--paper-2);color:var(--ink-soft);font-size:12.5px;height:30px;min-width:52px;padding:0 8px;}
+  .seg button:last-child{border-right:0;}
+  .seg button:hover{background:var(--paper);border-color:var(--line);transform:none;}
+  .seg button.on.si{background:var(--green);color:#fff;} .seg button.on.parcial{background:var(--gold);color:#fff;}
+  .seg button.on.no{background:var(--red);color:#fff;} .seg button.on.na{background:var(--ink-faint);color:#fff;}
+  .seg button.on.si:hover,.seg button.on.si:focus{background:var(--green);color:#fff;} .seg button.on.parcial:hover,.seg button.on.parcial:focus{background:var(--gold);color:#fff;}
+  .seg button.on.no:hover,.seg button.on.no:focus{background:var(--red);color:#fff;} .seg button.on.na:hover,.seg button.on.na:focus{background:var(--ink-faint);color:#fff;}
+  details.dsec{border-top:1px solid var(--line);padding:12px 0 2px;}
+  details.dsec summary{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--stamp-dark);font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;margin-bottom:10px;}
+  .sr{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  tr.row-open td{background:var(--stamp-bg) !important;}
+  .kanban-opp-card.row-open{outline:2px solid var(--stamp-dark);}
   .drawer-head .id-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:3px;}
   .section{margin-bottom:22px;border-top:1px solid var(--line);padding-top:16px;}
   .hint{font-size:11.5px;color:var(--ink-faint);}
@@ -244,6 +269,66 @@
   .metrics-row .pipeline-comp-legend{gap:4px 14px;margin-top:6px;}
   .metrics-row .pipeline-comp{display:flex;flex-direction:column;justify-content:center;}
   .metrics-row .pipeline-comp-legend-item{font-size:11.5px;}
+  /* ── Vistas y modales del módulo nuevo ── */
+  .ro .edit-only{display:none !important;}
+  .rail-badge{position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .np{width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;color:#fff;flex:none;vertical-align:middle;}
+  .np-ok{background:var(--green);} .np-sin{background:var(--gold);} .np-venc{background:var(--red);}
+  .cli-line{display:flex;align-items:center;gap:6px;}
+  #tbody tr{cursor:pointer;}
+  .muted{color:var(--ink-faint);}
+  .stack{display:flex;flex-direction:column;gap:14px;}
+  .card-s{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;}
+  .card-s>.hd{padding:11px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .card-s>.hd h2{font-size:15px;font-weight:700;margin:0;}
+  .card-s>.hd small{color:var(--ink-faint);font-size:12.5px;}
+  .card-s>.bd{padding:10px 16px;display:flex;flex-direction:column;gap:8px;}
+  .chk{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:13.5px;}
+  .chk:last-child{border-bottom:0;}
+  .chk input[type=checkbox]{width:16px;height:16px;flex:none;}
+  .chk .r{margin-left:auto;color:var(--ink-faint);font-size:12.5px;white-space:nowrap;}
+  .chk-tx{display:flex;flex-direction:column;min-width:0;} .chk-tx b{font-weight:600;} .chk-tx span{color:var(--ink-soft);font-size:12.5px;}
+  .chk .tp{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 6px;border-radius:4px;background:var(--stamp-bg);color:var(--stamp-dark);min-width:64px;text-align:center;flex:none;}
+  .two{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;}
+  .two>.a{flex:999 1 520px;min-width:0;display:flex;flex-direction:column;gap:14px;}
+  .two>.b{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:14px;}
+  .ideas-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .ideas-board{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start;max-width:480px;}
+  .idea-col{background:var(--zebra-even);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:160px;}
+  .idea-col-h{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);padding:2px 4px;}
+  .idea{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;text-align:left;display:flex;flex-direction:column;gap:3px;width:100%;}
+  .idea b{font-size:13.5px;} .idea span{font-size:11.5px;color:var(--ink-soft);}
+  .idea.selected{border:2px solid var(--stamp-dark);box-shadow:0 0 0 3px var(--stamp-bg);}
+  .ttl-in{font-family:var(--display);font-size:20px;font-weight:700;border:1px solid transparent;border-radius:6px;padding:4px 6px;background:transparent;color:var(--ink);width:100%;box-sizing:border-box;}
+  .ttl-in:hover,.ttl-in:focus{border-color:var(--line-strong);outline:0;}
+  .inline-lbl{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);cursor:pointer;}
+  .camp-stats{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft);} .camp-stats b{color:var(--ink);}
+  .camp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px;}
+  .camp-row h3,.camp-h3{font-size:14px;margin:6px 0 0;}
+  .camp-num{width:70px;text-align:right;padding:4px 6px;border:1px solid var(--line-strong);border-radius:4px;font-family:inherit;}
+  .camp-nota{display:flex;gap:8px;align-items:flex-start;} .camp-nota textarea{flex:1;}
+  .camp-n{background:var(--paper);border-radius:6px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;font-size:13.5px;white-space:pre-line;}
+  .staff-kpis{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:14px;}
+  .qc-bg{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:80;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+  .qc-bg.open{display:flex;}
+  .qc-modal{background:var(--paper-2);border-radius:10px;box-shadow:0 14px 44px rgba(0,0,0,.25);width:min(600px,100%);display:flex;flex-direction:column;}
+  .qc-modal.wide{width:min(1180px,100%);}
+  .qc-h{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);} .qc-h h2{font-size:19px;margin:0;}
+  .qc-b{padding:16px 20px;display:flex;flex-direction:column;gap:6px;}
+  .qc-f{padding:12px 20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .qc-otra{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft);cursor:pointer;}
+  .qc-bant{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:4px 0 0;} .qc-bant legend{font-size:13px;font-weight:600;padding:0 6px;}
+  .qc-err{font-size:12.5px;background:var(--gold-bg);border-radius:6px;padding:8px 10px;margin:4px 0 0;}
+  .grid-np2{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:10px;}
+  .chips-auto{display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 6px;} .chips-auto span{font-size:12px;padding:3px 10px;border-radius:12px;background:var(--paper);color:var(--ink-soft);} .chips-auto span.muted{background:transparent;}
+  .imp-sum{margin:0;font-size:13.5px;color:var(--ink-soft);}
+  .imp-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0;}
+  .imp-wrap{max-height:52vh;overflow:auto;} .imp-wrap table{min-width:1000px;} .imp-wrap td{font-size:12.5px;vertical-align:top;}
+  .imp-prod{max-width:240px;} .mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
+  .imp-tag{display:inline-block;margin:1px 2px;font-size:10.5px;font-weight:600;padding:2px 6px;border-radius:4px;background:var(--gold-bg);color:var(--ink);outline:1px dashed var(--gold);}
+  .imp-tag.ok{background:var(--stamp-bg);color:var(--stamp-dark);outline:0;}
+  .imp-auto{margin:8px 0 2px;}
+  @media (max-width:720px){ .staff-kpis{grid-template-columns:1fr 1fr;} .drawer .grid3{grid-template-columns:1fr 1fr;} }
   /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
   #agendaAccordion{display:none !important;}
   .app{padding-top:20px;}
@@ -452,6 +537,9 @@
     <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla" data-tip="Tablero" aria-label="Tablero"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h5v18H3zM10 3h5v12h-5zM17 3h4v8h-4z"/></svg></button>
     <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps" data-tip="Kanban" aria-label="Kanban"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg></button>
     <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda" data-tip="Agenda" aria-label="Agenda"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+    <button class="tab-btn" id="tabBtnPasos" data-tab="pasos" data-tip="Próximos pasos" aria-label="Próximos pasos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></button>
+    <button class="tab-btn" id="tabBtnIdeas" data-tab="ideas" data-tip="Ideas y campañas" aria-label="Ideas y campañas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></button>
+    <button class="tab-btn" id="tabBtnStaff" data-tab="staff" data-tip="Staff del martes" aria-label="Staff del martes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v12H3zM8 20h8M12 16v4"/></svg></button>
     <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas" data-tip="Cerradas" aria-label="Cerradas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></button>
     <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama" data-tip="Panorama" aria-label="Panorama"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></button>
     <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo" data-tip="Equipo" aria-label="Equipo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
@@ -477,7 +565,7 @@
           <div class="dropdown-divider"></div>
           <div class="dropdown-section-label">Importar</div>
           <button class="dropdown-item" id="btnImport">Importar JSON</button>
-          <button class="dropdown-item" id="btnImportSF" title="Actualiza/crea opps desde el export del tablero de Salesforce">Importar Salesforce</button>
+          <button class="dropdown-item" id="btnImportSF" title="Export &quot;Cotizaciones Cloud&quot; del portal: filtra tus EECC, vista previa y no pisa lo tuyo">Importar del portal</button>
         </div>
       </div>
       <input type="file" id="fileImport" accept="application/json" style="display:none">
@@ -659,6 +747,10 @@
       </div>
     </div>
   </div>
+
+  <div class="view" id="viewPasos"><div class="agenda-topbar"><h3 style="margin:0;">Próximos pasos</h3><div class="hint">Verde: al día · ámbar: sin próximo paso · rojo: fecha vencida. Un clic abre la opp.</div></div><div id="pasosContent" class="stack"></div></div>
+  <div class="view" id="viewIdeas"><div class="agenda-topbar"><h3 style="margin:0;">Ideas y campañas</h3></div><div id="ideasContent"></div></div>
+  <div class="view" id="viewStaff"><div class="agenda-topbar"><h3 style="margin:0;">Staff del martes</h3></div><div id="staffContent"></div></div>
 </div>
 </div><!-- /shell -->
 
@@ -680,6 +772,8 @@
   </div>
 </div>
 
+<div class="qc-bg" id="qcBg"></div>
+<div class="qc-bg imp-bg" id="impBg"></div>
 <div class="overlay" id="overlay">
   <div class="drawer" id="drawer"></div>
 </div>
@@ -1945,7 +2039,7 @@ function renderTable(){
     const diasTxt = o.diasRestantes===null ? '—' : (o.diasRestantes<0 ? `${Math.abs(o.diasRestantes)}d vencida` : `${o.diasRestantes}d`);
     return `<tr data-id="${o.id}">
       <td class="idcell${o.prioridad? ' prio-'+o.prioridad.toLowerCase() : ''}">${o.id}</td>
-      <td class="cliente-cell">${escapeHtml(o.cliente||'—')}${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
+      <td class="cliente-cell"><span class="cli-line">${nextIconHtml(o)}<span>${escapeHtml(o.cliente||'—')}</span></span>${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
       <td><span class="seg-pill">${o.segmento||'—'}</span></td>
       <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
       <td>${o.probCierre?o.probCierre+'%':'—'}</td>
@@ -1964,10 +2058,11 @@ function renderTable(){
     </tr>`;
   }).join('');
   tbody.querySelectorAll('tr[data-id]').forEach(tr=>{
-    tr.addEventListener('dblclick', ()=>openDrawer(tr.getAttribute('data-id')));
+    tr.addEventListener('click', ()=>openDrawer(tr.getAttribute('data-id')));
+    if(editingId===tr.getAttribute('data-id') && document.getElementById('overlay').classList.contains('open')) tr.classList.add('row-open');
   });
 }
-const TIPOS_BITACORA = ['Llamado','Email enviado','Propuesta enviada','Reunión','Demo técnica','No atendió','Seguimiento','Otro'];
+const TIPOS_BITACORA = ['Visita','Reunión','Demo técnica','Propuesta enviada','Evento','Soporte','Llamado','Email enviado','No atendió','Seguimiento','Otro'];
 
 function bitacoraEntryDate(e){
   if(e.fechaHora) return new Date(e.fechaHora);
@@ -2073,13 +2168,19 @@ function blankOpp(){
     fechaEntrada: todayISO(), fechaDeadline:'', fechaEstCierre:'',
     tipoContrato:'', montoOneShot:'', mesRecurrente:'', margenEstimado:'', horasInvertidas:'',
     documentosGenerados:'', notasTecnicas:'', ticketJira:'',
-    proximoPaso:'', bitacora:[], prioridad:'',
+    proximoPaso:'', proximoPasoFecha:'', campanaId:'', bitacora:[], prioridad:'',
     estadoFinal:'Abierto', motivoPerdida:'', fechaCierreReal:'',
     ultimaActualizacion: todayISO()
   };
 }
 
+let drawerDirty = false;
 function openDrawer(id){
+  const ov = document.getElementById('overlay');
+  if(ov.classList.contains('open') && drawerDirty && (id||null)!==editingId){
+    if(!confirm('Tenés cambios sin guardar en la oportunidad abierta. ¿Descartarlos y abrir la otra?')) return;
+  }
+  drawerDirty = false;
   editingId = id || null;
   const o = id ? {...DATA.find(x=>x.id===id)} : blankOpp();
   computeFields(o);
@@ -2088,123 +2189,47 @@ function openDrawer(id){
   document.getElementById('overlay').classList.add('open');
   wireDrawer(o);
 }
-function closeDrawer(){
+function closeDrawer(force){
+  if(force!==true && drawerDirty && !confirm('Tenés cambios sin guardar. ¿Cerrar igual y descartarlos?')) return;
+  drawerDirty = false;
   document.getElementById('overlay').classList.remove('open');
+  document.querySelectorAll('tr.row-open,.kanban-opp-card.row-open').forEach(x=>x.classList.remove('row-open'));
   editingId = null;
 }
 
+function bantSegHtml(field, label, hint, val){
+  const opts = [['✅ Sí','Sí','si'],['⚠️ Parcial','Parcial','parcial'],['❌ No','No','no'],['N/A','N/A','na']];
+  return `<div class="bant-row"><span>${label} <small>· ${hint}</small></span>
+    <div class="seg" role="group" aria-label="${label}">${opts.map(([v,l,c])=>`<button type="button" class="${c} ${val===v?'on':''}" data-bantseg="${field}" data-v="${escapeHtml(v)}" aria-pressed="${val===v}">${l}</button>`).join('')}</div></div>`;
+}
 function drawerTemplate(o){
   return `
     <div class="drawer-head">
       <div>
-        <h2>${editingId? 'Editar oportunidad':'Nueva oportunidad'}</h2>
-        <div class="id-tag">${o.id}</div>
+        <div class="id-tag">${o.id}${o.salesforceId?' · CRM #'+escapeHtml(o.salesforceId):''}${editingId?'':' · nueva'}</div>
+        <div class="drawer-sub">${escapeHtml(o.cliente||'Cliente sin cargar')}${o.segmento?' · '+escapeHtml(o.segmento):''}${o.eecc?' · EECC '+escapeHtml(titleCase(o.eecc)):''}</div>
       </div>
       <button class="ghost" id="btnCloseDrawer" aria-label="Cerrar">✕</button>
     </div>
+    <div class="field"><label class="sr" for="f_nombreOpp">Nombre de la oportunidad</label><input type="text" id="f_nombreOpp" class="ttl-in" value="${escapeHtml(o.nombreOpp||'')}" placeholder="Nombre de la oportunidad *"></div>
 
-    <div class="section">
-      <h3>Identificación</h3>
-      <div class="field"><label>Cliente *</label><input type="text" id="f_cliente" list="clientesDatalist" value="${escapeHtml(o.cliente||'')}" autocomplete="off"><datalist id="clientesDatalist">${ACCOUNTS.map(a=>`<option value="${escapeHtml(a.razonSocial)}">`).join('')}</datalist></div>
-      <div class="field"><label>Nombre de la oportunidad *</label><input type="text" id="f_nombreOpp" value="${escapeHtml(o.nombreOpp||'')}" placeholder="Ej. Renovación GCP - Horas SSPP"></div>
-      <div class="grid2">
-        <div class="field"><label>CUIT</label><input type="text" id="f_cuit" value="${escapeHtml(o.cuit||'')}"></div>
-        <div class="field"><label>Vertical (actividad del cliente)</label><input type="text" id="f_industria" value="${escapeHtml(o.industria||'')}" placeholder="Ej. Manufactura, Comercio, Banca & Finanzas"></div>
-      </div>
-      <div class="field"><label>Nº Win (Salesforce)</label><input type="text" id="f_salesforceId" value="${escapeHtml(o.salesforceId||'')}" placeholder="ID Cotización — nace cuando Comercial/Preventa abre el Win en SF"><span class="hint">Se completa solo al importar desde Salesforce; cargalo a mano si el Win ya existe pero todavía no importaste esa planilla.</span></div>
-      <div class="grid2">
-        <div class="field"><label>Segmento *</label><select id="f_segmento">${optionsHtml(SEGMENTOS,o.segmento)}</select></div>
-        <div class="field"><label>EECC</label><select id="f_eecc"></select></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Ingeniero preventa <span class="badge-computed">auto</span></label><div class="readonly" id="f_ingeniero_ro">${o.ingenieroPreventa?titleCase(o.ingenieroPreventa):'—'}</div></div>
-        <div class="field"><label>Responsable segmento <span class="badge-computed">auto</span></label><div class="readonly" id="f_responsable_ro">${o.responsableSegmento?titleCase(o.responsableSegmento):'—'}</div></div>
+    <div class="grid3">
+      <div class="field"><label>Etapa</label><select id="f_etapa" class="stage">${optionsHtml(ETAPAS,o.etapa)}</select></div>
+      <div class="field"><label>Prioridad</label><select id="f_prioridad">${optionsHtml(PRIORIDADES,o.prioridad)}</select></div>
+      <div class="field"><label>Estado</label><select id="f_estadoFinal">${optionsHtml(ESTADO_FINAL,o.estadoFinal)}</select></div>
+    </div>
+
+    <div class="box">
+      <h3>Próximo paso</h3>
+      <div class="grid-np">
+        <div class="field"><label class="sr" for="f_proximoPaso">Qué sigue</label><input type="text" id="f_proximoPaso" value="${escapeHtml(o.proximoPaso||'')}" placeholder="Qué sigue (ej. agendar demo con IT)"></div>
+        <div class="field"><label class="sr" for="f_proximoPasoFecha">Para cuándo</label><input type="date" id="f_proximoPasoFecha" value="${o.proximoPasoFecha||''}"></div>
       </div>
     </div>
 
     <div class="section">
-      <h3>Calificación BANT</h3>
-      <div class="grid2">
-        <div class="field"><label>Budget</label><select id="f_bantBudget">${optionsHtml(BANT_VALORES,o.bantBudget)}</select></div>
-        <div class="field"><label>Authority</label><select id="f_bantAuthority">${optionsHtml(BANT_VALORES,o.bantAuthority)}</select></div>
-        <div class="field"><label>Need</label><select id="f_bantNeed">${optionsHtml(BANT_VALORES,o.bantNeed)}</select></div>
-        <div class="field"><label>Timeline</label><select id="f_bantTimeline">${optionsHtml(BANT_VALORES,o.bantTimeline)}</select></div>
-      </div>
-      <div class="field"><label>Score <span class="badge-computed">auto</span></label><div class="readonly" id="f_bantScore_ro">${bantScore(o)}/4</div></div>
-      <div class="field"><label>Necesidad detallada (el "N" en texto)</label><textarea id="f_necesidad" placeholder="Qué problema puntual tiene el cliente, qué está buscando resolver...">${escapeHtml(o.necesidad||'')}</textarea></div>
-      <div class="field"><label>Observaciones BANT</label><textarea id="f_bantObs">${escapeHtml(o.bantObs||'')}</textarea></div>
-    </div>
-
-    <div class="section">
-      <h3>Comercial</h3>
-      <div class="grid2">
-        <div class="field"><label>Etapa funnel</label><select id="f_etapa">${optionsHtml(ETAPAS,o.etapa)}</select></div>
-        <div class="field"><label>Prob. de cierre %</label><input type="number" min="0" max="100" id="f_probCierre" value="${o.probCierre}"></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Prioridad personal</label><select id="f_prioridad">${optionsHtml(PRIORIDADES,o.prioridad)}</select></div>
-        <div class="field"></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Unidad de Negocio</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
-        <div class="field"><label>Tipo de proyecto</label><select id="f_tipoProyecto">${optionsHtml(TIPO_PROYECTO,o.tipoProyecto)}</select></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Proveedor / Partner</label><select id="f_proveedor">${optionsHtml(PROVEEDORES,o.proveedor)}</select></div>
-        <div class="field"><label>Producto Personal Tech</label><input type="text" id="f_producto" list="productosDatalist" value="${escapeHtml(o.producto||'')}" placeholder="Ej. DCV, MaaS IA, Assessment..."><datalist id="productosDatalist">${PRODUCTOS.map(p=>`<option value="${escapeHtml(p)}">`).join('')}</datalist></div>
-      </div>
-      <div class="field"><label>Competidores identificados</label><input type="text" id="f_competidores" value="${escapeHtml(o.competidores||'')}"></div>
-    </div>
-
-    <div class="section">
-      <h3>Fechas</h3>
-      <div class="grid2">
-        <div class="field"><label>Fecha entrada</label><input type="date" id="f_fechaEntrada" value="${o.fechaEntrada||''}"></div>
-        <div class="field"><label>Fecha deadline</label><input type="date" id="f_fechaDeadline" value="${o.fechaDeadline||''}"></div>
-      </div>
-      <div class="field"><label>Fecha estimada de cierre</label><input type="date" id="f_fechaEstCierre" value="${o.fechaEstCierre||''}"></div>
-      <div class="field"><label>Días restantes <span class="badge-computed">auto</span></label><div class="readonly" id="f_dias_ro">${o.diasRestantes===null?'—':o.diasRestantes+' días'}</div></div>
-    </div>
-
-    <div class="section">
-      <h3>Económico</h3>
-      <div class="grid2">
-        <div class="field"><label>Tipo contrato</label><select id="f_tipoContrato">${optionsHtml(TIPO_CONTRATO,o.tipoContrato)}</select></div>
-        <div class="field"><label>Monto One Shot USD</label><input type="number" min="0" id="f_montoOneShot" value="${o.montoOneShot}"></div>
-      </div>
-      <div class="field"><span class="hint">One Shot: implementación, licencias o venta de producto — pago único.</span></div>
-      <div class="grid2">
-        <div class="field"><label>Mes recurrente USD</label><input type="number" min="0" id="f_mesRecurrente" value="${o.mesRecurrente}"></div>
-        <div class="field"><label>Año recurrente USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_anio_ro">${fmtMoney(o.anioRecurrente)}</div></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Valor total USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_valorTotal_ro">${fmtMoney(o.valorTotal)}</div></div>
-        <div class="field"><label>MRR/ARR estimado USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_mrrArr_ro">${fmtMoney(o.mrrArrEstimado)}</div></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>Monto ponderado USD <span class="badge-computed">auto</span></label><div class="readonly" id="f_ponderado_ro">${fmtMoney(o.montoPonderado)}</div></div>
-        <div class="field"><label>Margen estimado %</label><input type="number" min="0" max="100" id="f_margenEstimado" value="${o.margenEstimado}"></div>
-      </div>
-      <div class="field"><label>Horas invertidas</label><input type="number" min="0" id="f_horasInvertidas" value="${o.horasInvertidas}"></div>
-    </div>
-
-    <div class="section">
-      <h3>Seguimiento</h3>
-      <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
-      <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
-      <div class="field">
-        <label>Ticket Jira (Arquitectura)</label>
-        <input type="text" id="f_ticketJira" value="${escapeHtml(o.ticketJira||'')}" placeholder="Pegá acá el link del ticket">
-        <span class="hint">${jiraLinkHtml(o.ticketJira)}</span>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Bitácora y próximos pasos</h3>
-      <div class="field"><label>Próximo paso</label><input type="text" id="f_proximoPaso" value="${escapeHtml(o.proximoPaso||'')}" placeholder="Ej. Agendar demo técnica con IT del cliente"></div>
-      <div class="field" style="margin-bottom:8px;">
-        <button class="ghost" id="btnOpenBitacora" type="button">+ Registrar avance</button>
-      </div>
+      <h3>Bitácora</h3>
+      <div class="field" style="margin-bottom:8px;"><button class="ghost" id="btnOpenBitacora" type="button">+ Registrar avance</button></div>
       <div id="bitacoraList">${renderBitacoraList(o)}</div>
     </div>
 
@@ -2223,13 +2248,105 @@ function drawerTemplate(o){
     </div>
 
     <div class="section">
-      <h3>Cierre</h3>
-      <div class="grid2">
-        <div class="field"><label>Estado final</label><select id="f_estadoFinal">${optionsHtml(ESTADO_FINAL,o.estadoFinal)}</select></div>
-        <div class="field"><label>Motivo pérdida</label><select id="f_motivoPerdida">${optionsHtml(MOTIVO_PERDIDA,o.motivoPerdida)}</select></div>
+      <h3>Plata</h3>
+      <div class="grid3">
+        <div class="field"><label>Mensual USD</label><input type="number" min="0" id="f_mesRecurrente" value="${o.mesRecurrente}"></div>
+        <div class="field"><label>One Shot USD</label><input type="number" min="0" id="f_montoOneShot" value="${o.montoOneShot}"></div>
+        <div class="field"><label>Prob. %</label><input type="number" min="0" max="100" id="f_probCierre" value="${o.probCierre}"></div>
       </div>
-      <div class="field"><label>Fecha cierre real</label><input type="date" id="f_fechaCierreReal" value="${o.fechaCierreReal||''}"></div>
+      <div class="grid2">
+        <div class="field"><label>Valor total <span class="badge-computed">auto</span></label><div class="readonly" id="f_valorTotal_ro">${fmtMoney(o.valorTotal)}</div></div>
+        <div class="field"><label>Ponderado <span class="badge-computed">auto</span></label><div class="readonly" id="f_ponderado_ro">${fmtMoney(o.montoPonderado)}</div></div>
+      </div>
     </div>
+
+    <div class="section">
+      <h3>BANT <span class="bant-score">· score <span id="f_bantScore_ro">${bantScore(o)}/4</span></span></h3>
+      ${bantSegHtml('f_bantBudget','Budget','tiene presupuesto',o.bantBudget)}
+      ${bantSegHtml('f_bantAuthority','Authority','hablamos con quien decide',o.bantAuthority)}
+      ${bantSegHtml('f_bantNeed','Need','necesidad clara',o.bantNeed)}
+      ${bantSegHtml('f_bantTimeline','Timeline','fecha para decidir',o.bantTimeline)}
+      <div class="sr">
+        <select id="f_bantBudget">${optionsHtml(BANT_VALORES,o.bantBudget)}</select>
+        <select id="f_bantAuthority">${optionsHtml(BANT_VALORES,o.bantAuthority)}</select>
+        <select id="f_bantNeed">${optionsHtml(BANT_VALORES,o.bantNeed)}</select>
+        <select id="f_bantTimeline">${optionsHtml(BANT_VALORES,o.bantTimeline)}</select>
+      </div>
+    </div>
+
+    <details class="dsec" ${editingId?'':'open'}><summary>Cliente e identificación</summary>
+      <div class="field"><label>Cliente *</label><input type="text" id="f_cliente" list="clientesDatalist" value="${escapeHtml(o.cliente||'')}" autocomplete="off"><datalist id="clientesDatalist">${ACCOUNTS.map(a=>`<option value="${escapeHtml(a.razonSocial)}">`).join('')}</datalist></div>
+      <div class="grid2">
+        <div class="field"><label>Segmento *</label><select id="f_segmento">${optionsHtml(SEGMENTOS,o.segmento)}</select></div>
+        <div class="field"><label>EECC</label><select id="f_eecc"></select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>CUIT</label><input type="text" id="f_cuit" value="${escapeHtml(o.cuit||'')}"></div>
+        <div class="field"><label>Vertical (actividad del cliente)</label><input type="text" id="f_industria" value="${escapeHtml(o.industria||'')}" placeholder="Ej. Manufactura, Comercio"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Ingeniero preventa <span class="badge-computed">auto</span></label><div class="readonly" id="f_ingeniero_ro">${o.ingenieroPreventa?titleCase(o.ingenieroPreventa):'—'}</div></div>
+        <div class="field"><label>Responsable <span class="badge-computed">auto</span></label><div class="readonly" id="f_responsable_ro">${o.responsableSegmento?titleCase(o.responsableSegmento):'—'}</div></div>
+      </div>
+      <div class="field"><label>Nº CRM (ID Cotización)</label><input type="text" id="f_salesforceId" value="${escapeHtml(o.salesforceId||'')}" placeholder="Se completa solo al importar del portal"></div>
+    </details>
+
+    <details class="dsec"><summary>Comercial</summary>
+      <div class="grid2">
+        <div class="field"><label>Unidad de Negocio</label><select id="f_vertical">${optionsHtml(VERTICALES,o.vertical)}</select></div>
+        <div class="field"><label>Tipo de proyecto</label><select id="f_tipoProyecto">${optionsHtml(TIPO_PROYECTO,o.tipoProyecto)}</select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Proveedor / Partner</label><select id="f_proveedor">${optionsHtml(PROVEEDORES,o.proveedor)}</select></div>
+        <div class="field"><label>Producto Personal Tech</label><input type="text" id="f_producto" list="productosDatalist" value="${escapeHtml(o.producto||'')}" placeholder="Ej. DCV, MaaS IA..."><datalist id="productosDatalist">${PRODUCTOS.map(p=>`<option value="${escapeHtml(p)}">`).join('')}</datalist></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Competidores</label><input type="text" id="f_competidores" value="${escapeHtml(o.competidores||'')}"></div>
+        <div class="field"><label>Campaña</label><select id="f_campanaId"><option value="">— Ninguna —</option>${(EXTRAS.campanas||[]).map(c=>`<option value="${c.id}" ${o.campanaId===c.id?'selected':''}>${escapeHtml(c.titulo)}</option>`).join('')}</select></div>
+      </div>
+    </details>
+
+    <details class="dsec"><summary>Fechas</summary>
+      <div class="grid2">
+        <div class="field"><label>Fecha entrada</label><input type="date" id="f_fechaEntrada" value="${o.fechaEntrada||''}"></div>
+        <div class="field"><label>Fecha deadline</label><input type="date" id="f_fechaDeadline" value="${o.fechaDeadline||''}"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Fecha estimada de cierre</label><input type="date" id="f_fechaEstCierre" value="${o.fechaEstCierre||''}"></div>
+        <div class="field"><label>Días restantes <span class="badge-computed">auto</span></label><div class="readonly" id="f_dias_ro">${o.diasRestantes===null?'—':o.diasRestantes+' días'}</div></div>
+      </div>
+    </details>
+
+    <details class="dsec"><summary>Económico (más)</summary>
+      <div class="grid2">
+        <div class="field"><label>Tipo contrato</label><select id="f_tipoContrato">${optionsHtml(TIPO_CONTRATO,o.tipoContrato)}</select></div>
+        <div class="field"><label>Año recurrente <span class="badge-computed">auto</span></label><div class="readonly" id="f_anio_ro">${fmtMoney(o.anioRecurrente)}</div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>MRR/ARR estimado <span class="badge-computed">auto</span></label><div class="readonly" id="f_mrrArr_ro">${fmtMoney(o.mrrArrEstimado)}</div></div>
+        <div class="field"><label>Margen estimado %</label><input type="number" min="0" max="100" id="f_margenEstimado" value="${o.margenEstimado}"></div>
+      </div>
+      <div class="field"><label>Horas invertidas</label><input type="number" min="0" id="f_horasInvertidas" value="${o.horasInvertidas}"></div>
+    </details>
+
+    <details class="dsec"><summary>Seguimiento y notas</summary>
+      <div class="field"><label>Necesidad detallada</label><textarea id="f_necesidad" placeholder="Qué problema puntual tiene el cliente...">${escapeHtml(o.necesidad||'')}</textarea></div>
+      <div class="field"><label>Observaciones BANT</label><textarea id="f_bantObs">${escapeHtml(o.bantObs||'')}</textarea></div>
+      <div class="field"><label>Documentos generados</label><select id="f_documentosGenerados">${optionsHtml(DOCUMENTOS_GENERADOS,o.documentosGenerados)}</select></div>
+      <div class="field"><label>Notas técnicas</label><textarea id="f_notasTecnicas">${escapeHtml(o.notasTecnicas)}</textarea></div>
+      <div class="field">
+        <label>Ticket Jira (Arquitectura)</label>
+        <input type="text" id="f_ticketJira" value="${escapeHtml(o.ticketJira||'')}" placeholder="Pegá acá el link del ticket">
+        <span class="hint">${jiraLinkHtml(o.ticketJira)}</span>
+      </div>
+    </details>
+
+    <details class="dsec" ${o.estadoFinal&&o.estadoFinal!=='Abierto'?'open':''}><summary>Cierre</summary>
+      <div class="grid2">
+        <div class="field"><label>Motivo pérdida</label><select id="f_motivoPerdida">${optionsHtml(MOTIVO_PERDIDA,o.motivoPerdida)}</select></div>
+        <div class="field"><label>Fecha cierre real</label><input type="date" id="f_fechaCierreReal" value="${o.fechaCierreReal||''}"></div>
+      </div>
+    </details>
 
     ${o.estadoFinal==='Ganado' ? `
     <div class="section" id="proyectoSection">
@@ -2304,6 +2421,10 @@ function readFormInto(o){
   if(ticketJiraField) o.ticketJira = ticketJiraField.value.trim();
   const proximoPasoField = document.getElementById('f_proximoPaso');
   if(proximoPasoField) o.proximoPaso = proximoPasoField.value.trim();
+  const ppFecha = document.getElementById('f_proximoPasoFecha');
+  if(ppFecha) o.proximoPasoFecha = ppFecha.value;
+  const campSel = document.getElementById('f_campanaId');
+  if(campSel) o.campanaId = campSel.value;
   o.estadoFinal = document.getElementById('f_estadoFinal').value;
   o.motivoPerdida = document.getElementById('f_motivoPerdida').value;
   o.fechaCierreReal = document.getElementById('f_fechaCierreReal').value;
@@ -2333,8 +2454,22 @@ function autofillFromAccount(o){
 function wireDrawer(o){
   refreshEeccOptions(o);
   if(!o.bitacora) o.bitacora = [];
-  document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
-  document.getElementById('btnCancel').addEventListener('click', closeDrawer);
+  const drawerEl = document.getElementById('drawer');
+  drawerEl.addEventListener('input', ()=>{ drawerDirty = true; });
+  drawerEl.addEventListener('change', ()=>{ drawerDirty = true; });
+  if(o.id) document.querySelectorAll(`tr[data-id="${o.id}"],.kanban-opp-card[data-id="${o.id}"]`).forEach(x=>x.classList.add('row-open'));
+  drawerEl.querySelectorAll('[data-bantseg]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const sel = document.getElementById(btn.dataset.bantseg);
+      const nuevo = sel.value===btn.dataset.v ? '' : btn.dataset.v;
+      sel.value = nuevo;
+      btn.parentElement.querySelectorAll('button').forEach(b=>{ const on = b.dataset.v===nuevo; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      drawerDirty = true;
+      sel.dispatchEvent(new Event('change'));
+    });
+  });
+  document.getElementById('btnCloseDrawer').addEventListener('click', ()=>closeDrawer());
+  document.getElementById('btnCancel').addEventListener('click', ()=>closeDrawer(true));
 
   const ticketJiraInput = document.getElementById('f_ticketJira');
   if(ticketJiraInput){
@@ -2429,9 +2564,11 @@ function wireDrawer(o){
   if(delBtn){
     delBtn.addEventListener('click', async ()=>{
       if(confirm('¿Eliminar esta oportunidad? No se puede deshacer.')){
+        const borrada = DATA.find(x=>x.id===editingId);
+        if(borrada && borrada.salesforceId){ EXTRAS.descartadas = [...new Set([...(EXTRAS.descartadas||[]), String(borrada.salesforceId)])]; saveExtras(); }
         DATA = DATA.filter(x=>x.id!==editingId);
         await saveData();
-        closeDrawer();
+        closeDrawer(true);
         renderAll();
         showToast('Oportunidad eliminada');
       }
@@ -2455,7 +2592,7 @@ function wireDrawer(o){
     }
     editingId = o.id;
     const saved = await saveData();
-    closeDrawer();
+    closeDrawer(true);
     renderAll();
     if(saved) showToast('Guardado');
   });
@@ -2467,6 +2604,11 @@ function renderAll(){
   renderTable();
   renderKanban();
   if(document.getElementById('viewPanorama').classList.contains('active')) renderDashboard();
+  if(document.getElementById('viewKanbanOpps').classList.contains('active')) renderKanbanOpps();
+  if(document.getElementById('viewPasos').classList.contains('active')) renderPasos();
+  if(document.getElementById('viewIdeas').classList.contains('active')) renderIdeas();
+  if(document.getElementById('viewStaff').classList.contains('active')) renderStaff();
+  updateRailBadges();
   document.getElementById('subtitle').textContent = DATA.length + (DATA.length===1?' oportunidad registrada':' oportunidades registradas');
 }
 
@@ -2497,7 +2639,7 @@ function downloadFile(content, filename, mime){
   URL.revokeObjectURL(url);
 }
 
-document.getElementById('btnNew').addEventListener('click', ()=>openDrawer(null));
+document.getElementById('btnNew').addEventListener('click', ()=>openQuickCreate());
 document.getElementById('btnMoreMenu').addEventListener('click', (e)=>{
   e.stopPropagation();
   document.getElementById('moreMenuDropdown').classList.toggle('open');
@@ -2509,7 +2651,7 @@ document.addEventListener('click', ()=>{
   document.getElementById('moreMenuDropdown').classList.remove('open');
 });
 document.getElementById('btnNewEmpty').addEventListener('click', ()=>openDrawer(null));
-document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeDrawer(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && document.getElementById('overlay').classList.contains('open') && !document.querySelector('.bitacora-modal-overlay[style*="flex"]') && !document.querySelector('.qc-bg.open,.imp-bg.open')) closeDrawer(); });
 document.getElementById('fSegmento').addEventListener('change', renderTable);
 document.getElementById('fEtapa').addEventListener('change', renderTable);
 document.getElementById('fEstadoFinal').addEventListener('change', renderTable);
@@ -2537,6 +2679,10 @@ function switchTab(tab){
   document.getElementById('viewKanbanOpps').classList.toggle('active', tab==='kanbanopps');
   document.getElementById('viewEquipo').classList.toggle('active', tab==='equipo');
   document.getElementById('viewHistorico').classList.toggle('active', tab==='historico');
+  document.getElementById('viewPasos').classList.toggle('active', tab==='pasos');
+  document.getElementById('viewIdeas').classList.toggle('active', tab==='ideas');
+  document.getElementById('viewStaff').classList.toggle('active', tab==='staff');
+  document.getElementById('metricsRow').style.display = (tab==='tabla'||tab==='cerradas'||tab==='kanbanopps') ? '' : 'none';
   if(showTabla){
     boardView = (tab==='cerradas') ? 'cerradas' : 'activas';
     const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
@@ -2551,6 +2697,9 @@ function switchTab(tab){
   if(tab==='kanbanopps') renderKanbanOpps();
   if(tab==='equipo') renderEquipo();
   if(tab==='historico') renderHistorico();
+  if(tab==='pasos') renderPasos();
+  if(tab==='ideas') renderIdeas();
+  if(tab==='staff') renderStaff();
 }
 function drillInto(filterId, value){
   const el = document.getElementById(filterId);
@@ -2667,139 +2816,22 @@ function sfProveedorFromProducto(p){
   return '';
 }
 
-let sfImportAutocierre = false;
 document.getElementById('btnImportSF').addEventListener('click', ()=>{
   if(blockIfReadonly()) return;
-  sfImportAutocierre = confirm(
-    '¿Este Excel es el listado COMPLETO de oportunidades abiertas de Salesforce (no un recorte parcial)?\n\n' +
-    'Si confirmás, las oportunidades que ya tenías cargadas como abiertas y que NO aparezcan en este archivo se van a marcar automáticamente como "Cerrada-Perdida" (motivo: "Desapareció del import SF (auto)"), para no depender de que los EECC avisen. Vas a ver el detalle al final del import, y queda un backup JSON por si hay que revertir alguna.\n\n' +
-    'Si es un recorte parcial (ej. solo una cuenta o un EECC), cancelá esto y seguí: el import va a cargar igual, pero sin tocar el estado de las que no aparezcan.'
-  );
   document.getElementById('fileImportSF').click();
 });
 document.getElementById('fileImportSF').addEventListener('change', async (e)=>{
   const file = e.target.files[0];
   if(!file) return;
   try{
-    // Backup automático por si el import trae algo raro: se puede deshacer reimportando
-    // este archivo con "Importar JSON".
-    downloadFile(JSON.stringify(DATA,null,2), 'backup_antes_de_import_sf_' + todayISO() + '.json', 'application/json');
-
-    const buf = await file.arrayBuffer();
-    const wb = XLSX.read(buf, {type:'array'});
-    const sheetName = wb.SheetNames.find(n=>/cotizacion/i.test(n)) || wb.SheetNames[0];
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:''});
-
-    let creadas=0, actualizadas=0;
-    const sinCuenta=[], etapasVistas=new Set(), posiblesDuplicados=[];
-
-    rows.forEach(r=>{
-      const idCot = String(r['ID Cotización']||'').trim();
-      const cuentaNombre = String(r['Cuenta']||'').trim();
-      if(!idCot || !cuentaNombre) return;
-
-      // Match SOLO por ID de Salesforce. La primera vez que aparece una cotización
-      // siempre se crea como opp nueva (aunque el cliente ya tenga otra opp cargada
-      // a mano) para no arriesgarse a pisar una oportunidad distinta del mismo
-      // cliente con datos que no le corresponden. Los posibles duplicados quedan
-      // listados al final para que los fusiones vos a mano una sola vez; de ahí en
-      // más, como ya queda el salesforceId, no se vuelve a confundir.
-      let o = DATA.find(x=>x.salesforceId===idCot);
-      const esNueva = !o;
-      if(!o){
-        o = blankOpp();
-        const coreSF = normalizeCore(cuentaNombre);
-        const posibleDup = DATA.find(x=>!x.salesforceId && x.cliente &&
-          (x.cliente.trim().toLowerCase()===cuentaNombre.toLowerCase() || normalizeCore(x.cliente)===coreSF));
-        if(posibleDup) posiblesDuplicados.push(`${cuentaNombre} (SF: "${String(r['Nombre Cotización']||'').trim()}" vs. ya cargada: ${posibleDup.id} "${posibleDup.nombreOpp||'—'}")`);
-      }
-
-      o.salesforceId = idCot;
-      o.cliente = cuentaNombre;
-      if(!o.nombreOpp) o.nombreOpp = String(r['Nombre Cotización']||'').trim();
-      o.producto = String(r['Producto']||'').trim();
-      if(!o.proveedor) o.proveedor = sfProveedorFromProducto(o.producto);
-      o.montoOneShot = Number(r['Cargo Única Vez'])||0;
-      o.mesRecurrente = Number(r['Abono Mensual'])||0;
-      const pct = sfParsePct(r['Probabilidad']);
-      o.probCierre = pct;
-      o.etapa = sfEtapaFromProb(Number(pct)||0);
-      const fEntrada = sfParseFechaDDMMYYYY(r['Fecha Creación']);
-      if(fEntrada) o.fechaEntrada = fEntrada;
-      const fCierre = sfParseMesCierre(r['Mes Cierre']);
-      if(fCierre) o.fechaEstCierre = fCierre;
-      if(Number(pct)===100) o.estadoFinal = 'Ganado';
-      else if(/perdid/i.test(String(r['Etapa']||''))) o.estadoFinal = 'Perdido';
-
-      const match = findCuentaInfo(cuentaNombre);
-      if(match.info){
-        const cuentaInfo = match.info;
-        o.eecc = cuentaInfo.eecc || o.eecc;
-        o.ingenieroPreventa = cuentaInfo.ingenieroPreventa || o.ingenieroPreventa;
-        o.responsableSegmento = cuentaInfo.responsable || o.responsableSegmento;
-        o.segmento = cuentaInfo.segmento || o.segmento;
-        o.cuit = cuentaInfo.cuit || o.cuit;
-        if(cuentaInfo.industria) o.industria = titleCase(cuentaInfo.industria);
-      } else {
-        o.eecc = o.eecc || String(r['Ejecutivo']||'').trim();
-        sinCuenta.push(cuentaNombre + (match.ambiguo ? ' (ambiguo, varias cuentas parecidas)' : ''));
-      }
-      etapasVistas.add((r['Etapa']||'—') + ' (' + r['Probabilidad'] + ')');
-
-      o.ultimaActualizacion = todayISO();
-      computeFields(o);
-      if(esNueva){ DATA.push(o); creadas++; } else { actualizadas++; }
-    });
-
-    // Auto-cierre: si el usuario confirmó que este Excel es el listado COMPLETO de abiertas,
-    // cualquier opp que ya teníamos como abierta (viene de un import anterior, tiene salesforceId)
-    // y que no aparece en este import, ya no está abierta en Salesforce — se asume Perdida salvo
-    // que el propio Excel de "cerrados/ganados" la corrija después (ese import marca Ganado por
-    // separado). Solo toca opps con salesforceId: las cargadas a mano nunca se tocan acá.
-    const cerradasAuto = [];
-    if(sfImportAutocierre){
-      const idsEnImport = new Set(rows.map(r=>String(r['ID Cotización']||'').trim()).filter(Boolean));
-      DATA.forEach(o=>{
-        const estaAbierta = !o.estadoFinal || o.estadoFinal==='Abierto';
-        if(estaAbierta && o.salesforceId && !idsEnImport.has(o.salesforceId)){
-          o.estadoFinal = 'Perdido';
-          o.motivoPerdida = 'Desapareció del import SF (auto)';
-          o.fechaCierreReal = o.fechaCierreReal || todayISO();
-          const nota = `Cerrada automáticamente el ${todayISO()}: no figuraba en el import de abiertas de SF. Revisar si en realidad se ganó.`;
-          if(!o.proximoPaso || !o.proximoPaso.includes(nota)){
-            o.proximoPaso = o.proximoPaso ? (nota + ' — ' + o.proximoPaso) : nota;
-          }
-          o.ultimaActualizacion = todayISO();
-          computeFields(o);
-          cerradasAuto.push(`${o.cliente}${o.nombreOpp?' — '+o.nombreOpp:''} (${o.id})`);
-        }
-      });
-    }
-
-    await saveData();
-    renderAll();
-    let msg = `Salesforce: ${creadas} oportunidad(es) creada(s), ${actualizadas} actualizada(s). (Se bajó un backup por si hay que revertir: backup_antes_de_import_sf_${todayISO()}.json)`;
-    if(posiblesDuplicados.length) msg += `\n\n⚠️ Posibles duplicados (mismo cliente, opp ya cargada distinta) — revisá y fusioná a mano si corresponde, así queda con salesforceId y no se repite:\n` + posiblesDuplicados.join('\n');
-    if(sinCuenta.length) msg += `\n\nSin match en tu cartera (revisá EECC/segmento/industria a mano): ${[...new Set(sinCuenta)].join(', ')}`;
-    msg += `\n\nEtapas de Salesforce vistas en este import: ${[...etapasVistas].join(' · ')}`;
-    if(sfImportAutocierre){
-      msg += cerradasAuto.length
-        ? `\n\n🔒 ${cerradasAuto.length} oportunidad(es) marcada(s) como Cerrada-Perdida automáticamente por no aparecer en este import (revisá si alguna en realidad se ganó):\n` + cerradasAuto.join('\n')
-        : `\n\n🔒 Auto-cierre activado: ninguna oportunidad abierta desapareció de este import.`;
-      // Diagnóstico: opps que quedan "abiertas" pero sin salesforceId — el auto-cierre nunca las
-      // toca (no tiene forma de saber si siguen vigentes en SF o no), así que si el conteo de
-      // abiertas no baja como se espera, casi siempre es por esto: son cargas manuales o de un
-      // import viejo de antes de que existiera este campo.
-      const abiertasSinSfId = DATA.filter(o=>(!o.estadoFinal||o.estadoFinal==='Abierto') && !o.salesforceId);
-      if(abiertasSinSfId.length){
-        msg += `\n\n⚠️ Quedan ${abiertasSinSfId.length} oportunidad(es) abiertas SIN ID de Salesforce (cargadas a mano o de antes de este sistema) — el auto-cierre no las puede evaluar, quedan tal cual hasta que las revises a mano:\n` +
-          abiertasSinSfId.map(o=>`${o.cliente}${o.nombreOpp?' — '+o.nombreOpp:''} (${o.id})`).join('\n');
-      }
-    }
-    alert(msg);
+    const wb = XLSX.read(await file.arrayBuffer(), {type:'array'});
+    const sheetName = wb.SheetNames.find(n=>/cotiz/i.test(n)) || wb.SheetNames[0];
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:'', raw:true});
+    if(!rows.length || !('ID Cotización' in rows[0])){ showToast('No reconozco el archivo: tiene que ser el export "Cotizaciones Cloud" del portal.'); e.target.value=''; return; }
+    impPrepare(rows, file.name); renderImport(); document.getElementById('impBg').classList.add('open');
   }catch(err){
     console.error(err);
-    showToast('No se pudo importar el Excel de Salesforce');
+    showToast('No se pudo leer el Excel del portal');
   }
   e.target.value='';
 });
@@ -2927,7 +2959,7 @@ function oppKanbanCardHtml(o){
     ${o.nombreOpp?`<div class="ko-nombre" title="${escapeHtml(o.nombreOpp)}">${escapeHtml(o.nombreOpp)}</div>`:''}
     <div class="ko-row">
       <span class="bant-quad">${bantQuadrant(o)}</span>
-      <span class="ko-prob">${o.probCierre?o.probCierre+'%':'—'}</span>
+      <span class="ko-prob">${nextIconHtml(o)} ${o.probCierre?o.probCierre+'%':'—'}</span>
     </div>
     <div class="ko-row">
       <span class="ko-meta">${ICON_MONEY}<span class="ko-monto">${monto}</span></span>
@@ -3088,12 +3120,458 @@ document.getElementById('tk_titulo').addEventListener('keydown', (ev)=>{
   if(ev.key==='Escape'){ closeTaskModal(); }
 });
 
+
+/* ════════════════════════════════════════════════════════════════════
+   Módulo "nuevo" (25/10/2026): alta rápida, próximos pasos, ideas y
+   campañas, staff del martes e import del portal. Traído del Backlog
+   nuevo (backlog.html) y adaptado al modelo de datos del clásico.
+   Datos propios de este módulo en Firestore: backlog/extras
+   = {campanas, staff, nextCamp, descartadas}.
+   ════════════════════════════════════════════════════════════════════ */
+const EXTRAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/extras?key=${FIREBASE_CONFIG.apiKey}`;
+let EXTRAS = { campanas:[], staff:{ nombre:'', segmento:'GC AMBA', territorio:'CCEE Banca · Servicios · Industria', notas:'', corte:'' }, nextCamp:1, descartadas:[] };
+async function loadExtras(){
+  try{
+    const res = await fetch(EXTRAS_URL, {headers: await authHeader()});
+    if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      if(raw) EXTRAS = Object.assign(EXTRAS, JSON.parse(raw));
+    }
+    localStorage.setItem('backlog_extras_cache_v1', JSON.stringify(EXTRAS));
+  }catch(e){
+    try{ const c = localStorage.getItem('backlog_extras_cache_v1'); if(c) EXTRAS = Object.assign(EXTRAS, JSON.parse(c)); }catch(_){}
+  }
+  if(!EXTRAS.staff.nombre && auth.currentUser && auth.currentUser.displayName) EXTRAS.staff.nombre = auth.currentUser.displayName;
+}
+let _extrasTimer = null;
+function saveExtras(){
+  if(isReadonly()) return;
+  try{ localStorage.setItem('backlog_extras_cache_v1', JSON.stringify(EXTRAS)); }catch(_){}
+  clearTimeout(_extrasTimer);
+  _extrasTimer = setTimeout(async ()=>{
+    try{
+      const body = { fields:{ json:{stringValue: JSON.stringify(EXTRAS)}, updatedAt:{timestampValue:new Date().toISOString()} } };
+      const res = await fetch(EXTRAS_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt', {
+        method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+    }catch(e){ showToast('⚠️ No se pudieron guardar campañas/staff en la nube. Quedó en este navegador.'); }
+  }, 500);
+}
+
+/* ── Utilidades ── */
+const isOpenOpp = o => !o.estadoFinal || o.estadoFinal==='Abierto';
+const numv = v => { if(typeof v==='number') return isNaN(v)?0:v; let t=String(v==null?'':v).trim().replace(/[^0-9.,-]/g,''); if(!t) return 0; const lc=t.lastIndexOf(','), ld=t.lastIndexOf('.'); if(lc>ld) t=t.replace(/\./g,'').replace(',','.'); else if(ld>lc&&lc>=0) t=t.replace(/,/g,''); else if(lc>=0) t=t.replace(',','.'); const n=parseFloat(t); return isNaN(n)?0:n; };
+const fmtD = iso => { const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?`${m[3]}/${m[2]}/${m[1]}`:''; };
+const fmtDS = iso => { const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?`${m[3]}/${m[2]}`:''; };
+const etapaLbl = e => String(e||'').replace(/^(\d)-/,'$1 · ');
+const ICO = {
+  chev:'<path d="M9 6l6 6-6 6"/>', alert:'<path d="M12 7v6M12 17h.01"/>', x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', down:'<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>', copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'
+};
+const ico = (k,sw,sz) => `<svg width="${sz||16}" height="${sz||16}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw||2}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
+
+/* ── Próximos pasos ── */
+function nextState(o){
+  if(!String(o.proximoPaso||'').trim()) return 'sin';
+  if(o.proximoPasoFecha && o.proximoPasoFecha < todayISO()) return 'venc';
+  return 'ok';
+}
+const NEXT_LBL = { ok:'Próximo paso al día', sin:'Sin próximo paso', venc:'Próximo paso vencido' };
+function nextIconHtml(o){
+  const st = nextState(o);
+  const tip = NEXT_LBL[st] + (o.proximoPaso ? ': ' + o.proximoPaso + (o.proximoPasoFecha ? ' (' + fmtD(o.proximoPasoFecha) + ')' : '') : '');
+  return `<span class="np np-${st}" title="${escapeHtml(tip)}" role="img" aria-label="${escapeHtml(NEXT_LBL[st])}">${ico(st==='ok'?'chev':'alert',3,11)}</span>`;
+}
+function renderPasos(){
+  const el = document.getElementById('pasosContent'); if(!el) return;
+  const open = DATA.filter(isOpenOpp);
+  const grupo = (titulo, list, nota) => `<div class="card-s"><div class="hd"><h2>${titulo} · ${list.length}</h2><small>${nota}</small></div><div class="bd">${
+    list.map(o=>`<div class="chk" role="button" tabindex="0" data-open-opp="${o.id}">${nextIconHtml(o)}
+      <span class="chk-tx"><b>${escapeHtml(o.cliente||'—')}</b><span>${escapeHtml(o.proximoPaso || 'Sin próximo paso: abrila y definí qué sigue')}${o.nombreOpp?' · '+escapeHtml(o.nombreOpp):''}</span></span>
+      <span class="r">${o.proximoPasoFecha?fmtD(o.proximoPasoFecha):''}</span></div>`).join('') || '<span class="muted">Nada por acá.</span>'}</div></div>`;
+  const venc = open.filter(o=>nextState(o)==='venc').sort((a,b)=>(a.proximoPasoFecha||'').localeCompare(b.proximoPasoFecha||''));
+  const ok = open.filter(o=>nextState(o)==='ok').sort((a,b)=>(a.proximoPasoFecha||'9999').localeCompare(b.proximoPasoFecha||'9999'));
+  const sin = open.filter(o=>nextState(o)==='sin');
+  el.innerHTML = grupo('Vencidos', venc, 'La fecha del próximo paso ya pasó') + grupo('Al día', ok, 'Ordenados por fecha (los sin fecha al final)') + grupo('Sin próximo paso', sin, 'Opps abiertas sin nada definido');
+}
+function updateRailBadges(){
+  const btn = document.getElementById('tabBtnPasos'); if(!btn) return;
+  let b = btn.querySelector('.rail-badge');
+  const n = DATA.filter(o=>isOpenOpp(o) && nextState(o)==='venc').length;
+  if(!n){ if(b) b.remove(); return; }
+  if(!b){ b = document.createElement('span'); b.className='rail-badge'; btn.appendChild(b); }
+  b.textContent = n;
+}
+
+/* ── Alta rápida ── */
+let QC = null;
+function qcAccount(nombre){ const m = findCuentaInfo(nombre); return m.info || null; }
+function openQuickCreate(){
+  if(isReadonly()) return;
+  QC = { cliente:'', nombreOpp:'', etapa:ETAPAS[0], prioridad:'Media', mesRecurrente:'', montoOneShot:'', proximoPaso:'', proximoPasoFecha:'', segmento:'', bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'' };
+  renderQuickCreate(); document.getElementById('qcBg').classList.add('open');
+  setTimeout(()=>{ const c=document.getElementById('qcCliente'); if(c) c.focus(); }, 30);
+}
+function qcChips(){
+  const acc = qcAccount(QC.cliente);
+  if(acc) return `<div class="chips-auto">${[acc.segmento, acc.eecc&&'EECC: '+titleCase(acc.eecc), acc.ingenieroPreventa&&'Preventa: '+titleCase(acc.ingenieroPreventa), acc.responsable&&'Responsable: '+titleCase(acc.responsable), acc.cuit&&'CUIT '+acc.cuit, acc.industria&&'Vertical: '+titleCase(acc.industria)].filter(Boolean).map(x=>`<span>${escapeHtml(x)}</span>`).join('')}<span class="muted">Autocompletado desde tu cartera</span></div>`;
+  if(QC.cliente.trim()) return `<div class="field"><label>No está en tu cartera: elegí el segmento *</label><select data-qc="segmento">${optionsHtml(SEGMENTOS,QC.segmento)}</select></div>`;
+  return '';
+}
+function renderQuickCreate(){
+  const q = QC;
+  document.getElementById('qcBg').innerHTML = `<div class="qc-modal" role="dialog" aria-modal="true" aria-labelledby="qcTitle">
+    <div class="qc-h"><h2 id="qcTitle">Nueva oportunidad</h2><button type="button" class="ghost" data-qc-act="close" aria-label="Cerrar">✕</button></div>
+    <div class="qc-b">
+      <div class="field"><label for="qcCliente">Cliente *</label><input type="text" id="qcCliente" list="qcDatalist" data-qc="cliente" value="${escapeHtml(q.cliente)}" placeholder="Empezá a escribir la razón social" autocomplete="off"><datalist id="qcDatalist">${ACCOUNTS.map(a=>`<option value="${escapeHtml(a.razonSocial)}">`).join('')}</datalist></div>
+      <div id="qcAuto">${qcChips()}</div>
+      <div class="field"><label>Qué se vende *</label><input type="text" data-qc="nombreOpp" value="${escapeHtml(q.nombreOpp)}" placeholder="Ej. Datacenter virtual + SSPP"></div>
+      <div class="grid2">
+        <div class="field"><label>Etapa</label><select data-qc="etapa">${ETAPAS.map(e=>`<option value="${escapeHtml(e)}" ${q.etapa===e?'selected':''}>${escapeHtml(etapaLbl(e))}</option>`).join('')}</select></div>
+        <div class="field"><label>Prioridad</label><select data-qc="prioridad">${PRIORIDADES.map(p=>`<option ${q.prioridad===p?'selected':''}>${p}</option>`).join('')}</select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Mensual USD (opcional)</label><input type="number" min="0" data-qc="mesRecurrente" value="${escapeHtml(q.mesRecurrente)}" placeholder="0"></div>
+        <div class="field"><label>One Shot USD (opcional)</label><input type="number" min="0" data-qc="montoOneShot" value="${escapeHtml(q.montoOneShot)}" placeholder="0"></div>
+      </div>
+      <div class="grid-np2">
+        <div class="field"><label>Próximo paso</label><input type="text" data-qc="proximoPaso" value="${escapeHtml(q.proximoPaso)}" placeholder="Ej. Llamar al CIO el jueves"></div>
+        <div class="field"><label>Para cuándo</label><input type="date" data-qc="proximoPasoFecha" value="${escapeHtml(q.proximoPasoFecha)}"></div>
+      </div>
+      <fieldset class="qc-bant"><legend>BANT rápido <span class="muted">(un toque por fila, opcional)</span></legend>
+        ${[['bantBudget','Budget','tiene presupuesto'],['bantAuthority','Authority','hablamos con quien decide'],['bantNeed','Need','necesidad clara'],['bantTimeline','Timeline','fecha para decidir']].map(([k,l,h])=>
+          `<div class="bant-row"><span>${l} <small>· ${h}</small></span><div class="seg" role="group" aria-label="${l}">${[['✅ Sí','Sí','si'],['⚠️ Parcial','Parcial','parcial'],['❌ No','No','no'],['N/A','N/A','na']].map(([v,lb,c])=>`<button type="button" class="${c} ${q[k]===v?'on':''}" data-qcbant="${k}" data-v="${escapeHtml(v)}" aria-pressed="${q[k]===v}">${lb}</button>`).join('')}</div></div>`).join('')}
+      </fieldset>
+      <p id="qcErr" class="qc-err" style="display:none"></p>
+    </div>
+    <div class="qc-f">
+      <label class="qc-otra"><input type="checkbox" id="qcOtra">Crear otra</label>
+      <span style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="ghost" data-qc-act="close">Cancelar</button><button type="button" data-qc-act="crearAbrir">Crear y completar</button><button type="button" class="primary" data-qc-act="crear">Crear</button></span>
+    </div></div>`;
+}
+async function qcGuardar(abrir){
+  const q = QC; const err = document.getElementById('qcErr');
+  const fail = m => { err.textContent = m; err.style.display = 'block'; };
+  const acc = qcAccount(q.cliente);
+  if(!q.cliente.trim()) return fail('Falta el cliente.');
+  if(!q.nombreOpp.trim()) return fail('Falta qué se vende.');
+  if(!acc && !q.segmento) return fail('El cliente no está en tu cartera: elegí el segmento.');
+  const o = blankOpp();
+  Object.assign(o, { cliente:q.cliente.trim(), nombreOpp:q.nombreOpp.trim(), etapa:q.etapa, prioridad:q.prioridad,
+    mesRecurrente: q.mesRecurrente===''?'':numv(q.mesRecurrente), montoOneShot: q.montoOneShot===''?'':numv(q.montoOneShot),
+    proximoPaso:q.proximoPaso.trim(), proximoPasoFecha:q.proximoPasoFecha, segmento:q.segmento,
+    bantBudget:q.bantBudget, bantAuthority:q.bantAuthority, bantNeed:q.bantNeed, bantTimeline:q.bantTimeline });
+  if(acc){ o.cliente = acc.razonSocial; o.cuit = acc.cuit; o.eecc = acc.eecc; o.ingenieroPreventa = acc.ingenieroPreventa; o.responsableSegmento = acc.responsable; if(acc.segmento) o.segmento = acc.segmento; if(acc.industria) o.industria = titleCase(acc.industria); }
+  computeFields(o); DATA.push(o);
+  await saveData(); renderAll();
+  showToast('Oportunidad creada: ' + o.cliente);
+  if(abrir){ document.getElementById('qcBg').classList.remove('open'); openDrawer(o.id); return; }
+  if(document.getElementById('qcOtra').checked){ const et = q.etapa; openQuickCreate(); QC.etapa = et; renderQuickCreate(); document.getElementById('qcOtra').checked = true; }
+  else document.getElementById('qcBg').classList.remove('open');
+}
+
+/* ── Ideas y campañas ── */
+const CAMP_ESTADOS = ['Idea','En armado','Lanzada','Cerrada'];
+let SEL_CAMP = null;
+function campById(id){ return (EXTRAS.campanas||[]).find(c=>c.id===id); }
+// Mis EECC = los de la cartera vigente en Firestore. La lista fija del código (EECC_POR_SEGMENTO) solo si la cartera no cargó.
+function misEeccLista(){ const deCartera = [...new Set(ACCOUNTS.map(a=>a.eecc).filter(Boolean))]; return (deCartera.length ? deCartera : allEecc()).sort(); }
+function campStats(c){ const opps = DATA.filter(o=>o.campanaId===c.id); return { abiertas: opps.filter(isOpenOpp).length, ganadas: opps.filter(o=>o.estadoFinal==='Ganado').length, mens: opps.filter(isOpenOpp).reduce((t,o)=>t+numv(o.mesRecurrente),0) }; }
+function renderIdeas(){
+  const el = document.getElementById('ideasContent'); if(!el) return;
+  const camps = EXTRAS.campanas || [];
+  if(!SEL_CAMP && camps.length) SEL_CAMP = camps[0].id;
+  const c = campById(SEL_CAMP);
+  const cols = CAMP_ESTADOS.map(e=>{ const list = camps.filter(x=>x.estado===e);
+    return `<section class="idea-col" aria-label="${e}"><div class="idea-col-h"><span>${e}</span><span class="kanban-count">${list.length}</span></div>
+      ${list.map(x=>{ const st = campStats(x); return `<button type="button" class="idea ${x.id===SEL_CAMP?'selected':''}" data-camp="${x.id}"><b>${escapeHtml(x.titulo)}</b><span>${(x.eecc||[]).length} EECC · ${st.abiertas} opps abiertas</span></button>`; }).join('')}</section>`; }).join('');
+  let ficha = '<div class="empty-state" style="padding:40px 20px"><p>Tocá <b>Nueva idea</b> para volcar la primera.</p></div>';
+  if(c){
+    const st = campStats(c); const opps = DATA.filter(o=>o.campanaId===c.id);
+    const disp = misEeccLista().filter(e=>!(c.eecc||[]).some(x=>x.nombre===e));
+    ficha = `<div class="card-s"><div class="hd" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+        <label class="inline-lbl">Estado <select data-cp="estado">${CAMP_ESTADOS.map(e=>`<option ${c.estado===e?'selected':''}>${e}</option>`).join('')}</select></label>
+        <label class="inline-lbl"><input type="checkbox" data-cp="llevarStaff" ${c.llevarStaff?'checked':''}> Llevar al staff del martes</label>
+      </div>
+      <label class="sr" for="cpTitulo">Título</label><input id="cpTitulo" class="ttl-in" data-cp="titulo" value="${escapeHtml(c.titulo)}">
+    </div><div class="bd">
+      <div class="grid2">
+        <div class="field"><label>Disparador (qué pasó en el mercado)</label><textarea data-cp="disparador" rows="2">${escapeHtml(c.disparador||'')}</textarea></div>
+        <div class="field"><label>A quién apunta</label><textarea data-cp="publico" rows="2">${escapeHtml(c.publico||'')}</textarea></div>
+        <div class="field"><label>Propuesta de valor</label><textarea data-cp="propuesta" rows="2">${escapeHtml(c.propuesta||'')}</textarea></div>
+        <div class="field"><label>Oferta / puerta de entrada</label><textarea data-cp="oferta" rows="2">${escapeHtml(c.oferta||'')}</textarea></div>
+        <div class="field"><label>Inicio</label><input type="date" data-cp="inicio" value="${escapeHtml(c.inicio||'')}"></div>
+        <div class="field"><label>Cierre</label><input type="date" data-cp="fin" value="${escapeHtml(c.fin||'')}"></div>
+      </div>
+      <div class="camp-stats"><span><b>${st.abiertas}</b> opps abiertas</span><span><b>${st.ganadas}</b> ganadas</span><span><b>${fmtMoney(st.mens)}</b>/mes en pipeline</span></div>
+      <div class="camp-row"><h3>EECC en la campaña</h3>
+        <span style="display:flex;gap:8px;flex-wrap:wrap"><label><span class="sr">Sumar EECC</span><select id="cpAddEecc" class="edit-only"><option value="">+ Sumar EECC…</option><option value="__todos">Todos mis EECC</option>${disp.map(e=>`<option value="${escapeHtml(e)}">${escapeHtml(titleCase(e))}</option>`).join('')}</select></label>
+        <button type="button" class="ghost" data-camp-act="copiar">${ico('copy')} Copiar mensaje para los EECC</button></span></div>
+      <div class="table-wrap"><table><thead><tr><th>EECC</th><th class="money">Cuentas objetivo</th><th class="money">Contactadas</th><th class="money">Derivadas a preventa</th><th class="money">Opps abiertas</th><th><span class="sr">Quitar</span></th></tr></thead><tbody>
+        ${(c.eecc||[]).map((x,i)=>`<tr><td>${escapeHtml(titleCase(x.nombre))}</td>${['objetivo','contactadas','derivadas'].map(k=>`<td class="money"><label><span class="sr">${k}</span><input type="text" class="camp-num" inputmode="numeric" data-cpe="${i}|${k}" value="${escapeHtml(x[k]||'')}"></label></td>`).join('')}<td class="money">${opps.filter(o=>isOpenOpp(o)&&o.eecc===x.nombre).length}</td><td><button type="button" class="ghost edit-only" data-cpdel="${i}" aria-label="Quitar ${escapeHtml(x.nombre)}">×</button></td></tr>`).join('') || '<tr><td colspan="6" class="muted" style="text-align:center;padding:16px">Sumá los EECC que van a mover la campaña.</td></tr>'}
+      </tbody></table></div>
+      <h3 class="camp-h3">Ideas y comentarios</h3>
+      <div class="edit-only camp-nota"><label class="sr" for="cpNota">Nueva idea</label><textarea id="cpNota" rows="2" placeholder="Volcá ideas sueltas: ángulos, objeciones, qué dijo un EECC, qué salió del staff…"></textarea><button type="button" class="primary" data-camp-act="nota">Agregar</button></div>
+      ${(c.notas||[]).slice().reverse().map(n=>`<div class="camp-n"><span class="muted">${fmtD(n.fecha)}</span><span>${escapeHtml(n.texto)}</span></div>`).join('')}
+      ${opps.length?`<h3 class="camp-h3">Oportunidades de la campaña</h3>${opps.map(o=>`<div class="chk" role="button" tabindex="0" data-open-opp="${o.id}">${nextIconHtml(o)}<span class="chk-tx"><b>${escapeHtml(o.cliente||'—')}</b><span>${escapeHtml(o.nombreOpp||'')}</span></span><span class="r">${isOpenOpp(o)?etapaLbl(o.etapa):escapeHtml(o.estadoFinal)}</span></div>`).join('')}`:'<p class="muted" style="margin:6px 0 0">Para sumar opps a la campaña: abrí la opp → Comercial → Campaña.</p>'}
+      <div class="edit-only" style="display:flex;justify-content:flex-end;margin-top:8px"><button type="button" class="danger" data-camp-act="borrar">Eliminar campaña</button></div>
+    </div></div>`;
+  }
+  el.innerHTML = `<div class="ideas-top"><p class="muted" style="margin:0">Volcá ideas de campaña para trabajar con los EECC; las tildadas viajan al staff del martes.</p><button type="button" class="primary edit-only" data-camp-act="nueva">+ Nueva idea</button></div>
+    <div class="two"><div class="b ideas-board">${cols}</div><div class="a">${ficha}</div></div>`;
+}
+function mensajeCampana(c){
+  return [`📣 Campaña: ${c.titulo}`, c.disparador&&`¿Por qué ahora? ${c.disparador}`, c.publico&&`A quién apuntamos: ${c.publico}`, c.propuesta&&`Qué gana el cliente: ${c.propuesta}`, c.oferta&&`La oferta: ${c.oferta}`,
+    (c.inicio||c.fin)&&`Plazo: ${fmtD(c.inicio)||'ya'} → ${fmtD(c.fin)||'a definir'}`, 'Si detectás una cuenta que encaja, derivámela y la trabajamos juntos desde preventa cloud.'].filter(Boolean).join('\n');
+}
+
+/* ── Staff del martes (JSON para la planilla del sector) ── */
+const TIPOS_STAFF_MAP = { 'Visita':'Visita','Reunión':'Visita','Demo':'Demo','Demo técnica':'Demo','Propuesta':'Propuesta','Propuesta enviada':'Propuesta','Evento':'Evento','Soporte':'Soporte' };
+const PLANILLA_SEGMENTOS = ['GC AMBA','GC Interior','PyMES','GC + PyMES','GOB','TECH'];
+let STAFF_OFF = new Set();
+function planillaProd(o){
+  const p = `${o.proveedor||''} ${o.producto||''} ${o.nombreOpp||''}`.toLowerCase();
+  if(p.includes('workspace')) return 'Google Workspace';
+  if(p.includes('aws')) return 'AWS Cloud'; if(p.includes('huawei')) return 'Huawei Cloud'; if(p.includes('azure')) return 'Azure';
+  if(p.includes('google')||p.includes('gcp')) return 'Google Cloud';
+  if(p.includes('365')||p.includes('microsoft')||p.includes('office')) return 'Microsoft 365';
+  if(p.includes('personal cloud')||p.includes('datacenter')||p.includes('servidor')||p.includes('dcv')||p.includes('sspp')) return 'SSPP Cloud';
+  return 'Otro';
+}
+const probPill = p => { const n = Number(p)||0; return n>=90?'90% Alta':n>=70?'75% Media':'50% Baja'; };
+const etapaPlanilla = e => { const n = String(e||'').charAt(0); return n==='1'||n==='2'?'Identificación':n==='3'||n==='4'?'Preparación':'Propuesta-Neg.'; };
+const jiraKey = t => { const m = /([A-Z][A-Z0-9]+-\d+)/.exec(String(t||'')); return m ? m[1] : String(t||'').trim(); };
+function bitFecha(e){ if(e.fechaHora){ const d = new Date(e.fechaHora); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); } return e.fecha||''; }
+function staffData(){
+  const corte = EXTRAS.staff.corte || todayISO(); const mes = corte.slice(0,7);
+  const open = DATA.filter(isOpenOpp);
+  const cerrados = DATA.filter(o=>o.estadoFinal==='Ganado' && (o.fechaCierreReal||'').slice(0,7)===mes);
+  const pocs = open.filter(o=>o.etapa==='2-POC');
+  const acerrar = open.filter(o=>o.etapa!=='2-POC' && (o.etapa==='6-Envío y Negociación' || (o.fechaEstCierre||'').slice(0,7)===mes));
+  const pipe = open.filter(o=>o.etapa!=='2-POC' && !acerrar.includes(o));
+  const jira = open.filter(o=>String(o.ticketJira||'').trim());
+  const d0 = new Date(corte+'T00:00:00'); d0.setDate(d0.getDate()-7); const desde = d0.toISOString().slice(0,10);
+  const acciones = [];
+  DATA.forEach(o=>(o.bitacora||[]).forEach((e,i)=>{ const f = bitFecha(e); if(f>=desde && f<=corte) acciones.push({o,e,f,key:'acc|'+o.id+'|'+(e.fechaHora||i)}); }));
+  acciones.sort((a,b)=>b.f.localeCompare(a.f));
+  return { corte, cerrados, acerrar, pipe, pocs, jira, acciones, camps:(EXTRAS.campanas||[]).filter(c=>c.llevarStaff) };
+}
+const accOn = a => STAFF_OFF.has(a.key) ? false : (STAFF_OFF.has('+'+a.key) || !!TIPOS_STAFF_MAP[a.e.tipo]);
+const isOnStaff = k => !STAFF_OFF.has(k);
+function renderStaff(){
+  const el = document.getElementById('staffContent'); if(!el) return;
+  const d = staffData(); const s = EXTRAS.staff;
+  const pipeTotal = DATA.filter(isOpenOpp).reduce((t,o)=>t+numv(o.mesRecurrente),0);
+  const k = (l,v,n)=>`<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="label" style="margin-top:2px">${n}</div></div>`;
+  const secc = (titulo, list, tipo, extra) => `<div class="card-s"><div class="hd"><h2>${titulo} · ${list.filter(o=>isOnStaff(tipo+'|'+o.id)).length}/${list.length}</h2><small>${extra}</small></div><div class="bd">${
+    list.map(o=>`<label class="chk"><input type="checkbox" data-staff="${tipo}|${o.id}" ${isOnStaff(tipo+'|'+o.id)?'checked':''}><span class="chk-tx"><b>${escapeHtml(o.cliente||'—')}</b><span>${escapeHtml(o.nombreOpp||'')} · ${escapeHtml(planillaProd(o))}</span></span><span class="r">${numv(o.mesRecurrente)?fmtMoney(numv(o.mesRecurrente))+'/mes':'sin monto'}</span></label>`).join('') || '<span class="muted">Nada en esta sección.</span>'}</div></div>`;
+  el.innerHTML = `<div class="ideas-top"><p class="muted" style="margin:0">Revisá, destildá lo que no va y exportá. En la planilla del sector: ➕ Nuevo → ⬆️ Importar.</p><button type="button" class="primary" data-staff-act="export">${ico('down')} Exportar JSON para la planilla</button></div>
+  <div class="kpis staff-kpis">${k('Cerrados del mes', d.cerrados.length, 'Ganadas en '+d.corte.slice(5,7)+'/'+d.corte.slice(0,4))}${k('A cerrar', d.acerrar.length, 'Etapa 6 o cierre este mes')}${k('Pipeline', d.pipe.length, 'Abiertas sin POC')}${k('POCs', d.pocs.length, 'Etapa 2')}${k('Pipeline total', fmtMoney(pipeTotal), 'Mensual de las abiertas')}</div>
+  <div class="two"><div class="a">
+    <div class="card-s"><div class="hd"><h2>Acciones en el territorio</h2><small>De la bitácora, 7 días antes del corte</small></div><div class="bd">${
+      d.acciones.map(a=>`<label class="chk"><input type="checkbox" data-staffacc="${escapeHtml(a.key)}" ${accOn(a)?'checked':''}><span class="tp">${escapeHtml(a.e.tipo||'Nota')}</span><span class="chk-tx"><b>${escapeHtml(a.o.cliente||'—')}</b><span>${escapeHtml(a.e.nota||'')}</span></span><span class="r">${fmtDS(a.f)}</span></label>`).join('') || '<span class="muted">No hay actividad en la bitácora en esos 7 días. Registrá visitas, demos y propuestas desde cada opp.</span>'}
+      <span class="muted" style="font-size:12px">Van tildadas por defecto Visita/Reunión, Demo, Propuesta, Evento y Soporte. Llamados, mails y seguimientos quedan destildados.</span></div></div>
+    ${secc('Cerrados este mes', d.cerrados, 'cer', 'Ganadas con cierre real en el mes')}
+    ${secc('A cerrar', d.acerrar, 'acr', 'Etapa 6 o cierre estimado este mes')}
+    ${secc('Pipeline', d.pipe, 'pip', 'Resto de las abiertas')}
+    ${secc('PoCs', d.pocs, 'poc', 'Etapa 2 · POC')}
+    ${d.jira.length?secc('Jira', d.jira, 'jir', 'Opps con ticket cargado'):''}
+  </div><div class="b">
+    <div class="card-s"><div class="hd"><h2>Datos del consultor</h2></div><div class="bd">
+      <div class="field"><label>Nombre</label><input type="text" data-st="nombre" value="${escapeHtml(s.nombre||'')}"></div>
+      <div class="grid2"><div class="field"><label>Fecha de corte</label><input type="date" data-st="corte" value="${escapeHtml(d.corte)}"></div>
+      <div class="field"><label>Segmento</label><select data-st="segmento">${PLANILLA_SEGMENTOS.map(x=>`<option ${s.segmento===x?'selected':''}>${x}</option>`).join('')}</select></div></div>
+      <div class="field"><label>Territorio</label><input type="text" data-st="territorio" value="${escapeHtml(s.territorio||'')}"></div>
+    </div></div>
+    <div class="card-s"><div class="hd"><h2>Notas del consultor</h2></div><div class="bd">
+      <div class="field"><label class="sr" for="stNotas">Notas</label><textarea id="stNotas" data-st="notas" rows="8" placeholder="Contexto del territorio, señales de mercado, lo que querés contar el martes…">${escapeHtml(s.notas||'')}</textarea></div>
+      ${d.camps.length?`<span class="muted" style="font-size:12.5px">Se suman al final las campañas tildadas para el staff: ${d.camps.map(c=>escapeHtml(c.titulo)).join(', ')}.</span>`:''}
+    </div></div>
+  </div></div>`;
+}
+function staffJSON(){
+  const d = staffData(); const s = EXTRAS.staff; const on = (t,o)=>isOnStaff(t+'|'+o.id);
+  let notas = s.notas || '';
+  if(d.camps.length) notas += (notas?'\n\n':'') + 'Campañas en curso: ' + d.camps.map(c=>{ const n = DATA.filter(o=>isOpenOpp(o)&&o.campanaId===c.id).length; return `${c.titulo} (${c.estado}${n?', '+n+' opps abiertas':''})`; }).join(' · ');
+  const mens = o => numv(o.mesRecurrente);
+  const items = {
+    cerrado: d.cerrados.filter(o=>on('cer',o)).map(o=>({'c-cuenta':o.cliente,'c-prod':planillaProd(o),'c-abono':String(mens(o)||''),'c-uv':String(numv(o.montoOneShot)||'')})),
+    acerrar: d.acerrar.filter(o=>on('acr',o)).map(o=>({'a-cuenta':o.cliente,'a-prod':planillaProd(o),'a-val':String(mens(o)||''),'a-fecha':o.fechaEstCierre||'','a-prob':probPill(o.probCierre),'a-sit':o.proximoPaso||''})),
+    pipe: d.pipe.filter(o=>on('pip',o)).map(o=>({'p-cuenta':o.cliente,'p-prod':planillaProd(o),'p-val':String(mens(o)||''),'p-etapa':etapaPlanilla(o.etapa),'p-fecha':o.fechaEstCierre||''})),
+    jira: d.jira.filter(o=>on('jir',o)).map(o=>({'j-key':jiraKey(o.ticketJira),'j-dias':o.fechaEntrada?String(Math.max(0,Math.round((new Date(d.corte)-new Date(o.fechaEntrada))/86400000))):'','j-titulo':`${o.cliente} · ${o.nombreOpp||''}`,'j-comp':'','j-estado':o.proximoPaso||etapaLbl(o.etapa)})),
+    poc: d.pocs.filter(o=>on('poc',o)).map(o=>({'poc-cliente':o.cliente,'poc-prod':planillaProd(o),'poc-desc':o.nombreOpp||'','poc-inicio':o.fechaEntrada||'','poc-est':'En curso'})),
+    acc: d.acciones.filter(accOn).map(a=>({'acc-tipo':TIPOS_STAFF_MAP[a.e.tipo]||'Visita','acc-desc':`${a.o.cliente} · ${a.o.nombreOpp||''}`,'acc-fecha':a.f,'acc-res':a.e.nota||''})),
+    alerta: []
+  };
+  const pipeTotal = DATA.filter(isOpenOpp).reduce((t,o)=>t+mens(o),0);
+  return { simple:{ 'f-nombre':s.nombre||'', 'f-fecha':d.corte, 'f-territorio':s.territorio||'', 'f-segmento':s.segmento||'', 'f-pipeline-total':String(Math.round(pipeTotal)), 'f-notas':notas }, items };
+}
+
+/* ── Import del portal ("Cotizaciones Cloud") con vista previa ── */
+const RESP_TOKENS = ['BANOVAZ','URRUTIGOITY','CASIL'];
+const PARTIC = new Set(['DE','LA','DEL','LOS','LAS','Y']);
+const ntok = s => String(s||'').normalize('NFKD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+function sameEecc(cartera, portal){
+  const a = ntok(cartera), b = ntok(portal); if(!a.length||!b.length) return false;
+  const eq = (x,y) => x===y || (x.length>=5 && y.startsWith(x)) || (y.length>=5 && x.startsWith(y));
+  const has = t => b.some(y=>eq(t,y)); const ape = a.find(t=>!PARTIC.has(t));
+  if(!ape || !has(ape)) return false;
+  return a.filter(t=>!PARTIC.has(t) && t!==ape && has(t)).length >= 1;
+}
+const matchMiEecc = portal => misEeccLista().find(e=>sameEecc(e, portal)) || '';
+function esMiaPortal(r){ if(matchMiEecc(r['Ejecutivo'])) return true; const t = ntok(`${r['Jefe Equipo']||''} ${r['G2 Gerente']||''}`); return RESP_TOKENS.some(x=>t.includes(x)); }
+function parseDMYv(s){ if(typeof s==='number' && window.XLSX){ const d = XLSX.SSF.parse_date_code(s); return d?`${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`:''; } return sfParseFechaDDMMYYYY(s); }
+function pctv(s){ if(typeof s==='number') return Math.round(s<=1?s*100:s); return sfParsePct(s); }
+function etapaDesdePortal(etapaCRM, prob){
+  const e = String(etapaCRM||'').toLowerCase();
+  if(e.includes('identific')) return '1-Identificada';
+  if(e.includes('propuesta') || e.includes('riesgo') || e.includes('gesti')) return '6-Envío y Negociación';
+  const p = Number(prob)||0;
+  if(p>=75) return '6-Envío y Negociación'; if(p>=50) return '5-En Pricing/PPCC'; if(p>=25) return '3-En Diseño';
+  return '1-Identificada';
+}
+let IMP = { rows:[], meses:6, verViejas:false, total:0, mias:0, file:'', autocierre:false };
+function impCorte(){ const d = new Date(); d.setMonth(d.getMonth()-IMP.meses); return d.toISOString().slice(0,10); }
+function impApplyCorte(){ const c = impCorte(); const desc = new Set(EXTRAS.descartadas||[]); IMP.rows.forEach(x=>{ x.vieja = !x.creada || x.creada < c; x.descartada = desc.has(x.id) && !x.existe; x.sel = (!x.vieja || !!x.existe) && !x.descartada; }); }
+function impPrepare(rows, fname){
+  IMP.total = rows.length; IMP.file = fname; IMP.allIds = new Set(rows.map(r=>String(r['ID Cotización']||'').trim().replace(/^0+/,'')));
+  const mias = rows.filter(esMiaPortal); IMP.mias = mias.length;
+  const bySf = {}; DATA.forEach(o=>{ if(o.salesforceId) bySf[String(o.salesforceId).replace(/^0+/,'')] = o; });
+  const key = r => normalizeCore(r['Cuenta'])+'|'+String(r['Producto']||'').toLowerCase().trim();
+  const cnt = {}; mias.forEach(r=>{ cnt[key(r)] = (cnt[key(r)]||0)+1; });
+  IMP.rows = mias.map(r=>{ const id = String(r['ID Cotización']).trim(); const ex = bySf[id.replace(/^0+/,'')];
+    const mens = numv(r['Abono Mensual']), uv = numv(r['Cargo Única Vez']);
+    return { r, id, existe: ex?ex.id:'', creada: parseDMYv(r['Fecha Creación']), sinMonto: !mens && !uv, dup: cnt[key(r)]>1, mens, uv, sel:false };
+  }).sort((a,b)=>(b.creada||'').localeCompare(a.creada||''));
+  impApplyCorte();
+}
+function renderImport(){
+  const vis = IMP.rows.filter(x=>!x.vieja || IMP.verViejas);
+  const nRec = IMP.rows.filter(x=>!x.vieja).length, nOld = IMP.rows.length - nRec;
+  const nSel = IMP.rows.filter(x=>x.sel).length, nUpd = IMP.rows.filter(x=>x.sel && x.existe).length;
+  document.getElementById('impBg').innerHTML = `<div class="qc-modal wide" role="dialog" aria-modal="true" aria-labelledby="impTitle">
+  <div class="qc-h"><h2 id="impTitle">Importar del portal</h2><button type="button" class="ghost" data-imp-act="close" aria-label="Cerrar">✕</button></div>
+  <div class="qc-b">
+    <p class="imp-sum"><b>${escapeHtml(IMP.file)}</b>: ${IMP.total} cotizaciones en el archivo, <b>${IMP.mias}</b> son de tus EECC o responsables. ${nRec} creadas en los últimos <label><span class="sr">Meses</span><select id="impMeses">${[3,6,9,12,24].map(m=>`<option ${IMP.meses===m?'selected':''}>${m}</option>`).join('')}</select></label> meses y ${nOld} más viejas.</p>
+    <div class="imp-tools"><label class="inline-lbl"><input type="checkbox" id="impViejas" ${IMP.verViejas?'checked':''}> Mostrar también las viejas</label>
+      <button type="button" class="ghost" data-imp-act="todas">Tildar todas las visibles</button><button type="button" class="ghost" data-imp-act="ninguna">Destildar todas</button></div>
+    <div class="table-wrap imp-wrap"><table><thead><tr><th><span class="sr">Importar</span></th><th>Aviso</th><th>Nº CRM</th><th>Cuenta</th><th>EECC</th><th>Producto</th><th>Etapa portal</th><th class="money">Prob.</th><th class="money">Mensual</th><th class="money">Único</th><th>Creada</th><th>Cierre</th></tr></thead><tbody>
+    ${vis.map(x=>{ const r = x.r; const av = [x.existe?'Ya está: se actualiza':'', x.descartada?'Descartada antes':'', x.sinMonto?'Sin monto':'', x.dup?'Posible duplicado':'', x.vieja?'Vieja':''].filter(Boolean);
+      return `<tr><td><input type="checkbox" data-imp="${escapeHtml(x.id)}" ${x.sel?'checked':''} aria-label="Importar ${escapeHtml(x.id)}"></td><td>${av.map(a=>`<span class="imp-tag ${a.startsWith('Ya')?'ok':''}">${a}</span>`).join('')}</td>
+      <td class="mono">${escapeHtml(x.id)}</td><td>${escapeHtml(r['Cuenta'])}</td><td>${escapeHtml(r['Ejecutivo'])}</td><td class="imp-prod">${escapeHtml(r['Producto'])}</td><td>${escapeHtml(r['Etapa'])}</td><td class="money">${pctv(r['Probabilidad'])}%</td>
+      <td class="money">${x.mens?fmtMoney(x.mens):'—'}</td><td class="money">${x.uv?fmtMoney(x.uv):'—'}</td><td>${fmtD(x.creada)}</td><td>${escapeHtml(r['Mes Cierre'])}</td></tr>`; }).join('') || '<tr><td colspan="12" class="muted" style="text-align:center;padding:24px">No hay cotizaciones para mostrar.</td></tr>'}
+    </tbody></table></div>
+    <label class="inline-lbl imp-auto"><input type="checkbox" id="impAuto" ${IMP.autocierre?'checked':''}> Marcar como <b>Perdidas</b> las opps abiertas con Nº CRM que ya no aparecen en este archivo <span class="muted">(solo si subiste el export completo de abiertas)</span></label>
+    <p class="muted" style="margin:0;font-size:12.5px">Las que ya existen (mismo Nº CRM) solo actualizan datos del portal: monto (si viene distinto de 0), probabilidad, etapa del portal y mes de cierre. Nunca se pisan tu etapa, BANT, bitácora, próximo paso, prioridad ni notas.</p>
+  </div>
+  <div class="qc-f"><span class="muted"><b>${nSel}</b> tildadas · ${nSel-nUpd} nuevas y ${nUpd} a actualizar</span>
+    <span style="display:flex;gap:8px"><button type="button" class="ghost" data-imp-act="close">Cancelar</button><button type="button" class="primary" data-imp-act="ok" ${nSel||IMP.autocierre?'':'disabled'}>Importar ${nSel}</button></span></div></div>`;
+}
+async function impConfirm(){
+  downloadFile(JSON.stringify(DATA,null,2), 'backup_antes_de_import_portal_' + todayISO() + '.json', 'application/json');
+  let nuevas=0, act=0; const cerradas=[];
+  IMP.rows.filter(x=>x.sel).forEach(x=>{
+    const r = x.r; const pct = pctv(r['Probabilidad']);
+    if(x.existe){
+      const o = DATA.find(z=>z.id===x.existe); if(!o) return;
+      o.probCierre = pct; o.etapaCRM = r['Etapa']; o.crmMesCierre = r['Mes Cierre']; o.crmImportado = todayISO();
+      if(x.mens) o.mesRecurrente = x.mens; if(x.uv) o.montoOneShot = x.uv;
+      if(!o.fechaEstCierre) o.fechaEstCierre = sfParseMesCierre(r['Mes Cierre']);
+      if(!o.producto) o.producto = String(r['Producto']||'').trim();
+      o.ultimaActualizacion = todayISO(); computeFields(o); act++;
+    }else{
+      const o = blankOpp();
+      Object.assign(o, { salesforceId:x.id, cliente:String(r['Cuenta']||'').trim(),
+        nombreOpp: String(r['Producto']||'').split(' / ')[0].trim() || String(r['Nombre Cotización']||'').trim(),
+        producto:String(r['Producto']||'').trim(), proveedor:sfProveedorFromProducto(r['Producto']),
+        mesRecurrente:x.mens, montoOneShot:x.uv, probCierre:pct, etapa:etapaDesdePortal(r['Etapa'], pct),
+        fechaEntrada:x.creada||todayISO(), fechaEstCierre:sfParseMesCierre(r['Mes Cierre']),
+        etapaCRM:r['Etapa'], crmMesCierre:r['Mes Cierre'], crmImportado:todayISO(),
+        notasTecnicas: r['Nombre Cotización'] ? 'Cotización: ' + String(r['Nombre Cotización']).trim() : '' });
+      const m = findCuentaInfo(o.cliente);
+      if(m.info){ const a = m.info; o.eecc = a.eecc; o.ingenieroPreventa = a.ingenieroPreventa; o.responsableSegmento = a.responsable; if(a.segmento) o.segmento = a.segmento; o.cuit = a.cuit; if(a.industria) o.industria = titleCase(a.industria); }
+      else { const e = matchMiEecc(r['Ejecutivo']); o.eecc = e || String(r['Ejecutivo']||'').trim(); const a = ACCOUNTS.find(z=>z.eecc===e); if(a){ o.segmento = a.segmento; o.ingenieroPreventa = a.ingenieroPreventa; o.responsableSegmento = a.responsable; } }
+      computeFields(o); DATA.push(o); nuevas++;
+      // si estaba descartada y la recuperaste a mano, sale de la lista
+      EXTRAS.descartadas = (EXTRAS.descartadas||[]).filter(id=>id!==x.id);
+    }
+  });
+  if(IMP.autocierre){
+    DATA.forEach(o=>{
+      if(isOpenOpp(o) && o.salesforceId && !IMP.allIds.has(String(o.salesforceId).replace(/^0+/,''))){
+        o.estadoFinal='Perdido'; o.motivoPerdida='Desapareció del import SF (auto)'; o.fechaCierreReal = o.fechaCierreReal || todayISO();
+        const nota = `Cerrada automáticamente el ${todayISO()}: no figuraba en el export del portal. Revisar si en realidad se ganó.`;
+        if(!o.proximoPaso || !o.proximoPaso.includes(nota)) o.proximoPaso = o.proximoPaso ? (nota + ' — ' + o.proximoPaso) : nota;
+        computeFields(o); cerradas.push(`${o.cliente}${o.nombreOpp?' — '+o.nombreOpp:''} (${o.id})`);
+      }
+    });
+  }
+  saveExtras(); await saveData(); renderAll();
+  document.getElementById('impBg').classList.remove('open');
+  showToast(`Importación lista: ${nuevas} nuevas y ${act} actualizadas.`);
+  if(cerradas.length) alert(`🔒 ${cerradas.length} oportunidad(es) marcada(s) como Perdida por no aparecer en el export (revisá si alguna se ganó):\n` + cerradas.join('\n'));
+}
+
+/* ── Eventos de las vistas nuevas ── */
+document.addEventListener('click', async (e)=>{
+  const t = e.target.closest('[data-qc-act],[data-qcbant],[data-open-opp],[data-camp],[data-camp-act],[data-cpdel],[data-staff-act],[data-imp-act]');
+  if(!t) return;
+  if(t.dataset.qcAct){ const a = t.dataset.qcAct; if(a==='close') document.getElementById('qcBg').classList.remove('open'); else qcGuardar(a==='crearAbrir'); return; }
+  if(t.dataset.qcbant){ const k = t.dataset.qcbant; QC[k] = QC[k]===t.dataset.v ? '' : t.dataset.v; t.parentElement.querySelectorAll('button').forEach(b=>{ const on = b.dataset.v===QC[k]; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on); }); return; }
+  if(t.dataset.openOpp && !t.closest('#qcBg')){ openDrawer(t.dataset.openOpp); return; }
+  if(t.dataset.camp){ SEL_CAMP = t.dataset.camp; renderIdeas(); return; }
+  if(t.dataset.cpdel){ if(isReadonly()) return; campById(SEL_CAMP).eecc.splice(+t.dataset.cpdel,1); saveExtras(); renderIdeas(); return; }
+  if(t.dataset.campAct){
+    const a = t.dataset.campAct; const c = campById(SEL_CAMP);
+    if(a==='nueva'){ if(isReadonly()) return; const n = { id:'CMP-'+String(EXTRAS.nextCamp++).padStart(2,'0'), titulo:'Nueva idea', estado:'Idea', disparador:'', publico:'', propuesta:'', oferta:'', inicio:'', fin:'', eecc:[], notas:[], llevarStaff:false }; EXTRAS.campanas.push(n); SEL_CAMP = n.id; saveExtras(); renderIdeas(); setTimeout(()=>{ const ti=document.getElementById('cpTitulo'); if(ti){ ti.focus(); ti.select(); } },30); }
+    else if(a==='nota'){ const v = document.getElementById('cpNota').value.trim(); if(!v) return; (c.notas=c.notas||[]).push({fecha:todayISO(), texto:v}); saveExtras(); renderIdeas(); }
+    else if(a==='copiar'){ const txt = mensajeCampana(c); (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>showToast('Mensaje copiado: pegalo en el mail o chat a los EECC'), ()=>prompt('Copiá el mensaje:', txt)); }
+    else if(a==='borrar'){ if(!confirm(`¿Eliminar la campaña "${c.titulo}"? Las opps quedan, solo pierden la etiqueta.`)) return; DATA.forEach(o=>{ if(o.campanaId===c.id) o.campanaId=''; }); EXTRAS.campanas = EXTRAS.campanas.filter(x=>x.id!==c.id); SEL_CAMP = null; saveExtras(); await saveData(); renderIdeas(); }
+    return;
+  }
+  if(t.dataset.staffAct==='export'){ const j = staffJSON(); downloadFile(JSON.stringify(j,null,2), 'staff_' + (EXTRAS.staff.corte||todayISO()) + '.json', 'application/json'); showToast(`JSON listo: ${j.items.cerrado.length} cerrados, ${j.items.acerrar.length} a cerrar, ${j.items.pipe.length} pipeline, ${j.items.poc.length} PoCs, ${j.items.acc.length} acciones.`); return; }
+  if(t.dataset.impAct){
+    const a = t.dataset.impAct;
+    if(a==='close') document.getElementById('impBg').classList.remove('open');
+    else if(a==='todas'){ IMP.rows.filter(x=>!x.vieja||IMP.verViejas).forEach(x=>x.sel=true); renderImport(); }
+    else if(a==='ninguna'){ IMP.rows.forEach(x=>x.sel=false); renderImport(); }
+    else if(a==='ok') impConfirm();
+  }
+});
+document.addEventListener('input', (e)=>{
+  const t = e.target;
+  if(t.dataset.qc){ QC[t.dataset.qc] = t.value; if(t.dataset.qc==='cliente') document.getElementById('qcAuto').innerHTML = qcChips(); return; }
+  if(t.dataset.st){ EXTRAS.staff[t.dataset.st] = t.value; saveExtras(); return; }
+  if(t.dataset.cp && t.type!=='checkbox' && t.tagName!=='SELECT'){ campById(SEL_CAMP)[t.dataset.cp] = t.value; saveExtras(); return; }
+  if(t.dataset.cpe){ const [i,k] = t.dataset.cpe.split('|'); campById(SEL_CAMP).eecc[+i][k] = t.value; saveExtras(); return; }
+});
+document.addEventListener('change', (e)=>{
+  const t = e.target;
+  if(t.dataset.qc){ QC[t.dataset.qc] = t.value; if(t.dataset.qc==='cliente') document.getElementById('qcAuto').innerHTML = qcChips(); return; }
+  if(t.dataset.st){ EXTRAS.staff[t.dataset.st] = t.value; saveExtras(); if(t.dataset.st==='corte') renderStaff(); return; }
+  if(t.dataset.staff){ t.checked ? STAFF_OFF.delete(t.dataset.staff) : STAFF_OFF.add(t.dataset.staff); renderStaff(); return; }
+  if(t.dataset.staffacc){ const k = t.dataset.staffacc; STAFF_OFF.delete(k); STAFF_OFF.delete('+'+k); STAFF_OFF.add(t.checked?'+'+k:k); return; }
+  if(t.dataset.cp){ const c = campById(SEL_CAMP); c[t.dataset.cp] = t.type==='checkbox' ? t.checked : t.value; saveExtras(); if(t.dataset.cp!=='titulo') renderIdeas(); return; }
+  if(t.id==='cpAddEecc' && t.value){ const c = campById(SEL_CAMP); const add = t.value==='__todos' ? misEeccLista().filter(x=>!(c.eecc||[]).some(y=>y.nombre===x)) : [t.value]; add.forEach(n=>(c.eecc=c.eecc||[]).push({nombre:n,objetivo:'',contactadas:'',derivadas:''})); saveExtras(); renderIdeas(); return; }
+  if(t.dataset.imp){ const x = IMP.rows.find(z=>z.id===t.dataset.imp); x.sel = t.checked; renderImport(); return; }
+  if(t.id==='impViejas'){ IMP.verViejas = t.checked; renderImport(); return; }
+  if(t.id==='impMeses'){ IMP.meses = +t.value; impApplyCorte(); renderImport(); return; }
+  if(t.id==='impAuto'){ IMP.autocierre = t.checked; renderImport(); return; }
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && e.target.dataset && e.target.dataset.openOpp && e.target.tagName!=='BUTTON') openDrawer(e.target.dataset.openOpp);
+  if(e.key==='Escape'){ const q = document.getElementById('qcBg'), i = document.getElementById('impBg'); if(q && q.classList.contains('open')) q.classList.remove('open'); else if(i && i.classList.contains('open')) i.classList.remove('open'); }
+});
+
 async function bootApp(){
   populateFilterSelects();
   wireSortableHeaders();
   wireHistSortableHeaders();
   wireAgendaAccordion();
-  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos(), loadHistorico()]);
+  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos(), loadHistorico(), loadExtras()]);
   renderAll();
 }
 
@@ -3125,6 +3603,7 @@ auth.onAuthStateChanged(async (user)=>{
     if(lbl) lbl.textContent = '👤 ' + user.email + (isReadonly() ? ' (solo lectura)' : '');
     await bootApp();
     if(isReadonly()){
+      document.body.classList.add('ro');
       document.getElementById('btnNew').style.display = 'none';
       const btnNewEmpty = document.getElementById('btnNewEmpty');
       if(btnNewEmpty) btnNewEmpty.style.display = 'none';
