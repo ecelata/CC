@@ -172,7 +172,7 @@
       <span class="chevron">▶</span>
       <h2 style="margin:0 0 14px;">Tarifario DCV — pool de recursos (Personal Cloud)</h2>
     </div>
-    <div class="hint">Cómputo, storage, licencias, SSPP/SSAA y Veeam del datacenter virtual propio. Fuente: tarifario.csv — para actualizar precios, reemplazá ese archivo en el repo. Esto NO cubre AWS/Azure/GCP/Huawei ni licenciamiento fuera de DCV — para eso, usá las calculadoras oficiales de abajo.</div>
+    <div class="hint">Cómputo, storage, licencias, SSPP/SSAA y Veeam del datacenter virtual propio. Fuente: Firestore (backlog/tarifario), detrás del login. Esto NO cubre AWS/Azure/GCP/Huawei ni licenciamiento fuera de DCV — para eso, usá las calculadoras oficiales de abajo.</div>
     <div class="tarifario-body" id="tarifarioBody"></div>
   </div>
 
@@ -285,18 +285,8 @@ async function getTarifarioText(){
       if(raw) return raw;
     }
   }catch(e){}
-  const res2 = await fetch('tarifario.csv');
-  if(!res2.ok) throw new Error('No se pudo leer tarifario.csv');
-  const text = await res2.text();
-  try{
-    const url = FIRESTORE_TARIFARIO_URL + '&updateMask.fieldPaths=csv&updateMask.fieldPaths=updatedAt';
-    await fetch(url, {
-      method:'PATCH',
-      headers: {'Content-Type':'application/json', ...(await authHeader())},
-      body: JSON.stringify({fields:{csv:{stringValue:text}, updatedAt:{timestampValue:new Date().toISOString()}}})
-    });
-  }catch(e){}
-  return text;
+  // El tarifario vive solo en Firestore (backlog/tarifario). Ya no hay CSV en el repo.
+  throw new Error('No se pudo leer el tarifario desde Firestore (backlog/tarifario). Verificá que estés logueado y que el documento exista.');
 }
 
 async function loadTarifario(){
