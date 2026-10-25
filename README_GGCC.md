@@ -1,6 +1,6 @@
 # GGCC · Suite comercial — README de referencia
 
-**Última actualización:** 25/10/2026 — reconciliado contra el repo publicado (último commit 03/10/2026): Backlog con 7 pestañas (Histórico, Equipo, Kanban de oportunidades), importación Salesforce, rol solo lectura, etapas nuevas. Mismo día: purga del historial del repo (ver sección 9) y tarifario solo desde Firestore.
+**Última actualización:** 25/10/2026 (madrugada) — nuevo `backlog.html` (Backlog estilo tablero, en paralelo al clásico). Antes, el mismo día: reconciliado contra el repo publicado (último commit 03/10/2026): Backlog con 7 pestañas (Histórico, Equipo, Kanban de oportunidades), importación Salesforce, rol solo lectura, etapas nuevas. Mismo día: purga del historial del repo (ver sección 9) y tarifario solo desde Firestore.
 **Repo:** `github.com/ecelata/CC` · **Publicado en:** `https://ecelata.github.io/CC/`
 
 > **Fuente de verdad = el código del repo `ecelata/CC` (público, se puede clonar).** Si este README y el código discrepan, manda el código. Los datos (oportunidades, cuentas, histórico, tareas, proyectos, escenarios) viven en Firestore y solo se ven logueado.
@@ -22,6 +22,7 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
 | Portal | `index.html` | Landing con tarjetas a las herramientas | Sin datos propios |
 | Cartera | `dashboard.html` | Visualiza las ~587 cuentas de la cartera filtrada | Firestore (`backlog/cuentas`) |
 | Backlog | `Backlog_Preventa.html` (~3.100 líneas) | Pipeline de oportunidades, BANT, bitácora, Agenda, Kanban de oportunidades, Equipo, Histórico de ganadas, importación Salesforce | Firestore (`backlog/data`, `backlog/agenda_tasks`) |
+| Backlog nuevo | `backlog.html` | Tablero estilo Jira (en paralelo al clásico): alta rápida con BANT, panel lateral, import del portal, Staff del martes, Ideas y campañas (ver sección 6d) | Firestore (`backlog/oportunidades_v2`) |
 | Proyectos | `proyectos.html` | Seguimiento de proyectos creados desde oportunidades Ganadas del Backlog (ver sección 6b) | Firestore (`backlog/proyectos`) |
 | Calculadora | `calculadora.html` | Dimensionamiento de costos DCV (BOM) | Firestore (`backlog/tarifario`, `backlog/calculadora_escenarios`) |
 | Otros en el repo | `Consultor_Cloud_All_In_One.html`, `logo-personal-tech.png` (logo en la barra de navegación, linkeado al repo) | Brand de la nav: "B2B / CCEE Banca Servicios e Industria" |
@@ -160,6 +161,36 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
 - Modelo vigente: `montoMensual` (Abono Mensual / MRR) y `montoOneShot` (Cargo Única Vez), por **divisa** (USD y ARS separados). Registros viejos con un único `monto` se muestran bajo "Mensual" (helpers `histMontoMensual/OneShot` con fallback): ojo, es una aproximación (caso Transener sep-2026 con ~US$56.650 de one-shot; se corrige reimportando).
 - Gráfico de evolución con toggle Mensual/Trimestral (`histChartGrouping`); `HIST_PRIMER_MES = '2025-01'`; KPIs: Mensual MRR, One Shot, Cotizaciones, Cuentas distintas. Detalle: columnas Mes/Cuenta/Ejecutivo/Producto/Divisa/Mensual/One Shot/Total/Origen.
 - `misEeccSet()` define "mis EECC" a partir de las cuentas cargadas; `EECC_POR_SEGMENTO` está hardcodeada en el código (ojo: incluye algún nombre, p. ej. FLORES RAUL, que ya no figura en la cartera; revisarla al subir cartera).
+
+---
+
+## 6d. Backlog nuevo (`backlog.html`) — en paralelo al clásico
+
+Decisión del 25/10/2026: en vez de seguir parchando `Backlog_Preventa.html`, se armó una página nueva con cara de tablero tipo Jira, reusando lo de abajo (login, Firestore, autocompletado de la cartera). Corre **en paralelo**: guarda en su propio documento `backlog/oportunidades_v2`, así que el Backlog clásico (`backlog/data`) no se toca. Si el nuevo prospera, se borra el clásico. Diseño aprobado en el lienzo "Backlog estilo Jira" (artifact de Claude).
+
+**Estructura:** barra de íconos a la izquierda (Tablero, Lista, Próximos pasos, Ideas y campañas, Staff del martes, Cerradas; links a Histórico y Cartera) y panel lateral a la derecha que se abre al tocar una tarjeta (con botón para verlo en grande). Todo color y fuente por variables de `design-system.css`: funcionan los 5 temas.
+
+**Tablero:** 6 columnas por etapa (mismas `ETAPAS` del clásico), arrastrar tarjetas cambia la etapa. Tarjeta: nombre, cliente, segmento, monto ("Sin monto" punteado si mensual y único están en 0), prioridad, Nº CRM, 4 puntitos de BANT, e indicador de próximo paso: verde (al día), ámbar (sin próximo paso), rojo (fecha vencida). Filtros: búsqueda, segmento, prioridad alta, sin monto, paso vencido, EECC, campaña.
+
+**Alta rápida:** cliente (lista de la cartera; autocompleta segmento por Tipo Holding, EECC, CUIT, ingeniero, responsable y vertical), qué se vende, etapa, prioridad, mensual/único/divisa, próximo paso con fecha y BANT rápido (Sí/Parcial/No/N/A). Si el cliente no está en la cartera, pide el segmento. "Crear otra" para cargar varias seguidas.
+
+**Detalle (panel):** etapa, prioridad, estado, próximo paso + fecha, bitácora con tipos de la planilla del staff (Visita, Demo, Propuesta, Evento, Soporte, más Llamada, Mail, Nota), plata (valor total = único + mensual × 12; ponderado por probabilidad), BANT, datos de la cuenta, y "Más campos" con todo el inventario del clásico (proveedor, producto, tipo de contrato, fechas, Jira, Nº CRM, campaña, competidores, notas técnicas, etc.). Ganada / Perdida / Suspendida / Reabrir / Eliminar. Autoguardado.
+
+**Importar del portal** (export "Cotizaciones Cloud" de agentes.murranet.com/tablero, el Excel completo sin filtrar):
+- Filtra solo tus opps: EECC de la cartera (match apellido + otro nombre, tolera nombres truncados) o con Jefe Equipo / G2 = Banovaz, Urrutigoity o Casil.
+- Corte por fecha de creación: últimos 6 meses por defecto (configurable 3/6/9/12/24); las viejas quedan destildadas.
+- Vista previa con avisos: "Ya está: se actualiza" (mismo Nº CRM), "Sin monto", "Posible duplicado" (misma cuenta y producto en el archivo).
+- Al crear: etapa según la etapa del portal (Identificación → 1; Propuesta-Negociación / Riesgo Crediticio / Gestión Contrato → 6; Preparación según probabilidad). Después la etapa es tuya.
+- Al reimportar: solo actualiza datos del portal (monto si viene distinto de 0, probabilidad, etapa del portal, mes de cierre). Nunca pisa etapa, BANT, bitácora, próximo paso, prioridad ni notas. Baja un backup JSON antes de importar.
+- Primera prueba con el export del 25/10/2026: 1.386 cotizaciones → 50 tuyas → 34 de los últimos 6 meses (18 sin monto).
+
+**Staff del martes:** KPIs, secciones con tildes (Cerrados del mes, A cerrar = etapa 6 o cierre estimado en el mes, Pipeline, PoCs = etapa 2, Jira = opps con ticket), Acciones (bitácora de los 7 días previos al corte; tildados por defecto los 5 tipos de la planilla), datos del consultor y notas. **"Exportar JSON para la planilla"** genera el archivo con el formato exacto de la planilla del sector (`Consultor_Cloud_All_In_One_Persistente.html`, que NO es parte de la suite): en la planilla, ➕ Nuevo → ⬆️ Importar. Las Alertas se completan a mano. Montos en ARS no se suman (la planilla es en USD). Probado: la planilla carga el JSON sin errores.
+
+**Ideas y campañas:** tablero Idea → En armado → Lanzada → Cerrada; ficha (disparador, a quién apunta, propuesta de valor, oferta, plazo); EECC de la campaña con cuentas objetivo / contactadas / derivadas (a mano) y opps abiertas (automático, por la campaña asignada a cada opp); hilo de ideas y comentarios; "Copiar mensaje para los EECC"; "Llevar al staff del martes" (suma la campaña a las notas del JSON).
+
+**Datos:** `backlog/oportunidades_v2` = `{json: {opps, campanas, staff, nextSeq, nextCamp}}`, caché local `backlog_v2_cache`. IDs `BK-001`… Menú ⋯: exportar / restaurar backup JSON. Rol solo lectura: mismo `ALLOWED_USERS` que el clásico (oculta todo lo que edita).
+
+**Pendiente del Backlog nuevo:** decidir si se migra algo del clásico (BANT/bitácora de opps viejas), la vista de Histórico (hoy link al clásico) y, más adelante, Cartera y el resto de la suite con este mismo estilo.
 
 ---
 
