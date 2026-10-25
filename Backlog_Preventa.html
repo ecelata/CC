@@ -348,6 +348,33 @@
   #tabla td:nth-child(n+12){max-width:140px;overflow:hidden;text-overflow:ellipsis;}
   #tabla .bant-quad{grid-template-columns:repeat(4,1fr);width:auto;}
   #tabla .bant-q{width:15px;height:15px;font-size:9px;}
+  /* ── Tareas ── */
+  .pills{display:flex;gap:6px;flex-wrap:wrap;}
+  .pill{font-size:12.5px;height:30px;padding:0 11px;border-radius:15px;border:1px solid var(--line-strong);background:var(--paper-2);color:var(--ink-soft);}
+  .pill.on,.pill.on:hover{background:var(--stamp-bg);border-color:var(--stamp-dark);color:var(--stamp-dark);font-weight:600;}
+  .chip{font-size:12.5px;height:30px;padding:0 12px;border-radius:15px;border:1px solid var(--line-strong);background:var(--paper-2);color:var(--ink);}
+  .chip.on,.chip.on:hover{background:var(--stamp-dark);border-color:var(--stamp-dark);color:#fff;}
+  .filters-chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .qc-modal .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+  .tp{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
+  .tlist{gap:0 !important;padding-top:4px !important;padding-bottom:4px !important;}
+  .trow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px;min-height:30px;}
+  .tlist .trow:last-child{border-bottom:0;}
+  .trow .ttl{border:0;background:transparent;padding:0;text-align:left;font-size:13px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+  .trow .ttl:hover{color:var(--stamp-dark);background:transparent;text-decoration:underline;}
+  .trow .tvinc{border:0;background:transparent;padding:0;font-size:12px;color:var(--ink-soft);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
+  .trow .tvinc[data-open-opp]:hover{color:var(--stamp-dark);background:transparent;}
+  .trow .tfecha{font-size:12px;color:var(--ink-soft);white-space:nowrap;min-width:72px;text-align:right;}
+  .trow.venc .tfecha{color:var(--red);font-weight:600;}
+  .trow.hecha .ttl{color:var(--ink-faint);}
+  .tchk{width:18px;height:18px;border-radius:50%;border:2px solid var(--line-strong);background:var(--paper-2);padding:0;flex:none;cursor:pointer;}
+  .tchk:hover{border-color:var(--green);background:var(--green-bg);}
+  .tchk.done{display:inline-flex;align-items:center;justify-content:center;background:var(--green);border-color:var(--green);color:#fff;font-size:11px;cursor:default;}
+  .vtag{font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:var(--paper);color:var(--ink-soft);}
+  .vtag.v-opp{background:var(--stamp-bg);color:var(--stamp-dark);} .vtag.v-proyecto{background:var(--green-bg);color:var(--green);} .vtag.v-campana{background:var(--gold-bg);color:var(--ink);}
+  #drawerTareas .trow.first .ttl{font-weight:600;}
+  .dt-add{display:grid;grid-template-columns:minmax(0,1fr) 140px auto;gap:6px;margin-top:6px;}
+  @media (max-width:720px){ .trow .tvinc{display:none;} .dt-add{grid-template-columns:1fr 1fr;} }
   /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
   #agendaAccordion{display:none !important;}
   .app{padding-top:20px;}
@@ -555,7 +582,7 @@
   <nav class="tabs rail" aria-label="Secciones del Backlog">
     <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla" data-tip="Tablero" aria-label="Tablero"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h5v18H3zM10 3h5v12h-5zM17 3h4v8h-4z"/></svg></button>
     <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps" data-tip="Kanban" aria-label="Kanban"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg></button>
-    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda" data-tip="Agenda" aria-label="Agenda"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+    <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda" data-tip="Tareas" aria-label="Tareas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
     <button class="tab-btn" id="tabBtnPasos" data-tab="pasos" data-tip="Próximos pasos" aria-label="Próximos pasos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></button>
     <button class="tab-btn" id="tabBtnIdeas" data-tab="ideas" data-tip="Ideas y campañas" aria-label="Ideas y campañas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></button>
     <button class="tab-btn" id="tabBtnStaff" data-tab="staff" data-tip="Staff del martes" aria-label="Staff del martes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v12H3zM8 20h8M12 16v4"/></svg></button>
@@ -573,6 +600,7 @@
     </div>
     <div class="topbar-actions">
       <span class="ghost" id="syncStatus" style="cursor:default;">☁️ Conectando…</span>
+      <button class="ghost edit-only" id="btnNuevaTarea" type="button">+ Crear tarea</button>
       <button class="primary" id="btnNew">+ Nueva oportunidad</button>
       <div class="menu-wrap">
         <button class="ghost" id="btnMoreMenu" title="Exportar / Importar">⋯</button>
@@ -666,11 +694,9 @@
   </div>
 
   <div class="view" id="viewAgenda">
-    <div class="agenda-topbar">
-      <h3 style="margin:0;">Agenda</h3>
-      <button class="primary btn-new-task">+ Nueva tarea</button>
-    </div>
-    <div class="kanban-board">
+    <div class="agenda-topbar"><h3 style="margin:0;">Tareas</h3><div class="hint">Todas tus tareas: de opps, proyectos, campañas e internas. El check las completa; el título las edita; el vínculo abre la opp.</div></div>
+    <div id="tareasContent" class="stack"></div>
+    <div class="kanban-board" style="display:none" aria-hidden="true">
       <div class="kanban-col" data-col="porhacer">
         <div class="kanban-col-head">Por hacer <span class="kanban-count" data-kanban-count="porhacer">0</span></div>
         <div class="kanban-drop" data-col="porhacer" data-kanban-col="porhacer"></div>
@@ -792,6 +818,8 @@
 </div>
 
 <div class="qc-bg" id="qcBg"></div>
+<div class="qc-bg" id="tmBg"></div>
+<div class="qc-bg" id="tcBg"></div>
 <div class="qc-bg imp-bg" id="impBg"></div>
 <div class="overlay" id="overlay">
   <div class="drawer" id="drawer"></div>
@@ -2202,7 +2230,9 @@ function openDrawer(id){
   drawerDirty = false;
   editingId = id || null;
   const o = id ? {...DATA.find(x=>x.id===id)} : blankOpp();
+  if(o.bitacora) o.bitacora = o.bitacora.slice();
   computeFields(o);
+  window._drawerOpp = o;
   const drawer = document.getElementById('drawer');
   drawer.innerHTML = drawerTemplate(o);
   document.getElementById('overlay').classList.add('open');
@@ -2239,11 +2269,9 @@ function drawerTemplate(o){
     </div>
 
     <div class="box">
-      <h3>Próximo paso</h3>
-      <div class="grid-np">
-        <div class="field"><label class="sr" for="f_proximoPaso">Qué sigue</label><input type="text" id="f_proximoPaso" value="${escapeHtml(o.proximoPaso||'')}" placeholder="Qué sigue (ej. agendar demo con IT)"></div>
-        <div class="field"><label class="sr" for="f_proximoPasoFecha">Para cuándo</label><input type="date" id="f_proximoPasoFecha" value="${o.proximoPasoFecha||''}"></div>
-      </div>
+      <h3>Próximo paso · tareas</h3>
+      <div id="drawerTareas">${drawerTareasHtml(editingId)}</div>
+      <input type="hidden" id="f_proximoPaso" value="${escapeHtml(o.proximoPaso||'')}"><input type="hidden" id="f_proximoPasoFecha" value="${o.proximoPasoFecha||''}">
     </div>
 
     <div class="section">
@@ -2439,9 +2467,9 @@ function readFormInto(o){
   const ticketJiraField = document.getElementById('f_ticketJira');
   if(ticketJiraField) o.ticketJira = ticketJiraField.value.trim();
   const proximoPasoField = document.getElementById('f_proximoPaso');
-  if(proximoPasoField) o.proximoPaso = proximoPasoField.value.trim();
+  if(proximoPasoField && !TDB.migrado) o.proximoPaso = proximoPasoField.value.trim();
   const ppFecha = document.getElementById('f_proximoPasoFecha');
-  if(ppFecha) o.proximoPasoFecha = ppFecha.value;
+  if(ppFecha && !TDB.migrado) o.proximoPasoFecha = ppFecha.value;
   const campSel = document.getElementById('f_campanaId');
   if(campSel) o.campanaId = campSel.value;
   o.estadoFinal = document.getElementById('f_estadoFinal').value;
@@ -2585,6 +2613,7 @@ function wireDrawer(o){
       if(confirm('¿Eliminar esta oportunidad? No se puede deshacer.')){
         const borrada = DATA.find(x=>x.id===editingId);
         if(borrada && borrada.salesforceId){ EXTRAS.descartadas = [...new Set([...(EXTRAS.descartadas||[]), String(borrada.salesforceId)])]; saveExtras(); }
+        TDB.tareas = TDB.tareas.filter(t=>!(t.vinculo.tipo==='opp' && t.vinculo.id===editingId)); saveTareas();
         DATA = DATA.filter(x=>x.id!==editingId);
         await saveData();
         closeDrawer(true);
@@ -2602,6 +2631,10 @@ function wireDrawer(o){
     if(!o.cliente){ clienteField.classList.add('error'); ok=false; }
     if(!o.segmento){ segField.classList.add('error'); ok=false; }
     if(!ok){ showToast('Completá cliente y segmento'); return; }
+    const abiertasOpp = tareasDe('opp', o.id, true);
+    if(o.estadoFinal && o.estadoFinal!=='Abierto' && abiertasOpp.length && confirm(`La oportunidad queda ${o.estadoFinal.toLowerCase()}. ¿Cancelo sus ${abiertasOpp.length} tarea(s) abierta(s)?`)){
+      abiertasOpp.forEach(t=>{ t.estado='cancelada'; }); saveTareas();
+    }
     computeFields(o);
     const existingIdx = DATA.findIndex(x=>x.id===o.id);
     if(existingIdx > -1){
@@ -2610,6 +2643,7 @@ function wireDrawer(o){
       DATA.push(o);
     }
     editingId = o.id;
+    if(TDB.migrado) syncProximoPaso(o.id);
     const saved = await saveData();
     closeDrawer(true);
     renderAll();
@@ -2625,6 +2659,7 @@ function renderAll(){
   if(document.getElementById('viewPanorama').classList.contains('active')) renderDashboard();
   if(document.getElementById('viewKanbanOpps').classList.contains('active')) renderKanbanOpps();
   if(document.getElementById('viewPasos').classList.contains('active')) renderPasos();
+  if(document.getElementById('viewAgenda').classList.contains('active')) renderTareasView();
   if(document.getElementById('viewIdeas').classList.contains('active')) renderIdeas();
   if(document.getElementById('viewStaff').classList.contains('active')) renderStaff();
   updateRailBadges();
@@ -2659,6 +2694,7 @@ function downloadFile(content, filename, mime){
 }
 
 document.getElementById('btnNew').addEventListener('click', ()=>openQuickCreate());
+document.getElementById('btnNuevaTarea').addEventListener('click', ()=>openTareaModal({}));
 document.getElementById('btnMoreMenu').addEventListener('click', (e)=>{
   e.stopPropagation();
   document.getElementById('moreMenuDropdown').classList.toggle('open');
@@ -2712,7 +2748,7 @@ function switchTab(tab){
     renderTable();
   }
   if(tab==='panorama') renderDashboard();
-  if(tab==='agenda') renderKanban();
+  if(tab==='agenda'){ renderKanban(); renderTareasView(); }
   if(tab==='kanbanopps') renderKanbanOpps();
   if(tab==='equipo') renderEquipo();
   if(tab==='historico') renderHistorico();
@@ -3284,6 +3320,7 @@ async function qcGuardar(abrir){
     bantBudget:q.bantBudget, bantAuthority:q.bantAuthority, bantNeed:q.bantNeed, bantTimeline:q.bantTimeline });
   if(acc){ o.cliente = acc.razonSocial; o.cuit = acc.cuit; o.eecc = acc.eecc; o.ingenieroPreventa = acc.ingenieroPreventa; o.responsableSegmento = acc.responsable; if(acc.segmento) o.segmento = acc.segmento; if(acc.industria) o.industria = titleCase(acc.industria); }
   computeFields(o); DATA.push(o);
+  if(o.proximoPaso && TDB.migrado){ TDB.tareas.push(newTarea({ titulo:o.proximoPaso, fecha:o.proximoPasoFecha||'', vinculo:{tipo:'opp', id:o.id} })); saveTareas(); syncProximoPaso(o.id); }
   await saveData(); renderAll();
   showToast('Oportunidad creada: ' + o.cliente);
   if(abrir){ document.getElementById('qcBg').classList.remove('open'); openDrawer(o.id); return; }
@@ -3585,13 +3622,332 @@ document.addEventListener('keydown', (e)=>{
   if(e.key==='Escape'){ const q = document.getElementById('qcBg'), i = document.getElementById('impBg'); if(q && q.classList.contains('open')) q.classList.remove('open'); else if(i && i.classList.contains('open')) i.classList.remove('open'); }
 });
 
+
+/* ════════════════════════════════════════════════════════════════════
+   TAREAS (25/10/2026). Reemplaza a la Agenda. Una tarea se vincula a
+   una Opp, un Proyecto, una Campaña o es Interna. Regla de oro: el
+   próximo paso de una opp = su tarea abierta de fecha más cercana
+   (se copia a o.proximoPaso / o.proximoPasoFecha para que el resto
+   del Backlog, el staff y los exports sigan funcionando igual).
+   Firestore: backlog/tareas = {tareas, nextSeq, migrado}.
+   ════════════════════════════════════════════════════════════════════ */
+const TAREAS_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/backlog/tareas?key=${FIREBASE_CONFIG.apiKey}`;
+let TDB = { tareas:[], nextSeq:1, migrado:false };
+const TIPOS_TAREA = ['To-do','Llamada','Mail','Visita','Demo','Propuesta'];
+const TIPO_A_BITACORA = { 'To-do':'Seguimiento','Llamada':'Llamado','Mail':'Email enviado','Visita':'Visita','Demo':'Demo técnica','Propuesta':'Propuesta enviada' };
+const VINC_LBL = { opp:'Opp', proyecto:'Proyecto', campana:'Campaña', interna:'Interna' };
+
+async function loadTareas(){
+  try{
+    const res = await fetch(TAREAS_URL, {headers: await authHeader()});
+    if(res.ok){
+      const doc = await res.json();
+      const raw = doc && doc.fields && doc.fields.json && doc.fields.json.stringValue;
+      if(raw) TDB = Object.assign(TDB, JSON.parse(raw));
+    }
+    localStorage.setItem('backlog_tareas_cache_v1', JSON.stringify(TDB));
+  }catch(e){
+    try{ const c = localStorage.getItem('backlog_tareas_cache_v1'); if(c) TDB = Object.assign(TDB, JSON.parse(c)); }catch(_){}
+  }
+}
+let _tTimer = null;
+function saveTareas(){
+  if(isReadonly()) return;
+  try{ localStorage.setItem('backlog_tareas_cache_v1', JSON.stringify(TDB)); }catch(_){}
+  clearTimeout(_tTimer);
+  _tTimer = setTimeout(async ()=>{
+    try{
+      const body = { fields:{ json:{stringValue: JSON.stringify(TDB)}, updatedAt:{timestampValue:new Date().toISOString()} } };
+      const res = await fetch(TAREAS_URL + '&updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt', {
+        method:'PATCH', headers:{'Content-Type':'application/json', ...(await authHeader())}, body: JSON.stringify(body)
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+    }catch(e){ showToast('⚠️ No se pudieron guardar las tareas en la nube. Quedaron en este navegador.'); }
+  }, 400);
+}
+function newTarea(extra){
+  return Object.assign({ id:'T-'+String(TDB.nextSeq++).padStart(3,'0'), titulo:'', tipo:'To-do', fecha:'', hora:'', prioridad:'Media',
+    estado:'abierta', resultado:'', vinculo:{tipo:'interna', id:''}, creada:new Date().toISOString(), completada:'', notificada:false }, extra||{});
+}
+
+/* Migración única: Agenda vieja (backlog/agenda_tasks) + próximos pasos de texto de cada opp. No borra nada de lo viejo. */
+function migrarTareas(){
+  if(TDB.migrado || isReadonly()) return 0;
+  let n = 0;
+  (TASKS||[]).forEach(t=>{
+    const opp = t.oppId && DATA.find(o=>o.id===t.oppId);
+    TDB.tareas.push(newTarea({ titulo:t.titulo||'(sin título)', fecha:t.fecha||'', prioridad:t.prioridad||'Media',
+      estado: t.columna==='hecho' ? 'hecha' : 'abierta', resultado: t.notas||'',
+      vinculo: opp ? {tipo:'opp', id:opp.id} : {tipo:'interna', id:''}, origen:'agenda' }));
+    n++;
+  });
+  DATA.filter(o=>(!o.estadoFinal||o.estadoFinal==='Abierto') && String(o.proximoPaso||'').trim()).forEach(o=>{
+    const ya = TDB.tareas.some(t=>t.estado==='abierta' && t.vinculo.tipo==='opp' && t.vinculo.id===o.id);
+    if(ya) return;
+    TDB.tareas.push(newTarea({ titulo:o.proximoPaso.trim(), fecha:o.proximoPasoFecha||'', vinculo:{tipo:'opp', id:o.id}, origen:'proximoPaso' }));
+    n++;
+  });
+  TDB.migrado = true; saveTareas();
+  return n;
+}
+
+const tareasDe = (tipo, id, soloAbiertas) => TDB.tareas.filter(t=>t.vinculo.tipo===tipo && t.vinculo.id===id && (!soloAbiertas || t.estado==='abierta'));
+function ordenFecha(a,b){ const fa = a.fecha ? a.fecha+'T'+(a.hora||'23:59') : '9999'; const fb = b.fecha ? b.fecha+'T'+(b.hora||'23:59') : '9999'; return fa.localeCompare(fb); }
+function proximaTarea(tipo, id){ return tareasDe(tipo, id, true).sort(ordenFecha)[0] || null; }
+/* El próximo paso de cada opp se recalcula desde sus tareas. */
+function syncProximoPaso(oppId){
+  const o = DATA.find(x=>x.id===oppId); if(!o) return;
+  const t = proximaTarea('opp', oppId);
+  if(!t && o.estadoFinal && o.estadoFinal!=='Abierto') return; // las cerradas conservan su último texto
+  o.proximoPaso = t ? t.titulo : '';
+  o.proximoPasoFecha = t ? (t.fecha||'') : '';
+  if(window._drawerOpp && _drawerOpp.id===oppId){ _drawerOpp.proximoPaso = o.proximoPaso; _drawerOpp.proximoPasoFecha = o.proximoPasoFecha; }
+}
+function syncTodos(){ DATA.forEach(o=>syncProximoPaso(o.id)); }
+function vincNombre(v){
+  if(v.tipo==='opp'){ const o = DATA.find(x=>x.id===v.id); return o ? `${o.cliente||'—'}${o.nombreOpp?' · '+o.nombreOpp:''}` : '(opp borrada)'; }
+  if(v.tipo==='proyecto'){ const p = (PROYECTOS||[]).find(x=>x.id===v.id); return p ? `${p.id} · ${p.nombreProyecto||p.cliente||''}` : '(proyecto borrado)'; }
+  if(v.tipo==='campana'){ const c = campById(v.id); return c ? c.titulo : '(campaña borrada)'; }
+  return 'Interna';
+}
+function fechaTareaLbl(t){
+  if(!t.fecha) return 'sin fecha';
+  const hoy = todayISO(); const d = Math.round((new Date(t.fecha+'T00:00:00') - new Date(hoy+'T00:00:00'))/86400000);
+  const base = d===0 ? 'hoy' : d===1 ? 'mañana' : d===-1 ? 'ayer' : fmtD(t.fecha);
+  return base + (t.hora ? ' ' + t.hora : '');
+}
+const tareaVencida = t => t.estado==='abierta' && t.fecha && (t.fecha < todayISO() || (t.fecha===todayISO() && t.hora && t.hora < new Date().toTimeString().slice(0,5)));
+const sumarDias = (iso, d) => { const x = new Date((iso||todayISO())+'T00:00:00'); x.setDate(x.getDate()+d); return x.toISOString().slice(0,10); };
+
+/* ── Crear / editar tarea (modal) ── */
+let TM = null;
+function openTareaModal(opts){
+  if(isReadonly()) return;
+  const t = opts && opts.id ? TDB.tareas.find(x=>x.id===opts.id) : null;
+  TM = t ? JSON.parse(JSON.stringify(t)) : newTareaDraft(opts||{});
+  TM._edit = !!t;
+  renderTareaModal(); document.getElementById('tmBg').classList.add('open');
+  setTimeout(()=>{ const e = document.getElementById('tmTitulo'); if(e) e.focus(); }, 30);
+}
+function newTareaDraft(o){ return { titulo:'', tipo:o.tipo||'To-do', fecha:o.fecha||todayISO(), hora:'', prioridad:'Media', vinculo:{ tipo:o.vincTipo||'opp', id:o.vincId||'' } }; }
+function vincOptions(tipo, sel){
+  let list = [];
+  if(tipo==='opp') list = DATA.filter(o=>!o.estadoFinal||o.estadoFinal==='Abierto').sort((a,b)=>(a.cliente||'').localeCompare(b.cliente||'')).map(o=>[o.id, `${o.cliente||'—'}${o.nombreOpp?' · '+o.nombreOpp:''}`]);
+  if(tipo==='proyecto') list = (PROYECTOS||[]).map(p=>[p.id, `${p.id} · ${p.nombreProyecto||p.cliente||''}`]);
+  if(tipo==='campana') list = (EXTRAS.campanas||[]).filter(c=>c.estado!=='Cerrada').map(c=>[c.id, c.titulo]);
+  return '<option value="">Elegí…</option>' + list.map(([v,l])=>`<option value="${escapeHtml(v)}" ${v===sel?'selected':''}>${escapeHtml(l)}</option>`).join('');
+}
+function renderTareaModal(){
+  const t = TM;
+  document.getElementById('tmBg').innerHTML = `<div class="qc-modal" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
+    <div class="qc-h"><h2 id="tmTitle">${t._edit?'Editar tarea':'Nueva tarea'}</h2><button type="button" class="ghost" data-tm-act="close" aria-label="Cerrar">✕</button></div>
+    <div class="qc-b">
+      <div class="field"><label for="tmTitulo">Qué hay que hacer *</label><input type="text" id="tmTitulo" data-tm="titulo" value="${escapeHtml(t.titulo)}" placeholder="Ej. Llamar al CIO para validar el sizing"></div>
+      <div class="field"><label>Tipo</label><div class="pills" role="group" aria-label="Tipo">${TIPOS_TAREA.map(x=>`<button type="button" class="pill ${t.tipo===x?'on':''}" data-tmtipo="${x}" aria-pressed="${t.tipo===x}">${x}</button>`).join('')}</div></div>
+      <div class="grid3">
+        <div class="field"><label>Fecha</label><input type="date" data-tm="fecha" value="${escapeHtml(t.fecha||'')}"></div>
+        <div class="field"><label>Hora (para el aviso)</label><input type="time" data-tm="hora" value="${escapeHtml(t.hora||'')}"></div>
+        <div class="field"><label>Prioridad</label><select data-tm="prioridad">${PRIORIDADES.map(p=>`<option ${t.prioridad===p?'selected':''}>${p}</option>`).join('')}</select></div>
+      </div>
+      <div class="grid-np2" style="grid-template-columns:160px minmax(0,1fr)">
+        <div class="field"><label>Vinculada a</label><select data-tm="vtipo">${Object.entries(VINC_LBL).map(([k,l])=>`<option value="${k}" ${t.vinculo.tipo===k?'selected':''}>${l}</option>`).join('')}</select></div>
+        ${t.vinculo.tipo!=='interna' ? `<div class="field"><label>${VINC_LBL[t.vinculo.tipo]}</label><select data-tm="vid">${vincOptions(t.vinculo.tipo, t.vinculo.id)}</select></div>` : '<div class="field"><label>&nbsp;</label><span class="muted" style="padding-top:8px">Tarea propia, sin opp, proyecto ni campaña.</span></div>'}
+      </div>
+      ${t.vinculo.tipo==='opp'?'<p class="muted" style="margin:0;font-size:12px">Si es la tarea más próxima de esa opp, pasa a ser su próximo paso (se ve en la fila, el Kanban y el semáforo).</p>':''}
+      <p id="tmErr" class="qc-err" style="display:none"></p>
+    </div>
+    <div class="qc-f">${t._edit?'<button type="button" class="danger" data-tm-act="del">Eliminar</button>':'<span></span>'}
+      <span style="display:flex;gap:8px"><button type="button" class="ghost" data-tm-act="close">Cancelar</button><button type="button" class="primary" data-tm-act="save">${t._edit?'Guardar':'Crear tarea'}</button></span></div></div>`;
+}
+function guardarTareaModal(){
+  const t = TM; const err = document.getElementById('tmErr');
+  const fail = m => { err.textContent = m; err.style.display='block'; };
+  if(!t.titulo.trim()) return fail('Falta qué hay que hacer.');
+  if(t.vinculo.tipo!=='interna' && !t.vinculo.id) return fail('Elegí a qué ' + VINC_LBL[t.vinculo.tipo].toLowerCase() + ' va vinculada, o marcala como Interna.');
+  if(t.vinculo.tipo==='interna') t.vinculo.id = '';
+  let real;
+  if(t._edit){ real = TDB.tareas.find(x=>x.id===t.id); const prevOpp = real.vinculo.tipo==='opp' ? real.vinculo.id : null;
+    Object.assign(real, { titulo:t.titulo.trim(), tipo:t.tipo, fecha:t.fecha, hora:t.hora, prioridad:t.prioridad, vinculo:{...t.vinculo}, notificada:false });
+    if(prevOpp) syncProximoPaso(prevOpp);
+  } else { real = newTarea({ titulo:t.titulo.trim(), tipo:t.tipo, fecha:t.fecha, hora:t.hora, prioridad:t.prioridad, vinculo:{...t.vinculo} }); TDB.tareas.push(real); }
+  afterTareasChange(real);
+  document.getElementById('tmBg').classList.remove('open');
+  showToast(t._edit ? 'Tarea actualizada' : 'Tarea creada' + (real.vinculo.tipo!=='interna' ? ' en ' + vincNombre(real.vinculo) : ''));
+}
+async function afterTareasChange(t){
+  saveTareas();
+  if(t && t.vinculo.tipo==='opp'){ syncProximoPaso(t.vinculo.id); await saveData(); }
+  renderAll();
+  refreshDrawerTareas();
+}
+
+/* ── Completar: resultado → registro en lo vinculado → siguiente paso ── */
+let TC = null;
+function openCompletar(id){
+  if(isReadonly()) return;
+  const t = TDB.tareas.find(x=>x.id===id); if(!t) return;
+  TC = { id, resultado:'', sigTitulo:'', sigFecha: sumarDias(todayISO(), 7), sigTipo:'To-do' };
+  const v = t.vinculo;
+  document.getElementById('tcBg').innerHTML = `<div class="qc-modal" role="dialog" aria-modal="true" aria-labelledby="tcTitle">
+    <div class="qc-h"><h2 id="tcTitle">Completar tarea</h2><button type="button" class="ghost" data-tc-act="close" aria-label="Cerrar">✕</button></div>
+    <div class="qc-b">
+      <p style="margin:0 0 6px"><span class="tp">${escapeHtml(t.tipo)}</span> <b>${escapeHtml(t.titulo)}</b><br><span class="muted">${escapeHtml(VINC_LBL[v.tipo])}${v.tipo!=='interna'?': '+escapeHtml(vincNombre(v)):''}</span></p>
+      <div class="field"><label for="tcRes">¿Qué pasó? (resultado en una línea)</label><input type="text" id="tcRes" placeholder="Ej. El CIO pidió cotizar a 36 meses"></div>
+      ${v.tipo!=='interna'?`<p class="muted" style="margin:-4px 0 4px;font-size:12px">Queda registrado en ${v.tipo==='opp'?'la bitácora de la opp':v.tipo==='proyecto'?'las notas del proyecto':'los comentarios de la campaña'}.</p>`:''}
+      ${v.tipo!=='interna'?`<fieldset class="qc-bant"><legend>¿Cuál es el siguiente paso? <span class="muted">(opcional${v.tipo==='opp'?'; si no hay, la opp queda en ámbar':''})</span></legend>
+        <div class="field"><label class="sr" for="tcSig">Siguiente tarea</label><input type="text" id="tcSig" placeholder="Ej. Mandar propuesta a 36 meses"></div>
+        <div class="grid3">
+          <div class="field"><label>Tipo</label><select id="tcSigTipo">${TIPOS_TAREA.map(x=>`<option>${x}</option>`).join('')}</select></div>
+          <div class="field"><label>Fecha</label><input type="date" id="tcSigFecha" value="${TC.sigFecha}"></div>
+          <div class="field"><label>Atajos</label><span style="display:flex;gap:4px;flex-wrap:wrap">${[[2,'+2 días'],[7,'+1 sem'],[14,'+2 sem']].map(([d,l])=>`<button type="button" class="pill" data-tcdias="${d}">${l}</button>`).join('')}</span></div>
+        </div></fieldset>`:''}
+    </div>
+    <div class="qc-f"><span></span><span style="display:flex;gap:8px"><button type="button" class="ghost" data-tc-act="close">Cancelar</button><button type="button" class="primary" data-tc-act="ok">Completar</button></span></div></div>`;
+  document.getElementById('tcBg').classList.add('open');
+  setTimeout(()=>{ const e=document.getElementById('tcRes'); if(e) e.focus(); }, 30);
+}
+async function confirmarCompletar(){
+  const t = TDB.tareas.find(x=>x.id===TC.id); if(!t) return;
+  const res = (document.getElementById('tcRes').value||'').trim();
+  const sig = document.getElementById('tcSig') ? document.getElementById('tcSig').value.trim() : '';
+  t.estado = 'hecha'; t.resultado = res; t.completada = new Date().toISOString();
+  const v = t.vinculo;
+  const nota = res ? `${t.titulo} → ${res}` : t.titulo;
+  if(v.tipo==='opp'){ const entry = { fechaHora:new Date().toISOString(), tipo:TIPO_A_BITACORA[t.tipo]||'Seguimiento', nota }; const o = DATA.find(x=>x.id===v.id); if(o){ (o.bitacora=o.bitacora||[]).push(entry); o.ultimaActualizacion = todayISO(); }
+    if(window._drawerOpp && _drawerOpp.id===v.id && _drawerOpp!==o){ (_drawerOpp.bitacora=_drawerOpp.bitacora||[]).push(entry); const bl = document.getElementById('bitacoraList'); if(bl){ bl.innerHTML = renderBitacoraList(_drawerOpp); wireBitacoraDeletes(_drawerOpp); } } }
+  if(v.tipo==='proyecto'){ const p = (PROYECTOS||[]).find(x=>x.id===v.id); if(p){ p.notas = (p.notas?p.notas+'\n':'') + `${fmtD(todayISO())} · ${t.tipo}: ${nota}`; saveProyectos(); } }
+  if(v.tipo==='campana'){ const c = campById(v.id); if(c){ (c.notas=c.notas||[]).push({ fecha:todayISO(), texto:`✓ ${t.tipo}: ${nota}` }); saveExtras(); } }
+  if(sig) TDB.tareas.push(newTarea({ titulo:sig, tipo:document.getElementById('tcSigTipo').value, fecha:document.getElementById('tcSigFecha').value, vinculo:{...v} }));
+  document.getElementById('tcBg').classList.remove('open');
+  await afterTareasChange(t);
+  showToast(sig ? 'Hecha. Siguiente paso: ' + sig : 'Tarea completada');
+}
+
+/* ── Tareas dentro de la ficha de la opp ── */
+function drawerTareasHtml(oppId){
+  if(!oppId) return '<p class="muted" style="margin:0;font-size:12.5px">Guardá la oportunidad para cargarle tareas.</p>';
+  const abiertas = tareasDe('opp', oppId, true).sort(ordenFecha);
+  const hechas = tareasDe('opp', oppId).filter(t=>t.estado==='hecha').length;
+  return `${abiertas.map((t,i)=>tareaRowHtml(t, {compact:true, first:i===0})).join('') || '<p class="muted" style="margin:0 0 6px;font-size:12.5px">Sin tareas abiertas: la opp está "a la deriva". Cargale el próximo paso.</p>'}
+    <div class="edit-only dt-add"><label class="sr" for="dtTitulo">Nueva tarea</label><input type="text" id="dtTitulo" placeholder="+ Próximo paso (Enter para crear)">
+      <label class="sr" for="dtFecha">Fecha</label><input type="date" id="dtFecha" value="${sumarDias(todayISO(),7)}">
+      <button type="button" class="ghost" data-dt-act="add" data-opp="${escapeHtml(oppId)}">Agregar</button></div>
+    ${hechas?`<p class="muted" style="margin:4px 0 0;font-size:12px">${hechas} tarea${hechas===1?'':'s'} hecha${hechas===1?'':'s'}: quedaron en la bitácora.</p>`:''}`;
+}
+function refreshDrawerTareas(){ const box = document.getElementById('drawerTareas'); if(box && document.getElementById('overlay').classList.contains('open')) box.innerHTML = drawerTareasHtml(editingId); }
+function tareaRowHtml(t, opt){
+  opt = opt||{};
+  const venc = tareaVencida(t); const hecha = t.estado!=='abierta';
+  return `<div class="trow ${venc?'venc':''} ${hecha?'hecha':''} ${opt.first?'first':''}">
+    ${hecha ? `<span class="tchk done" aria-label="Hecha">✓</span>` : `<button type="button" class="tchk edit-only" data-tdone="${t.id}" aria-label="Completar: ${escapeHtml(t.titulo)}" title="Completar"></button>`}
+    <span class="tp">${escapeHtml(t.tipo)}</span>
+    <button type="button" class="ttl" data-tedit="${t.id}" title="${escapeHtml(t.titulo)}">${escapeHtml(t.titulo)}${hecha&&t.resultado?` <span class="muted">→ ${escapeHtml(t.resultado)}</span>`:''}</button>
+    ${opt.compact?'':`<button type="button" class="tvinc" ${t.vinculo.tipo==='opp'?`data-open-opp="${escapeHtml(t.vinculo.id)}"`:''} title="${escapeHtml(vincNombre(t.vinculo))}"><span class="vtag v-${t.vinculo.tipo}">${VINC_LBL[t.vinculo.tipo]}</span> ${t.vinculo.tipo!=='interna'?escapeHtml(vincNombre(t.vinculo)):''}</button>`}
+    <span class="tfecha">${hecha && t.completada ? 'hecha '+fmtDS(bitFecha({fechaHora:t.completada})) : escapeHtml(fechaTareaLbl(t))}</span>
+  </div>`;
+}
+
+/* ── Vista Tareas (reemplaza a la Agenda) ── */
+let TF = { rango:'pendientes', vinc:'' };
+function renderTareasView(){
+  const el = document.getElementById('tareasContent'); if(!el) return;
+  const hoy = todayISO(), fin = sumarDias(hoy, 7);
+  const base = TDB.tareas.filter(t=>!TF.vinc || t.vinculo.tipo===TF.vinc);
+  const ab = base.filter(t=>t.estado==='abierta');
+  const grupos = [
+    ['Vencidas', ab.filter(tareaVencida)],
+    ['Hoy', ab.filter(t=>!tareaVencida(t) && t.fecha===hoy)],
+    ['Esta semana', ab.filter(t=>t.fecha>hoy && t.fecha<=fin)],
+    ['Más adelante', ab.filter(t=>t.fecha>fin)],
+    ['Sin fecha', ab.filter(t=>!t.fecha)]
+  ];
+  const hechas = base.filter(t=>t.estado==='hecha').sort((a,b)=>(b.completada||'').localeCompare(a.completada||'')).slice(0,40);
+  const chip = (k,l,n) => `<button type="button" class="chip ${TF.vinc===k?'on':''}" data-tfvinc="${k}">${l}${n!=null?' · '+n:''}</button>`;
+  const cuenta = k => TDB.tareas.filter(t=>t.estado==='abierta' && (!k || t.vinculo.tipo===k)).length;
+  el.innerHTML = `<div class="ideas-top">
+      <div class="filters-chips">${chip('','Todas',cuenta(''))}${chip('opp','Opps',cuenta('opp'))}${chip('proyecto','Proyectos',cuenta('proyecto'))}${chip('campana','Campañas',cuenta('campana'))}${chip('interna','Internas',cuenta('interna'))}
+        <button type="button" class="chip ${TF.rango==='hechas'?'on':''}" data-tfrango="${TF.rango==='hechas'?'pendientes':'hechas'}">${TF.rango==='hechas'?'Ver pendientes':'Ver hechas'}</button></div>
+      <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${notifBtnHtml()}<button type="button" class="primary edit-only" data-t-act="nueva">+ Crear tarea</button></span>
+    </div>
+    ${TF.rango==='hechas'
+      ? `<div class="card-s"><div class="hd"><h2>Hechas (últimas 40)</h2></div><div class="bd tlist">${hechas.map(t=>tareaRowHtml(t)).join('') || '<span class="muted">Todavía no completaste tareas.</span>'}</div></div>`
+      : grupos.filter(([,l])=>l.length).map(([n,l])=>`<div class="card-s"><div class="hd"><h2>${n} · ${l.length}</h2></div><div class="bd tlist">${l.sort(ordenFecha).map(t=>tareaRowHtml(t)).join('')}</div></div>`).join('') || '<div class="empty-state" style="padding:40px 20px"><p>No hay tareas pendientes. Creá una con <b>+ Crear tarea</b> o desde la ficha de una opp.</p></div>'}`;
+}
+
+/* ── Avisos del navegador (con el Backlog abierto) ── */
+function notifBtnHtml(){
+  if(!('Notification' in window)) return '<span class="muted" style="font-size:12px">Este navegador no permite avisos.</span>';
+  if(Notification.permission==='granted') return '<span class="muted" style="font-size:12px">🔔 Avisos activados</span>';
+  if(Notification.permission==='denied') return '<span class="muted" style="font-size:12px">🔕 Avisos bloqueados en el navegador</span>';
+  return '<button type="button" class="ghost" data-t-act="notif">🔔 Activar avisos</button>';
+}
+const AVISO_MIN_ANTES = 10;
+function chequearAvisos(){
+  if(!('Notification' in window) || Notification.permission!=='granted' || isReadonly()) return;
+  const ahora = new Date(); let cambio = false;
+  // Solo avisa las del día (sin hora = 9:00). Las vencidas de días anteriores no notifican: ya se ven en rojo.
+  TDB.tareas.filter(t=>t.estado==='abierta' && !t.notificada && t.fecha===todayISO()).forEach(t=>{
+    const cuando = new Date(t.fecha + 'T' + (t.hora || '09:00') + ':00');
+    if(cuando - ahora <= AVISO_MIN_ANTES*60000){
+      const n = new Notification('Backlog · ' + t.tipo + (t.hora?' a las '+t.hora:''), { body: t.titulo + (t.vinculo.tipo!=='interna' ? '\n' + vincNombre(t.vinculo) : ''), tag: t.id, requireInteraction: true });
+      n.onclick = () => { window.focus(); if(t.vinculo.tipo==='opp') openDrawer(t.vinculo.id); else switchTab('agenda'); n.close(); };
+      t.notificada = true; cambio = true;
+    }
+  });
+  if(cambio){ saveTareas(); }
+}
+setInterval(chequearAvisos, 60000);
+
+/* ── Eventos ── */
+document.addEventListener('click', async (e)=>{
+  const t = e.target.closest('[data-tm-act],[data-tmtipo],[data-tc-act],[data-tcdias],[data-tdone],[data-tedit],[data-dt-act],[data-t-act],[data-tfvinc],[data-tfrango]');
+  if(!t) return;
+  if(t.dataset.tmAct){ const a = t.dataset.tmAct;
+    if(a==='close') document.getElementById('tmBg').classList.remove('open');
+    else if(a==='save') guardarTareaModal();
+    else if(a==='del'){ if(!confirm('¿Eliminar esta tarea?')) return; const real = TDB.tareas.find(x=>x.id===TM.id); TDB.tareas = TDB.tareas.filter(x=>x.id!==TM.id); document.getElementById('tmBg').classList.remove('open'); afterTareasChange(real); }
+    return; }
+  if(t.dataset.tmtipo){ TM.tipo = t.dataset.tmtipo; t.parentElement.querySelectorAll('.pill').forEach(p=>{ const on = p===t; p.classList.toggle('on',on); p.setAttribute('aria-pressed',on); }); return; }
+  if(t.dataset.tcAct){ if(t.dataset.tcAct==='close') document.getElementById('tcBg').classList.remove('open'); else confirmarCompletar(); return; }
+  if(t.dataset.tcdias){ document.getElementById('tcSigFecha').value = sumarDias(todayISO(), +t.dataset.tcdias); return; }
+  if(t.dataset.tdone){ openCompletar(t.dataset.tdone); return; }
+  if(t.dataset.tedit){ openTareaModal({id:t.dataset.tedit}); return; }
+  if(t.dataset.dtAct==='add'){ crearDesdeFicha(t.dataset.opp); return; }
+  if(t.dataset.tAct==='nueva'){ openTareaModal({ vincTipo: TF.vinc && TF.vinc!=='' ? TF.vinc : 'opp' }); return; }
+  if(t.dataset.tAct==='notif'){ Notification.requestPermission().then(()=>{ renderTareasView(); chequearAvisos(); }); return; }
+  if(t.dataset.tfvinc!==undefined){ TF.vinc = t.dataset.tfvinc; renderTareasView(); return; }
+  if(t.dataset.tfrango){ TF.rango = t.dataset.tfrango; renderTareasView(); return; }
+});
+function crearDesdeFicha(oppId){
+  const ti = document.getElementById('dtTitulo'); const v = ti.value.trim(); if(!v){ ti.focus(); return; }
+  const tt = newTarea({ titulo:v, fecha:document.getElementById('dtFecha').value, vinculo:{tipo:'opp', id:oppId} });
+  TDB.tareas.push(tt); afterTareasChange(tt); showToast('Tarea agregada');
+}
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && e.target.id==='dtTitulo'){ e.preventDefault(); const b = document.querySelector('[data-dt-act="add"]'); if(b) crearDesdeFicha(b.dataset.opp); }
+  if(e.key==='Enter' && e.target.id==='tcRes'){ e.preventDefault(); const s = document.getElementById('tcSig'); if(s) s.focus(); else confirmarCompletar(); }
+  if(e.key==='Enter' && e.target.id==='tcSig'){ e.preventDefault(); confirmarCompletar(); }
+  if(e.key==='Escape'){ ['tmBg','tcBg'].forEach(id=>{ const b = document.getElementById(id); if(b && b.classList.contains('open')) b.classList.remove('open'); }); }
+});
+document.addEventListener('input', (e)=>{ const t = e.target; if(t.dataset.tm && TM){ if(t.dataset.tm==='vtipo'||t.dataset.tm==='vid') return; TM[t.dataset.tm] = t.value; } });
+document.addEventListener('change', (e)=>{
+  const t = e.target; if(!t.dataset.tm || !TM) return;
+  if(t.dataset.tm==='vtipo'){ TM.vinculo = { tipo:t.value, id:'' }; TM.titulo = document.getElementById('tmTitulo').value; renderTareaModal(); return; }
+  if(t.dataset.tm==='vid'){ TM.vinculo.id = t.value; return; }
+  TM[t.dataset.tm] = t.value;
+});
+
 async function bootApp(){
   populateFilterSelects();
   wireSortableHeaders();
   wireHistSortableHeaders();
   wireAgendaAccordion();
-  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos(), loadHistorico(), loadExtras()]);
+  await Promise.all([loadData(), loadAccounts(), loadTasks(), loadProyectos(), loadHistorico(), loadExtras(), loadTareas()]);
+  const migradas = migrarTareas();
+  if(TDB.migrado){ syncTodos(); }
+  if(migradas){ await saveData(); showToast('📋 Se pasaron ' + migradas + ' tareas al nuevo módulo (Agenda + próximos pasos). No se borró nada de lo viejo.'); }
   renderAll();
+  chequearAvisos();
 }
 
 document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
