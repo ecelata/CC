@@ -25,6 +25,8 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **tema alternat
 
 **Ningún archivo CSV vive más en el repo** — `cuentas.csv` y `tarifario.csv` se migraron a Firestore y fueron borrados del repo público. Todo el contenido sensible (CUITs, mails, teléfonos, montos de pipeline) queda detrás del login.
 
+**Purga de historial (25/10/2026):** con `git filter-repo` + force push se eliminaron de **todos** los commits `cuentas.csv` (incluida una versión de 13.733 filas con CUIT, mails y celulares), `tarifario.csv` y los `.crdownload`. Borrar un archivo del repo no alcanza: queda en el historial. Si alguna vez se sube un archivo con datos por error, hay que purgarlo igual. La Calculadora lee el tarifario solo de Firestore; para cambiar precios se edita el campo `csv` del documento `backlog/tarifario` en la consola de Firestore.
+
 ---
 
 ## 2. Diseño — CSS compartido (`design-system.css`)
