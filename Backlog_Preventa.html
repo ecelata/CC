@@ -922,7 +922,9 @@ function fmtMoney(n){
   n = Number(n)||0;
   return 'US$ ' + Math.round(n).toLocaleString('es-AR');
 }
-function todayISO(){ return new Date().toISOString().slice(0,10); }
+// Fecha LOCAL (Argentina), no UTC: con toISOString(), después de las 21 h ya daba el día siguiente.
+function localISO(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayISO(){ return localISO(new Date()); }
 function diasEntre(fechaISO){
   if(!fechaISO) return null;
   const d1 = new Date(todayISO()+'T00:00:00');
@@ -3430,7 +3432,7 @@ function staffData(){
   const acerrar = open.filter(o=>o.etapa!=='2-POC' && (o.etapa==='6-Envío y Negociación' || (o.fechaEstCierre||'').slice(0,7)===mes));
   const pipe = open.filter(o=>o.etapa!=='2-POC' && !acerrar.includes(o));
   const jira = open.filter(o=>String(o.ticketJira||'').trim());
-  const d0 = new Date(corte+'T00:00:00'); d0.setDate(d0.getDate()-7); const desde = d0.toISOString().slice(0,10);
+  const d0 = new Date(corte+'T00:00:00'); d0.setDate(d0.getDate()-7); const desde = localISO(d0);
   const acciones = [];
   DATA.forEach(o=>(o.bitacora||[]).forEach((e,i)=>{ const f = bitFecha(e); if(f>=desde && f<=corte) acciones.push({o,e,f,key:'acc|'+o.id+'|'+(e.fechaHora||i)}); }));
   acciones.sort((a,b)=>b.f.localeCompare(a.f));
@@ -3511,7 +3513,7 @@ function etapaDesdePortal(etapaCRM, prob){
   return '1-Identificada';
 }
 let IMP = { rows:[], meses:6, verViejas:false, total:0, mias:0, file:'', autocierre:false };
-function impCorte(){ const d = new Date(); d.setMonth(d.getMonth()-IMP.meses); return d.toISOString().slice(0,10); }
+function impCorte(){ const d = new Date(); d.setMonth(d.getMonth()-IMP.meses); return localISO(d); }
 function impApplyCorte(){ const c = impCorte(); const desc = new Set(EXTRAS.descartadas||[]); IMP.rows.forEach(x=>{ x.vieja = !x.creada || x.creada < c; x.descartada = desc.has(x.id) && !x.existe; x.sel = (!x.vieja || !!x.existe) && !x.descartada; }); }
 function impPrepare(rows, fname){
   IMP.total = rows.length; IMP.file = fname; IMP.allIds = new Set(rows.map(r=>String(r['ID Cotización']||'').trim().replace(/^0+/,'')));
@@ -3738,7 +3740,7 @@ function fechaTareaLbl(t){
   return base + (t.hora ? ' ' + t.hora : '');
 }
 const tareaVencida = t => t.estado==='abierta' && t.fecha && (t.fecha < todayISO() || (t.fecha===todayISO() && t.hora && t.hora < new Date().toTimeString().slice(0,5)));
-const sumarDias = (iso, d) => { const x = new Date((iso||todayISO())+'T00:00:00'); x.setDate(x.getDate()+d); return x.toISOString().slice(0,10); };
+const sumarDias = (iso, d) => { const x = new Date((iso||todayISO())+'T00:00:00'); x.setDate(x.getDate()+d); return localISO(x); };
 
 /* ── Crear / editar tarea (modal) ── */
 let TM = null;
