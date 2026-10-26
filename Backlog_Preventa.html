@@ -420,6 +420,8 @@
   .fc-opp>div{display:flex;flex-direction:column;gap:3px;font-size:13px;} .fc-opp .muted{font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
   @media (max-width:1300px){ .xgrid{grid-template-columns:1fr 1fr;} }
   @media (max-width:720px){ .xgrid{grid-template-columns:1fr;} .fc-opp{grid-template-columns:1fr 1fr;} }
+  .bar-row .bar-fill.p100{background:var(--green);} .bar-row .bar-fill.p90{background:var(--green);opacity:.7;} .bar-row .bar-fill.p75{background:var(--stamp);} .bar-row .bar-fill.p50{background:var(--gold);} .bar-row .bar-fill.p25{background:var(--ink-faint);} .bar-row .bar-fill.psin{background:var(--line-strong);}
+  #dashEstado .bar-label{width:170px;} #dashEstado .bar-val{width:110px;white-space:nowrap;}
   /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
   #agendaAccordion{display:none !important;}
   .app{padding-top:20px;}
@@ -704,6 +706,7 @@
     <div class="filters">
       <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
       <div><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
+      <div><label>Prob.</label><select id="fProb"><option value="">Todas</option></select></div>
       <div style="display:none;"><label>Estado</label><select id="fEstadoFinal"><option value="">Todos</option></select></div>
       <div><label>Unidad Neg.</label><select id="fVertical"><option value="">Todas</option></select></div>
       <div><label>EECC</label><select id="fEecc"><option value="">Todos</option></select></div>
@@ -930,6 +933,15 @@ const ETAPA_MIGRACION = {
   '4-En Viabilidad': '4-Arquitectura'
 };
 const PRIORIDADES = ['Alta','Media','Baja'];
+// Probabilidad de cierre fija (26/10/2026): solo estos 5 niveles. 100 = ganada pero falta cerrar (OC, firma, alta).
+const PROBS = [25,50,75,90,100];
+const PROB_LBL = {25:'Inicial',50:'En evaluación',75:'Avanzada',90:'Casi ganada',100:'Ganada, falta cerrar'};
+function snapProb(v){
+  if(v===''||v===null||v===undefined) return '';
+  const n = Number(String(v).replace('%','').replace(',','.')); if(isNaN(n)) return '';
+  if(n<=37) return 25; if(n<=62) return 50; if(n<=82) return 75; if(n<=95) return 90; return 100;
+}
+function probOptionsHtml(sel){ const v = snapProb(sel); return '<option value="">—</option>' + PROBS.map(p=>`<option value="${p}" ${v===p?'selected':''}>${p}% · ${PROB_LBL[p]}</option>`).join(''); }
 const ESTADO_FINAL = ['Abierto','Ganado','Perdido','Suspendido'];
 const TIPO_CONTRATO = ['One-Shot','MRR','ARR','Mixto'];
 const BANT_VALORES = ['✅ Sí','⚠️ Parcial','❌ No','N/A'];
@@ -986,6 +998,7 @@ function computeFields(o){
   if(o.tipoContrato==='MRR') o.mrrArrEstimado = Number(o.mesRecurrente)||0;
   else if(o.tipoContrato==='ARR') o.mrrArrEstimado = o.anioRecurrente;
   else o.mrrArrEstimado = o.valorTotal;
+  if(o.probCierre!=='' && o.probCierre!=null) o.probCierre = snapProb(o.probCierre);
   o.montoPonderado = o.valorTotal * (Number(o.probCierre)||0) / 100;
   o.diasRestantes = diasEntre(o.fechaDeadline);
   if(!o.ingenieroPreventa) o.ingenieroPreventa = INGENIERO_POR_EECC[o.eecc] || '';
@@ -1776,6 +1789,9 @@ function populateFilterSelects(){
   SEGMENTOS.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fSeg.appendChild(o); });
   const fEt = document.getElementById('fEtapa');
   ETAPAS.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fEt.appendChild(o); });
+  const fPr = document.getElementById('fProb');
+  PROBS.forEach(p=>{ const o=document.createElement('option'); o.value=String(p); o.textContent=p+'% · '+PROB_LBL[p]; fPr.appendChild(o); });
+  { const o=document.createElement('option'); o.value='sin'; o.textContent='Sin probabilidad'; fPr.appendChild(o); }
   const fEs = document.getElementById('fEstadoFinal');
   ESTADO_FINAL.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; fEs.appendChild(o); });
   const fVert = document.getElementById('fVertical');
@@ -1790,6 +1806,7 @@ function getFiltered(){
   const seg = document.getElementById('fSegmento').value;
   const et = document.getElementById('fEtapa').value;
   const es = document.getElementById('fEstadoFinal').value;
+  const pr = document.getElementById('fProb').value;
   const vert = document.getElementById('fVertical').value;
   const eecc = document.getElementById('fEecc').value;
   const q = document.getElementById('fBuscar').value.trim().toLowerCase();
@@ -1800,6 +1817,8 @@ function getFiltered(){
     if(seg && o.segmento!==seg) return false;
     if(et && o.etapa!==et) return false;
     if(es && o.estadoFinal!==es) return false;
+    if(pr==='sin' && o.probCierre!=='' && o.probCierre!=null) return false;
+    if(pr && pr!=='sin' && String(o.probCierre)!==pr) return false;
     if(vert && o.vertical!==vert) return false;
     if(eecc && o.eecc!==eecc) return false;
     if(q && !((o.cliente||'').toLowerCase().includes(q) || (o.nombreOpp||'').toLowerCase().includes(q) || (o.cuit||'').toLowerCase().includes(q))) return false;
@@ -2037,6 +2056,11 @@ function renderDashboard(){
       cls: es==='Ganado'?'ganado':es==='Perdido'?'perdido':es==='Suspendido'?'suspendido':''};
   });
   const fEstadoVal = document.getElementById('fEstadoFinal').value;
+  const fProbVal = document.getElementById('fProb').value;
+  const probRows = [...PROBS.slice().reverse().map(p=>({val:String(p), label:`${p}% ${PROB_LBL[p]}`, cls:'p'+p, list:abiertas.filter(o=>o.probCierre===p)})),
+    {val:'sin', label:'Sin probabilidad', cls:'psin', list:abiertas.filter(o=>o.probCierre===''||o.probCierre==null)}]
+    .map(r=>({...r, count:r.list.length, mens:r.list.reduce((a,o)=>a+(Number(o.mesRecurrente)||0),0), pond:r.list.reduce((a,o)=>a+(o.montoPonderado||0),0)}));
+  const maxProb = Math.max(...probRows.map(r=>r.mens), 1);
   const maxEstado = Math.max(...estadoRows.map(e=>e.value), 1);
 
   const porVencer = abiertas.filter(o=>o.diasRestantes!==null && o.diasRestantes<=14)
@@ -2062,14 +2086,14 @@ function renderDashboard(){
         </div>
       </div>
       <div class="panel">
-        <h3>Estado del negocio</h3>
-        <div class="panel-hint">Todas las oportunidades · monto total · click para filtrar</div>
+        <h3>Probabilidad de cierre</h3>
+        <div class="panel-hint">Oportunidades abiertas por nivel · mensual · click para filtrar el tablero</div>
         <div id="dashEstado">
-          ${estadoRows.map(e=>`
-            <div class="bar-row ${e.label===fEstadoVal?'active':''}" data-filter="fEstadoFinal" data-val="${escapeHtml(e.label)}">
-              <div class="bar-label">${escapeHtml(e.label)} <span style="color:var(--ink-faint)">(${e.count})</span></div>
-              <div class="bar-track"><div class="bar-fill ${e.cls}" style="width:${Math.max(2,(e.value/maxEstado)*100)}%"></div></div>
-              <div class="bar-val">${fmtMoney(e.value)}</div>
+          ${probRows.map(e=>`
+            <div class="bar-row ${e.val===fProbVal?'active':''}" data-filter="fProb" data-val="${e.val}" title="${e.count} opp(s) · ${fmtMoney(e.mens)}/mes · total ponderado ${fmtMoney(e.pond)}">
+              <div class="bar-label">${e.label} <span style="color:var(--ink-faint)">(${e.count})</span></div>
+              <div class="bar-track"><div class="bar-fill ${e.cls}" style="width:${e.count?Math.max(3,(e.mens/maxProb)*100):0}%"></div></div>
+              <div class="bar-val">${fmtMoney(e.mens)}</div>
             </div>`).join('')}
         </div>
       </div>
@@ -2351,7 +2375,7 @@ function drawerTemplate(o){
       <div class="grid3">
         <div class="field"><label>Mensual USD</label><input type="number" min="0" id="f_mesRecurrente" value="${o.mesRecurrente}"></div>
         <div class="field"><label>One Shot USD</label><input type="number" min="0" id="f_montoOneShot" value="${o.montoOneShot}"></div>
-        <div class="field"><label>Prob. %</label><input type="number" min="0" max="100" id="f_probCierre" value="${o.probCierre}"></div>
+        <div class="field"><label>Prob. de cierre</label><select id="f_probCierre">${probOptionsHtml(o.probCierre)}</select></div>
       </div>
       <div class="grid2">
         <div class="field"><label>Valor total <span class="badge-computed">auto</span></label><div class="readonly" id="f_valorTotal_ro">${fmtMoney(o.valorTotal)}</div></div>
@@ -2771,6 +2795,7 @@ document.getElementById('fEecc').addEventListener('change', renderTable);
 document.getElementById('fBuscar').addEventListener('input', renderTable);
 document.getElementById('btnClearFilters').addEventListener('click', ()=>{
   document.getElementById('fSegmento').value='';
+  document.getElementById('fProb').value='';
   document.getElementById('fEtapa').value='';
   document.getElementById('fEstadoFinal').value='';
   document.getElementById('fVertical').value='';
@@ -3322,7 +3347,7 @@ let QC = null;
 function qcAccount(nombre){ const m = findCuentaInfo(nombre); return m.info || null; }
 function openQuickCreate(){
   if(isReadonly()) return;
-  QC = { cliente:'', nombreOpp:'', etapa:ETAPAS[0], prioridad:'Media', mesRecurrente:'', montoOneShot:'', proximoPaso:'', proximoPasoFecha:'', segmento:'', bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'' };
+  QC = { cliente:'', nombreOpp:'', etapa:ETAPAS[0], prioridad:'Media', probCierre:25, mesRecurrente:'', montoOneShot:'', proximoPaso:'', proximoPasoFecha:'', segmento:'', bantBudget:'', bantAuthority:'', bantNeed:'', bantTimeline:'' };
   renderQuickCreate(); document.getElementById('qcBg').classList.add('open');
   setTimeout(()=>{ const c=document.getElementById('qcCliente'); if(c) c.focus(); }, 30);
 }
@@ -3340,9 +3365,10 @@ function renderQuickCreate(){
       <div class="field"><label for="qcCliente">Cliente *</label><input type="text" id="qcCliente" list="qcDatalist" data-qc="cliente" value="${escapeHtml(q.cliente)}" placeholder="Empezá a escribir la razón social" autocomplete="off"><datalist id="qcDatalist">${ACCOUNTS.map(a=>`<option value="${escapeHtml(a.razonSocial)}">`).join('')}</datalist></div>
       <div id="qcAuto">${qcChips()}</div>
       <div class="field"><label>Qué se vende *</label><input type="text" data-qc="nombreOpp" value="${escapeHtml(q.nombreOpp)}" placeholder="Ej. Datacenter virtual + SSPP"></div>
-      <div class="grid2">
+      <div class="grid3">
         <div class="field"><label>Etapa</label><select data-qc="etapa">${ETAPAS.map(e=>`<option value="${escapeHtml(e)}" ${q.etapa===e?'selected':''}>${escapeHtml(etapaLbl(e))}</option>`).join('')}</select></div>
         <div class="field"><label>Prioridad</label><select data-qc="prioridad">${PRIORIDADES.map(p=>`<option ${q.prioridad===p?'selected':''}>${p}</option>`).join('')}</select></div>
+        <div class="field"><label>Prob. de cierre</label><select data-qc="probCierre">${probOptionsHtml(q.probCierre)}</select></div>
       </div>
       <div class="grid2">
         <div class="field"><label>Mensual USD (opcional)</label><input type="number" min="0" data-qc="mesRecurrente" value="${escapeHtml(q.mesRecurrente)}" placeholder="0"></div>
@@ -3371,7 +3397,7 @@ async function qcGuardar(abrir){
   if(!q.nombreOpp.trim()) return fail('Falta qué se vende.');
   if(!acc && !q.segmento) return fail('El cliente no está en tu cartera: elegí el segmento.');
   const o = blankOpp();
-  Object.assign(o, { cliente:q.cliente.trim(), nombreOpp:q.nombreOpp.trim(), etapa:q.etapa, prioridad:q.prioridad,
+  Object.assign(o, { cliente:q.cliente.trim(), nombreOpp:q.nombreOpp.trim(), etapa:q.etapa, prioridad:q.prioridad, probCierre:snapProb(q.probCierre),
     mesRecurrente: q.mesRecurrente===''?'':numv(q.mesRecurrente), montoOneShot: q.montoOneShot===''?'':numv(q.montoOneShot),
     proximoPaso:q.proximoPaso.trim(), proximoPasoFecha:q.proximoPasoFecha, segmento:q.segmento,
     bantBudget:q.bantBudget, bantAuthority:q.bantAuthority, bantNeed:q.bantNeed, bantTimeline:q.bantTimeline });
@@ -4023,7 +4049,7 @@ function expandedRowHtml(o){
   return `<tr class="xrow" data-x="${o.id}"><td colspan="17"><div class="xgrid">
     <div class="xcol">
       <div class="x2">${sel('etapa', ETAPAS, 'Etapa')}${sel('estadoFinal', ESTADO_FINAL, 'Estado')}</div>
-      <div class="x2">${sel('prioridad', PRIORIDADES, 'Prioridad')}${num('probCierre','Prob. %')}</div>
+      <div class="x2">${sel('prioridad', PRIORIDADES, 'Prioridad')}<label class="xf"><span>Prob. de cierre</span><select data-xf="${o.id}|probCierre" ${ro}>${probOptionsHtml(o.probCierre)}</select></label></div>
       <div class="x2">${num('mesRecurrente','Mensual USD')}${num('montoOneShot','One Shot USD')}</div>
     </div>
     <div class="xcol"><h4>BANT</h4>
@@ -4041,7 +4067,7 @@ async function aplicarCambioFila(oppId, f, v){
   if(isReadonly()) return;
   const o = DATA.find(x=>x.id===oppId); if(!o) return;
   if(f==='mesRecurrente' || f==='montoOneShot'){ v = v===''?'':numv(v); if(String(o[f]??'')!==String(v)){ if(f==='mesRecurrente') o.mrManual = true; else o.cuvManual = true; } }
-  if(f==='probCierre') v = v===''?'':Math.max(0,Math.min(100,Math.round(numv(v))));
+  if(f==='probCierre') v = snapProb(v);
   o[f] = v; o.ultimaActualizacion = todayISO();
   let msg = 'Guardado';
   if(f==='estadoFinal' && v && v!=='Abierto'){
