@@ -118,6 +118,9 @@
   .kanban-board-opps .kanban-col-head{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
   .kanban-board-opps .kanban-col-head .ko-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
   .kanban-board-opps .kanban-col-head .ko-col-label{flex:1;}
+  .kanban-board-opps .kanban-col{display:flex;flex-direction:column;transition:background .12s, box-shadow .12s;} .kanban-board-opps .kanban-col .kanban-drop{flex:1;min-height:80px;}
+  .kanban-board-opps .kanban-col.ko-drop-on{background:var(--stamp-bg);box-shadow:inset 0 0 0 2px var(--stamp);}
+  .kanban-board-opps .kanban-opp-card{cursor:grab;} .kanban-board-opps .kanban-opp-card:active{cursor:grabbing;}
   .kanban-board-opps .ko-sortable{cursor:pointer;user-select:none;border-radius:4px;} .kanban-board-opps .ko-sortable:hover .ko-col-label{text-decoration:underline;}
   .ko-sort-ind{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--stamp);margin-left:4px;text-transform:none;letter-spacing:0;}
   .kanban-board-opps .ko-col-total{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);margin:-2px 0 10px 14px;}
@@ -252,7 +255,7 @@
   /* Barra lateral de íconos (reemplaza la fila de pestañas) */
   .shell{display:flex;align-items:flex-start;}
   .shell>.app{flex:1;min-width:0;}
-  .tabs.rail{position:sticky;top:0;align-self:flex-start;height:calc(100vh - 42px);width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;margin:0;background:var(--paper-2);border-right:1px solid var(--line);border-radius:0;}
+  .tabs.rail{z-index:40;position:sticky;top:0;align-self:flex-start;height:calc(100vh - 42px);width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;margin:0;background:var(--paper-2);border-right:1px solid var(--line);border-radius:0;}
   .tabs.rail .tab-btn{width:46px;height:46px;padding:0;justify-content:center;border-radius:8px;position:relative;color:var(--ink-soft);}
   .tabs.rail .tab-btn svg{width:20px;height:20px;}
   .tabs.rail .tab-btn:hover{background:var(--paper);color:var(--ink);}
@@ -3190,24 +3193,34 @@ function wireKanbanOppsCards(){
       await moveOppEtapa(sel.getAttribute('data-move-id'), sel.value);
     });
   });
-  document.querySelectorAll('[data-ko-drop]').forEach(zone=>{
-    zone.addEventListener('dragover', (ev)=>{ ev.preventDefault(); zone.classList.add('drag-over'); });
-    zone.addEventListener('dragleave', ()=>{ zone.classList.remove('drag-over'); });
-    zone.addEventListener('drop', async (ev)=>{
-      ev.preventDefault();
-      zone.classList.remove('drag-over');
-      const id = ev.dataTransfer.getData('text/plain');
-      await moveOppEtapa(id, zone.getAttribute('data-ko-drop'));
+  // Toda la columna recibe la tarjeta (encabezado, total y zona vacía), no solo la lista.
+  if(!KO_DROP_WIRED){
+    KO_DROP_WIRED = true;
+    document.querySelectorAll('#kanbanOppsBoard .kanban-col[data-etapa]').forEach(col=>{
+      let depth = 0;
+      col.addEventListener('dragenter', (ev)=>{ if(isReadonly()) return; ev.preventDefault(); depth++; col.classList.add('ko-drop-on'); });
+      col.addEventListener('dragover', (ev)=>{ if(isReadonly()) return; ev.preventDefault(); ev.dataTransfer.dropEffect='move'; });
+      col.addEventListener('dragleave', ()=>{ depth = Math.max(0, depth-1); if(!depth) col.classList.remove('ko-drop-on'); });
+      col.addEventListener('drop', async (ev)=>{
+        ev.preventDefault(); depth = 0;
+        document.querySelectorAll('.ko-drop-on').forEach(c=>c.classList.remove('ko-drop-on'));
+        if(isReadonly()) return;
+        const id = ev.dataTransfer.getData('text/plain');
+        await moveOppEtapa(id, col.getAttribute('data-etapa'));
+      });
     });
-  });
+  }
 }
+let KO_DROP_WIRED = false;
 
 async function moveOppEtapa(id, etapa){
   const o = DATA.find(x=>x.id===id);
   if(!o || o.etapa===etapa) return;
   o.etapa = etapa;
+  if(window._drawerOpp && window._drawerOpp.id===id){ const fe=document.getElementById('f_etapa'); if(fe) fe.value=etapa; }
   computeFields(o);
   renderKanbanOpps();
+  try{ showToast('↪ '+(o.cliente||'Opp')+' → '+etapa.replace(/^\d-/,'')); }catch(e){}
   await saveData();
   renderTable();
   renderKpis();

@@ -174,6 +174,8 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
 
 **Orden alfabético en el Kanban (26/10/2026):** click en el nombre de la columna (etapa) ordena sus tarjetas por cliente y nombre de opp: 1 click A→Z, 2 clicks Z→A, 3 clicks vuelve al orden original. Se marca al lado del nombre y se recuerda en el navegador (`KO_SORT`, localStorage `koSort`). Copia previa: rama `version/backlog-clasico-26-10-antes-orden-kanban`.
 
+**Arrastrar en el Kanban y tooltips de la barra (26/10/2026):** ahora la columna entera recibe la tarjeta (encabezado, total y espacio vacío, no solo la lista), se resalta al pasar por encima, el cursor muestra la manito y aparece un aviso "↪ Cliente → Etapa". Si la ficha de esa opp está abierta, se actualiza la etapa. En solo lectura no se puede soltar. Los nombres de la barra lateral (Tablero, Kanban…) quedan por encima de los indicadores (`z-index` de `.tabs.rail`). Copia previa: rama `version/backlog-clasico-26-10-antes-drag`.
+
 **Vistas (7, ahora en la barra lateral):** 📋 Tablero · ✅ Cerradas · 📊 Panorama (analítica con drill-down) · 📅 Agenda (Kanban de tareas, vinculables a oportunidad) · 🗂️ Kanban (oportunidades por etapa, drag & drop) · 👥 Equipo (organigrama por responsable con EECC, segmento, mail y cuentas a cargo) · 📈 Histórico (ver 6c).
 
 **Menú de exportar/importar:** Exportar JSON / CSV / **planilla** (Excel agrupado como el reporte semanal: Cerrados / A cerrar / Pipeline / POCs, foco en monto mensual); Importar JSON; **Importar Salesforce**.
