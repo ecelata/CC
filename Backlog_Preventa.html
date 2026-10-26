@@ -375,6 +375,25 @@
   #drawerTareas .trow.first .ttl{font-weight:600;}
   .dt-add{display:grid;grid-template-columns:minmax(0,1fr) 140px auto;gap:6px;margin-top:6px;}
   @media (max-width:720px){ .trow .tvinc{display:none;} .dt-add{grid-template-columns:1fr 1fr;} }
+  /* Tablero sin scroll horizontal: fuera Fecha creación (11) y Días (17); Estado (16) solo en Cerradas. Siguen en la ficha. */
+  #tabla th:nth-child(11),#tabla td:nth-child(11),#tabla th:nth-child(17),#tabla td:nth-child(17){display:none;}
+  #tabla:not(.cerradas) th:nth-child(16),#tabla:not(.cerradas) td:nth-child(16){display:none;}
+  #tabla{width:100%;}
+  #tabla td:nth-child(12),#tabla td:nth-child(13),#tabla td:nth-child(14){max-width:110px;overflow:hidden;text-overflow:ellipsis;}
+  #tabla thead th,#tabla tbody td{padding-left:6px;padding-right:6px;}
+  #tabla .cliente-cell{max-width:220px;}
+  #tabla .cliente-cell .cli-line span:last-child,#tabla .cliente-cell .opp-name{max-width:196px;}
+  #tabla td.eecc-cell{max-width:115px;}
+  #tabla td:nth-child(12),#tabla td:nth-child(13),#tabla td:nth-child(14){max-width:88px;}
+  #tabla .etapa-track .dot{width:6px;}
+  #tabla .etapa-track{gap:1px;}
+  #tabla .etapa-label{margin-left:4px;}
+  @media (max-width:1400px){
+    .app{padding-left:20px;padding-right:20px;}
+    #tabla .cliente-cell{max-width:200px;} #tabla .cliente-cell .cli-line span:last-child,#tabla .cliente-cell .opp-name{max-width:176px;}
+    #tabla td.eecc-cell{max-width:100px;}
+    #tabla td:nth-child(12),#tabla td:nth-child(13),#tabla td:nth-child(14){max-width:72px;}
+  }
   /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
   #agendaAccordion{display:none !important;}
   .app{padding-top:20px;}
@@ -675,8 +694,8 @@
             <th data-sort="eecc">EECC</th>
             <th class="bant-th" data-sort="bant" title="Budget / Authority / Need / Timeline">BANT</th>
             <th class="money" data-sort="montoOneShot">One Shot</th><th class="money" data-sort="mesRecurrente">Mensual</th>
-            <th class="money" data-sort="valorTotal">Valor total</th><th data-sort="fechaEntrada">Fecha creación</th>
-            <th data-sort="industria">Vertical</th><th data-sort="vertical">Unidad Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="fechaEstCierre">Fecha cierre est.</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
+            <th class="money" data-sort="valorTotal" title="Valor total">Total</th><th data-sort="fechaEntrada">Fecha creación</th>
+            <th data-sort="industria">Vertical</th><th data-sort="vertical" title="Unidad de negocio">U. Neg.</th><th data-sort="proveedor">Proveedor</th><th data-sort="fechaEstCierre" title="Fecha estimada de cierre">Cierre</th><th data-sort="estadoFinal">Estado</th><th data-sort="diasRestantes">Días</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -2063,6 +2082,7 @@ function renderDashboard(){
   });
 }
 
+const ETAPA_CORTA = e => ({'1-Identificada':'Identificada','2-POC':'POC','3-En Diseño':'Diseño','4-Arquitectura':'Arquitectura','5-En Pricing/PPCC':'Pricing/PPCC','6-Envío y Negociación':'Envío y Neg.'})[e] || String(e).replace(/^\d-/,'');
 function renderTable(){
   const list = applySort(getFiltered());
   const tbody = document.getElementById('tbody');
@@ -2087,8 +2107,8 @@ function renderTable(){
     return `<tr data-id="${o.id}">
       <td class="idcell${o.prioridad? ' prio-'+o.prioridad.toLowerCase() : ''}">${o.id}</td>
       <td class="cliente-cell" title="${escapeHtml((o.cliente||'')+(o.nombreOpp?' — '+o.nombreOpp:''))}"><span class="cli-line">${nextIconHtml(o)}<span>${escapeHtml(o.cliente||'—')}</span></span>${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
-      <td><span class="seg-pill">${o.segmento||'—'}</span></td>
-      <td><div class="etapa-track">${dots}<span class="etapa-label">${o.etapa? o.etapa.replace(/^\d-/,''):'—'}</span></div></td>
+      <td><span class="seg-pill" title="${escapeHtml(o.segmento||'')}">${o.segmento? o.segmento.replace(/^CCEE /,''):'—'}</span></td>
+      <td><div class="etapa-track">${dots}<span class="etapa-label" title="${escapeHtml(o.etapa||'')}">${o.etapa? ETAPA_CORTA(o.etapa):'—'}</span></div></td>
       <td>${o.probCierre?o.probCierre+'%':'—'}</td>
       <td class="eecc-cell" title="${o.eecc? escapeHtml(titleCase(o.eecc)):''}">${o.eecc? titleCase(o.eecc):'—'}</td>
       <td class="bant-cell">${bantQuadrant(o)}</td>
@@ -2096,9 +2116,9 @@ function renderTable(){
       <td class="money">${o.mesRecurrente?fmtMoney(o.mesRecurrente):'—'}</td>
       <td class="money">${fmtMoney(o.valorTotal)}</td>
       <td>${o.fechaEntrada? formatDateShort(o.fechaEntrada) : '—'}</td>
-      <td>${o.industria||'—'}</td>
-      <td>${o.vertical||'—'}</td>
-      <td>${o.proveedor||'—'}</td>
+      <td title="${escapeHtml(o.industria||'')}">${o.industria||'—'}</td>
+      <td title="${escapeHtml(o.vertical||'')}">${o.vertical||'—'}</td>
+      <td title="${escapeHtml(o.proveedor||'')}">${o.proveedor||'—'}</td>
       <td class="dias-restantes">${o.fechaEstCierre? formatDateShort(o.fechaEstCierre) : '—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
@@ -2740,6 +2760,7 @@ function switchTab(tab){
   document.getElementById('metricsRow').style.display = (tab==='tabla'||tab==='cerradas'||tab==='kanbanopps') ? '' : 'none';
   if(showTabla){
     boardView = (tab==='cerradas') ? 'cerradas' : 'activas';
+    document.getElementById('tabla').classList.toggle('cerradas', boardView==='cerradas');
     const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
     if(estadoWrap) estadoWrap.style.display = (boardView==='cerradas') ? '' : 'none';
     if(boardView==='activas') document.getElementById('fEstadoFinal').value='';
