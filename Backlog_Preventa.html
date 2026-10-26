@@ -394,6 +394,32 @@
     #tabla td.eecc-cell{max-width:100px;}
     #tabla td:nth-child(12),#tabla td:nth-child(13),#tabla td:nth-child(14){max-width:72px;}
   }
+  /* ── Filas desplegables, Calificar y Modo foco ── */
+  .table-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+  .table-head .hint{flex:1;}
+  #tbody tr[data-id].expanded td{background:var(--stamp-bg) !important;border-bottom-color:transparent;}
+  #tbody tr.xrow td{background:var(--paper-2) !important;padding:0 !important;border-bottom:2px solid var(--stamp-dark);white-space:normal !important;max-width:none !important;overflow:visible !important;display:table-cell !important;}
+  .xgrid{display:grid;grid-template-columns:minmax(240px,1.1fr) minmax(250px,1fr) minmax(260px,1.2fr) minmax(220px,1fr);gap:16px;padding:12px 14px 14px;}
+  .xcol{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .xcol h4{margin:0 0 2px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);font-weight:600;}
+  .x2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .xf{display:flex;flex-direction:column;gap:2px;font-size:10.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .xf select,.xf input{font-size:12.5px;padding:4px 6px;height:30px;text-transform:none;letter-spacing:0;}
+  .xb-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;}
+  .seg-sm button{height:26px;min-width:44px;font-size:11.5px;padding:0 6px;}
+  .xt-add{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:6px;margin-top:4px;}
+  .xt-add input{font-size:12.5px;padding:4px 6px;height:30px;}
+  .xbit{font-size:12px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .xacts{display:flex;gap:6px;margin-top:auto;padding-top:8px;}
+  .cal-opp{display:flex;flex-direction:column;gap:2px;background:var(--paper);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+  .cal-opp b{font-size:15px;}
+  .qc-modal.wide-md{width:min(760px,100%);}
+  .fc-task{display:flex;align-items:center;gap:10px;font-size:16px;padding:10px 12px;background:var(--paper);border-radius:8px;margin-bottom:6px;}
+  .fc-task b{flex:1;} .fc-task .tfecha{font-size:13px;color:var(--ink-soft);} .fc-task.venc .tfecha{color:var(--red);font-weight:600;}
+  .fc-opp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+  .fc-opp>div{display:flex;flex-direction:column;gap:3px;font-size:13px;} .fc-opp .muted{font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+  @media (max-width:1300px){ .xgrid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:720px){ .xgrid{grid-template-columns:1fr;} .fc-opp{grid-template-columns:1fr 1fr;} }
   /* La Agenda tiene su propio ícono: el desplegable del Tablero queda oculto */
   #agendaAccordion{display:none !important;}
   .app{padding-top:20px;}
@@ -674,7 +700,7 @@
       </div>
     </div>
 
-    <h3 id="tableTitle" style="margin-bottom:10px;">Oportunidades activas</h3>
+    <div class="table-head"><h3 id="tableTitle" style="margin:0;">Oportunidades activas</h3><span class="hint">Clic en una fila para desplegarla y cambiarla ahí mismo · doble clic: ficha completa</span><button type="button" class="ghost edit-only" id="btnCalificar">Calificar BANT</button></div>
     <div class="filters">
       <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
       <div><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
@@ -837,6 +863,8 @@
 </div>
 
 <div class="qc-bg" id="qcBg"></div>
+<div class="qc-bg" id="calBg"></div>
+<div class="qc-bg" id="fcBg"></div>
 <div class="qc-bg" id="tmBg"></div>
 <div class="qc-bg" id="tcBg"></div>
 <div class="qc-bg imp-bg" id="impBg"></div>
@@ -2106,7 +2134,7 @@ function renderTable(){
     const dots = ETAPAS.map((_,i)=>`<span class="dot ${i<=stageIdx?'done':''}"></span>`).join('');
     const sem = estadoSemaforo(o);
     const diasTxt = o.diasRestantes===null ? '—' : (o.diasRestantes<0 ? `${Math.abs(o.diasRestantes)}d vencida` : `${o.diasRestantes}d`);
-    return `<tr data-id="${o.id}">
+    return `<tr data-id="${o.id}" title="Clic: desplegar acá · doble clic: ficha completa">
       <td class="idcell${o.prioridad? ' prio-'+o.prioridad.toLowerCase() : ''}">${o.id}</td>
       <td class="cliente-cell" title="${escapeHtml((o.cliente||'')+(o.nombreOpp?' — '+o.nombreOpp:''))}"><span class="cli-line">${nextIconHtml(o)}<span>${escapeHtml(o.cliente||'—')}</span></span>${o.nombreOpp?`<span class="opp-name">${escapeHtml(o.nombreOpp)}</span>`:''}${o.cuit?`<span class="cuit">${escapeHtml(o.cuit)}</span>`:''}</td>
       <td><span class="seg-pill" title="${escapeHtml(o.segmento||'')}">${o.segmento? o.segmento.replace(/^CCEE /,''):'—'}</span></td>
@@ -2124,10 +2152,12 @@ function renderTable(){
       <td class="dias-restantes">${o.fechaEstCierre? formatDateShort(o.fechaEstCierre) : '—'}</td>
       <td><span class="semaforo"><span class="dot dot-${sem}"></span>${o.estadoFinal||'Abierto'}</span></td>
       <td class="dias-restantes">${diasTxt}</td>
-    </tr>`;
+    </tr>${EXPANDED.has(o.id)?expandedRowHtml(o):''}`;
   }).join('');
   tbody.querySelectorAll('tr[data-id]').forEach(tr=>{
-    tr.addEventListener('click', ()=>openDrawer(tr.getAttribute('data-id')));
+    tr.addEventListener('click', ()=>{ const id = tr.getAttribute('data-id'); if(EXPANDED.has(id)) EXPANDED.delete(id); else EXPANDED.add(id); renderTable(); });
+    tr.addEventListener('dblclick', ()=>openDrawer(tr.getAttribute('data-id')));
+    if(EXPANDED.has(tr.getAttribute('data-id'))) tr.classList.add('expanded');
     if(editingId===tr.getAttribute('data-id') && document.getElementById('overlay').classList.contains('open')) tr.classList.add('row-open');
   });
 }
@@ -2653,6 +2683,8 @@ function wireDrawer(o){
     if(!o.cliente){ clienteField.classList.add('error'); ok=false; }
     if(!o.segmento){ segField.classList.add('error'); ok=false; }
     if(!ok){ showToast('Completá cliente y segmento'); return; }
+    const prevOpp = DATA.find(x=>x.id===o.id);
+    if(prevOpp){ if(String(prevOpp.mesRecurrente??'')!==String(o.mesRecurrente??'')) o.mrManual = true; if(String(prevOpp.montoOneShot??'')!==String(o.montoOneShot??'')) o.cuvManual = true; }
     const abiertasOpp = tareasDe('opp', o.id, true);
     if(o.estadoFinal && o.estadoFinal!=='Abierto' && abiertasOpp.length && confirm(`La oportunidad queda ${o.estadoFinal.toLowerCase()}. ¿Cancelo sus ${abiertasOpp.length} tarea(s) abierta(s)?`)){
       abiertasOpp.forEach(t=>{ t.estado='cancelada'; }); saveTareas();
@@ -2685,6 +2717,7 @@ function renderAll(){
   if(document.getElementById('viewIdeas').classList.contains('active')) renderIdeas();
   if(document.getElementById('viewStaff').classList.contains('active')) renderStaff();
   updateRailBadges();
+  actualizarBotonCalificar();
   document.getElementById('subtitle').textContent = DATA.length + (DATA.length===1?' oportunidad registrada':' oportunidades registradas');
 }
 
@@ -2717,6 +2750,7 @@ function downloadFile(content, filename, mime){
 
 document.getElementById('btnNew').addEventListener('click', ()=>openQuickCreate());
 document.getElementById('btnNuevaTarea').addEventListener('click', ()=>openTareaModal({}));
+document.getElementById('btnCalificar').addEventListener('click', ()=>openCalificar());
 document.getElementById('btnMoreMenu').addEventListener('click', (e)=>{
   e.stopPropagation();
   document.getElementById('moreMenuDropdown').classList.toggle('open');
@@ -3523,7 +3557,8 @@ function impPrepare(rows, fname){
   const cnt = {}; mias.forEach(r=>{ cnt[key(r)] = (cnt[key(r)]||0)+1; });
   IMP.rows = mias.map(r=>{ const id = String(r['ID Cotización']).trim(); const ex = bySf[id.replace(/^0+/,'')];
     const mens = numv(r['Abono Mensual']), uv = numv(r['Cargo Única Vez']);
-    return { r, id, existe: ex?ex.id:'', creada: parseDMYv(r['Fecha Creación']), sinMonto: !mens && !uv, dup: cnt[key(r)]>1, mens, uv, sel:false };
+    const manual = ex && ((ex.mrManual && mens && numv(ex.mesRecurrente)!==mens) || (ex.cuvManual && uv && numv(ex.montoOneShot)!==uv)) ? `Monto a mano (portal: ${fmtMoney(mens)}${uv?' + '+fmtMoney(uv)+' único':''})` : '';
+    return { r, id, existe: ex?ex.id:'', creada: parseDMYv(r['Fecha Creación']), sinMonto: !mens && !uv, dup: cnt[key(r)]>1, mens, uv, manual, sel:false };
   }).sort((a,b)=>(b.creada||'').localeCompare(a.creada||''));
   impApplyCorte();
 }
@@ -3538,13 +3573,13 @@ function renderImport(){
     <div class="imp-tools"><label class="inline-lbl"><input type="checkbox" id="impViejas" ${IMP.verViejas?'checked':''}> Mostrar también las viejas</label>
       <button type="button" class="ghost" data-imp-act="todas">Tildar todas las visibles</button><button type="button" class="ghost" data-imp-act="ninguna">Destildar todas</button></div>
     <div class="table-wrap imp-wrap"><table><thead><tr><th><span class="sr">Importar</span></th><th>Aviso</th><th>Nº CRM</th><th>Cuenta</th><th>EECC</th><th>Producto</th><th>Etapa portal</th><th class="money">Prob.</th><th class="money">Mensual</th><th class="money">Único</th><th>Creada</th><th>Cierre</th></tr></thead><tbody>
-    ${vis.map(x=>{ const r = x.r; const av = [x.existe?'Ya está: se actualiza':'', x.descartada?'Descartada antes':'', x.sinMonto?'Sin monto':'', x.dup?'Posible duplicado':'', x.vieja?'Vieja':''].filter(Boolean);
+    ${vis.map(x=>{ const r = x.r; const av = [x.existe?'Ya está: se actualiza':'', x.manual||'', x.descartada?'Descartada antes':'', x.sinMonto?'Sin monto':'', x.dup?'Posible duplicado':'', x.vieja?'Vieja':''].filter(Boolean);
       return `<tr><td><input type="checkbox" data-imp="${escapeHtml(x.id)}" ${x.sel?'checked':''} aria-label="Importar ${escapeHtml(x.id)}"></td><td>${av.map(a=>`<span class="imp-tag ${a.startsWith('Ya')?'ok':''}">${a}</span>`).join('')}</td>
       <td class="mono">${escapeHtml(x.id)}</td><td>${escapeHtml(r['Cuenta'])}</td><td>${escapeHtml(r['Ejecutivo'])}</td><td class="imp-prod">${escapeHtml(r['Producto'])}</td><td>${escapeHtml(r['Etapa'])}</td><td class="money">${pctv(r['Probabilidad'])}%</td>
       <td class="money">${x.mens?fmtMoney(x.mens):'—'}</td><td class="money">${x.uv?fmtMoney(x.uv):'—'}</td><td>${fmtD(x.creada)}</td><td>${escapeHtml(r['Mes Cierre'])}</td></tr>`; }).join('') || '<tr><td colspan="12" class="muted" style="text-align:center;padding:24px">No hay cotizaciones para mostrar.</td></tr>'}
     </tbody></table></div>
     <label class="inline-lbl imp-auto"><input type="checkbox" id="impAuto" ${IMP.autocierre?'checked':''}> Marcar como <b>Perdidas</b> las opps abiertas con Nº CRM que ya no aparecen en este archivo <span class="muted">(solo si subiste el export completo de abiertas)</span></label>
-    <p class="muted" style="margin:0;font-size:12.5px">Las que ya existen (mismo Nº CRM) solo actualizan datos del portal: monto (si viene distinto de 0), probabilidad, etapa del portal y mes de cierre. Nunca se pisan tu etapa, BANT, bitácora, próximo paso, prioridad ni notas.</p>
+    <p class="muted" style="margin:0;font-size:12.5px">Las que ya existen (mismo Nº CRM) solo actualizan datos del portal: monto (si viene distinto de 0 y no lo corregiste a mano), probabilidad, etapa del portal y mes de cierre. Nunca se pisan tu etapa, BANT, bitácora, próximo paso, prioridad ni notas.</p>
   </div>
   <div class="qc-f"><span class="muted"><b>${nSel}</b> tildadas · ${nSel-nUpd} nuevas y ${nUpd} a actualizar</span>
     <span style="display:flex;gap:8px"><button type="button" class="ghost" data-imp-act="close">Cancelar</button><button type="button" class="primary" data-imp-act="ok" ${nSel||IMP.autocierre?'':'disabled'}>Importar ${nSel}</button></span></div></div>`;
@@ -3557,7 +3592,7 @@ async function impConfirm(){
     if(x.existe){
       const o = DATA.find(z=>z.id===x.existe); if(!o) return;
       o.probCierre = pct; o.etapaCRM = r['Etapa']; o.crmMesCierre = r['Mes Cierre']; o.crmImportado = todayISO();
-      if(x.mens) o.mesRecurrente = x.mens; if(x.uv) o.montoOneShot = x.uv;
+      if(x.mens && !o.mrManual) o.mesRecurrente = x.mens; if(x.uv && !o.cuvManual) o.montoOneShot = x.uv;
       if(!o.fechaEstCierre) o.fechaEstCierre = sfParseMesCierre(r['Mes Cierre']);
       if(!o.producto) o.producto = String(r['Producto']||'').trim();
       o.ultimaActualizacion = todayISO(); computeFields(o); act++;
@@ -3890,7 +3925,7 @@ function renderTareasView(){
   el.innerHTML = `<div class="ideas-top">
       <div class="filters-chips">${chip('','Todas',cuenta(''))}${chip('opp','Opps',cuenta('opp'))}${chip('proyecto','Proyectos',cuenta('proyecto'))}${chip('campana','Campañas',cuenta('campana'))}${chip('interna','Internas',cuenta('interna'))}
         <button type="button" class="chip ${TF.rango==='hechas'?'on':''}" data-tfrango="${TF.rango==='hechas'?'pendientes':'hechas'}">${TF.rango==='hechas'?'Ver pendientes':'Ver hechas'}</button></div>
-      <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${notifBtnHtml()}<button type="button" class="primary edit-only" data-t-act="nueva">+ Crear tarea</button></span>
+      <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${notifBtnHtml()}<button type="button" class="ghost edit-only" data-t-act="foco">▶ Modo foco · ${focoPendientes().length}</button><button type="button" class="primary edit-only" data-t-act="nueva">+ Crear tarea</button></span>
     </div>
     ${TF.rango==='hechas'
       ? `<div class="card-s"><div class="hd"><h2>Hechas (últimas 40)</h2></div><div class="bd tlist">${hechas.map(t=>tareaRowHtml(t)).join('') || '<span class="muted">Todavía no completaste tareas.</span>'}</div></div>`
@@ -3936,6 +3971,7 @@ document.addEventListener('click', async (e)=>{
   if(t.dataset.tdone){ openCompletar(t.dataset.tdone); return; }
   if(t.dataset.tedit){ openTareaModal({id:t.dataset.tedit}); return; }
   if(t.dataset.dtAct==='add'){ crearDesdeFicha(t.dataset.opp); return; }
+  if(t.dataset.tAct==='foco'){ openFoco(); return; }
   if(t.dataset.tAct==='nueva'){ openTareaModal({ vincTipo: TF.vinc && TF.vinc!=='' ? TF.vinc : 'opp' }); return; }
   if(t.dataset.tAct==='notif'){ Notification.requestPermission().then(()=>{ renderTareasView(); chequearAvisos(); }); return; }
   if(t.dataset.tfvinc!==undefined){ TF.vinc = t.dataset.tfvinc; renderTareasView(); return; }
@@ -3950,6 +3986,7 @@ document.addEventListener('keydown', (e)=>{
   if(e.key==='Enter' && e.target.id==='dtTitulo'){ e.preventDefault(); const b = document.querySelector('[data-dt-act="add"]'); if(b) crearDesdeFicha(b.dataset.opp); }
   if(e.key==='Enter' && e.target.id==='tcRes'){ e.preventDefault(); const s = document.getElementById('tcSig'); if(s) s.focus(); else confirmarCompletar(); }
   if(e.key==='Enter' && e.target.id==='tcSig'){ e.preventDefault(); confirmarCompletar(); }
+  if(e.key==='Escape' && !document.getElementById('tcBg').classList.contains('open')){ if(document.getElementById('fcBg').classList.contains('open')) cerrarFoco(); else if(document.getElementById('calBg').classList.contains('open')) cerrarCalificar(); }
   if(e.key==='Escape'){ ['tmBg','tcBg'].forEach(id=>{ const b = document.getElementById(id); if(b && b.classList.contains('open')) b.classList.remove('open'); }); }
 });
 document.addEventListener('input', (e)=>{ const t = e.target; if(t.dataset.tm && TM){ if(t.dataset.tm==='vtipo'||t.dataset.tm==='vid') return; TM[t.dataset.tm] = t.value; } });
@@ -3959,6 +3996,177 @@ document.addEventListener('change', (e)=>{
   if(t.dataset.tm==='vid'){ TM.vinculo.id = t.value; return; }
   TM[t.dataset.tm] = t.value;
 });
+
+
+/* ════════════════════════════════════════════════════════════════════
+   FILAS DESPLEGABLES, MODO CALIFICAR, MONTOS A MANO Y MODO FOCO (26/10/2026)
+   ════════════════════════════════════════════════════════════════════ */
+const EXPANDED = new Set();
+const BANT_CICLO = [['✅ Sí','Sí','si'],['⚠️ Parcial','Parcial','parcial'],['❌ No','No','no'],['N/A','N/A','na']];
+function bantMiniSeg(o, k, label, extraAttr){
+  return `<div class="xb-row"><span>${label}</span><div class="seg seg-sm" role="group" aria-label="${label}">${BANT_CICLO.map(([v,l,c])=>`<button type="button" class="${c} ${o[k]===v?'on':''}" ${extraAttr}="${o.id}|${k}" data-v="${escapeHtml(v)}" aria-pressed="${o[k]===v}">${l}</button>`).join('')}</div></div>`;
+}
+function rowTareasHtml(o){
+  const ab = tareasDe('opp', o.id, true).sort(ordenFecha);
+  return `${ab.map((t,i)=>tareaRowHtml(t,{compact:true, first:i===0})).join('') || '<p class="muted" style="margin:0 0 4px;font-size:12px">Sin tareas abiertas: la opp está "a la deriva".</p>'}
+    <div class="edit-only xt-add"><label class="sr">Nueva tarea</label><input type="text" class="xt-titulo" data-opp="${o.id}" placeholder="+ Próximo paso (Enter)">
+    <label class="sr">Fecha</label><input type="date" class="xt-fecha" data-opp="${o.id}" value="${sumarDias(todayISO(),7)}"></div>`;
+}
+function rowBitacoraHtml(o){
+  const ent = (o.bitacora||[]).slice().sort((a,b)=>bitacoraEntryDate(b)-bitacoraEntryDate(a)).slice(0,3);
+  return ent.map(e=>`<div class="xbit"><span class="muted">${fmtDS(bitFecha(e))}</span>${e.tipo?` <span class="tp">${escapeHtml(e.tipo)}</span>`:''} ${escapeHtml(e.nota||'')}</div>`).join('') || '<p class="muted" style="margin:0;font-size:12px">Sin actividad registrada.</p>';
+}
+function expandedRowHtml(o){
+  const ro = isReadonly() ? 'disabled' : '';
+  const sel = (f, list, lbl) => `<label class="xf"><span>${lbl}</span><select data-xf="${o.id}|${f}" ${ro}>${optionsHtml(list, o[f])}</select></label>`;
+  const num = (f, lbl) => `<label class="xf"><span>${lbl}</span><input type="number" min="0" data-xf="${o.id}|${f}" value="${escapeHtml(o[f]===undefined||o[f]===null?'':o[f])}" ${ro}></label>`;
+  return `<tr class="xrow" data-x="${o.id}"><td colspan="17"><div class="xgrid">
+    <div class="xcol">
+      <div class="x2">${sel('etapa', ETAPAS, 'Etapa')}${sel('estadoFinal', ESTADO_FINAL, 'Estado')}</div>
+      <div class="x2">${sel('prioridad', PRIORIDADES, 'Prioridad')}${num('probCierre','Prob. %')}</div>
+      <div class="x2">${num('mesRecurrente','Mensual USD')}${num('montoOneShot','One Shot USD')}</div>
+    </div>
+    <div class="xcol"><h4>BANT</h4>
+      ${bantMiniSeg(o,'bantBudget','Budget','data-xbant')}${bantMiniSeg(o,'bantAuthority','Authority','data-xbant')}${bantMiniSeg(o,'bantNeed','Need','data-xbant')}${bantMiniSeg(o,'bantTimeline','Timeline','data-xbant')}
+    </div>
+    <div class="xcol"><h4>Próximo paso · tareas</h4>${rowTareasHtml(o)}</div>
+    <div class="xcol"><h4>Últimos movimientos</h4>${rowBitacoraHtml(o)}
+      <div class="xacts"><button type="button" class="primary" data-xopen="${o.id}">Ficha completa</button><button type="button" class="ghost" data-xclose="${o.id}">Cerrar</button></div>
+    </div>
+  </div></td></tr>`;
+}
+/* Cambio en la fila: guarda al instante y, si la ficha de esa opp está abierta, la actualiza también. */
+const DRAWER_FIELD = { etapa:'f_etapa', estadoFinal:'f_estadoFinal', prioridad:'f_prioridad', probCierre:'f_probCierre', mesRecurrente:'f_mesRecurrente', montoOneShot:'f_montoOneShot', bantBudget:'f_bantBudget', bantAuthority:'f_bantAuthority', bantNeed:'f_bantNeed', bantTimeline:'f_bantTimeline' };
+async function aplicarCambioFila(oppId, f, v){
+  if(isReadonly()) return;
+  const o = DATA.find(x=>x.id===oppId); if(!o) return;
+  if(f==='mesRecurrente' || f==='montoOneShot'){ v = v===''?'':numv(v); if(String(o[f]??'')!==String(v)){ if(f==='mesRecurrente') o.mrManual = true; else o.cuvManual = true; } }
+  if(f==='probCierre') v = v===''?'':Math.max(0,Math.min(100,Math.round(numv(v))));
+  o[f] = v; o.ultimaActualizacion = todayISO();
+  let msg = 'Guardado';
+  if(f==='estadoFinal' && v && v!=='Abierto'){
+    if(!o.fechaCierreReal) o.fechaCierreReal = todayISO();
+    const ab = tareasDe('opp', o.id, true);
+    if(ab.length && confirm(`La oportunidad queda ${v.toLowerCase()}. ¿Cancelo sus ${ab.length} tarea(s) abierta(s)?`)){ ab.forEach(t=>t.estado='cancelada'); saveTareas(); }
+    EXPANDED.delete(o.id); msg = `${o.cliente}: ${v}. Pasó a Cerradas.`;
+  }
+  if(f==='etapa') msg = `${o.cliente} → ${ETAPA_CORTA(v)}`;
+  computeFields(o);
+  if(window._drawerOpp && _drawerOpp.id===o.id && document.getElementById('overlay').classList.contains('open')){
+    _drawerOpp[f] = v; const el = document.getElementById(DRAWER_FIELD[f]); if(el){ el.value = v; }
+    if(f.startsWith('bant')) document.querySelectorAll(`[data-bantseg="${DRAWER_FIELD[f]}"]`).forEach(b=>{ const on = b.dataset.v===v; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on); });
+  }
+  await saveData(); renderAll(); showToast(msg);
+}
+document.addEventListener('change', (e)=>{
+  const t = e.target; if(!t.dataset.xf) return;
+  const [id,f] = t.dataset.xf.split('|'); aplicarCambioFila(id, f, t.value);
+});
+document.addEventListener('click', (e)=>{
+  const t = e.target.closest('[data-xbant],[data-xopen],[data-xclose],[data-cal-act],[data-calbant],[data-fc-act]');
+  if(!t) return;
+  if(t.dataset.xbant){ const [id,k] = t.dataset.xbant.split('|'); const o = DATA.find(x=>x.id===id); aplicarCambioFila(id, k, o[k]===t.dataset.v ? '' : t.dataset.v); return; }
+  if(t.dataset.xopen){ openDrawer(t.dataset.xopen); return; }
+  if(t.dataset.xclose){ EXPANDED.delete(t.dataset.xclose); renderTable(); return; }
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && e.target.classList && e.target.classList.contains('xt-titulo')){
+    e.preventDefault(); const v = e.target.value.trim(); if(!v || isReadonly()) return;
+    const id = e.target.dataset.opp; const f = document.querySelector(`.xt-fecha[data-opp="${id}"]`);
+    const tt = newTarea({ titulo:v, fecha: f ? f.value : '', vinculo:{tipo:'opp', id} }); TDB.tareas.push(tt);
+    afterTareasChange(tt); showToast('Tarea agregada');
+  }
+});
+
+/* ── Modo Calificar: BANT en lote ── */
+let CAL = null;
+const bantIncompleto = o => ['bantBudget','bantAuthority','bantNeed','bantTimeline'].some(k=>!o[k]);
+function calPendientes(){ return DATA.filter(o=>(!o.estadoFinal||o.estadoFinal==='Abierto') && bantIncompleto(o)); }
+function actualizarBotonCalificar(){
+  const b = document.getElementById('btnCalificar'); if(!b) return;
+  const n = calPendientes().length; b.textContent = n ? `Calificar BANT · ${n}` : 'BANT completo ✓'; b.disabled = !n;
+}
+function openCalificar(){
+  if(isReadonly()) return;
+  const ids = calPendientes().sort((a,b)=>numv(b.mesRecurrente)-numv(a.mesRecurrente)).map(o=>o.id);
+  if(!ids.length){ showToast('Todas las opps abiertas tienen el BANT completo'); return; }
+  CAL = { ids, i:0 }; renderCalificar(); document.getElementById('calBg').classList.add('open');
+}
+function renderCalificar(){
+  const id = CAL.ids[CAL.i]; const o = DATA.find(x=>x.id===id);
+  if(!o){ cerrarCalificar(); return; }
+  document.getElementById('calBg').innerHTML = `<div class="qc-modal" role="dialog" aria-modal="true" aria-labelledby="calTitle">
+    <div class="qc-h"><h2 id="calTitle">Calificar BANT · ${CAL.i+1} de ${CAL.ids.length}</h2><button type="button" class="ghost" data-cal-act="close" aria-label="Cerrar">✕</button></div>
+    <div class="qc-b">
+      <div class="cal-opp"><b>${escapeHtml(o.cliente||'—')}</b><span>${escapeHtml(o.nombreOpp||'')}</span>
+        <span class="muted">${ETAPA_CORTA(o.etapa)}${numv(o.mesRecurrente)?' · '+fmtMoney(numv(o.mesRecurrente))+'/mes':''}${o.eecc?' · EECC '+escapeHtml(titleCase(o.eecc)):''}</span></div>
+      ${[['bantBudget','Budget','tiene presupuesto'],['bantAuthority','Authority','hablamos con quien decide'],['bantNeed','Need','necesidad clara'],['bantTimeline','Timeline','fecha para decidir']].map(([k,l,h])=>
+        `<div class="bant-row"><span>${l} <small>· ${h}</small></span><div class="seg" role="group" aria-label="${l}">${BANT_CICLO.map(([v,lb,c])=>`<button type="button" class="${c} ${o[k]===v?'on':''}" data-calbant="${k}" data-v="${escapeHtml(v)}" aria-pressed="${o[k]===v}">${lb}</button>`).join('')}</div></div>`).join('')}
+      <p class="muted" style="margin:6px 0 0;font-size:12px">Cada toque se guarda. Cuando completás las 4, pasa sola a la siguiente.</p>
+    </div>
+    <div class="qc-f"><button type="button" class="ghost" data-cal-act="prev" ${CAL.i===0?'disabled':''}>← Anterior</button>
+      <span style="display:flex;gap:8px"><button type="button" class="ghost" data-cal-act="open">Abrir ficha</button><button type="button" class="primary" data-cal-act="next">${CAL.i===CAL.ids.length-1?'Terminar':'Siguiente →'}</button></span></div></div>`;
+}
+function cerrarCalificar(){ document.getElementById('calBg').classList.remove('open'); CAL = null; renderAll(); }
+document.addEventListener('click', async (e)=>{
+  const t = e.target.closest('[data-cal-act],[data-calbant]'); if(!t || !CAL) return;
+  if(t.dataset.calbant){
+    const o = DATA.find(x=>x.id===CAL.ids[CAL.i]); const k = t.dataset.calbant;
+    o[k] = o[k]===t.dataset.v ? '' : t.dataset.v; o.ultimaActualizacion = todayISO(); computeFields(o);
+    if(window._drawerOpp && _drawerOpp.id===o.id) _drawerOpp[k] = o[k];
+    saveData(); renderCalificar();
+    if(!bantIncompleto(o)) setTimeout(()=>{ if(!CAL) return; if(CAL.i < CAL.ids.length-1){ CAL.i++; renderCalificar(); } else { cerrarCalificar(); showToast('¡Listo! Calificaste todas las pendientes'); } }, 350);
+    return;
+  }
+  const a = t.dataset.calAct;
+  if(a==='close') cerrarCalificar();
+  else if(a==='prev'){ CAL.i = Math.max(0, CAL.i-1); renderCalificar(); }
+  else if(a==='next'){ if(CAL.i < CAL.ids.length-1){ CAL.i++; renderCalificar(); } else cerrarCalificar(); }
+  else if(a==='open'){ const id = CAL.ids[CAL.i]; cerrarCalificar(); openDrawer(id); }
+});
+
+/* ── Modo foco: tareas vencidas y de hoy, una por una (como la cola de HubSpot) ── */
+let FOCO = null;
+function focoPendientes(){ const hoy = todayISO(); return TDB.tareas.filter(t=>t.estado==='abierta' && t.fecha && t.fecha<=hoy).sort(ordenFecha); }
+function openFoco(){
+  if(isReadonly()) return;
+  const ids = focoPendientes().map(t=>t.id);
+  if(!ids.length){ showToast('No tenés tareas vencidas ni para hoy 🎉'); return; }
+  FOCO = { ids, i:0, hechas:0 }; renderFoco(); document.getElementById('fcBg').classList.add('open');
+}
+function renderFoco(){
+  while(FOCO && FOCO.i < FOCO.ids.length){ const t = TDB.tareas.find(x=>x.id===FOCO.ids[FOCO.i]); if(t && t.estado==='abierta') break; FOCO.i++; }
+  if(!FOCO || FOCO.i >= FOCO.ids.length){ const n = FOCO ? FOCO.hechas : 0; cerrarFoco(); showToast(`Terminaste la cola${n?': '+n+' tarea'+(n===1?'':'s')+' completada'+(n===1?'':'s'):''} 👏`); return; }
+  const t = TDB.tareas.find(x=>x.id===FOCO.ids[FOCO.i]);
+  const o = t.vinculo.tipo==='opp' ? DATA.find(x=>x.id===t.vinculo.id) : null;
+  document.getElementById('fcBg').innerHTML = `<div class="qc-modal wide-md" role="dialog" aria-modal="true" aria-labelledby="fcTitle">
+    <div class="qc-h"><h2 id="fcTitle">Modo foco · ${FOCO.i+1} de ${FOCO.ids.length}</h2><button type="button" class="ghost" data-fc-act="close" aria-label="Cerrar">✕</button></div>
+    <div class="qc-b fc-body">
+      <div class="fc-task ${tareaVencida(t)?'venc':''}"><span class="tp">${escapeHtml(t.tipo)}</span><b>${escapeHtml(t.titulo)}</b><span class="tfecha">${escapeHtml(fechaTareaLbl(t))}</span></div>
+      <p class="muted" style="margin:0 0 8px">${VINC_LBL[t.vinculo.tipo]}${t.vinculo.tipo!=='interna'?': '+escapeHtml(vincNombre(t.vinculo)):''}</p>
+      ${o?`<div class="fc-opp"><div><span class="muted">Etapa</span><b>${ETAPA_CORTA(o.etapa)}</b></div><div><span class="muted">Mensual</span><b>${numv(o.mesRecurrente)?fmtMoney(numv(o.mesRecurrente)):'—'}</b></div><div><span class="muted">Prob.</span><b>${o.probCierre!==''&&o.probCierre!=null?o.probCierre+'%':'—'}</b></div><div><span class="muted">BANT</span>${bantQuadrant(o)}</div><div><span class="muted">EECC</span><b>${o.eecc?escapeHtml(titleCase(o.eecc)):'—'}</b></div></div>
+        <h4 style="margin:10px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint)">Últimos movimientos</h4>${rowBitacoraHtml(o)}`:''}
+    </div>
+    <div class="qc-f"><span style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="ghost" data-fc-act="pos1">Posponer a mañana</button><button type="button" class="ghost" data-fc-act="pos7">+1 semana</button><button type="button" class="ghost" data-fc-act="skip">Saltear</button>${o?'<button type="button" class="ghost" data-fc-act="open">Abrir ficha</button>':''}</span>
+      <button type="button" class="primary" data-fc-act="done">✓ Completar</button></div></div>`;
+}
+function cerrarFoco(){ document.getElementById('fcBg').classList.remove('open'); FOCO = null; }
+document.addEventListener('click', (e)=>{
+  const t = e.target.closest('[data-fc-act]'); if(!t || !FOCO) return;
+  const a = t.dataset.fcAct; const id = FOCO.ids[FOCO.i]; const tarea = TDB.tareas.find(x=>x.id===id);
+  if(a==='close') cerrarFoco();
+  else if(a==='skip'){ FOCO.i++; renderFoco(); }
+  else if(a==='pos1' || a==='pos7'){ tarea.fecha = sumarDias(todayISO(), a==='pos1'?1:7); tarea.notificada = false; afterTareasChange(tarea); showToast('Pospuesta para el ' + fmtD(tarea.fecha)); FOCO.i++; renderFoco(); }
+  else if(a==='open'){ const oid = tarea.vinculo.id; cerrarFoco(); openDrawer(oid); }
+  else if(a==='done'){ FOCO.esperando = id; openCompletar(id); }
+});
+/* Al completar desde el foco, sigue con la próxima. */
+const _confirmarCompletarOrig = confirmarCompletar;
+confirmarCompletar = async function(){
+  const id = TC && TC.id;
+  await _confirmarCompletarOrig();
+  if(FOCO && FOCO.esperando && FOCO.esperando===id){ FOCO.esperando = null; FOCO.hechas++; FOCO.i++; renderFoco(); }
+};
 
 async function bootApp(){
   populateFilterSelects();

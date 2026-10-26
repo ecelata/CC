@@ -158,6 +158,13 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
   - **Avisos del navegador** (con el Backlog abierto): botón "🔔 Activar avisos" en la vista Tareas; avisa 10 min antes de las tareas del día (sin hora = 9:00). Las vencidas de días anteriores no notifican (se ven en rojo).
   - **Migración automática (una sola vez):** las tareas de la Agenda vieja (`backlog/agenda_tasks`, que no se borra) y el texto de próximo paso de cada opp abierta pasaron al nuevo módulo. Datos: `backlog/tareas` = `{tareas, nextSeq, migrado}`; vínculo `{tipo: opp|proyecto|campana|interna, id}`.
 
+**Tanda del 26/10/2026 (madrugada):**
+- **Filas desplegables en el Tablero:** un clic en la fila la despliega ahí mismo (doble clic abre la ficha completa). Se cambia en la fila y se guarda al instante: Etapa, Estado (si pasa a ganada/perdida/suspendida pregunta si cancela sus tareas y la fila se va a Cerradas), Prioridad, Prob. %, Mensual, One Shot y BANT (botones). Además: tareas abiertas de la opp con check para completar y alta rápida (Enter), últimos 3 movimientos de la bitácora y botón "Ficha completa". Si la ficha de esa opp está abierta, se actualiza también (no se pisan los cambios al guardarla).
+- **Calificar BANT** (botón junto a "Oportunidades activas", con el número de opps abiertas con BANT incompleto): las recorre una por una (las de mayor mensual primero); cada toque se guarda y al completar las 4 letras pasa sola a la siguiente.
+- **Montos corregidos a mano:** si cambiás Mensual u One Shot (en la ficha o en la fila), la opp queda marcada (`mrManual` / `cuvManual`) y el **Importar del portal ya no los pisa**; en la vista previa aparece el aviso "Monto a mano (portal: …)".
+- **Modo foco** (vista Tareas, botón "▶ Modo foco · n"): cola de tareas vencidas y de hoy, una por una, con el resumen de la opp (etapa, mensual, prob., BANT, EECC, últimos movimientos). Completar (pide resultado y siguiente paso, y pasa a la próxima), Posponer a mañana, +1 semana, Saltear, Abrir ficha.
+- Copia previa: rama `version/backlog-clasico-26-10-antes-filas`.
+
 **Vistas (7, ahora en la barra lateral):** 📋 Tablero · ✅ Cerradas · 📊 Panorama (analítica con drill-down) · 📅 Agenda (Kanban de tareas, vinculables a oportunidad) · 🗂️ Kanban (oportunidades por etapa, drag & drop) · 👥 Equipo (organigrama por responsable con EECC, segmento, mail y cuentas a cargo) · 📈 Histórico (ver 6c).
 
 **Menú de exportar/importar:** Exportar JSON / CSV / **planilla** (Excel agrupado como el reporte semanal: Cerrados / A cerrar / Pipeline / POCs, foco en monto mensual); Importar JSON; **Importar Salesforce**.
