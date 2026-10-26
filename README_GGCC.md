@@ -172,6 +172,8 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
 - Nuevo filtro **Prob.** en la barra de filtros del Tablero (incluye "Sin probabilidad").
 - Copia previa: rama `version/backlog-clasico-26-10-antes-prob`.
 
+**Orden alfabético en el Kanban (26/10/2026):** click en el nombre de la columna (etapa) ordena sus tarjetas por cliente y nombre de opp: 1 click A→Z, 2 clicks Z→A, 3 clicks vuelve al orden original. Se marca al lado del nombre y se recuerda en el navegador (`KO_SORT`, localStorage `koSort`). Copia previa: rama `version/backlog-clasico-26-10-antes-orden-kanban`.
+
 **Vistas (7, ahora en la barra lateral):** 📋 Tablero · ✅ Cerradas · 📊 Panorama (analítica con drill-down) · 📅 Agenda (Kanban de tareas, vinculables a oportunidad) · 🗂️ Kanban (oportunidades por etapa, drag & drop) · 👥 Equipo (organigrama por responsable con EECC, segmento, mail y cuentas a cargo) · 📈 Histórico (ver 6c).
 
 **Menú de exportar/importar:** Exportar JSON / CSV / **planilla** (Excel agrupado como el reporte semanal: Cerrados / A cerrar / Pipeline / POCs, foco en monto mensual); Importar JSON; **Importar Salesforce**.
