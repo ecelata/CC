@@ -165,6 +165,13 @@ Comparten identidad visual (beige + celeste Bitrix, DM Sans, con **5 temas inter
 - **Modo foco** (vista Tareas, botón "▶ Modo foco · n"): cola de tareas vencidas y de hoy, una por una, con el resumen de la opp (etapa, mensual, prob., BANT, EECC, últimos movimientos). Completar (pide resultado y siguiente paso, y pasa a la próxima), Posponer a mañana, +1 semana, Saltear, Abrir ficha.
 - Copia previa: rama `version/backlog-clasico-26-10-antes-filas`.
 
+**Probabilidad de cierre fija (26/10/2026, mañana):**
+- Solo 5 niveles, en desplegable (ficha, fila desplegada y alta rápida): **25% Inicial · 50% En evaluación · 75% Avanzada · 90% Casi ganada · 100% Ganada, falta cerrar** (falta OC, firma o alta). Constantes `PROBS` / `PROB_LBL`.
+- Valores viejos o importados se redondean al nivel más cercano (`snapProb`: hasta 37→25, hasta 62→50, hasta 82→75, hasta 95→90, más→100). Vacío queda vacío.
+- **Panorama:** el panel "Estado del negocio" se reemplazó por **Probabilidad de cierre**: opps abiertas por nivel con cantidad y mensual (tooltip con el total ponderado), más "Sin probabilidad". Click en un nivel filtra el Tablero.
+- Nuevo filtro **Prob.** en la barra de filtros del Tablero (incluye "Sin probabilidad").
+- Copia previa: rama `version/backlog-clasico-26-10-antes-prob`.
+
 **Vistas (7, ahora en la barra lateral):** 📋 Tablero · ✅ Cerradas · 📊 Panorama (analítica con drill-down) · 📅 Agenda (Kanban de tareas, vinculables a oportunidad) · 🗂️ Kanban (oportunidades por etapa, drag & drop) · 👥 Equipo (organigrama por responsable con EECC, segmento, mail y cuentas a cargo) · 📈 Histórico (ver 6c).
 
 **Menú de exportar/importar:** Exportar JSON / CSV / **planilla** (Excel agrupado como el reporte semanal: Cerrados / A cerrar / Pipeline / POCs, foco en monto mensual); Importar JSON; **Importar Salesforce**.
