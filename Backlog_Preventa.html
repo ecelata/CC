@@ -365,6 +365,9 @@
   .tlist{gap:0 !important;padding-top:4px !important;padding-bottom:4px !important;}
   .trow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px;min-height:30px;}
   .tlist .trow:last-child{border-bottom:0;}
+  .sinpaso{border-left:3px solid var(--gold);} .sp-row{display:flex;align-items:center;gap:10px;}
+  .sp-tx{flex:1;min-width:0;cursor:pointer;font-size:13.5px;} .sp-tx:hover b{text-decoration:underline;} .sp-tx small{display:block;color:var(--ink-faint);font-size:11.5px;}
+  .sp-add{padding:3px 10px;font-size:12px;white-space:nowrap;}
   .trow .ttl{border:0;background:transparent;padding:0;text-align:left;font-size:13px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
   .trow .ttl:hover{color:var(--stamp-dark);background:transparent;text-decoration:underline;}
   .trow .tvinc{border:0;background:transparent;padding:0;font-size:12px;color:var(--ink-soft);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
@@ -635,7 +638,6 @@
     <button class="tab-btn active" id="tabBtnTabla" data-tab="tabla" data-tip="Tablero" aria-label="Tablero"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h5v18H3zM10 3h5v12h-5zM17 3h4v8h-4z"/></svg></button>
     <button class="tab-btn" id="tabBtnKanban" data-tab="kanbanopps" data-tip="Kanban" aria-label="Kanban"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg></button>
     <button class="tab-btn" id="tabBtnAgenda" data-tab="agenda" data-tip="Tareas" aria-label="Tareas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
-    <button class="tab-btn" id="tabBtnPasos" data-tab="pasos" data-tip="Próximos pasos" aria-label="Próximos pasos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></button>
     <button class="tab-btn" id="tabBtnIdeas" data-tab="ideas" data-tip="Ideas y campañas" aria-label="Ideas y campañas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></button>
     <button class="tab-btn" id="tabBtnStaff" data-tab="staff" data-tip="Staff del martes" aria-label="Staff del martes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v12H3zM8 20h8M12 16v4"/></svg></button>
     <button class="tab-btn" id="tabBtnCerradas" data-tab="cerradas" data-tip="Cerradas" aria-label="Cerradas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></button>
@@ -3368,9 +3370,10 @@ function renderPasos(){
   el.innerHTML = grupo('Vencidos', venc, 'La fecha del próximo paso ya pasó') + grupo('Al día', ok, 'Ordenados por fecha (los sin fecha al final)') + grupo('Sin próximo paso', sin, 'Opps abiertas sin nada definido');
 }
 function updateRailBadges(){
-  const btn = document.getElementById('tabBtnPasos'); if(!btn) return;
+  const btn = document.getElementById('tabBtnAgenda'); if(!btn) return;
   let b = btn.querySelector('.rail-badge');
-  const n = DATA.filter(o=>isOpenOpp(o) && nextState(o)==='venc').length;
+  const n = (typeof TDB!=='undefined' && TDB.tareas ? TDB.tareas.filter(t=>t.estado==='abierta' && tareaVencida(t)).length : 0);
+  btn.setAttribute('data-tip', n ? 'Tareas · '+n+' vencida'+(n===1?'':'s') : 'Tareas');
   if(!n){ if(b) b.remove(); return; }
   if(!b){ b = document.createElement('span'); b.className='rail-badge'; btn.appendChild(b); }
   b.textContent = n;
@@ -3979,6 +3982,13 @@ function renderTareasView(){
     ['Más adelante', ab.filter(t=>t.fecha>fin)],
     ['Sin fecha', ab.filter(t=>!t.fecha)]
   ];
+  // Opps abiertas sin ninguna tarea abierta (ex vista "Próximos pasos", ahora unificada acá)
+  const sinPaso = (!TF.vinc || TF.vinc==='opp') ? DATA.filter(o=>isOpenOpp(o) && !TDB.tareas.some(t=>t.estado==='abierta' && t.vinculo.tipo==='opp' && t.vinculo.id===o.id))
+    .sort((a,b)=>(a.cliente||'').localeCompare(b.cliente||'','es',{sensitivity:'base'})) : [];
+  const sinPasoHtml = sinPaso.length ? `<div class="card-s sinpaso"><div class="hd"><h2>Opps sin próximo paso · ${sinPaso.length}</h2><small>Abiertas y sin ninguna tarea: definí qué sigue</small></div><div class="bd tlist">${
+    sinPaso.map(o=>`<div class="trow sp-row">${nextIconHtml(o)}
+      <span class="sp-tx" role="button" tabindex="0" data-open-opp="${o.id}" title="Abrir la opp"><b>${escapeHtml(o.cliente||'—')}</b>${o.nombreOpp?' · '+escapeHtml(o.nombreOpp):''}<small>${escapeHtml(ETAPA_CORTA(o.etapa))}${numv(o.mesRecurrente)?' · '+fmtMoney(numv(o.mesRecurrente))+'/mes':''}</small></span>
+      <button type="button" class="ghost edit-only sp-add" data-sp-add="${o.id}">+ tarea</button></div>`).join('')}</div></div>` : '';
   const hechas = base.filter(t=>t.estado==='hecha').sort((a,b)=>(b.completada||'').localeCompare(a.completada||'')).slice(0,40);
   const chip = (k,l,n) => `<button type="button" class="chip ${TF.vinc===k?'on':''}" data-tfvinc="${k}">${l}${n!=null?' · '+n:''}</button>`;
   const cuenta = k => TDB.tareas.filter(t=>t.estado==='abierta' && (!k || t.vinculo.tipo===k)).length;
@@ -3989,7 +3999,8 @@ function renderTareasView(){
     </div>
     ${TF.rango==='hechas'
       ? `<div class="card-s"><div class="hd"><h2>Hechas (últimas 40)</h2></div><div class="bd tlist">${hechas.map(t=>tareaRowHtml(t)).join('') || '<span class="muted">Todavía no completaste tareas.</span>'}</div></div>`
-      : grupos.filter(([,l])=>l.length).map(([n,l])=>`<div class="card-s"><div class="hd"><h2>${n} · ${l.length}</h2></div><div class="bd tlist">${l.sort(ordenFecha).map(t=>tareaRowHtml(t)).join('')}</div></div>`).join('') || '<div class="empty-state" style="padding:40px 20px"><p>No hay tareas pendientes. Creá una con <b>+ Crear tarea</b> o desde la ficha de una opp.</p></div>'}`;
+      : (sinPasoHtml + grupos.filter(([,l])=>l.length).map(([n,l])=>`<div class="card-s"><div class="hd"><h2>${n} · ${l.length}</h2></div><div class="bd tlist">${l.sort(ordenFecha).map(t=>tareaRowHtml(t)).join('')}</div></div>`).join('')) || '<div class="empty-state" style="padding:40px 20px"><p>No hay tareas pendientes. Creá una con <b>+ Crear tarea</b> o desde la ficha de una opp.</p></div>'}`;
+  updateRailBadges();
 }
 
 /* ── Avisos del navegador (con el Backlog abierto) ── */
@@ -4018,7 +4029,7 @@ setInterval(chequearAvisos, 60000);
 
 /* ── Eventos ── */
 document.addEventListener('click', async (e)=>{
-  const t = e.target.closest('[data-tm-act],[data-tmtipo],[data-tc-act],[data-tcdias],[data-tdone],[data-tedit],[data-dt-act],[data-t-act],[data-tfvinc],[data-tfrango]');
+  const t = e.target.closest('[data-tm-act],[data-tmtipo],[data-tc-act],[data-tcdias],[data-tdone],[data-tedit],[data-dt-act],[data-t-act],[data-tfvinc],[data-tfrango],[data-sp-add]');
   if(!t) return;
   if(t.dataset.tmAct){ const a = t.dataset.tmAct;
     if(a==='close') document.getElementById('tmBg').classList.remove('open');
@@ -4031,6 +4042,7 @@ document.addEventListener('click', async (e)=>{
   if(t.dataset.tdone){ openCompletar(t.dataset.tdone); return; }
   if(t.dataset.tedit){ openTareaModal({id:t.dataset.tedit}); return; }
   if(t.dataset.dtAct==='add'){ crearDesdeFicha(t.dataset.opp); return; }
+  if(t.dataset.spAdd){ openTareaModal({ vincTipo:'opp', vincId:t.dataset.spAdd, fecha:sumarDias(todayISO(),1) }); return; }
   if(t.dataset.tAct==='foco'){ openFoco(); return; }
   if(t.dataset.tAct==='nueva'){ openTareaModal({ vincTipo: TF.vinc && TF.vinc!=='' ? TF.vinc : 'opp' }); return; }
   if(t.dataset.tAct==='notif'){ Notification.requestPermission().then(()=>{ renderTareasView(); chequearAvisos(); }); return; }
