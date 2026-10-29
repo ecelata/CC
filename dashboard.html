@@ -34,6 +34,8 @@
   .pill.active[data-libro="todos"]{background:var(--stamp-dark);color:#fff;border-color:var(--stamp-dark);}
   .pill.active[data-libro="Banca"]{background:var(--stamp);color:#fff;border-color:var(--stamp);}
   .pill.active[data-libro="CCEE"]{background:var(--gold);color:#fff;border-color:var(--gold);}
+  #sector-pills .pill.active{background:var(--stamp-dark);color:#fff;border-color:var(--stamp-dark);}
+  .pill .pill-n{font-family:var(--mono);font-weight:500;opacity:.75;margin-left:3px;font-variant-numeric:tabular-nums;}
   .reset{background:none;border:1px solid var(--line);color:var(--ink-soft);border-radius:8px;padding:9px;font-size:12.5px;cursor:pointer;font-weight:600;}
   .reset:hover{color:var(--ink);border-color:var(--stamp);}
   details.settings{border-top:1px solid var(--line);padding-top:14px;}
@@ -126,6 +128,10 @@
       </div>
     </div>
     <div class="field">
+      <label>Tipo Holding</label>
+      <div class="pill-group" id="sector-pills"></div>
+    </div>
+    <div class="field">
       <label>Buscar cuenta o CUIT</label>
       <input type="text" id="search-cuenta" placeholder="Ej: Nova Argentia / 307094...">
     </div>
@@ -174,6 +180,7 @@
           <th data-sort="ejecutivo">Ejecutivo</th>
           <th data-sort="ingeniero">Ingeniero</th>
           <th data-sort="vertical">Vertical</th>
+          <th data-sort="sector">Holding</th>
           <th data-sort="libro">Libro</th>
         </tr>
       </thead>
@@ -210,8 +217,11 @@ const COLS = {
   gerente_g2:'Gerente G2 Comercial', mail_g2:'Mail Gerente G2 Comercial',
   gerente_g1:'Gerente G1 Comercial',
   ingeniero:'Ingeniero', mail_ingeniero:'Mail Ingeniero', tel_ingeniero:'Celular Ingeniero',
-  vertical:'VERTICAL'
+  vertical:'VERTICAL', holding:'Tipo Holding'
 };
+// Sector según Tipo Holding: la parte después del último guion ("PRIVADO AMBA-INDUSTRIAS" → Industrias). Se cuenta al cargar el CSV.
+function sectorDe(h){ if(!h) return 'Sin dato'; const t = String(h).split('-').pop().trim(); return t ? toTitle(t) : 'Sin dato'; }
+let activeSector = 'todos';
 
 let RAW = [];
 let filtered = [];
@@ -257,6 +267,7 @@ function buildRecords(rows, headers){
     if(!libro) return;
     const rec = { libro };
     for(const key in COLS){ rec[key] = map[key] ? row[map[key]] : null; }
+    rec.sector = sectorDe(rec.holding);
     out.push(rec);
   });
   return out;
@@ -333,10 +344,37 @@ function populateSelect(id, field){
   });
 }
 
+function pasaOtrosFiltros(d){
+  const q = $('#search-cuenta').value.trim().toLowerCase();
+  const eje = $('#filter-eje').value, ing = $('#filter-ing').value;
+  if(activeLibro !== 'todos' && d.libro !== activeLibro) return false;
+  if(eje !== 'todos' && d.ejecutivo !== eje) return false;
+  if(ing !== 'todos' && d.ingeniero !== ing) return false;
+  if(q){ const hay = (d.razon_social||'').toLowerCase().includes(q) || String(d.cuit||'').includes(q); if(!hay) return false; }
+  return true;
+}
+// Pills de Tipo Holding con el conteo según los demás filtros (se recalcula en cada carga y filtro)
+const SECTOR_ORDEN = ['Servicios','Industrias','Finanzas'];
+function renderSectorPills(){
+  const base = RAW.filter(pasaOtrosFiltros);
+  const cnt = {}; base.forEach(d=>{ cnt[d.sector] = (cnt[d.sector]||0)+1; });
+  const keys = Object.keys(cnt).sort((a,b)=>{ const ia=SECTOR_ORDEN.indexOf(a), ib=SECTOR_ORDEN.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib) || a.localeCompare(b,'es'); });
+  if(activeSector!=='todos' && !cnt[activeSector]) keys.push(activeSector);
+  const pill = (k,label,n) => `<button class="pill ${activeSector===k?'active':''}" data-sector="${k}">${label} <span class="pill-n">${n}</span></button>`;
+  $('#sector-pills').innerHTML = pill('todos','Todos',base.length) + keys.map(k=>pill(k,k,cnt[k]||0)).join('');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('#sector-pills [data-sector]'); if(!b) return;
+  activeSector = (activeSector===b.dataset.sector && b.dataset.sector!=='todos') ? 'todos' : b.dataset.sector;
+  applyFilters();
+});
+
 function applyFilters(){
   const q = $('#search-cuenta').value.trim().toLowerCase();
   const eje = $('#filter-eje').value, ing = $('#filter-ing').value;
+  renderSectorPills();
   filtered = RAW.filter(d => {
+    if(activeSector !== 'todos' && d.sector !== activeSector) return false;
     if(activeLibro !== 'todos' && d.libro !== activeLibro) return false;
     if(eje !== 'todos' && d.ejecutivo !== eje) return false;
     if(ing !== 'todos' && d.ingeniero !== ing) return false;
@@ -367,7 +405,7 @@ function render(){
   filtered.forEach(d => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><div class="cuenta-name">${toTitle(d.razon_social)}</div><div class="cuit-sub">${d.cuit||''}</div></td>
-      <td>${toTitle(d.ejecutivo||'—')}</td><td>${toTitle(d.ingeniero||'—')}</td><td>${toTitle(d.vertical||'—')}</td>
+      <td>${toTitle(d.ejecutivo||'—')}</td><td>${toTitle(d.ingeniero||'—')}</td><td>${toTitle(d.vertical||'—')}</td><td title="${d.holding||''}">${d.sector}</td>
       <td><span class="badge ${d.libro}">${d.libro==='Banca'?'Banca':'CCEE Serv. e Ind.'}</span></td>`;
     tr.addEventListener('click', () => openDrawer(d));
     tbody.appendChild(tr);
@@ -388,7 +426,7 @@ function openDrawer(d){
       <span class="badge ${d.libro}">${d.libro==='Banca'?'Banca':'CCEE Serv. e Ind.'}</span>
       <button class="drawer-close" id="drawer-close">&times;</button>
       <h3>${toTitle(d.razon_social)}</h3>
-      <div class="sub">CUIT ${d.cuit||'—'} · ${toTitle(d.segmento||'')} · ${toTitle(d.vertical||'')}</div>
+      <div class="sub">CUIT ${d.cuit||'—'} · ${toTitle(d.segmento||'')} · ${toTitle(d.vertical||'')}${d.holding?' · '+toTitle(d.holding):''}</div>
     </div>
     <div class="chain">
       <div class="chain-title">Cadena comercial</div>
@@ -419,7 +457,7 @@ $('#filter-eje').addEventListener('change', applyFilters);
 $('#filter-ing').addEventListener('change', applyFilters);
 $('#reset-btn').addEventListener('click', () => {
   $('#search-cuenta').value=''; $('#filter-eje').value='todos'; $('#filter-ing').value='todos';
-  activeLibro='todos';
+  activeLibro='todos'; activeSector='todos';
   $$('#libro-pills .pill').forEach(x=>x.classList.remove('active'));
   $('#libro-pills .pill[data-libro="todos"]').classList.add('active');
   $('#result-label').textContent='Mostrando todas las cuentas';
@@ -431,8 +469,8 @@ $$('#data-table thead th').forEach(th => th.addEventListener('click', () => {
   sortRows(); render();
 }));
 $('#export-btn').addEventListener('click', () => {
-  const headers=['Cuenta','CUIT','Ejecutivo','Mail Ejecutivo','Ingeniero','Mail Ingeniero','Jefe/Coordinador','Gerente G2','Gerente G1','Vertical','Libro'];
-  const rows = filtered.map(d=>[d.razon_social,d.cuit,d.ejecutivo,d.mail_ejecutivo,d.ingeniero,d.mail_ingeniero,d.jefe,d.gerente_g2,d.gerente_g1,d.vertical,d.libro]);
+  const headers=['Cuenta','CUIT','Ejecutivo','Mail Ejecutivo','Ingeniero','Mail Ingeniero','Jefe/Coordinador','Gerente G2','Gerente G1','Vertical','Tipo Holding','Libro'];
+  const rows = filtered.map(d=>[d.razon_social,d.cuit,d.ejecutivo,d.mail_ejecutivo,d.ingeniero,d.mail_ingeniero,d.jefe,d.gerente_g2,d.gerente_g1,d.vertical,d.holding,d.libro]);
   const csv=[headers,...rows].map(r=>r.map(v=>`"${(v??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
