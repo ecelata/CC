@@ -394,3 +394,14 @@ html[data-theme="vidrio"][data-fondo="atardecer"] .chip.on,html[data-theme="vidr
 html[data-theme="vidrio"] #toast,html[data-theme="vidrio"] .toast{background:var(--glass-solid);color:#fff;border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
 html[data-theme="vidrio"][data-fondo="atardecer"] .pipeline-comp-seg.am{color:#3f5fc4;}
 html[data-theme="vidrio"][data-fondo="atardecer"] .pipeline-comp-swatch.am{background:#fff;}
+/* Tema Vidrio: números con la misma letra que los indicadores (Inter con cifras alineadas), no la "mecanografiada" */
+html[data-theme="vidrio"] .topbar .sub,html[data-theme="vidrio"] .pipeline-comp-seg,html[data-theme="vidrio"] .pipeline-comp-legend-item b,
+html[data-theme="vidrio"] .kpi .value,html[data-theme="vidrio"] .idcell,html[data-theme="vidrio"] .kanban-count,html[data-theme="vidrio"] .kanban-card .kc-fecha,
+html[data-theme="vidrio"] .ko-sort-ind,html[data-theme="vidrio"] .kanban-board-opps .ko-col-total,html[data-theme="vidrio"] .kanban-opp-card .ko-prob,
+html[data-theme="vidrio"] .kanban-opp-card .ko-monto,html[data-theme="vidrio"] .cliente-cell .cuit,html[data-theme="vidrio"] .money,
+html[data-theme="vidrio"] .dias-restantes,html[data-theme="vidrio"] .drawer-head .id-tag,html[data-theme="vidrio"] .bar-row .bar-val,
+html[data-theme="vidrio"] .funnel-bar,html[data-theme="vidrio"] .legend-val,html[data-theme="vidrio"] .vencer-item .vdays,html[data-theme="vidrio"] .bitacora-time,
+html[data-theme="vidrio"] #tabla td{font-family:'Inter',-apple-system,'Segoe UI',sans-serif !important;font-variant-numeric:tabular-nums;letter-spacing:0;}
+html[data-theme="vidrio"] .kpi .value{font-weight:300 !important;letter-spacing:-.02em;}
+html[data-theme="vidrio"] .money{font-weight:400;}
+html[data-theme="vidrio"] .kanban-board-opps .ko-col-total{font-weight:500;}
