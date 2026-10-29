@@ -328,3 +328,8 @@ Revolut opera en Argentina bajo la razón social de Banco Cetelem Argentina SA (
 - **GitHub Pages en plan gratis solo funciona con repo público.** Se probó pasar el repo a privado (25/10/2026) y el sitio dio 404; se volvió a público y se reactivó Pages. Con GitHub Pro andaría con repo privado, pero el sitio igual sería público. La seguridad real es login + reglas de Firestore, nunca ocultar el hosting.
 - **Nunca duplicar colores/fuentes/nav/botones dentro de un HTML** — todo eso va a `design-system.css`. Si alguna herramienta nueva necesita un estilo que ya existe ahí, importarlo, no copiarlo.
 - **Todo color/fuente visible debe pasar por variable CSS** (`var(--paper)`, `var(--stamp)`, etc.), nunca un hex pegado a mano — si no, el selector de tema (celeste/rojo) no lo detecta y queda "roto" a mitad de camino.
+
+---
+
+**Tema "Vidrio" (28/10/2026):** sexto puntito en el selector de temas de la barra de arriba (degradé azul), para toda la suite. Paneles, KPIs, filtros, columnas y tarjetas del Kanban en vidrio esmerilado; en el Tablero **cada fila es una tira de vidrio**; la ficha lateral, los modales y los menús usan un vidrio más opaco para que se lea bien. Fondo tornasolado azul con trama de hexágonos chicos, a elección con los 4 cuadraditos que aparecen al lado del puntito cuando el tema está activo: **Zafiro · Océano · Hielo · Medianoche** (se recuerda en el navegador: `ggcc_fondo`, atributo `html[data-fondo]`). Todo en `design-system.css` (bloque "Tema Vidrio") y `theme-toggle.js`; sin imágenes externas (degradados + SVG en línea). Copia previa: rama `version/suite-28-10-antes-vidrio`.
+

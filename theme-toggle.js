@@ -7,6 +7,17 @@
   if(saved !== 'celeste'){
     document.documentElement.setAttribute('data-theme', saved);
   }
+  // Fondo del tema Vidrio (zafiro / oceano / hielo / medianoche)
+  const FKEY = 'ggcc_fondo';
+  let fondo = 'zafiro';
+  try{ fondo = localStorage.getItem(FKEY) || 'zafiro'; }catch(e){}
+  document.documentElement.setAttribute('data-fondo', fondo);
+  // Inter para el tema Vidrio en las páginas que no la cargan
+  if(!document.querySelector('link[href*="family=Inter"]')){
+    const l = document.createElement('link'); l.rel='stylesheet';
+    l.href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
+    document.head.appendChild(l);
+  }
 
   const NAV_ICONS = {
     'index.html': 'home',
@@ -61,13 +72,25 @@
       <button type="button" class="dot-nuevo ${saved==='nuevo'?'active':''}" data-theme-btn="nuevo" title="Nuevo"></button>
       <button type="button" class="dot-claro ${saved==='claro'?'active':''}" data-theme-btn="claro" title="Claro"></button>
       <button type="button" class="dot-oscuro ${saved==='oscuro'?'active':''}" data-theme-btn="oscuro" title="Oscuro"></button>
+      <button type="button" class="dot-vidrio ${saved==='vidrio'?'active':''}" data-theme-btn="vidrio" title="Vidrio"></button>
+      <span class="fondo-pick" aria-label="Fondo del tema Vidrio">
+        ${['zafiro','oceano','hielo','medianoche'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
+      </span>
     `;
     nav.appendChild(wrap);
+    wrap.querySelectorAll('[data-fondo-btn]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        fondo = btn.getAttribute('data-fondo-btn');
+        document.documentElement.setAttribute('data-fondo', fondo);
+        try{ localStorage.setItem(FKEY, fondo); }catch(e){}
+        wrap.querySelectorAll('[data-fondo-btn]').forEach(b=>b.classList.toggle('active', b===btn));
+      });
+    });
     wrap.querySelectorAll('[data-theme-btn]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const theme = btn.getAttribute('data-theme-btn');
         applyTheme(theme);
-        wrap.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
+        wrap.querySelectorAll('[data-theme-btn]').forEach(b=>b.classList.toggle('active', b===btn));
         loadLucideAndRender();
       });
     });
