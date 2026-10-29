@@ -405,3 +405,102 @@ html[data-theme="vidrio"] #tabla td{font-family:'Inter',-apple-system,'Segoe UI'
 html[data-theme="vidrio"] .kpi .value{font-weight:300 !important;letter-spacing:-.02em;}
 html[data-theme="vidrio"] .money{font-weight:400;}
 html[data-theme="vidrio"] .kanban-board-opps .ko-col-total{font-weight:500;}
+
+/* ============================================================
+   Tema "Grafito" (29/10/2026) — carbón cálido con luz suave
+   arriba a la izquierda, texto crema, títulos en IBM Plex Sans
+   finita, números y etiquetas en IBM Plex Mono, líneas finas
+   en lugar de cajas y botones pastilla con borde.
+   Se activa con [data-theme="grafito"]
+   ============================================================ */
+html[data-theme="grafito"]{
+  --paper:#1B1C19;
+  --paper-2:rgba(236,230,214,.035);
+  --ink:#ECE6D6;
+  --ink-soft:#BDB7A7;
+  --ink-faint:#8C877B;
+  --line:rgba(236,230,214,.11);
+  --line-strong:rgba(236,230,214,.22);
+  --stamp:#E6D9AE;
+  --stamp-dark:#F1E6C2;
+  --stamp-bg:rgba(230,217,174,.12);
+  --gold:#E3C77E; --gold-bg:rgba(227,199,126,.13);
+  --green:#A3C99A; --green-bg:rgba(163,201,154,.13);
+  --red:#E59C80; --red-bg:rgba(229,156,128,.13);
+  --zebra-odd:transparent;
+  --zebra-even:transparent;
+  --sans:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --heading:'IBM Plex Sans',var(--sans);
+  --display:'IBM Plex Sans',var(--sans);
+  --mono:'IBM Plex Mono','SF Mono',Menlo,Consolas,monospace;
+  --solid:#22231F;
+  color-scheme:dark;
+}
+html[data-theme="grafito"] body{background:#171815;color:var(--ink);font-family:var(--sans);}
+html[data-theme="grafito"] body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;transform:translateZ(0);
+  background:radial-gradient(ellipse 70% 60% at 14% -6%,rgba(160,168,154,.42) 0%,rgba(118,124,112,.18) 38%,transparent 72%),
+             radial-gradient(ellipse 35% 28% at 10% 0%,rgba(215,220,204,.16),transparent 70%),
+             linear-gradient(160deg,#20211E 0%,#1A1B18 45%,#141512 100%);}
+html[data-theme="grafito"] #authGate{background:#171815;}
+html[data-theme="grafito"] h1{font-weight:300;letter-spacing:-.015em;color:var(--ink);}
+html[data-theme="grafito"] h2,html[data-theme="grafito"] h3{font-weight:500;}
+/* Barra superior y barra lateral: sin relleno, solo líneas */
+html[data-theme="grafito"] .suite-nav{background:transparent;border-bottom:1px solid var(--line);}
+html[data-theme="grafito"] .suite-nav a{color:var(--ink-faint);}
+html[data-theme="grafito"] .suite-nav a:hover{color:var(--ink);}
+html[data-theme="grafito"] .suite-nav a.current{color:var(--ink);border-bottom-color:var(--stamp);}
+html[data-theme="grafito"] .suite-nav .suite-brand{color:var(--ink);border-right-color:var(--line);}
+html[data-theme="grafito"] .suite-nav .suite-logo-link{border-right-color:var(--line);}
+html[data-theme="grafito"] .tabs.rail{background:transparent;border-right-color:var(--line);}
+html[data-theme="grafito"] .tabs.rail .tab-btn{background:transparent;border-color:transparent;color:var(--ink-faint);}
+html[data-theme="grafito"] .tabs.rail .tab-btn:hover{background:rgba(236,230,214,.06);color:var(--ink);}
+html[data-theme="grafito"] .tabs.rail .tab-btn.active{background:rgba(230,217,174,.12);color:var(--stamp-dark);}
+html[data-theme="grafito"] .tabs.rail .tab-btn::after{background:var(--solid);color:var(--ink);border:1px solid var(--line-strong);}
+/* Paneles: casi sin caja, borde fino */
+html[data-theme="grafito"] .kpi,html[data-theme="grafito"] .panel,html[data-theme="grafito"] .card-s,html[data-theme="grafito"] .filters,
+html[data-theme="grafito"] .kanban-col,html[data-theme="grafito"] .stat,html[data-theme="grafito"] .pipeline-comp,html[data-theme="grafito"] .idea-col{
+  background:rgba(236,230,214,.03);border:1px solid var(--line);border-radius:8px;box-shadow:none;}
+html[data-theme="grafito"] .kpi::before{display:none;}
+/* Etiquetas en mono, mayúsculas chicas (como "PRICING") */
+html[data-theme="grafito"] .kpi .label,html[data-theme="grafito"] .panel h3,html[data-theme="grafito"] thead th,html[data-theme="grafito"] .filters label,
+html[data-theme="grafito"] details.dsec summary,html[data-theme="grafito"] .field label{
+  font-family:var(--mono) !important;letter-spacing:.08em;}
+html[data-theme="grafito"] .kpi .label,html[data-theme="grafito"] .panel h3,html[data-theme="grafito"] details.dsec summary{color:var(--ink-faint);font-weight:500;}
+html[data-theme="grafito"] .kpi .value{font-family:var(--mono);font-weight:400;color:var(--ink);}
+/* Tablero: lista con líneas finas, como la tabla de precios */
+html[data-theme="grafito"] .table-wrap{background:transparent;border:0;border-top:1px solid var(--line-strong);border-radius:0;}
+html[data-theme="grafito"] thead th{background:transparent;color:var(--ink-faint);border-bottom:1px solid var(--line);font-weight:500;}
+html[data-theme="grafito"] tbody tr,html[data-theme="grafito"] tbody tr:nth-child(odd),html[data-theme="grafito"] tbody tr:nth-child(even){background:transparent;}
+html[data-theme="grafito"] tbody td{border-bottom:1px solid var(--line) !important;}
+html[data-theme="grafito"] tbody tr:hover td,html[data-theme="grafito"] tbody tr:hover{background:rgba(236,230,214,.045) !important;}
+html[data-theme="grafito"] #tbody tr[data-id].expanded td{background:rgba(230,217,174,.08) !important;}
+html[data-theme="grafito"] #tbody tr.xrow td{background:var(--solid) !important;border-bottom:1px solid var(--line-strong) !important;}
+html[data-theme="grafito"] .money,html[data-theme="grafito"] .idcell{font-family:var(--mono);color:var(--ink);}
+/* Kanban */
+html[data-theme="grafito"] .kanban-opp-card,html[data-theme="grafito"] .kanban-card{background:rgba(236,230,214,.045);border-color:var(--line);border-radius:6px;color:var(--ink);box-shadow:none;}
+html[data-theme="grafito"] .kanban-opp-card:hover{background:rgba(236,230,214,.08);}
+html[data-theme="grafito"] .kanban-board-opps .kanban-col.ko-drop-on{background:rgba(230,217,174,.10);box-shadow:inset 0 0 0 1px var(--stamp);}
+/* Ficha, modales, menús y avisos: carbón sólido */
+html[data-theme="grafito"] .drawer,html[data-theme="grafito"] .qc-modal,html[data-theme="grafito"] .modal,html[data-theme="grafito"] [class*="-menu"],
+html[data-theme="grafito"] .drawer-actions{background:var(--solid);border-color:var(--line-strong);color:var(--ink);}
+html[data-theme="grafito"] #toast,html[data-theme="grafito"] .toast{background:var(--solid);color:var(--ink);border:1px solid var(--line-strong);}
+/* Botones pastilla con borde fino y texto mono en mayúsculas */
+html[data-theme="grafito"] button{background:transparent;border:1px solid var(--line-strong);color:var(--ink);border-radius:999px;}
+html[data-theme="grafito"] button:hover{background:rgba(236,230,214,.07);border-color:rgba(236,230,214,.4);}
+html[data-theme="grafito"] button.primary{background:#E6DDB8;border-color:#E6DDB8;color:#1B1C19;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+html[data-theme="grafito"] button.primary:hover{background:#F1E9C9;}
+html[data-theme="grafito"] button.ghost{border-color:transparent;}
+html[data-theme="grafito"] button.danger{border-color:var(--red);color:var(--red);}
+html[data-theme="grafito"] .seg button{border-radius:0;}
+html[data-theme="grafito"] .seg button.on.si,html[data-theme="grafito"] .seg button.on.parcial,html[data-theme="grafito"] .seg button.on.no,html[data-theme="grafito"] .seg button.on.na{color:#1B1C19;}
+html[data-theme="grafito"] .tabs.rail .tab-btn{border-radius:8px;}
+html[data-theme="grafito"] select,html[data-theme="grafito"] input,html[data-theme="grafito"] textarea{background:rgba(236,230,214,.04);color:var(--ink);border-color:var(--line-strong);border-radius:6px;}
+html[data-theme="grafito"] input::placeholder,html[data-theme="grafito"] textarea::placeholder{color:var(--ink-faint);}
+html[data-theme="grafito"] option{background:#22231F;color:var(--ink);}
+html[data-theme="grafito"] .chip,html[data-theme="grafito"] .pill{background:transparent;border-color:var(--line-strong);color:var(--ink);font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;}
+html[data-theme="grafito"] .chip.on,html[data-theme="grafito"] .chip.on:hover{background:#E6DDB8;border-color:#E6DDB8;color:#1B1C19;}
+html[data-theme="grafito"] .rail-badge{color:#1B1C19;}
+html[data-theme="grafito"] .funnel-bar{color:#1B1C19;}
+html[data-theme="grafito"] .pipeline-comp-seg{color:#1B1C19;}
+html[data-theme="grafito"] .bar-row .bar-track{background:rgba(236,230,214,.06);}
+.theme-toggle .dot-grafito{background:radial-gradient(circle at 30% 30%,#8A8F84 0%,#2A2B27 55%,#171815 100%);}

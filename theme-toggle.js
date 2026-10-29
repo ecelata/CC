@@ -13,6 +13,12 @@
   try{ fondo = localStorage.getItem(FKEY) || 'zafiro'; }catch(e){}
   document.documentElement.setAttribute('data-fondo', fondo);
   // Inter para el tema Vidrio en las páginas que no la cargan
+  // IBM Plex Sans + Mono para el tema Grafito
+  if(!document.querySelector('link[href*="family=IBM+Plex+Sans"]')){
+    const lp = document.createElement('link'); lp.rel='stylesheet';
+    lp.href='https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap';
+    document.head.appendChild(lp);
+  }
   if(!document.querySelector('link[href*="family=Inter"]')){
     const l = document.createElement('link'); l.rel='stylesheet';
     l.href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
@@ -73,6 +79,7 @@
       <button type="button" class="dot-claro ${saved==='claro'?'active':''}" data-theme-btn="claro" title="Claro"></button>
       <button type="button" class="dot-oscuro ${saved==='oscuro'?'active':''}" data-theme-btn="oscuro" title="Oscuro"></button>
       <button type="button" class="dot-vidrio ${saved==='vidrio'?'active':''}" data-theme-btn="vidrio" title="Vidrio"></button>
+      <button type="button" class="dot-grafito ${saved==='grafito'?'active':''}" data-theme-btn="grafito" title="Grafito"></button>
       <span class="fondo-pick" aria-label="Fondo del tema Vidrio">
         ${['zafiro','oceano','hielo','medianoche','atardecer'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
       </span>
