@@ -74,7 +74,7 @@
       <button type="button" class="dot-oscuro ${saved==='oscuro'?'active':''}" data-theme-btn="oscuro" title="Oscuro"></button>
       <button type="button" class="dot-vidrio ${saved==='vidrio'?'active':''}" data-theme-btn="vidrio" title="Vidrio"></button>
       <span class="fondo-pick" aria-label="Fondo del tema Vidrio">
-        ${['zafiro','oceano','hielo','medianoche'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
+        ${['zafiro','oceano','hielo','medianoche','atardecer'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
       </span>
     `;
     nav.appendChild(wrap);
