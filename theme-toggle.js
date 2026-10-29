@@ -13,6 +13,12 @@
   try{ fondo = localStorage.getItem(FKEY) || 'zafiro'; }catch(e){}
   document.documentElement.setAttribute('data-fondo', fondo);
   // Inter para el tema Vidrio en las páginas que no la cargan
+  // Source Serif 4 itálica para las palabras destacadas de los títulos (tema Vidrio)
+  if(!document.querySelector('link[href*="Source+Serif"]')){
+    const ls = document.createElement('link'); ls.rel='stylesheet';
+    ls.href='https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@1,8..60,400&display=swap';
+    document.head.appendChild(ls);
+  }
   // IBM Plex Sans + Mono para el tema Grafito
   if(!document.querySelector('link[href*="family=IBM+Plex+Sans"]')){
     const lp = document.createElement('link'); lp.rel='stylesheet';
@@ -81,7 +87,7 @@
       <button type="button" class="dot-vidrio ${saved==='vidrio'?'active':''}" data-theme-btn="vidrio" title="Vidrio"></button>
       <button type="button" class="dot-grafito ${saved==='grafito'?'active':''}" data-theme-btn="grafito" title="Grafito"></button>
       <span class="fondo-pick" aria-label="Fondo del tema Vidrio">
-        ${['zafiro','oceano','hielo','medianoche','atardecer'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
+        ${['zafiro','oceano','hielo','medianoche','atardecer','plata'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
       </span>
     `;
     nav.appendChild(wrap);

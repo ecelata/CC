@@ -6,8 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Figtree:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="design-system.css?v=20261029c">
-<script src="theme-toggle.js?v=20261029c"></script>
+<link rel="stylesheet" href="design-system.css?v=20261029d">
+<script src="theme-toggle.js?v=20261029d"></script>
 <style>
   *{box-sizing:border-box;}
   .app{max-width:1880px;margin:0 auto;padding:28px 32px 80px;}
@@ -649,7 +649,7 @@
 <div class="app">
   <div class="topbar">
     <div>
-      <h1>Backlog de preventa</h1>
+      <h1>Backlog de <em class="ser">preventa</em></h1>
       <div class="sub" id="subtitle">cargando…</div>
     </div>
     <div class="topbar-actions">
@@ -709,7 +709,7 @@
       </div>
     </div>
 
-    <div class="table-head"><h3 id="tableTitle" style="margin:0;">Oportunidades activas</h3><span class="hint">Clic en una fila para desplegarla y cambiarla ahí mismo · doble clic: ficha completa</span><button type="button" class="ghost edit-only" id="btnCalificar">Calificar BANT</button></div>
+    <div class="table-head"><h3 id="tableTitle" style="margin:0;">Oportunidades <em class="ser">activas</em></h3><span class="hint">Clic en una fila para desplegarla y cambiarla ahí mismo · doble clic: ficha completa</span><button type="button" class="ghost edit-only" id="btnCalificar">Calificar BANT</button></div>
     <div class="filters">
       <div><label>Segmento</label><select id="fSegmento"><option value="">Todos</option></select></div>
       <div><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
@@ -749,7 +749,7 @@
   </div>
 
   <div class="view" id="viewAgenda">
-    <div class="agenda-topbar"><h3 style="margin:0;">Tareas</h3><div class="hint">Todas tus tareas: de opps, proyectos, campañas e internas. El check las completa; el título las edita; el vínculo abre la opp.</div></div>
+    <div class="agenda-topbar"><h3 style="margin:0;"><em class="ser">Tareas</em></h3><div class="hint">Todas tus tareas: de opps, proyectos, campañas e internas. El check las completa; el título las edita; el vínculo abre la opp.</div></div>
     <div id="tareasContent" class="stack"></div>
     <div class="kanban-board" style="display:none" aria-hidden="true">
       <div class="kanban-col" data-col="porhacer">
@@ -769,7 +769,7 @@
 
   <div class="view" id="viewKanbanOpps">
     <div class="agenda-topbar">
-      <h3 style="margin:0;">Kanban de oportunidades</h3>
+      <h3 style="margin:0;">Kanban de <em class="ser">oportunidades</em></h3>
       <div class="hint">Arrastrá para cambiar de etapa · un clic despliega el detalle · doble clic edita</div>
     </div>
     <div class="kanban-board-opps" id="kanbanOppsBoard"></div>
@@ -777,7 +777,7 @@
 
   <div class="view" id="viewEquipo">
     <div class="agenda-topbar">
-      <h3 style="margin:0;">Equipo</h3>
+      <h3 style="margin:0;"><em class="ser">Equipo</em></h3>
       <div class="hint">Responsable → cuentas (EECC) a cargo, con su segmento y su ingeniero de preventa</div>
     </div>
     <div class="equipo-grid" id="equipoGrid"></div>
@@ -785,7 +785,7 @@
 
   <div class="view" id="viewHistorico">
     <div class="agenda-topbar">
-      <h3 style="margin:0;">Histórico de ganadas</h3>
+      <h3 style="margin:0;">Histórico de <em class="ser">ganadas</em></h3>
       <div class="hint">Cotizaciones ganadas de tus EECC, mes a mes · importá el excel de "Cotizaciones Cloud" o agregá a mano</div>
     </div>
     <div class="hist-toolbar">
@@ -849,8 +849,8 @@
   </div>
 
   <div class="view" id="viewPasos"><div class="agenda-topbar"><h3 style="margin:0;">Próximos pasos</h3><div class="hint">Verde: al día · ámbar: sin próximo paso · rojo: fecha vencida. Un clic abre la opp.</div></div><div id="pasosContent" class="stack"></div></div>
-  <div class="view" id="viewIdeas"><div class="agenda-topbar"><h3 style="margin:0;">Ideas y campañas</h3></div><div id="ideasContent"></div></div>
-  <div class="view" id="viewStaff"><div class="agenda-topbar"><h3 style="margin:0;">Staff del martes</h3></div><div id="staffContent"></div></div>
+  <div class="view" id="viewIdeas"><div class="agenda-topbar"><h3 style="margin:0;">Ideas y <em class="ser">campañas</em></h3></div><div id="ideasContent"></div></div>
+  <div class="view" id="viewStaff"><div class="agenda-topbar"><h3 style="margin:0;">Staff del <em class="ser">martes</em></h3></div><div id="staffContent"></div></div>
 </div>
 </div><!-- /shell -->
 
@@ -2832,7 +2832,7 @@ function switchTab(tab){
     const estadoWrap = document.getElementById('fEstadoFinal').parentElement;
     if(estadoWrap) estadoWrap.style.display = (boardView==='cerradas') ? '' : 'none';
     if(boardView==='activas') document.getElementById('fEstadoFinal').value='';
-    document.getElementById('tableTitle').textContent = (boardView==='cerradas') ? 'Oportunidades cerradas' : 'Oportunidades activas';
+    document.getElementById('tableTitle').innerHTML = (boardView==='cerradas') ? 'Oportunidades <em class="ser">cerradas</em>' : 'Oportunidades <em class="ser">activas</em>';
     renderKpis();
     renderTable();
   }
