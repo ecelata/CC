@@ -590,3 +590,12 @@ html[data-theme="vidrio"][data-fondo="tierra"] .kanban-col,html[data-theme="vidr
 html[data-theme="vidrio"][data-fondo="tierra"] .qc-modal{border:1px solid rgba(245,237,225,.10) !important;box-shadow:0 6px 18px rgba(0,0,0,.12);}
 html[data-theme="vidrio"][data-fondo="tierra"] .kanban-opp-card{border-top-color:rgba(245,237,225,.10);border-right-color:rgba(245,237,225,.10);border-bottom-color:rgba(245,237,225,.10);}
 html[data-theme="vidrio"][data-fondo="tierra"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.3);border-left:1px solid rgba(245,237,225,.10) !important;}
+/* Foto de fondo propia (29/10/2026): se elige con la miniatura y el "+" junto a los fondos del Vidrio.
+   Usa la paleta del fondo elegido (ej. Tierra) y reemplaza su dibujo por la foto, con un velo para leer bien. */
+html[data-theme="vidrio"][data-foto="1"]{
+  --vbg-img:linear-gradient(180deg,rgba(14,11,8,.30) 0%,rgba(14,11,8,.45) 45%,rgba(14,11,8,.62) 100%),var(--foto) center 35% / cover no-repeat;
+  --vhex:0;
+}
+.theme-toggle .f-foto{background:repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 3px,transparent 3px 6px);background-size:cover;background-position:center;}
+.theme-toggle .f-foto.vacia{opacity:.7;}
+.theme-toggle .f-foto-subir{width:14px;height:14px;border-radius:4px;padding:0;font-size:11px;line-height:12px;font-weight:700;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);display:inline-flex;align-items:center;justify-content:center;}

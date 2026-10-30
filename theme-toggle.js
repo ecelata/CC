@@ -12,6 +12,38 @@
   let fondo = 'zafiro';
   try{ fondo = localStorage.getItem(FKEY) || 'zafiro'; }catch(e){}
   document.documentElement.setAttribute('data-fondo', fondo);
+  // Foto de fondo propia (tema Vidrio): se guarda solo en este navegador, no se sube al repo
+  const FOTO_KEY = 'ggcc_fondo_foto', FOTO_ON = 'ggcc_foto_on';
+  function fotoGuardada(){ try{ return localStorage.getItem(FOTO_KEY) || ''; }catch(e){ return ''; } }
+  function aplicarFoto(on){
+    const data = fotoGuardada();
+    if(on && data){
+      document.documentElement.style.setProperty('--foto', 'url("' + data + '")');
+      document.documentElement.setAttribute('data-foto', '1');
+    }else{
+      document.documentElement.removeAttribute('data-foto');
+    }
+    try{ localStorage.setItem(FOTO_ON, on && data ? '1' : '0'); }catch(e){}
+  }
+  try{ if(localStorage.getItem(FOTO_ON) === '1') aplicarFoto(true); }catch(e){}
+  // Achica la imagen (máx. 2000 px de ancho, JPEG) para que entre en el navegador
+  function cargarFoto(file, listo){
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 2000, k = Math.min(1, max / img.width);
+        const c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        let q = 0.82, url = c.toDataURL('image/jpeg', q);
+        while(url.length > 1800000 && q > 0.4){ q -= 0.1; url = c.toDataURL('image/jpeg', q); }
+        try{ localStorage.setItem(FOTO_KEY, url); listo(true); }
+        catch(e){ alert('La foto es muy pesada para guardarla en el navegador. Probá con una más chica.'); listo(false); }
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  }
   // Inter para el tema Vidrio en las páginas que no la cargan
   // Source Serif 4 itálica para las palabras destacadas de los títulos (tema Vidrio)
   if(!document.querySelector('link[href*="Source+Serif"]')){
@@ -88,9 +120,25 @@
       <button type="button" class="dot-grafito ${saved==='grafito'?'active':''}" data-theme-btn="grafito" title="Grafito"></button>
       <span class="fondo-pick" aria-label="Fondo del tema Vidrio">
         ${['zafiro','oceano','hielo','medianoche','atardecer','plata','tierra'].map(f=>`<button type="button" class="f-${f} ${fondo===f?'active':''}" data-fondo-btn="${f}" title="Fondo ${f==='oceano'?'océano':f}"></button>`).join('')}
+        <button type="button" class="f-foto" data-foto-btn="toggle" title="Usar mi foto de fondo (encender / apagar)" aria-label="Mi foto de fondo"></button>
+        <button type="button" class="f-foto-subir" data-foto-btn="subir" title="Subir o cambiar mi foto de fondo" aria-label="Subir foto de fondo">+</button>
+        <input type="file" accept="image/*" data-foto-file style="display:none">
       </span>
     `;
     nav.appendChild(wrap);
+    const fotoBtn = wrap.querySelector('[data-foto-btn="toggle"]'), fotoFile = wrap.querySelector('[data-foto-file]');
+    function pintarMiniatura(){ const d = fotoGuardada(); if(fotoBtn){ fotoBtn.style.backgroundImage = d ? 'url("'+d+'")' : ''; fotoBtn.classList.toggle('vacia', !d); fotoBtn.classList.toggle('active', document.documentElement.getAttribute('data-foto')==='1'); } }
+    pintarMiniatura();
+    if(fotoBtn) fotoBtn.addEventListener('click', ()=>{
+      if(!fotoGuardada()){ fotoFile.click(); return; }
+      aplicarFoto(document.documentElement.getAttribute('data-foto')!=='1'); pintarMiniatura();
+    });
+    const subir = wrap.querySelector('[data-foto-btn="subir"]');
+    if(subir) subir.addEventListener('click', ()=> fotoFile.click());
+    if(fotoFile) fotoFile.addEventListener('change', ()=>{
+      const f = fotoFile.files && fotoFile.files[0]; if(!f) return;
+      cargarFoto(f, ok => { if(ok){ aplicarFoto(true); pintarMiniatura(); } fotoFile.value=''; });
+    });
     wrap.querySelectorAll('[data-fondo-btn]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         fondo = btn.getAttribute('data-fondo-btn');
