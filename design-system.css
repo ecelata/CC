@@ -548,3 +548,35 @@ html[data-theme="vidrio"][data-fondo="plata"] .chip.on,html[data-theme="vidrio"]
 html[data-theme="vidrio"][data-fondo="plata"] .pipeline-comp-seg{color:#111;}
 .theme-toggle .f-plata{background:linear-gradient(135deg,#f2f2f2,#8a8a8a 55%,#151515);}
 html[data-theme="vidrio"] .kanban-opp-card{position:relative;border-top-color:transparent;border-right-color:transparent;border-bottom-color:transparent;}
+
+/* Fondo "Tierra" del Vidrio (29/10/2026): sepia y marrones, montañas, vidrio marrón cristal,
+   barra superior y lateral negro agrisado, botón principal crema. */
+html[data-theme="vidrio"][data-fondo="tierra"]{
+  --vbg:#3a2e24;
+  --vbg-img:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201440%20520%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22b%22%20x%3D%22-5%25%22%20y%3D%22-20%25%22%20width%3D%22110%25%22%20height%3D%22140%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22/%3E%3C/filter%3E%3Cfilter%20id%3D%22b2%22%20x%3D%22-5%25%22%20y%3D%22-20%25%22%20width%3D%22110%25%22%20height%3D%22140%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%222%22/%3E%3C/filter%3E%3ClinearGradient%20id%3D%22g1%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%239c8670%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%236e5a47%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22g2%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%236b5440%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%233f3126%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22g3%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%233a2d22%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231f1812%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20filter%3D%22url%28%23b%29%22%20fill%3D%22url%28%23g1%29%22%20opacity%3D%22.8%22%20d%3D%22M0%2C300%20L140%2C230%20L240%2C270%20L380%2C170%20L470%2C230%20L560%2C200%20L700%2C90%20L800%2C190%20L900%2C150%20L1010%2C230%20L1120%2C160%20L1250%2C240%20L1350%2C200%20L1440%2C230%20L1440%2C520%20L0%2C520Z%22/%3E%3Cpath%20filter%3D%22url%28%23b2%29%22%20fill%3D%22url%28%23g2%29%22%20d%3D%22M0%2C380%20L80%2C300%20L170%2C340%20L250%2C250%20L330%2C330%20L420%2C300%20L520%2C370%20L600%2C260%20L660%2C200%20L720%2C140%20L790%2C230%20L860%2C300%20L960%2C270%20L1060%2C330%20L1150%2C250%20L1240%2C300%20L1330%2C240%20L1440%2C290%20L1440%2C520%20L0%2C520Z%22/%3E%3Cpath%20fill%3D%22url%28%23g3%29%22%20d%3D%22M0%2C450%20L70%2C400%20L150%2C430%20L230%2C370%20L320%2C440%20L420%2C470%20L1040%2C480%20L1130%2C420%20L1220%2C450%20L1310%2C390%20L1380%2C420%20L1440%2C400%20L1440%2C520%20L0%2C520Z%22/%3E%3C/svg%3E") center bottom / 100% 62% no-repeat,radial-gradient(ellipse 45% 30% at 78% 14%,rgba(232,214,186,.45),transparent 70%),radial-gradient(ellipse 40% 26% at 20% 10%,rgba(210,190,160,.32),transparent 70%),radial-gradient(ellipse 60% 30% at 55% 30%,rgba(180,158,128,.25),transparent 72%),linear-gradient(180deg,#8f7b64 0%,#7a6551 30%,#5d4b3b 58%,#3a2e24 100%);
+  --vhex:0;
+  --paper:rgba(60,48,38,.55);
+  --paper-2:rgba(66,53,42,.58);
+  --ink:#F5EDE1; --ink-soft:rgba(245,237,225,.78); --ink-faint:rgba(245,237,225,.56);
+  --line:rgba(245,237,225,.14); --line-strong:rgba(245,237,225,.24);
+  --stamp:#F3E6D0; --stamp-dark:#FBF3E6; --stamp-bg:rgba(243,230,208,.16);
+  --gold:#E8C98E; --gold-bg:rgba(232,201,142,.16);
+  --green:#B9D3A0; --green-bg:rgba(185,211,160,.15);
+  --red:#EDA88A; --red-bg:rgba(237,168,138,.15);
+  --glass-solid:rgba(40,33,27,.94);
+}
+html[data-theme="vidrio"][data-fondo="tierra"] .kpi,html[data-theme="vidrio"][data-fondo="tierra"] .panel,html[data-theme="vidrio"][data-fondo="tierra"] .card-s,html[data-theme="vidrio"][data-fondo="tierra"] .filters,
+html[data-theme="vidrio"][data-fondo="tierra"] .kanban-col,html[data-theme="vidrio"][data-fondo="tierra"] .stat,html[data-theme="vidrio"][data-fondo="tierra"] .pipeline-comp,html[data-theme="vidrio"][data-fondo="tierra"] .idea-col{
+  background:linear-gradient(180deg,rgba(72,58,46,.72) 0%,rgba(52,42,34,.70) 100%);}
+html[data-theme="vidrio"][data-fondo="tierra"] tbody td{background:rgba(58,47,38,.66);border-top-color:rgba(245,237,225,.12);}
+html[data-theme="vidrio"][data-fondo="tierra"] tbody tr:hover td{background:rgba(84,68,54,.8) !important;}
+html[data-theme="vidrio"][data-fondo="tierra"] .kanban-opp-card{background:rgba(88,72,58,.6);}
+html[data-theme="vidrio"][data-fondo="tierra"] .suite-nav,html[data-theme="vidrio"][data-fondo="tierra"] .tabs.rail{background:rgba(28,27,25,.92);backdrop-filter:none;-webkit-backdrop-filter:none;border-color:rgba(255,255,255,.06);}
+html[data-theme="vidrio"][data-fondo="tierra"] .tabs.rail .tab-btn.active{background:rgba(255,255,255,.12);box-shadow:none;}
+html[data-theme="vidrio"][data-fondo="tierra"] button.primary{background:#F6EFE4;color:#2B231C;border-color:#F6EFE4;border-radius:10px;}
+html[data-theme="vidrio"][data-fondo="tierra"] button.primary:hover{background:#FFF8EE;}
+html[data-theme="vidrio"][data-fondo="tierra"] .chip.on,html[data-theme="vidrio"][data-fondo="tierra"] .chip.on:hover{background:#F6EFE4;border-color:#F6EFE4;color:#2B231C;}
+html[data-theme="vidrio"][data-fondo="tierra"] .pipeline-comp-seg,html[data-theme="vidrio"][data-fondo="tierra"] .funnel-bar{color:#2B231C;}
+html[data-theme="vidrio"][data-fondo="tierra"] em.ser{color:rgba(245,237,225,.86);}
+html[data-theme="vidrio"][data-fondo="tierra"] option{background:#2a221c;}
+.theme-toggle .f-tierra{background:linear-gradient(180deg,#a28d75,#6b5440 55%,#2a2119);}
