@@ -580,3 +580,13 @@ html[data-theme="vidrio"][data-fondo="tierra"] .pipeline-comp-seg,html[data-them
 html[data-theme="vidrio"][data-fondo="tierra"] em.ser{color:rgba(245,237,225,.86);}
 html[data-theme="vidrio"][data-fondo="tierra"] option{background:#2a221c;}
 .theme-toggle .f-tierra{background:linear-gradient(180deg,#a28d75,#6b5440 55%,#2a2119);}
+/* Tierra sin el borde de luz: borde fino parejo */
+html[data-theme="vidrio"][data-fondo="tierra"] .kpi::before,html[data-theme="vidrio"][data-fondo="tierra"] .panel::after,html[data-theme="vidrio"][data-fondo="tierra"] .card-s::after,
+html[data-theme="vidrio"][data-fondo="tierra"] .filters::after,html[data-theme="vidrio"][data-fondo="tierra"] .kanban-col::after,html[data-theme="vidrio"][data-fondo="tierra"] .stat::after,
+html[data-theme="vidrio"][data-fondo="tierra"] .pipeline-comp::after,html[data-theme="vidrio"][data-fondo="tierra"] .idea-col::after,html[data-theme="vidrio"][data-fondo="tierra"] .qc-modal::after,
+html[data-theme="vidrio"][data-fondo="tierra"] button.primary::after,html[data-theme="vidrio"][data-fondo="tierra"] .kanban-opp-card::after{display:none;}
+html[data-theme="vidrio"][data-fondo="tierra"] .kpi,html[data-theme="vidrio"][data-fondo="tierra"] .panel,html[data-theme="vidrio"][data-fondo="tierra"] .card-s,html[data-theme="vidrio"][data-fondo="tierra"] .filters,
+html[data-theme="vidrio"][data-fondo="tierra"] .kanban-col,html[data-theme="vidrio"][data-fondo="tierra"] .stat,html[data-theme="vidrio"][data-fondo="tierra"] .pipeline-comp,html[data-theme="vidrio"][data-fondo="tierra"] .idea-col,
+html[data-theme="vidrio"][data-fondo="tierra"] .qc-modal{border:1px solid rgba(245,237,225,.10) !important;box-shadow:0 6px 18px rgba(0,0,0,.12);}
+html[data-theme="vidrio"][data-fondo="tierra"] .kanban-opp-card{border-top-color:rgba(245,237,225,.10);border-right-color:rgba(245,237,225,.10);border-bottom-color:rgba(245,237,225,.10);}
+html[data-theme="vidrio"][data-fondo="tierra"] .drawer{box-shadow:-8px 0 30px rgba(0,0,0,.3);border-left:1px solid rgba(245,237,225,.10) !important;}
