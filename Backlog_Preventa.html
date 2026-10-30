@@ -258,7 +258,7 @@
   .tabs.rail{z-index:40;position:sticky;top:0;align-self:flex-start;height:calc(100vh - 42px);width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;margin:0;background:var(--paper-2);border-right:1px solid var(--line);border-radius:0;}
   .tabs.rail .tab-btn{width:46px;height:46px;padding:0;justify-content:center;border-radius:8px;position:relative;color:var(--ink-soft);}
   .tabs.rail .tab-btn svg{width:20px;height:20px;}
-  .tabs.rail .rail-sep{display:block;width:28px;height:1px;background:var(--line);margin:6px 0;}
+  .tabs.rail .rail-sep{display:block;width:28px;height:1px;background:var(--line);margin:auto 0 6px;}
   .tabs.rail a.tab-btn{display:flex;align-items:center;text-decoration:none;}
   .tabs.rail .tab-btn:hover{background:var(--paper);color:var(--ink);}
   .tabs.rail .tab-btn.active{background:var(--stamp-bg);color:var(--stamp-dark);box-shadow:none;}
@@ -648,6 +648,8 @@
     <button class="tab-btn" id="tabBtnHistorico" data-tab="historico" data-tip="Histórico" aria-label="Histórico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 3"/></svg></button>
     <span class="rail-sep" aria-hidden="true"></span>
     <a class="tab-btn rail-link" id="railCartera" href="dashboard.html" data-tip="Cartera de clientes" aria-label="Ir a la Cartera de clientes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></a>
+    <a class="tab-btn rail-link" id="railProyectos" href="proyectos.html" data-tip="Proyectos" aria-label="Ir a Proyectos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M8 14l2.5 2.5L16 11"/></svg></a>
+    <a class="tab-btn rail-link" id="railCalculadora" href="calculadora.html" data-tip="Calculadora" aria-label="Ir a la Calculadora"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h4"/></svg></a>
   </nav>
 
 <div class="app">
