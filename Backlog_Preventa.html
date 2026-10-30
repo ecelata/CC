@@ -258,6 +258,8 @@
   .tabs.rail{z-index:40;position:sticky;top:0;align-self:flex-start;height:calc(100vh - 42px);width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;margin:0;background:var(--paper-2);border-right:1px solid var(--line);border-radius:0;}
   .tabs.rail .tab-btn{width:46px;height:46px;padding:0;justify-content:center;border-radius:8px;position:relative;color:var(--ink-soft);}
   .tabs.rail .tab-btn svg{width:20px;height:20px;}
+  .tabs.rail .rail-sep{display:block;width:28px;height:1px;background:var(--line);margin:6px 0;}
+  .tabs.rail a.tab-btn{display:flex;align-items:center;text-decoration:none;}
   .tabs.rail .tab-btn:hover{background:var(--paper);color:var(--ink);}
   .tabs.rail .tab-btn.active{background:var(--stamp-bg);color:var(--stamp-dark);box-shadow:none;}
   .tabs.rail .tab-btn::after{content:attr(data-tip);position:absolute;left:54px;top:50%;transform:translateY(-50%);background:var(--ink);color:var(--paper-2);font-size:12px;font-weight:500;padding:4px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:50;}
@@ -644,6 +646,8 @@
     <button class="tab-btn" id="tabBtnPanorama" data-tab="panorama" data-tip="Panorama" aria-label="Panorama"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></button>
     <button class="tab-btn" id="tabBtnEquipo" data-tab="equipo" data-tip="Equipo" aria-label="Equipo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
     <button class="tab-btn" id="tabBtnHistorico" data-tab="historico" data-tip="Histórico" aria-label="Histórico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 3"/></svg></button>
+    <span class="rail-sep" aria-hidden="true"></span>
+    <a class="tab-btn rail-link" id="railCartera" href="dashboard.html" data-tip="Cartera de clientes" aria-label="Ir a la Cartera de clientes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 13h20"/></svg></a>
   </nav>
 
 <div class="app">
@@ -2810,7 +2814,7 @@ document.getElementById('btnClearFilters').addEventListener('click', ()=>{
   document.getElementById('fBuscar').value='';
   renderTable();
 });
-document.querySelectorAll('.tab-btn').forEach(btn=>{
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn=>{
   btn.addEventListener('click', ()=>switchTab(btn.getAttribute('data-tab')));
 });
 function switchTab(tab){
