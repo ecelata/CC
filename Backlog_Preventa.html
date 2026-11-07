@@ -364,12 +364,13 @@
   .filters-chips{display:flex;gap:6px;flex-wrap:wrap;}
   .chip.warn{border-style:dashed;border-color:var(--gold);background:var(--gold-bg);}
   .chip.warn.on,.chip.warn.on:hover{background:var(--gold);border-color:var(--gold);border-style:solid;color:#fff;}
-  .ko-filtros{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;padding:12px 14px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;}
-  .kf-fila{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-  .kf-buscar{display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--line-strong);border-radius:15px;background:var(--paper);min-width:260px;flex:0 1 320px;}
-  .kf-buscar span{color:var(--ink-faint);font-size:15px;} .kf-buscar input{border:0;background:transparent;outline:none;font:inherit;font-size:13px;width:100%;color:var(--ink);padding:0;}
-  .kf-sel{height:30px;border-radius:15px;padding:0 10px;font-size:12.5px;width:auto !important;max-width:220px;}
-  .kf-res{margin-left:auto;font-size:12.5px;color:var(--ink-soft);} .kf-limpiar{font-size:12.5px;padding:4px 10px;}
+  .ko-filtros{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:0 0 12px;padding:8px 10px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;}
+  .kf-fila{display:contents;}
+  .ko-filtros .chip{font-size:11.5px;height:26px;padding:0 7px;border-radius:13px;white-space:nowrap;}
+  .kf-buscar{display:flex;align-items:center;gap:5px;height:26px;padding:0 9px;border:1px solid var(--line-strong);border-radius:13px;background:var(--paper);flex:0 1 130px;min-width:100px;}
+  .kf-buscar span{color:var(--ink-faint);font-size:13px;} .kf-buscar input{border:0;background:transparent;outline:none;font:inherit;font-size:11.5px;width:100%;color:var(--ink);padding:0;height:auto;}
+  .ko-filtros .kf-sel{height:26px;border-radius:13px;padding:0 4px;font-size:11.5px;width:auto !important;max-width:104px;}
+  .kf-res{margin-left:auto;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;} .kf-limpiar{font-size:11.5px;padding:3px 8px;white-space:nowrap;}
   .qc-modal .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
   .tp{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
   .tlist{gap:0 !important;padding-top:4px !important;padding-bottom:4px !important;}
@@ -3196,22 +3197,22 @@ function renderKoFiltros(abiertas){
   const vis = abiertas.filter(o=>kfPasa(o)).length;
   const q = document.activeElement && document.activeElement.id==='kfQ';
   el.innerHTML = `<div class="kf-fila">
-      <label class="kf-buscar"><span aria-hidden="true">⌕</span><input type="search" id="kfQ" placeholder="Buscar cliente, opp, Nº CRM o EECC" value="${escapeHtml(KF.q)}"></label>
+      <label class="kf-buscar"><span aria-hidden="true">⌕</span><input type="search" id="kfQ" placeholder="Buscar…" title="Buscar por cliente, opp, Nº CRM o EECC" value="${escapeHtml(KF.q)}"></label>
       ${chip(!KF.seg,'data-kfseg=""','Todas · '+cnt('seg',()=>true))}
-      ${SEGMENTOS.map(sg=>chip(KF.seg===sg,`data-kfseg="${escapeHtml(sg)}"`,escapeHtml(sg)+' · '+cnt('seg',o=>o.segmento===sg))).join('')}
+      ${SEGMENTOS.map(sg=>chip(KF.seg===sg,`data-kfseg="${escapeHtml(sg)}" title="${escapeHtml(sg)}"`,escapeHtml(sg.replace(/^CCEE /,''))+' · '+cnt('seg',o=>o.segmento===sg))).join('')}
     </div>
     <div class="kf-fila">
-      ${chip(KF.alta,'data-kftog="alta"','Prioridad alta · '+cnt('alta',o=>o.prioridad==='Alta'))}
-      ${chip(KF.cierre,'data-kftog="cierre"','Cierra en 30 días · '+cnt('cierre',o=>o.fechaEstCierre && o.fechaEstCierre<=sumarDias(todayISO(),30)))}
+      ${chip(KF.alta,'data-kftog="alta"','Alta · '+cnt('alta',o=>o.prioridad==='Alta'))}
+      ${chip(KF.cierre,'data-kftog="cierre"','Cierre ≤30 d · '+cnt('cierre',o=>o.fechaEstCierre && o.fechaEstCierre<=sumarDias(todayISO(),30)))}
       ${chip(KF.sinMonto,'data-kftog="sinMonto"','Sin monto · '+cnt('sinMonto',kfSinMonto),true)}
-      ${chip(KF.paso==='venc','data-kfpaso="venc"','Paso vencido · '+cnt('paso',o=>nextState(o)==='venc'),true)}
-      ${chip(KF.paso==='sin','data-kfpaso="sin"','Sin próximo paso · '+cnt('paso',o=>nextState(o)==='sin'),true)}
-      ${sel('eecc','Todos los EECC', eeccs.map(e=>[e,e]), KF.eecc)}
-      ${verts.length?sel('vert','Todas las verticales', verts.map(v=>[v,v]), KF.vert):''}
-      ${sel('prob','Toda probabilidad', [...PROBS.map(p=>[String(p),p+'% · '+PROB_LBL[p]]),['sin','Sin probabilidad']], KF.prob)}
-      ${camps.length?sel('camp','Todas las campañas', camps.map(c=>[c.id,c.titulo]), KF.camp):''}
-      <span class="kf-res">${vis===abiertas.length?`${vis} opps`:`Mostrando <b>${vis}</b> de ${abiertas.length}`}</span>
-      ${kfActivos()?'<button type="button" class="ghost kf-limpiar" data-kflimpiar="1">Limpiar filtros</button>':''}
+      ${chip(KF.paso==='venc','data-kfpaso="venc"','Vencido · '+cnt('paso',o=>nextState(o)==='venc'),true)}
+      ${chip(KF.paso==='sin','data-kfpaso="sin"','Sin paso · '+cnt('paso',o=>nextState(o)==='sin'),true)}
+      ${sel('eecc','EECC', eeccs.map(e=>[e,e]), KF.eecc)}
+      ${verts.length?sel('vert','Vertical', verts.map(v=>[v,v]), KF.vert):''}
+      ${sel('prob','Prob.', [...PROBS.map(p=>[String(p),p+'% · '+PROB_LBL[p]]),['sin','Sin probabilidad']], KF.prob)}
+      ${camps.length?sel('camp','Campaña', camps.map(c=>[c.id,c.titulo]), KF.camp):''}
+      <span class="kf-res">${vis===abiertas.length?`${vis} opps`:`<b>${vis}</b> de ${abiertas.length}`}</span>
+      ${kfActivos()?'<button type="button" class="ghost kf-limpiar" data-kflimpiar="1" title="Limpiar filtros" aria-label="Limpiar filtros">✕</button>':''}
     </div>`;
   if(q){ const i=document.getElementById('kfQ'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }
 }
