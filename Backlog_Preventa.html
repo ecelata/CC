@@ -362,6 +362,14 @@
   .chip{font-size:12.5px;height:30px;padding:0 12px;border-radius:15px;border:1px solid var(--line-strong);background:var(--paper-2);color:var(--ink);}
   .chip.on,.chip.on:hover{background:var(--stamp-dark);border-color:var(--stamp-dark);color:#fff;}
   .filters-chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip.warn{border-style:dashed;border-color:var(--gold);background:var(--gold-bg);}
+  .chip.warn.on,.chip.warn.on:hover{background:var(--gold);border-color:var(--gold);border-style:solid;color:#fff;}
+  .ko-filtros{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;padding:12px 14px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;}
+  .kf-fila{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .kf-buscar{display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--line-strong);border-radius:15px;background:var(--paper);min-width:260px;flex:0 1 320px;}
+  .kf-buscar span{color:var(--ink-faint);font-size:15px;} .kf-buscar input{border:0;background:transparent;outline:none;font:inherit;font-size:13px;width:100%;color:var(--ink);padding:0;}
+  .kf-sel{height:30px;border-radius:15px;padding:0 10px;font-size:12.5px;width:auto !important;max-width:220px;}
+  .kf-res{margin-left:auto;font-size:12.5px;color:var(--ink-soft);} .kf-limpiar{font-size:12.5px;padding:4px 10px;}
   .qc-modal .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
   .tp{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;background:var(--stamp-bg);color:var(--stamp-dark);white-space:nowrap;}
   .tlist{gap:0 !important;padding-top:4px !important;padding-bottom:4px !important;}
@@ -788,6 +796,7 @@
       <h3 style="margin:0;">Kanban de <em class="ser">oportunidades</em></h3>
       <div class="hint">Arrastrá para cambiar de etapa · un clic despliega el detalle · doble clic edita</div>
     </div>
+    <div class="ko-filtros" id="koFiltros"></div>
     <div class="kanban-board-opps" id="kanbanOppsBoard"></div>
   </div>
 
@@ -3155,10 +3164,75 @@ function oppKanbanCardHtml(o){
   </div>`;
 }
 
+/* ── Filtros del Kanban (traídos del Backlog nuevo + extras). Se recuerdan en este navegador. ── */
+const KF_VACIO = { q:'', seg:'', alta:false, sinMonto:false, paso:'', eecc:'', vert:'', prob:'', camp:'', cierre:false };
+let KF = Object.assign({}, KF_VACIO);
+try{ Object.assign(KF, JSON.parse(localStorage.getItem('koFiltros')||'{}')); }catch(e){}
+function kfGuardar(){ try{ localStorage.setItem('koFiltros', JSON.stringify(KF)); }catch(e){} }
+const kfSinMonto = o => !numv(o.mesRecurrente) && !numv(o.montoOneShot);
+function kfPasa(o, salvo){
+  const q = KF.q.trim().toLowerCase();
+  if(salvo!=='q' && q && !(`${o.cliente||''} ${o.nombreOpp||''} ${o.producto||''} ${o.id||''} ${o.salesforceId||''} ${o.eecc||''}`.toLowerCase().includes(q))) return false;
+  if(salvo!=='seg' && KF.seg && o.segmento!==KF.seg) return false;
+  if(salvo!=='alta' && KF.alta && o.prioridad!=='Alta') return false;
+  if(salvo!=='sinMonto' && KF.sinMonto && !kfSinMonto(o)) return false;
+  if(salvo!=='paso' && KF.paso && nextState(o)!==KF.paso) return false;
+  if(salvo!=='eecc' && KF.eecc && o.eecc!==KF.eecc) return false;
+  if(salvo!=='vert' && KF.vert && o.vertical!==KF.vert) return false;
+  if(salvo!=='prob' && KF.prob){ if(KF.prob==='sin'){ if(o.probCierre!=='' && o.probCierre!=null) return false; } else if(String(o.probCierre)!==KF.prob) return false; }
+  if(salvo!=='camp' && KF.camp && o.campanaId!==KF.camp) return false;
+  if(salvo!=='cierre' && KF.cierre){ const f=o.fechaEstCierre; if(!f || f > sumarDias(todayISO(),30)) return false; }
+  return true;
+}
+function kfActivos(){ return Object.keys(KF_VACIO).filter(k=>KF[k]!==KF_VACIO[k]).length; }
+function renderKoFiltros(abiertas){
+  const el = document.getElementById('koFiltros'); if(!el) return;
+  const cnt = (salvo, fn) => abiertas.filter(o=>kfPasa(o,salvo) && fn(o)).length;
+  const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+  const eeccs = uniq(abiertas.map(o=>o.eecc)), verts = uniq(abiertas.map(o=>o.vertical));
+  const camps = (EXTRAS.campanas||[]).filter(c=>abiertas.some(o=>o.campanaId===c.id));
+  const chip = (on, attr, label, warn) => `<button type="button" class="chip ${warn?'warn':''} ${on?'on':''}" ${attr}>${label}</button>`;
+  const sel = (id, todos, opts, val) => `<select class="kf-sel" data-kf="${id}" aria-label="${todos}"><option value="">${todos}</option>${opts.map(([v,l])=>`<option value="${escapeHtml(v)}" ${val===v?'selected':''}>${escapeHtml(l)}</option>`).join('')}</select>`;
+  const vis = abiertas.filter(o=>kfPasa(o)).length;
+  const q = document.activeElement && document.activeElement.id==='kfQ';
+  el.innerHTML = `<div class="kf-fila">
+      <label class="kf-buscar"><span aria-hidden="true">⌕</span><input type="search" id="kfQ" placeholder="Buscar cliente, opp, Nº CRM o EECC" value="${escapeHtml(KF.q)}"></label>
+      ${chip(!KF.seg,'data-kfseg=""','Todas · '+cnt('seg',()=>true))}
+      ${SEGMENTOS.map(sg=>chip(KF.seg===sg,`data-kfseg="${escapeHtml(sg)}"`,escapeHtml(sg)+' · '+cnt('seg',o=>o.segmento===sg))).join('')}
+    </div>
+    <div class="kf-fila">
+      ${chip(KF.alta,'data-kftog="alta"','Prioridad alta · '+cnt('alta',o=>o.prioridad==='Alta'))}
+      ${chip(KF.cierre,'data-kftog="cierre"','Cierra en 30 días · '+cnt('cierre',o=>o.fechaEstCierre && o.fechaEstCierre<=sumarDias(todayISO(),30)))}
+      ${chip(KF.sinMonto,'data-kftog="sinMonto"','Sin monto · '+cnt('sinMonto',kfSinMonto),true)}
+      ${chip(KF.paso==='venc','data-kfpaso="venc"','Paso vencido · '+cnt('paso',o=>nextState(o)==='venc'),true)}
+      ${chip(KF.paso==='sin','data-kfpaso="sin"','Sin próximo paso · '+cnt('paso',o=>nextState(o)==='sin'),true)}
+      ${sel('eecc','Todos los EECC', eeccs.map(e=>[e,e]), KF.eecc)}
+      ${verts.length?sel('vert','Todas las verticales', verts.map(v=>[v,v]), KF.vert):''}
+      ${sel('prob','Toda probabilidad', [...PROBS.map(p=>[String(p),p+'% · '+PROB_LBL[p]]),['sin','Sin probabilidad']], KF.prob)}
+      ${camps.length?sel('camp','Todas las campañas', camps.map(c=>[c.id,c.titulo]), KF.camp):''}
+      <span class="kf-res">${vis===abiertas.length?`${vis} opps`:`Mostrando <b>${vis}</b> de ${abiertas.length}`}</span>
+      ${kfActivos()?'<button type="button" class="ghost kf-limpiar" data-kflimpiar="1">Limpiar filtros</button>':''}
+    </div>`;
+  if(q){ const i=document.getElementById('kfQ'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }
+}
+document.addEventListener('click', e=>{
+  const b = e.target.closest('#koFiltros [data-kfseg],#koFiltros [data-kftog],#koFiltros [data-kfpaso],#koFiltros [data-kflimpiar]'); if(!b) return;
+  if(b.dataset.kflimpiar){ KF = Object.assign({}, KF_VACIO); }
+  else if(b.hasAttribute('data-kfseg')) KF.seg = (KF.seg===b.dataset.kfseg) ? '' : b.dataset.kfseg;
+  else if(b.dataset.kftog) KF[b.dataset.kftog] = !KF[b.dataset.kftog];
+  else if(b.dataset.kfpaso) KF.paso = KF.paso===b.dataset.kfpaso ? '' : b.dataset.kfpaso;
+  kfGuardar(); renderKanbanOpps();
+});
+document.addEventListener('change', e=>{ const s = e.target.closest('#koFiltros [data-kf]'); if(!s) return; KF[s.dataset.kf] = s.value; kfGuardar(); renderKanbanOpps(); });
+let kfT = null;
+document.addEventListener('input', e=>{ if(e.target.id!=='kfQ') return; KF.q = e.target.value; clearTimeout(kfT); kfT = setTimeout(()=>{ kfGuardar(); renderKanbanOpps(); }, 180); });
+
 function renderKanbanOpps(){
   buildKanbanOppsColumns();
   DATA.forEach(computeFields);
-  const abiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  const todasAbiertas = DATA.filter(o=>!o.estadoFinal || o.estadoFinal==='Abierto');
+  renderKoFiltros(todasAbiertas);
+  const abiertas = todasAbiertas.filter(o=>kfPasa(o));
   const cols = {};
   ETAPAS.forEach(et=>cols[et]=[]);
   abiertas.forEach(o=>{ (cols[o.etapa] || cols[ETAPAS[0]]).push(o); });
